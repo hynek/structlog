@@ -20,12 +20,12 @@ from __future__ import absolute_import, division, print_function
 
 __version__ = '0.1.0'
 
-
+from structlog.boundlog import BoundLog
 from structlog.common import (
-    BoundLog,
     JSONRenderer,
     add_timestamp,
     format_exc_info,
+    render_kv,
 )
 
 
@@ -34,4 +34,5 @@ __all__ = [
     JSONRenderer,
     add_timestamp,
     format_exc_info,
+    render_kv,
 ]
