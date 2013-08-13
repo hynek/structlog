@@ -1,0 +1,4 @@
+.. :changelog:
+
+History
+=======

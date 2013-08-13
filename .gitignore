@@ -1,0 +1,3 @@
+.coverage
+.tox
+structlog.egg-info
