@@ -27,17 +27,17 @@ else:  # pragma: nocover
     str_types = (str, bytes)
 
 
-class BoundLog(object):
+class BoundLogger(object):
     @classmethod
     def fromLogger(cls, logger, processors=None):
         """
-        Create a new BoundLog for `logger`.
+        Create a new BoundLogger for `logger`.
 
         :param logger: An instance of a logger whose method calls will be
             wrapped.
         :param list processors: List of processors.
 
-        :rtype: BoundLog
+        :rtype: BoundLogger
         """
         return cls(
             logger,

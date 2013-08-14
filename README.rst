@@ -20,9 +20,9 @@ A nice feature is that you can build your log entry incrementally by binding val
    >>> import logging, sys
    >>> logging.basicConfig(stream=sys.stdout, format='%(message)s')
    >>> # Now let's wrap the logger and bind some values.
-   >>> from structlog import BoundLog
+   >>> from structlog import BoundLogger
    >>> logger = logging.getLogger('example_logger')
-   >>> log = BoundLog.fromLogger(logger).bind(user='anonymous', some_key=23)
+   >>> log = BoundLogger.fromLogger(logger).bind(user='anonymous', some_key=23)
    >>> # Do some application stuff like user authentication.
    >>> # As result, we have new values to bind to our logger.
    >>> log = log.bind(user='hynek', source='http', another_key=42)
@@ -38,10 +38,11 @@ Especially in conjunction with web frameworks logging gets much more pleasing:
 
    from flask import request
 
+   log = BoundLogger.fromLogger(logging.getLogger(__name__))
 
    @app.route('/login', methods=['POST', 'GET'])
    def some_route():
-       log = BoundLog.fromLogger(logger).bind(
+       log = log.bind(
            method=request.method,
            path=request.path,
            username=request.cookies.get('username'),
@@ -94,7 +95,7 @@ Here you go:
    ...     if pw:
    ...         event_dict['password'] = '*CENSORED*'
    ...     return event_dict
-   >>> log = BoundLog.fromLogger(
+   >>> log = BoundLogger.fromLogger(
    ...     logger,
    ...     processors=[
    ...         filter_by_level,
