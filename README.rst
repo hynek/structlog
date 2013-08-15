@@ -7,7 +7,7 @@ structlog: Structured Python logging.
 .. image:: https://coveralls.io/repos/hynek/structlog/badge.png?branch=master
     :target: https://coveralls.io/r/hynek/structlog?branch=master
 
-The purpose of ``structlog`` is to allow you to log `structured <http://glyph.twistedmatrix.com/2009/06/who-wants-to-know.html>`_, easily `parsable <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_ data even if your logger doesn’t support it.
+The purpose of ``structlog`` is to allow you to log structured_, easily parsable_ data even if your logger doesn’t support it.
 Contrary to other alternatives, ``structlog`` is agnostic about the underlying logging layer and wraps whatever your preferred logger is.
 
 Each log entry is a dictionary until it needs to be transformed into something that is understood by your logger – we call it an ``event_dict``.
@@ -117,3 +117,6 @@ Requirements
 ------------
 
 Works with Python 2.6, 2.7, 3.2, and 3.3 as well as with PyPy with no additional dependencies.
+
+.. _structured: http://glyph.twistedmatrix.com/2009/06/who-wants-to-know.html
+.. _parsable:  http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/
