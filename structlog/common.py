@@ -18,10 +18,8 @@ import datetime
 import json
 import sys
 import traceback
-try:  # pragma: nocover
-    from cStringIO import StringIO
-except ImportError:  # pragma: nocover
-    from io import StringIO
+
+from structlog._compat import StringIO
 
 
 def render_kv(_, __, event_dict):

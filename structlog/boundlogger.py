@@ -14,17 +14,10 @@
 
 from __future__ import absolute_import, division, print_function
 
-import sys
-
 from functools import wraps
 
+from structlog._compat import string_types
 from structlog.common import format_exc_info, render_kv
-
-
-if sys.version_info[0] == 2:  # pragma: nocover
-    str_types = (str, unicode)
-else:  # pragma: nocover
-    str_types = (str, bytes)
 
 
 class BoundLogger(object):
@@ -79,7 +72,7 @@ class BoundLogger(object):
                     raise ValueError('Processor returned None.')
                 elif res is False:
                     return
-            if isinstance(res, str_types):
+            if isinstance(res, string_types):
                 args, kw = (res,), {}
             else:
                 args, kw = res
