@@ -19,7 +19,7 @@ import json
 import sys
 import traceback
 
-from structlog._compat import StringIO
+from structlog._compat import StringIO, unicode_type
 
 
 def render_kv(_, __, event_dict):
@@ -27,6 +27,21 @@ def render_kv(_, __, event_dict):
     Render `event_dict` as a list of `Key=Value` pairs.
     """
     return ' '.join(k + '=' + repr(v) for k, v in sorted(event_dict.items()))
+
+
+class UnicodeEncoder(object):
+    """
+    Encode unicode values in `event_dict`.
+    """
+    def __init__(self, encoding='utf-8', errors='backslashreplace'):
+        self._encoding = encoding
+        self._errors = errors
+
+    def __call__(self, logger, name, event_dict):
+        for key, value in event_dict.items():
+            if isinstance(value, unicode_type):
+                event_dict[key] = value.encode(self._encoding, self._errors)
+        return event_dict
 
 
 class JSONRenderer(object):

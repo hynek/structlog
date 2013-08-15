@@ -19,8 +19,10 @@ import pytest
 
 import structlog
 
+from structlog._compat import u
 from structlog.common import (
     JSONRenderer,
+    UnicodeEncoder,
     _ReprFallbackEncoder,
     add_timestamp,
     format_exc_info,
@@ -81,5 +83,11 @@ def test_format_exc_info_gets_exc_info_on_bool():
     assert 'raise ValueError(\'test\')\nValueError: test' in d['exception']
 
 
-def test_format_exception():
-    pass
+def test_UnicodeEncoder_encodes():
+    ue = UnicodeEncoder()
+    assert {'foo': b'b\xc3\xa4r'} == ue(None, None, {'foo': u('b\xe4r')})
+
+
+def test_UnicodeEncoder_passes_arguments():
+    ue = UnicodeEncoder('latin1', 'xmlcharrefreplace')
+    assert {'foo': b'&#8211;'} == ue(None, None, {'foo': u('\u2013')})
