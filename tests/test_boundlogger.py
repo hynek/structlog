@@ -54,4 +54,3 @@ def test_processor_can_return_both_str_and_tuple():
     b1 = BoundLogger.fromLogger(logger, processors=[lambda *_: 'foo'])
     b2 = BoundLogger.fromLogger(logger, processors=[lambda *_: (('foo',), {})])
     assert b1.msg('foo') == b2.msg('foo')
-    print(b1.msg('foo'))
