@@ -59,7 +59,7 @@ class BoundLogger(object):
         log_meth = getattr(self._logger, name)
 
         @wraps(log_meth)
-        def wrapped(event, **kw):
+        def wrapped(event=None, **kw):
             """
             Before calling actual logger method, transform the accumulated
             `event_dict` together with the event itself using the processor
