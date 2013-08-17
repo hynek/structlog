@@ -2,3 +2,4 @@
 .tox
 structlog.egg-info
 htmlcov
+dist
