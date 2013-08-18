@@ -18,7 +18,7 @@ import pytest
 
 from pretend import stub
 
-from structlog.boundlogger import (
+from structlog.loggers import (
     BoundLogger, NOPLogger, _GLOBAL_NOP_LOGGER, BaseLogger
 )
 

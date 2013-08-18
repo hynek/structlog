@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+A flexible wrapper for loggers and helper classes.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 from abc import ABCMeta, abstractmethod
@@ -23,24 +27,24 @@ from structlog.common import format_exc_info, render_kv
 
 class BaseLogger(with_metaclass(ABCMeta)):
     """
-    A logger object that allows to bind structured values.
+    An abstract logger class that allows to bind structured values.
 
     What happens to those values depends on the concrete implementation.
     """
     @abstractmethod
     def bind(self, **kw):
         """
-        Bind the keywords from *kw* to this logger if appropriate.
+        Implementation dependent.
         """
         raise NotImplementedError  # pragma: nocover
 
 
 class BoundLogger(BaseLogger):
     """
-    Primary logger class.
+    Primary logger class.  Wraps an arbitrary logger class.
 
-    Allows binding values to it and offers a flexible processing pipeline for
-    each log entry.
+    Allows to bind values to itself and offers a flexible processing pipeline
+    for each log entry before relaying a logging call to the wrapper logger.
 
     Use :func:`fromLogger` to instantiate, *not* `__init__`.
     """
@@ -53,9 +57,9 @@ class BoundLogger(BaseLogger):
             wrapped.
         :param list processors: List of processors.
         :param callable bind_filter: Gets called as
-            ``bind_filter(logger, old_keywords, keywords_to_add)`` on each call
-            to :func:`bind`.  Once it returns ``False``, `bind()` returns
-            a stub that ignores all calls.
+            ``bind_filter(logger, current_event_dict, keywords_to_add)`` on
+            each call to :func:`bind`.  Once it returns ``False``, `bind()`
+            returns a stub that ignores all calls.
 
         :rtype: :class:`BoundLogger`
         """

@@ -20,7 +20,7 @@ from __future__ import absolute_import, division, print_function
 
 __version__ = '0.1.0'
 
-from structlog.boundlogger import BoundLogger  # flake8: noqa
+from structlog.loggers import BoundLogger  # flake8: noqa
 from structlog.common import (
     JSONRenderer,
     add_timestamp,

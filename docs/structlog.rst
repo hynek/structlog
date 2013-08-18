@@ -9,11 +9,11 @@ structlog Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`boundlogger` Module
+:mod:`loggers` Module
 -------------------------
 
-.. automodule:: structlog.boundlogger
-    :members:
+.. automodule:: structlog.loggers
+    :members: BoundLogger, NOPLogger, BaseLogger
     :undoc-members:
     :show-inheritance:
 
