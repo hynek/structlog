@@ -18,7 +18,9 @@ import pytest
 
 from pretend import stub
 
-from structlog.boundlogger import BoundLogger, _NOPLogger, _global_nop_logger
+from structlog.boundlogger import (
+    BoundLogger, NOPLogger, _GLOBAL_NOP_LOGGER, BaseLogger
+)
 
 
 def test_binds_independently():
@@ -57,17 +59,27 @@ def test_processor_can_return_both_str_and_tuple():
 
 
 def test_NOPLogger_returns_itself_on_bind():
-    nl = _NOPLogger()
+    nl = NOPLogger()
     assert nl is nl.bind(foo=42)
 
 
-def test_BoundLogger_returns_global_nop_logger_if_bind_filter_matches():
+def test_BoundLogger_returns_GLOBAL_NOP_LOGGER_if_bind_filter_matches():
     def filter_throw_away(*_):
         return False
 
     b = BoundLogger.fromLogger(None, bind_filter=filter_throw_away)
     nl = b.bind(foo=42)
-    assert nl == _global_nop_logger
+    assert nl == _GLOBAL_NOP_LOGGER
     # `logger` is None, so we get an AttributeError if the following call
     # doesn't get intercepted.
     nl.info('should not blow up')
+
+
+def test_meta():
+    """
+    Class hierarchy is sound.
+    """
+    assert issubclass(BoundLogger, BaseLogger)
+    assert isinstance(BoundLogger.fromLogger(None), BaseLogger)
+    assert issubclass(NOPLogger, BaseLogger)
+    assert isinstance(_GLOBAL_NOP_LOGGER, BaseLogger)

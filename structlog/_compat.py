@@ -48,3 +48,10 @@ else:  # pragma: nocover
     binary_type = str
     unicode_type = unicode
     u = lambda s: unicode(s, "unicode_escape")
+
+
+def with_metaclass(meta, *bases):
+    """
+    Create a base class with a metaclass.
+    """
+    return meta("NewBase", bases, {})

@@ -14,37 +14,35 @@
 
 from __future__ import absolute_import, division, print_function
 
+from abc import ABCMeta, abstractmethod
 from functools import wraps
 
-from structlog._compat import string_types
+from structlog._compat import string_types, with_metaclass
 from structlog.common import format_exc_info, render_kv
 
 
-def _nop(*args, **kw):
-    pass
-
-
-class _NOPLogger(object):
+class BaseLogger(with_metaclass(ABCMeta)):
     """
-    Returned by `BoundLogger.bind()` once it determines there will be no
-    logging.
+    A logger object that allows to bind structured values.
+
+    What happens to those values depends on the concrete implementation.
     """
+    @abstractmethod
     def bind(self, **kw):
-        return self
-
-    def __getattr__(self, _):
-        return _nop
-
-
-# `_NOPLogger` is immutable so there's no point of having more than one around.
-_global_nop_logger = _NOPLogger()
+        raise NotImplementedError  # pragma: nocover
 
 
 class BoundLogger(object):
+    """
+    Primary logger class.
+
+    Allow binding values to it and offers a flexible processing pipeline for
+    each log entry.
+    """
     @classmethod
     def fromLogger(cls, logger, processors=None, bind_filter=None):
         """
-        Create a new BoundLogger for `logger`.
+        Create a new `BoundLogger` for `logger`.
 
         :param logger: An instance of a logger whose method calls will be
             wrapped.
@@ -78,13 +76,16 @@ class BoundLogger(object):
         """
         Memorize all keyword arguments for future log calls.
 
-        :rtype: `BoundLogger` or `_NOPLogger`
+        Exact return type depends on the presence of a `bind_filter` and its
+        return value.
+
+        :rtype: `StructuredLogger`
         """
         if (
             self._bind_filter and
             not self._bind_filter(self._logger, self._event_dict, kw)
         ):
-            return _global_nop_logger
+            return _GLOBAL_NOP_LOGGER
         event_dict = dict(self._event_dict, **kw)
         return self.__class__(self._logger, self._processors,
                               self._bind_filter, event_dict)
@@ -112,3 +113,34 @@ class BoundLogger(object):
                 args, kw = res
             return log_meth(*args, **kw)
         return wrapped
+
+
+class NOPLogger(object):
+    """
+    A drop-in replacement for `BoundLogger` that does nothing.
+
+    Useful for returning from`BaseLogger.bind()` once it's clear that this
+    logger won't be logging.
+    """
+    def bind(self, **_):
+        """
+        Return ourselves.
+        """
+        return self
+
+    def _nop(*_, **__):
+        """
+        Do absolutely nothing.
+        """
+
+    def __getattr__(self, _):
+        return self._nop
+
+
+BaseLogger.register(BoundLogger)
+BaseLogger.register(NOPLogger)
+
+
+# `_NOPLogger` is immutable and stateless so there's no point of having more
+# than one around.
+_GLOBAL_NOP_LOGGER = NOPLogger()
