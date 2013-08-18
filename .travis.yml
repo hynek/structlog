@@ -5,7 +5,8 @@ env:
     - TOX_ENV=py27
     - TOX_ENV=py32
     - TOX_ENV=py33
-    - TOX_ENV=pep8
+    - TOX_ENV=docs
+    - TOX_ENV=flake8
 
 install:
     - pip install tox coveralls

@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Processors specific to the `Twisted <http://twistedmatrix.com/>`_ networking
+engine.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 from twisted.python.failure import Failure
@@ -19,7 +24,8 @@ from twisted.python.failure import Failure
 
 class LogAdapter(object):
     """
-    Make a wrapped `twisted.python.log.err` behave as expected.
+    Make a wrapped `twisted.python.log.err <http://twistedmatrix.com/
+    documents/current/api/twisted.python.log.html#err>`_ behave as expected.
     """
     def __init__(self, dictFormatter):
         """

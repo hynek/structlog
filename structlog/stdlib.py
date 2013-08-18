@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Processors specific to the logging module from the `Python standard library
+<http://docs.python.org/>`_.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 

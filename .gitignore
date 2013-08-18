@@ -3,3 +3,4 @@
 structlog.egg-info
 htmlcov
 dist
+docs/_build

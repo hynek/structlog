@@ -45,6 +45,9 @@ class UnicodeEncoder(object):
 
 
 class JSONRenderer(object):
+    """
+    Render the `event_dict` using `json.dumps(even_dict, **json_kw)`.
+    """
     def __init__(self, **json_kw):
         self._json_kw = json_kw
 

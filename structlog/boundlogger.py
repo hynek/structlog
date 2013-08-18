@@ -29,15 +29,20 @@ class BaseLogger(with_metaclass(ABCMeta)):
     """
     @abstractmethod
     def bind(self, **kw):
+        """
+        Bind the keywords from *kw* to this logger if appropriate.
+        """
         raise NotImplementedError  # pragma: nocover
 
 
-class BoundLogger(object):
+class BoundLogger(BaseLogger):
     """
     Primary logger class.
 
-    Allow binding values to it and offers a flexible processing pipeline for
+    Allows binding values to it and offers a flexible processing pipeline for
     each log entry.
+
+    Use :func:`fromLogger` to instantiate, *not* `__init__`.
     """
     @classmethod
     def fromLogger(cls, logger, processors=None, bind_filter=None):
@@ -48,10 +53,11 @@ class BoundLogger(object):
             wrapped.
         :param list processors: List of processors.
         :param callable bind_filter: Gets called as
-            ``bind_filter(logger, old_keywords, keywords_to_add)``.  Once it
-            returns ``False``, `bind()` returns a stub that ignores all calls.
+            ``bind_filter(logger, old_keywords, keywords_to_add)`` on each call
+            to :func:`bind`.  Once it returns ``False``, `bind()` returns
+            a stub that ignores all calls.
 
-        :rtype: BoundLogger
+        :rtype: :class:`BoundLogger`
         """
         return cls(
             logger,
@@ -74,12 +80,15 @@ class BoundLogger(object):
 
     def bind(self, **kw):
         """
-        Memorize all keyword arguments for future log calls.
+        Memorize all keyword arguments from *kw* for future log calls.
 
-        Exact return type depends on the presence of a `bind_filter` and its
-        return value.
+        The exact return type depends on the presence of a `bind_filter` and
+        its return value:  if `bind_filter` decides that this logger won't be
+        logging anymore, a :class:`NOPLogger` is returned.
 
-        :rtype: `StructuredLogger`
+        Otherwise a new instance of :class:`BoundLogger` is returned.
+
+        :rtype: :class:`BaseLogger`
         """
         if (
             self._bind_filter and
@@ -115,16 +124,18 @@ class BoundLogger(object):
         return wrapped
 
 
-class NOPLogger(object):
+class NOPLogger(BaseLogger):
     """
     A drop-in replacement for `BoundLogger` that does nothing.
 
-    Useful for returning from`BaseLogger.bind()` once it's clear that this
-    logger won't be logging.
+    Useful for returning from an implementation of :func:`BaseLogger.bind()`
+    once it's clear that this logger won't be logging.
     """
-    def bind(self, **_):
+    def bind(self, _=None, **__):
         """
         Return ourselves.
+
+        :rtype: :class:`NOPLogger`
         """
         return self
 
@@ -137,10 +148,6 @@ class NOPLogger(object):
         return self._nop
 
 
-BaseLogger.register(BoundLogger)
-BaseLogger.register(NOPLogger)
-
-
-# `_NOPLogger` is immutable and stateless so there's no point of having more
+# `NOPLogger` is immutable and stateless so there's no point of having more
 # than one around.
 _GLOBAL_NOP_LOGGER = NOPLogger()
