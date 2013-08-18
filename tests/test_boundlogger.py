@@ -18,7 +18,7 @@ import pytest
 
 from pretend import stub
 
-from structlog import BoundLogger
+from structlog.boundlogger import BoundLogger, _NOPLogger, _global_nop_logger
 
 
 def test_binds_independently():
@@ -54,3 +54,20 @@ def test_processor_can_return_both_str_and_tuple():
     b1 = BoundLogger.fromLogger(logger, processors=[lambda *_: 'foo'])
     b2 = BoundLogger.fromLogger(logger, processors=[lambda *_: (('foo',), {})])
     assert b1.msg('foo') == b2.msg('foo')
+
+
+def test_NOPLogger_returns_itself_on_bind():
+    nl = _NOPLogger()
+    assert nl is nl.bind(foo=42)
+
+
+def test_BoundLogger_returns_global_nop_logger_if_bind_filter_matches():
+    def filter_throw_away(*_):
+        return False
+
+    b = BoundLogger.fromLogger(None, bind_filter=filter_throw_away)
+    nl = b.bind(foo=42)
+    assert nl == _global_nop_logger
+    # `logger` is None, so we get an AttributeError if the following call
+    # doesn't get intercepted.
+    nl.info('should not blow up')
