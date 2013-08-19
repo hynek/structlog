@@ -134,7 +134,7 @@ class NOPLogger(BaseLogger):
     Useful for returning from an implementation of :func:`BaseLogger.bind()`
     once it's clear that this logger won't be logging.
     """
-    def bind(self, _=None, **__):
+    def bind(self, **__):
         """
         Return ourselves.
 
