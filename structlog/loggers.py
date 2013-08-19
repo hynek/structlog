@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-A flexible wrapper for loggers and helper classes.
+A flexible wrapper for loggers and its helper classes.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -69,7 +69,7 @@ class BoundLogger(BaseLogger):
                 format_exc_info,
                 render_kv,
             ],
-            bind_filter,
+            bind_filter or (lambda *_, **__: True),
             {}
         )
 
@@ -94,10 +94,7 @@ class BoundLogger(BaseLogger):
 
         :rtype: :class:`BaseLogger`
         """
-        if (
-            self._bind_filter and
-            not self._bind_filter(self._logger, self._event_dict, kw)
-        ):
+        if not self._bind_filter(self._logger, self._event_dict, kw):
             return _GLOBAL_NOP_LOGGER
         event_dict = dict(self._event_dict, **kw)
         return self.__class__(self._logger, self._processors,
