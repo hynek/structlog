@@ -24,8 +24,13 @@ from twisted.python.failure import Failure
 
 class LogAdapter(object):
     """
-    Make a wrapped `twisted.python.log.err <http://twistedmatrix.com/
-    documents/current/api/twisted.python.log.html#err>`_ behave as expected.
+    Wrap Twisted's logging module.  Make a wrapped `twisted.python.log.err
+    <http://twistedmatrix.com/documents/current/
+    api/twisted.python.log.html#err>`_ behave as expected.
+
+    **Must** be the last processor in the chain and requires a `dictFormatter`
+    for the actual formatting as an constructor argument in order to be able to
+    fully support the original behaviors of ``log.msg()`` and ``log.err()``.
     """
     def __init__(self, dictFormatter):
         """
