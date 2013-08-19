@@ -123,6 +123,7 @@ class BoundLogger(BaseLogger):
             else:
                 args, kw = res
             return log_meth(*args, **kw)
+        setattr(self, name, wrapped)
         return wrapped
 
 

@@ -43,8 +43,7 @@ def test_processor_returning_none_raises_valueerror():
     with pytest.raises(ValueError) as e:
         b.msg('boom')
     assert re.match(
-        r'Processor \<function .+\> returned None.',
-        e.value.args[0]
+        r'Processor \<function .+\> returned None.', e.value.args[0]
     )
 
 
@@ -89,3 +88,14 @@ def test_meta():
     assert isinstance(BoundLogger.fromLogger(None), BaseLogger)
     assert issubclass(NOPLogger, BaseLogger)
     assert isinstance(_GLOBAL_NOP_LOGGER, BaseLogger)
+
+
+def test_wrapper_caches():
+    """
+    __getattr__() gets called only once per logger method.
+    """
+    logger = stub(msg=lambda event: event, err=lambda event: event)
+    b = BoundLogger.fromLogger(logger)
+    assert 'msg' not in b.__dict__
+    b.msg('foo')
+    assert 'msg' in b.__dict__
