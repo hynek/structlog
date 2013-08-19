@@ -117,7 +117,8 @@ class BoundLogger(BaseLogger):
             for processor in self._processors:
                 res = processor(self._logger, name, res)
                 if res is None:
-                    raise ValueError('Processor returned None.')
+                    raise ValueError('Processor {0!r} returned None.'
+                                     .format(processor))
                 elif res is False:
                     return
             if isinstance(res, string_types):

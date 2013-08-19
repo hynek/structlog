@@ -14,6 +14,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import re
+
 import pytest
 
 from pretend import stub
@@ -38,8 +40,12 @@ def test_binds_independently():
 def test_processor_returning_none_raises_valueerror():
     logger = stub(msg=lambda event: event)
     b = BoundLogger.fromLogger(logger, processors=[lambda *_: None])
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         b.msg('boom')
+    assert re.match(
+        r'Processor \<function .+\> returned None.',
+        e.value.args[0]
+    )
 
 
 def test_processor_returning_false_silently_aborts_chain(capsys):
