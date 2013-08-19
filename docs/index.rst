@@ -1,10 +1,11 @@
 Welcome to structlog's documentation!
 =====================================
 
-Contents:
-
 User's Guide
 ------------
+
+API
+---
 
 .. toctree::
    :maxdepth: 4

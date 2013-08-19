@@ -41,10 +41,10 @@ class BaseLogger(with_metaclass(ABCMeta)):
 
 class BoundLogger(BaseLogger):
     """
-    Primary logger class.  Wraps an arbitrary logger class.
+    Wraps an arbitrary logger class.
 
     Allows to bind values to itself and offers a flexible processing pipeline
-    for each log entry before relaying a logging call to the wrapper logger.
+    for each log entry before relaying the logging call to the wrapped logger.
 
     Use :func:`fromLogger` to instantiate, *not* `__init__`.
     """
@@ -75,7 +75,7 @@ class BoundLogger(BaseLogger):
 
     def __init__(self, logger, processors, bind_filter, event_dict):
         """
-        Use `fromLogger()`.
+        Use :func:`fromLogger`.
         """
         self._logger = logger
         self._event_dict = event_dict
@@ -130,7 +130,7 @@ class BoundLogger(BaseLogger):
 
 class NOPLogger(BaseLogger):
     """
-    A drop-in replacement for `BoundLogger` that does nothing.
+    A drop-in replacement for `BoundLogger` that does nothing on method calls.
 
     Useful for returning from an implementation of :func:`BaseLogger.bind()`
     once it's clear that this logger won't be logging.
