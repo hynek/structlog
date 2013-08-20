@@ -22,11 +22,31 @@ import traceback
 from structlog._compat import StringIO, unicode_type
 
 
-def render_kv(_, __, event_dict):
+def render_repr(_, __, event_dict):
+    """
+    Just return the `repr()` of *event_dict*.
+    """
+    return repr(event_dict)
+
+
+class KeyValueRenderer(object):
     """
     Render `event_dict` as a list of `Key=Value` pairs.
     """
-    return ' '.join(k + '=' + repr(v) for k, v in sorted(event_dict.items()))
+    def __init__(self, sort_keys=False):
+        """
+        :param bool sort_keys: Whether to sort keys when formatting.  Useful
+            for testing output since dictionaries have no order.
+        """
+        self._sort_keys = sort_keys
+
+    def __call__(self, _, __, event_dict):
+        if self._sort_keys:
+            items = sorted(event_dict.items())
+        else:
+            items = event_dict.items()
+
+        return ' '.join(k + '=' + repr(v) for k, v in items)
 
 
 class UnicodeEncoder(object):

@@ -22,11 +22,12 @@ import structlog
 from structlog._compat import u
 from structlog.common import (
     JSONRenderer,
+    KeyValueRenderer,
     UnicodeEncoder,
     _ReprFallbackEncoder,
     add_timestamp,
     format_exc_info,
-    render_kv,
+    render_repr,
 )
 
 
@@ -39,10 +40,17 @@ def event_dict():
     return {'a': A(), 'b': [3, 4], 'x': 7, 'y': 'test', 'z': (1, 2)}
 
 
-def test_render_kv(event_dict):
+def test_render_repr(event_dict):
+    assert (
+        r"{'a': <A(\o/)>, 'x': 7, 'b': [3, 4], 'y': 'test', 'z': (1, 2)}" ==
+        render_repr(None, None, event_dict)
+    )
+
+
+def test_KeyValueRenderer(event_dict):
     assert (
         r"a=<A(\o/)> b=[3, 4] x=7 y='test' z=(1, 2)" ==
-        render_kv(None, None, event_dict)
+        KeyValueRenderer(sort_keys=True)(None, None, event_dict)
     )
 
 

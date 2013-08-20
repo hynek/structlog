@@ -15,19 +15,22 @@
 from __future__ import absolute_import, division, print_function
 
 import re
+import unittest
 
 import pytest
 
 from pretend import stub
 
+from structlog.common import KeyValueRenderer
 from structlog.loggers import (
-    BoundLogger, NOPLogger, _GLOBAL_NOP_LOGGER, BaseLogger
+    BoundLogger, NOPLogger, _GLOBAL_NOP_LOGGER, BaseLogger,
+    _DEFAULT_PROCESSORS, _DEFAULT_BIND_FILTER,
 )
 
 
 def test_binds_independently():
     logger = stub(msg=lambda event: event, err=lambda event: event)
-    b = BoundLogger.wrap(logger)
+    b = BoundLogger.wrap(logger, processors=[KeyValueRenderer(sort_keys=True)])
     b = b.bind(x=42, y=23)
     b1 = b.bind(foo='bar')
     assert "event='event1' foo='bar' x=42 y=23 z=1" == b1.msg('event1', z=1)
@@ -64,8 +67,12 @@ def test_processor_can_return_both_str_and_tuple():
 
 
 def test_NOPLogger_returns_itself_on_bind():
-    nl = NOPLogger()
+    nl = NOPLogger(None, None, None, None)
     assert nl is nl.bind(foo=42)
+
+
+def test_NOPLogger_returns_itself_on_wrap():
+    assert NOPLogger(None, None, None, None).wrap(None) is _GLOBAL_NOP_LOGGER
 
 
 def test_BoundLogger_returns_GLOBAL_NOP_LOGGER_if_bind_filter_matches():
@@ -99,3 +106,111 @@ def test_wrapper_caches():
     assert 'msg' not in b.__dict__
     b.msg('foo')
     assert 'msg' in b.__dict__
+
+
+class ConfigureTestCase(unittest.TestCase):
+    """
+    There's some global state here so we use a class to be able to clean up.
+    """
+    def setUp(self):
+        self.b_def = BoundLogger.wrap(None)
+
+    def tearDown(self):
+        BoundLogger.reset_defaults()
+
+    def test_reset(self):
+        x = stub()
+        y = stub()
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        BoundLogger.reset_defaults()
+        b = BoundLogger.wrap(None)
+        assert x is not b._processors[0]
+        assert y is not b._bind_filter
+        assert self.b_def._processors == b._processors
+        assert self.b_def._bind_filter == b._bind_filter
+        assert _DEFAULT_PROCESSORS == b._processors
+        assert _DEFAULT_BIND_FILTER == b._bind_filter[0]
+
+    def test_just_processors(self):
+        x = stub()
+        BoundLogger.configure(processors=[x])
+        b = BoundLogger.wrap(None)
+        assert x == b._processors[0]
+        assert self.b_def._bind_filter is b._bind_filter
+
+    def test_just_bind_filter(self):
+        x = stub()
+        BoundLogger.configure(bind_filter=x)
+        b = BoundLogger.wrap(None)
+        assert self.b_def._processors == b._processors
+        assert x is b._bind_filter[0]
+
+    def test_both(self):
+        x = stub()
+        y = stub()
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        b = BoundLogger.wrap(None)
+        assert 1 == len(b._processors)
+        assert x is b._processors[0]
+        assert y is b._bind_filter[0]
+
+    def test_overwrite_bind_filter(self):
+        x = stub()
+        y = stub()
+        z = stub()
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        b = BoundLogger.wrap(None, bind_filter=z)
+        assert 1 == len(b._processors)
+        assert x is b._processors[0]
+        assert z is b._bind_filter[0]
+
+    def test_overwrite_processors(self):
+        x = stub()
+        y = stub()
+        z = stub()
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        b = BoundLogger.wrap(None, processors=[z])
+        assert 1 == len(b._processors)
+        assert z is b._processors[0]
+        assert y is b._bind_filter[0]
+
+    def test_affects_all(self):
+        x = stub()
+        y = stub()
+        b = BoundLogger.wrap(None)
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        assert 1 == len(b._processors)
+        assert y is b._bind_filter[0]
+        assert x is b._processors[0]
+
+    def test_configure_does_not_affect_overwritten(self):
+        """
+        This is arguably an ugly test.  However it aspires to prove that any
+        order of configuring and wrapping works as advertised.
+        """
+        x = stub()
+        y = stub()
+        z = stub()
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        b = BoundLogger.wrap(None, processors=[z], bind_filter=z)
+        part_def_b = BoundLogger.wrap(None, bind_filter=z)
+        def_b1 = BoundLogger.wrap(None)
+        BoundLogger.configure(processors=[x], bind_filter=y)
+        assert 1 == len(b._processors)
+        assert z is b._bind_filter[0]
+        assert z is b._processors[0]
+        def_b2 = BoundLogger.wrap(None)
+        assert 1 == len(def_b1._processors)
+        assert y is def_b1._bind_filter[0]
+        assert x is def_b1._processors[0]
+        assert 1 == len(def_b2._processors)
+        assert y is def_b2._bind_filter[0]
+        assert x is def_b2._processors[0]
+        assert x is part_def_b._processors[0]
+        assert z is part_def_b._bind_filter[0]
+        assert def_b1._processors is BoundLogger._processors
+        assert def_b1._bind_filter is BoundLogger._bind_filter
+        assert def_b2._processors is BoundLogger._processors
+        assert def_b2._bind_filter is BoundLogger._bind_filter
+        assert part_def_b._bind_filter != BoundLogger._bind_filter
+        assert part_def_b._processors is BoundLogger._processors

@@ -20,9 +20,10 @@ A nice feature is that you can build your log entry incrementally by binding val
    >>> import logging, sys
    >>> logging.basicConfig(stream=sys.stdout, format='%(message)s')
    >>> # Now let's wrap the logger and bind some values.
-   >>> from structlog import BoundLogger
+   >>> from structlog import BoundLogger, KeyValueRenderer
    >>> logger = logging.getLogger('example_logger')
-   >>> log = BoundLogger.wrap(logger).bind(user='anonymous', some_key=23)
+   >>> log = BoundLogger.wrap(logger, [KeyValueRenderer(sort_keys=True)])
+   >>> log = log.bind(user='anonymous', some_key=23)
    >>> # Do some application stuff like user authentication.
    >>> # As result, we have new values to bind to our logger.
    >>> log = log.bind(user='hynek', source='http', another_key=42)

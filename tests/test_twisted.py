@@ -18,23 +18,23 @@ import pytest
 pytest.importorskip('twisted')
 
 from structlog.twisted import LogAdapter
-from structlog import render_kv
+from structlog import render_repr
 
 
 def test_LogAdapterFormatsLog():
-    la = LogAdapter(render_kv)
-    assert "foo='bar'" == la(None, 'msg', {'foo': 'bar'})
+    la = LogAdapter(render_repr)
+    assert "{'foo': 'bar'}" == la(None, 'msg', {'foo': 'bar'})
 
 
 def test_LogAdapterTransforms_whyIntoEvent():
     """
     log.err(_stuff=exc, _why='foo') makes the output 'event="foo"'
     """
-    la = LogAdapter(render_kv)
+    la = LogAdapter(render_repr)
     error = ValueError('test')
     assert ((), {
         '_stuff': error,
-        '_why': "event='foo'",
+        '_why': "{'event': 'foo'}",
     }) == la(None, 'err', {
         '_stuff': error,
         '_why': 'foo',
@@ -46,11 +46,11 @@ def test_LogAdapterWorksUsualCase():
     """
     log.err(exc, _why='foo') makes the output 'event="foo"'
     """
-    la = LogAdapter(render_kv)
+    la = LogAdapter(render_repr)
     error = ValueError('test')
     assert ((), {
         '_stuff': error,
-        '_why': "event='foo'",
+        '_why': "{'event': 'foo'}",
     }) == la(None, 'err', {
         'event': error,
         '_why': 'foo',
@@ -61,11 +61,11 @@ def test_LogAdapterAllKeywords():
     """
     log.err(_stuff=exc, _why='event')
     """
-    la = LogAdapter(render_kv)
+    la = LogAdapter(render_repr)
     error = ValueError('test')
     assert ((), {
         '_stuff': error,
-        '_why': "event='foo'",
+        '_why': "{'event': 'foo'}",
     }) == la(None, 'err', {
         '_stuff': error,
         '_why': 'foo',
@@ -76,10 +76,10 @@ def test_LogAdapterNoFailure():
     """
     log.err('event')
     """
-    la = LogAdapter(render_kv)
+    la = LogAdapter(render_repr)
     assert ((), {
         '_stuff': None,
-        '_why': "event='someEvent'",
+        '_why': "{'event': 'someEvent'}",
     }) == la(None, 'err', {
         'event': 'someEvent'
     })
@@ -89,17 +89,17 @@ def test_LogAdapterNoFailureWithKeyword():
     """
     log.err(_why='event')
     """
-    la = LogAdapter(render_kv)
+    la = LogAdapter(render_repr)
     assert ((), {
         '_stuff': None,
-        '_why': "event='someEvent'",
+        '_why': "{'event': 'someEvent'}",
     }) == la(None, 'err', {
         '_why': 'someEvent'
     })
 
 
 def test_LogAdapterCatchesConflictingEventAnd_why():
-    la = LogAdapter(render_kv)
+    la = LogAdapter(render_repr)
     with pytest.raises(ValueError) as e:
         la(None, 'err', {
             'event': 'someEvent',

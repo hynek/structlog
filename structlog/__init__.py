@@ -23,7 +23,8 @@ __version__ = '0.1.0'
 from structlog.loggers import BoundLogger  # flake8: noqa
 from structlog.common import (
     JSONRenderer,
+    KeyValueRenderer,
     add_timestamp,
     format_exc_info,
-    render_kv,
+    render_repr,
 )  # flake8: noqa

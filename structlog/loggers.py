@@ -21,8 +21,8 @@ from __future__ import absolute_import, division, print_function
 from abc import ABCMeta, abstractmethod
 from functools import wraps
 
-from structlog._compat import string_types, with_metaclass
-from structlog.common import format_exc_info, render_kv
+from structlog._compat import string_types, with_metaclass, abstractclassmethod
+from structlog.common import format_exc_info, KeyValueRenderer
 
 
 class BaseLogger(with_metaclass(ABCMeta)):
@@ -31,12 +31,53 @@ class BaseLogger(with_metaclass(ABCMeta)):
 
     What happens to those values depends on the concrete implementation.
     """
+    def __init__(self, logger, processors, bind_filter, event_dict):
+        """
+        Use :func:`wrap`.
+        """
+        self._logger = logger
+        self._event_dict = event_dict
+        if processors:
+            self._processors = processors
+        if bind_filter:
+            self._bind_filter = bind_filter
+
+    @abstractclassmethod
+    def wrap(cls, logger, processors=None, bind_filter=None):
+        """
+        Wrap *logger*.
+        """
+
+    @abstractclassmethod
+    def configure(cls, processors, bind_filter):
+        """
+        Configure *default* values for *all* loggers.
+        """
+
+    @abstractclassmethod
+    def reset_defaults(cls):
+        """
+        Reset global default values to original values.
+
+        Useful for cleanup functions while testing.
+        """
+
     @abstractmethod
     def bind(self, **kw):
         """
-        Implementation dependent.
+        Bind values if appropriate.
         """
-        raise NotImplementedError  # pragma: nocover
+
+
+def _always_true(*_, **__):
+    """
+    Return `True` no matter what.
+    """
+    return True
+
+
+_DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
+_DEFAULT_BIND_FILTER = _always_true
 
 
 class BoundLogger(BaseLogger):
@@ -48,10 +89,20 @@ class BoundLogger(BaseLogger):
 
     Use :func:`wrap` to instantiate, *not* `__init__`.
     """
+    _processors = _DEFAULT_PROCESSORS[:]
+    # save as array so it can be modified globally
+    _bind_filter = [_DEFAULT_BIND_FILTER]
+
     @classmethod
     def wrap(cls, logger, processors=None, bind_filter=None):
         """
         Create a new `BoundLogger` for an arbitrary `logger`.
+
+        Default values for *processors* and *bind_filter* can be set using
+        :func:`configure`.
+
+        If you set *processors* or *bind_filter* here, calls to
+        :func:`configure` have *no* effect.
 
         :param logger: An instance of a logger whose method calls will be
             wrapped.
@@ -65,22 +116,38 @@ class BoundLogger(BaseLogger):
         """
         return cls(
             logger,
-            processors or [
-                format_exc_info,
-                render_kv,
-            ],
-            bind_filter or (lambda *_, **__: True),
+            processors,
+            [bind_filter] if bind_filter else None,
             {}
         )
 
-    def __init__(self, logger, processors, bind_filter, event_dict):
+    @classmethod
+    def configure(cls, processors=None, bind_filter=None):
         """
-        Use :func:`wrap`.
+        Use configure the *global* default settings that are used if
+        :func:`wrap` *has been* or *will be* called without arguments.
+
+        Use :func:`reset_defaults` to undo your changes.
+
+        :param list processors: same as in :func:`wrap`, except `None` means
+            "no change".
+        :param callable bind_filters: same as in :func:`wrap`, except `None`
+            means "no change".
         """
-        self._logger = logger
-        self._event_dict = event_dict
-        self._processors = processors
-        self._bind_filter = bind_filter
+        if processors:
+            del cls._processors[:]
+            cls._processors.extend(processors)
+        if bind_filter:
+            cls._bind_filter[0] = bind_filter
+
+    @classmethod
+    def reset_defaults(cls):
+        """
+        Resets default *processors* and *bind_filter*.
+        """
+        del cls._processors[:]
+        cls._processors.extend(_DEFAULT_PROCESSORS)
+        cls._bind_filter[0] = _DEFAULT_BIND_FILTER
 
     def bind(self, **kw):
         """
@@ -94,7 +161,7 @@ class BoundLogger(BaseLogger):
 
         :rtype: :class:`BaseLogger`
         """
-        if not self._bind_filter(self._logger, self._event_dict, kw):
+        if not self._bind_filter[0](self._logger, self._event_dict, kw):
             return _GLOBAL_NOP_LOGGER
         event_dict = dict(self._event_dict, **kw)
         return self.__class__(self._logger, self._processors,
@@ -134,6 +201,27 @@ class NOPLogger(BaseLogger):
     Useful for returning from an implementation of :func:`BaseLogger.bind()`
     once it's clear that this logger won't be logging.
     """
+    @classmethod
+    def wrap(cls, logger, processors=None, bind_filter=None):
+        """
+        Return global instance of :class:`NOPLogger`.
+
+        :rtype: :class:`NOPLogger`
+        """
+        return _GLOBAL_NOP_LOGGER
+
+    @classmethod
+    def configure(self, *_, **__):
+        """
+        Do absolutely nothing.
+        """
+
+    @classmethod
+    def reset_defaults(self, *_, **__):
+        """
+        Do absolutely nothing.
+        """
+
     def bind(self, **__):
         """
         Return ourselves.
@@ -153,4 +241,4 @@ class NOPLogger(BaseLogger):
 
 # `NOPLogger` is immutable and stateless so there's no point of having more
 # than one around.
-_GLOBAL_NOP_LOGGER = NOPLogger()
+_GLOBAL_NOP_LOGGER = NOPLogger(None, None, None, None)
