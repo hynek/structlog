@@ -102,7 +102,9 @@ class BoundLogger(BaseLogger):
         :func:`configure`.
 
         If you set *processors* or *bind_filter* here, calls to
-        :func:`configure` have *no* effect.
+        :func:`configure` have *no* effect for the *respective* attribute.
+
+        In other words: selective overwritting of the defaults *is* possible.
 
         :param logger: An instance of a logger whose method calls will be
             wrapped.
