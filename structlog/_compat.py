@@ -15,11 +15,13 @@
 """
 Python 2 + 3 compatibility utilities.
 
-Heavily inspired by https://bitbucket.org/gutworth/six/ .
+Derived from MIT-licensed https://bitbucket.org/gutworth/six/ which is
+Copyright 2010-2013 by Benjamin Peterson.
 """
 
 from __future__ import absolute_import, division, print_function
 
+import abc
 import sys
 import types
 
@@ -40,6 +42,7 @@ if PY3:  # pragma: nocover
     binary_type = bytes
     unicode_type = str
     u = lambda s: s
+    abstractclassmethod = abc.abstractclassmethod
 else:  # pragma: nocover
     string_types = basestring,
     integer_types = (int, long)
@@ -48,6 +51,7 @@ else:  # pragma: nocover
     binary_type = str
     unicode_type = unicode
     u = lambda s: unicode(s, "unicode_escape")
+    abstractclassmethod = abc.abstractmethod
 
 
 def with_metaclass(meta, *bases):
