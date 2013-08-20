@@ -10,7 +10,7 @@ structlog: Structured Python Logging
 The purpose of ``structlog`` is to allow you to log structured_, easily parsable_ data even if your logger doesn’t support it.
 Contrary to other alternatives, ``structlog`` is agnostic about the underlying logging layer and wraps whatever your preferred logger is.
 
-Each log entry is a dictionary until it needs to be transformed into something that is understood by your logger – we call it an ``event_dict``.
+Each log entry is a dictionary until it needs to be transformed into something that is understood by your logger – we call it an *event dictionary*.
 
 A nice feature is that you can build your log entry incrementally by binding values to your logger:
 
