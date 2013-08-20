@@ -46,12 +46,12 @@ class BoundLogger(BaseLogger):
     Allows to bind values to itself and offers a flexible processing pipeline
     for each log entry before relaying the logging call to the wrapped logger.
 
-    Use :func:`fromLogger` to instantiate, *not* `__init__`.
+    Use :func:`wrap` to instantiate, *not* `__init__`.
     """
     @classmethod
-    def fromLogger(cls, logger, processors=None, bind_filter=None):
+    def wrap(cls, logger, processors=None, bind_filter=None):
         """
-        Create a new `BoundLogger` for `logger`.
+        Create a new `BoundLogger` for an arbitrary `logger`.
 
         :param logger: An instance of a logger whose method calls will be
             wrapped.
@@ -75,7 +75,7 @@ class BoundLogger(BaseLogger):
 
     def __init__(self, logger, processors, bind_filter, event_dict):
         """
-        Use :func:`fromLogger`.
+        Use :func:`wrap`.
         """
         self._logger = logger
         self._event_dict = event_dict

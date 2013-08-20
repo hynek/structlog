@@ -27,7 +27,7 @@ from structlog.loggers import (
 
 def test_binds_independently():
     logger = stub(msg=lambda event: event, err=lambda event: event)
-    b = BoundLogger.fromLogger(logger)
+    b = BoundLogger.wrap(logger)
     b = b.bind(x=42, y=23)
     b1 = b.bind(foo='bar')
     assert "event='event1' foo='bar' x=42 y=23 z=1" == b1.msg('event1', z=1)
@@ -39,7 +39,7 @@ def test_binds_independently():
 
 def test_processor_returning_none_raises_valueerror():
     logger = stub(msg=lambda event: event)
-    b = BoundLogger.fromLogger(logger, processors=[lambda *_: None])
+    b = BoundLogger.wrap(logger, processors=[lambda *_: None])
     with pytest.raises(ValueError) as e:
         b.msg('boom')
     assert re.match(
@@ -50,16 +50,16 @@ def test_processor_returning_none_raises_valueerror():
 def test_processor_returning_false_silently_aborts_chain(capsys):
     logger = stub(msg=lambda event: event)
     # The 2nd processor would raise a ValueError if reached.
-    b = BoundLogger.fromLogger(logger, processors=[lambda *_: False,
-                                                   lambda *_: None])
+    b = BoundLogger.wrap(logger, processors=[lambda *_: False,
+                                             lambda *_: None])
     b.msg('silence!')
     assert ('', '') == capsys.readouterr()
 
 
 def test_processor_can_return_both_str_and_tuple():
     logger = stub(msg=lambda args, **kw: (args, kw))
-    b1 = BoundLogger.fromLogger(logger, processors=[lambda *_: 'foo'])
-    b2 = BoundLogger.fromLogger(logger, processors=[lambda *_: (('foo',), {})])
+    b1 = BoundLogger.wrap(logger, processors=[lambda *_: 'foo'])
+    b2 = BoundLogger.wrap(logger, processors=[lambda *_: (('foo',), {})])
     assert b1.msg('foo') == b2.msg('foo')
 
 
@@ -72,7 +72,7 @@ def test_BoundLogger_returns_GLOBAL_NOP_LOGGER_if_bind_filter_matches():
     def filter_throw_away(*_):
         return False
 
-    b = BoundLogger.fromLogger(None, bind_filter=filter_throw_away)
+    b = BoundLogger.wrap(None, bind_filter=filter_throw_away)
     nl = b.bind(foo=42)
     assert nl == _GLOBAL_NOP_LOGGER
     # `logger` is None, so we get an AttributeError if the following call
@@ -85,7 +85,7 @@ def test_meta():
     Class hierarchy is sound.
     """
     assert issubclass(BoundLogger, BaseLogger)
-    assert isinstance(BoundLogger.fromLogger(None), BaseLogger)
+    assert isinstance(BoundLogger.wrap(None), BaseLogger)
     assert issubclass(NOPLogger, BaseLogger)
     assert isinstance(_GLOBAL_NOP_LOGGER, BaseLogger)
 
@@ -95,7 +95,7 @@ def test_wrapper_caches():
     __getattr__() gets called only once per logger method.
     """
     logger = stub(msg=lambda event: event, err=lambda event: event)
-    b = BoundLogger.fromLogger(logger)
+    b = BoundLogger.wrap(logger)
     assert 'msg' not in b.__dict__
     b.msg('foo')
     assert 'msg' in b.__dict__
