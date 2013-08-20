@@ -137,8 +137,7 @@ class BoundLogger(BaseLogger):
             means "no change".
         """
         if processors:
-            del cls._processors[:]
-            cls._processors.extend(processors)
+            cls._processors = processors
         if bind_filter:
             cls._bind_filter[0] = bind_filter
 
@@ -147,8 +146,7 @@ class BoundLogger(BaseLogger):
         """
         Resets default *processors* and *bind_filter*.
         """
-        del cls._processors[:]
-        cls._processors.extend(_DEFAULT_PROCESSORS)
+        cls._processors = _DEFAULT_PROCESSORS[:]
         cls._bind_filter[0] = _DEFAULT_BIND_FILTER
 
     def bind(self, **kw):
