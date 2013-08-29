@@ -37,18 +37,16 @@ class BoundLogger(object):
 
     Use :func:`wrap` to instantiate, *not* `__init__`.
     """
-    _processors = _DEFAULT_PROCESSORS[:]
-    _dict_class = _DEFAULT_DICT_CLASS
+    _default_processors = _DEFAULT_PROCESSORS[:]
+    _default_dict_class = _DEFAULT_DICT_CLASS
 
     def __init__(self, logger, processors, dict_class, event_dict):
         """
         Use :func:`wrap`.
         """
         self._logger = logger
-        if processors:
-            self._processors = processors
-        if dict_class:
-            self._dict_class = dict_class
+        self._processors = processors
+        self._dict_class = dict_class
         self._event_dict = event_dict
 
     @classmethod
@@ -76,7 +74,7 @@ class BoundLogger(object):
             logger,
             processors,
             dict_class,
-            dict_class() if dict_class else cls._dict_class(),
+            dict_class() if dict_class else cls._default_dict_class(),
         )
 
     @classmethod
@@ -91,17 +89,17 @@ class BoundLogger(object):
             "no change".
         """
         if processors:
-            cls._processors = processors
+            cls._default_processors = processors
         if dict_class:
-            cls._dict_class = dict_class
+            cls._default_dict_class = dict_class
 
     @classmethod
     def reset_defaults(cls):
         """
         Resets default *processors*.
         """
-        cls._processors = _DEFAULT_PROCESSORS[:]
-        cls._dict_class = _DEFAULT_DICT_CLASS
+        cls._default_processors = _DEFAULT_PROCESSORS[:]
+        cls._default_dict_class = _DEFAULT_DICT_CLASS
 
     def bind(self, **new_values):
         """
@@ -109,10 +107,24 @@ class BoundLogger(object):
 
         :rtype: :class:`BoundLogger`
         """
-        event_dict = self._dict_class(self._event_dict, **new_values)
+        event_dict = self._current_dict_class(self._event_dict, **new_values)
         return self.__class__(
-            self._logger, self._processors, self._dict_class, event_dict
+            self._logger,
+            self._processors,
+            self._dict_class,
+            event_dict
         )
+
+    @property
+    def _current_processors(self):
+        if self._processors:
+            return self._processors
+        else:
+            return self.__class__._default_processors
+
+    @property
+    def _current_dict_class(self):
+        return self._dict_class or self.__class__._default_dict_class
 
     def __getattr__(self, name):
         log_meth = getattr(self._logger, name)
@@ -124,12 +136,12 @@ class BoundLogger(object):
             `event_dict` together with the event itself using the processor
             chain.
             """
-            res = self._dict_class(self._event_dict, **kw)
+            res = self._current_dict_class(self._event_dict, **kw)
             # ensure event to be the last k/v which is useful if an OrderedDict
             # is used.
             if event:
                 res.update(event=event)
-            for processor in self._processors:
+            for processor in self._current_processors:
                 res = processor(self._logger, name, res)
                 if res is None:
                     raise ValueError('Processor {0!r} returned None.'
