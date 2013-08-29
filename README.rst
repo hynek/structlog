@@ -22,13 +22,13 @@ A nice feature is that you can build your log entry incrementally by binding val
    >>> # Now let's wrap the logger and bind some values.
    >>> from structlog import BoundLogger, KeyValueRenderer
    >>> logger = logging.getLogger('example_logger')
-   >>> log = BoundLogger.wrap(logger, [KeyValueRenderer(sort_keys=True)])
+   >>> log = BoundLogger.wrap(logger)
    >>> log = log.bind(user='anonymous', some_key=23)
    >>> # Do some application stuff like user authentication.
    >>> # As result, we have new values to bind to our logger.
    >>> log = log.bind(user='hynek', source='http', another_key=42)
    >>> log.warning('user.logged_in', happy=True)
-   another_key=42 event='user.logged_in' happy=True some_key=23 source='http' user='hynek'
+   some_key=23 user='hynek' source='http' another_key=42 happy=True event='user.logged_in'
 
 In other words, you tell your logger about values *as you learn about them* and it will include the information in all future log entries.
 This gives you much more complete logs without boilerplate code and conditionals.

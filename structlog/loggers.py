@@ -21,7 +21,9 @@ from __future__ import absolute_import, division, print_function
 from abc import ABCMeta, abstractmethod
 from functools import wraps
 
-from structlog._compat import string_types, with_metaclass, abstractclassmethod
+from structlog._compat import (
+    string_types, with_metaclass, abstractclassmethod, OrderedDict,
+)
 from structlog.common import format_exc_info, KeyValueRenderer
 
 
@@ -31,14 +33,16 @@ class BaseLogger(with_metaclass(ABCMeta)):
 
     What happens to those values depends on the concrete implementation.
     """
-    def __init__(self, logger, processors, event_dict):
+    def __init__(self, logger, processors, dict_class, event_dict):
         """
         Use :func:`wrap`.
         """
         self._logger = logger
-        self._event_dict = event_dict
         if processors:
             self._processors = processors
+        if dict_class:
+            self._dict_class = dict_class
+        self._event_dict = event_dict
 
     @abstractclassmethod
     def wrap(cls, logger, processors=None):
@@ -47,7 +51,7 @@ class BaseLogger(with_metaclass(ABCMeta)):
         """
 
     @abstractclassmethod
-    def configure(cls, processors):
+    def configure(cls, processors=None, dict_class=None):
         """
         Configure *default* values for *all* loggers.
         """
@@ -68,6 +72,7 @@ class BaseLogger(with_metaclass(ABCMeta)):
 
 
 _DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
+_DEFAULT_DICT_CLASS = OrderedDict
 
 
 class BoundLogger(BaseLogger):
@@ -80,13 +85,15 @@ class BoundLogger(BaseLogger):
     Use :func:`wrap` to instantiate, *not* `__init__`.
     """
     _processors = _DEFAULT_PROCESSORS[:]
+    _dict_class = _DEFAULT_DICT_CLASS
 
     @classmethod
-    def wrap(cls, logger, processors=None):
+    def wrap(cls, logger, processors=None, dict_class=None):
         """
         Create a new `BoundLogger` for an arbitrary `logger`.
 
-        Default values for *processors* can be set using :func:`configure`.
+        Default values for *processors* and *dict_class* can be set using
+        :func:`configure`.
 
         If you set *processors* here, calls to :func:`configure` have *no*
         effect for the *respective* attribute.
@@ -96,20 +103,23 @@ class BoundLogger(BaseLogger):
         :param logger: An instance of a logger whose method calls will be
             wrapped.
         :param list processors: List of processors.
+        :param dict_class: Class to be used for internal dictionary (default:
+            `OrderedDict`).
 
         :rtype: :class:`BoundLogger`
         """
         return cls(
             logger,
             processors,
-            {}
+            dict_class,
+            dict_class() if dict_class else cls._dict_class(),
         )
 
     @classmethod
-    def configure(cls, processors=None):
+    def configure(cls, processors=None, dict_class=None):
         """
-        Configures the **global** *processors* that are used if :func:`wrap`
-        *has been* or *will be* called without arguments.
+        Configures the **global** *processors* and *dict_class* that are used
+        if :func:`wrap` *has been* or *will be* called without arguments.
 
         Use :func:`reset_defaults` to undo your changes.
 
@@ -118,6 +128,8 @@ class BoundLogger(BaseLogger):
         """
         if processors:
             cls._processors = processors
+        if dict_class:
+            cls._dict_class = dict_class
 
     @classmethod
     def reset_defaults(cls):
@@ -125,6 +137,7 @@ class BoundLogger(BaseLogger):
         Resets default *processors*.
         """
         cls._processors = _DEFAULT_PROCESSORS[:]
+        cls._dict_class = _DEFAULT_DICT_CLASS
 
     def bind(self, **new_values):
         """
@@ -132,8 +145,10 @@ class BoundLogger(BaseLogger):
 
         :rtype: :class:`BoundLogger`
         """
-        event_dict = dict(self._event_dict, **new_values)
-        return self.__class__(self._logger, self._processors, event_dict)
+        event_dict = self._dict_class(self._event_dict, **new_values)
+        return self.__class__(
+            self._logger, self._processors, self._dict_class, event_dict
+        )
 
     def __getattr__(self, name):
         log_meth = getattr(self._logger, name)
@@ -145,7 +160,11 @@ class BoundLogger(BaseLogger):
             `event_dict` together with the event itself using the processor
             chain.
             """
-            res = dict(self._event_dict, event=event, **kw)
+            res = self._event_dict.__class__(self._event_dict, **kw)
+            # ensure event to be the last k/v which is useful if an OrderedDict
+            # is used.
+            if event:
+                res.update(event=event)
             for processor in self._processors:
                 res = processor(self._logger, name, res)
                 if res is None:

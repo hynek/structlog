@@ -29,12 +29,17 @@ PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
 
-try:  # pragma: nocover
+try:
     from cStringIO import StringIO
-except ImportError:  # pragma: nocover
+except ImportError:
     from io import StringIO  # flake8: noqa
 
-if PY3:  # pragma: nocover
+if sys.version_info[:2] == (2, 6):
+    from ordereddict import OrderedDict
+else:
+    from collections import OrderedDict
+
+if PY3:
     string_types = str,
     integer_types = int,
     class_types = type,
@@ -43,7 +48,7 @@ if PY3:  # pragma: nocover
     unicode_type = str
     u = lambda s: s
     abstractclassmethod = abc.abstractclassmethod
-else:  # pragma: nocover
+else:
     string_types = basestring,
     integer_types = (int, long)
     class_types = (type, types.ClassType)

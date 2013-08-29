@@ -26,5 +26,4 @@ from structlog.common import (
     KeyValueRenderer,
     add_timestamp,
     format_exc_info,
-    render_repr,
 )  # flake8: noqa

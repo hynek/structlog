@@ -27,7 +27,6 @@ from structlog.common import (
     _ReprFallbackEncoder,
     add_timestamp,
     format_exc_info,
-    render_repr,
 )
 
 
@@ -38,13 +37,6 @@ def event_dict():
             return '<A(\o/)>'
 
     return {'a': A(), 'b': [3, 4], 'x': 7, 'y': 'test', 'z': (1, 2)}
-
-
-def test_render_repr(event_dict):
-    assert (
-        r"{'a': <A(\o/)>, 'x': 7, 'b': [3, 4], 'y': 'test', 'z': (1, 2)}" ==
-        render_repr(None, None, event_dict)
-    )
 
 
 def test_KeyValueRenderer(event_dict):

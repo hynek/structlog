@@ -22,7 +22,9 @@ import pytest
 from pretend import stub
 
 from structlog.common import KeyValueRenderer
-from structlog.loggers import BoundLogger, BaseLogger, _DEFAULT_PROCESSORS
+from structlog.loggers import (
+    BoundLogger, BaseLogger, _DEFAULT_PROCESSORS, _DEFAULT_DICT_CLASS
+)
 
 
 def test_binds_independently():
@@ -94,18 +96,24 @@ class ConfigureTestCase(unittest.TestCase):
 
     def test_reset(self):
         x = stub()
-        BoundLogger.configure(processors=[x])
+        BoundLogger.configure(processors=[x], dict_class=dict)
         BoundLogger.reset_defaults()
         b = BoundLogger.wrap(None)
         assert x is not b._processors[0]
         assert self.b_def._processors == b._processors
         assert _DEFAULT_PROCESSORS == b._processors
+        assert _DEFAULT_DICT_CLASS == b._dict_class
 
     def test_just_processors(self):
         x = stub()
         BoundLogger.configure(processors=[x])
         b = BoundLogger.wrap(None)
         assert x == b._processors[0]
+
+    def test_just_dict_class(self):
+        BoundLogger.configure(dict_class=dict)
+        b = BoundLogger.wrap(None)
+        assert dict is b._dict_class
 
     def test_overwrite_processors(self):
         x = stub()
@@ -118,9 +126,18 @@ class ConfigureTestCase(unittest.TestCase):
     def test_affects_all(self):
         x = stub()
         b = BoundLogger.wrap(None)
-        BoundLogger.configure(processors=[x])
+        BoundLogger.configure(processors=[x], dict_class=dict)
         assert 1 == len(b._processors)
         assert x is b._processors[0]
+        assert dict is b._dict_class
+
+    def test_bind_changes_type_of_dict_if_necessary(self):
+        b = BoundLogger.wrap(None)
+        b.configure(dict_class=dict)
+        assert _DEFAULT_DICT_CLASS is b._event_dict.__class__
+        b = b.bind(x=42)
+        assert _DEFAULT_DICT_CLASS is not b._event_dict.__class__
+        assert dict is b._event_dict.__class__
 
     def test_configure_does_not_affect_overwritten(self):
         """
@@ -130,7 +147,7 @@ class ConfigureTestCase(unittest.TestCase):
         x = stub()
         z = stub()
         BoundLogger.configure(processors=[x])
-        b = BoundLogger.wrap(None, processors=[z])
+        b = BoundLogger.wrap(None, processors=[z], dict_class=dict)
         part_def_b = BoundLogger.wrap(None)
         def_b1 = BoundLogger.wrap(None)
         BoundLogger.configure(processors=[x])
@@ -145,3 +162,4 @@ class ConfigureTestCase(unittest.TestCase):
         assert def_b1._processors is BoundLogger._processors
         assert def_b2._processors is BoundLogger._processors
         assert part_def_b._processors is BoundLogger._processors
+        assert dict is b._dict_class
