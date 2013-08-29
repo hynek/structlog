@@ -21,7 +21,6 @@ Copyright 2010-2013 by Benjamin Peterson.
 
 from __future__ import absolute_import, division, print_function
 
-import abc
 import sys
 import types
 
@@ -47,7 +46,6 @@ if PY3:
     binary_type = bytes
     unicode_type = str
     u = lambda s: s
-    abstractclassmethod = abc.abstractclassmethod
 else:
     string_types = basestring,
     integer_types = (int, long)
@@ -56,11 +54,3 @@ else:
     binary_type = str
     unicode_type = unicode
     u = lambda s: unicode(s, "unicode_escape")
-    abstractclassmethod = abc.abstractmethod
-
-
-def with_metaclass(meta, *bases):
-    """
-    Create a base class with a metaclass.
-    """
-    return meta("NewBase", bases, {})

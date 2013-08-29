@@ -13,7 +13,7 @@ structlog Package
 -------------------------
 
 .. automodule:: structlog.loggers
-    :members: BoundLogger, BaseLogger
+    :members: BoundLogger
     :undoc-members:
     :show-inheritance:
 

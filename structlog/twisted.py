@@ -19,6 +19,7 @@ engine.
 
 from __future__ import absolute_import, division, print_function
 
+from structlog.common import KeyValueRenderer
 from twisted.python.failure import Failure
 
 
@@ -32,11 +33,11 @@ class LogAdapter(object):
     for the actual formatting as an constructor argument in order to be able to
     fully support the original behaviors of ``log.msg()`` and ``log.err()``.
     """
-    def __init__(self, dictFormatter):
+    def __init__(self, dictFormatter=None):
         """
         :param dictFormatter: A processor used to format the log message.
         """
-        self._dictFormatter = dictFormatter
+        self._dictFormatter = dictFormatter or KeyValueRenderer()
 
     def __call__(self, logger, name, eventDict):
         if name == 'err':

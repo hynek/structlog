@@ -18,64 +18,17 @@ A flexible wrapper for loggers and its helper classes.
 
 from __future__ import absolute_import, division, print_function
 
-from abc import ABCMeta, abstractmethod
 from functools import wraps
 
-from structlog._compat import (
-    string_types, with_metaclass, abstractclassmethod, OrderedDict,
-)
+from structlog._compat import string_types, OrderedDict
 from structlog.common import format_exc_info, KeyValueRenderer
-
-
-class BaseLogger(with_metaclass(ABCMeta)):
-    """
-    An abstract logger class that allows to bind structured values.
-
-    What happens to those values depends on the concrete implementation.
-    """
-    def __init__(self, logger, processors, dict_class, event_dict):
-        """
-        Use :func:`wrap`.
-        """
-        self._logger = logger
-        if processors:
-            self._processors = processors
-        if dict_class:
-            self._dict_class = dict_class
-        self._event_dict = event_dict
-
-    @abstractclassmethod
-    def wrap(cls, logger, processors=None):
-        """
-        Wrap *logger*.
-        """
-
-    @abstractclassmethod
-    def configure(cls, processors=None, dict_class=None):
-        """
-        Configure *default* values for *all* loggers.
-        """
-
-    @abstractclassmethod
-    def reset_defaults(cls):
-        """
-        Reset global default values to original values.
-
-        Useful for cleanup functions while testing.
-        """
-
-    @abstractmethod
-    def bind(self, **new_values):
-        """
-        Bind values if appropriate.
-        """
 
 
 _DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
 _DEFAULT_DICT_CLASS = OrderedDict
 
 
-class BoundLogger(BaseLogger):
+class BoundLogger(object):
     """
     Wraps an arbitrary logger class.
 
@@ -86,6 +39,17 @@ class BoundLogger(BaseLogger):
     """
     _processors = _DEFAULT_PROCESSORS[:]
     _dict_class = _DEFAULT_DICT_CLASS
+
+    def __init__(self, logger, processors, dict_class, event_dict):
+        """
+        Use :func:`wrap`.
+        """
+        self._logger = logger
+        if processors:
+            self._processors = processors
+        if dict_class:
+            self._dict_class = dict_class
+        self._event_dict = event_dict
 
     @classmethod
     def wrap(cls, logger, processors=None, dict_class=None):
@@ -160,7 +124,7 @@ class BoundLogger(BaseLogger):
             `event_dict` together with the event itself using the processor
             chain.
             """
-            res = self._event_dict.__class__(self._event_dict, **kw)
+            res = self._dict_class(self._event_dict, **kw)
             # ensure event to be the last k/v which is useful if an OrderedDict
             # is used.
             if event:

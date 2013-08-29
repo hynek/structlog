@@ -23,7 +23,7 @@ from pretend import stub
 
 from structlog.common import KeyValueRenderer
 from structlog.loggers import (
-    BoundLogger, BaseLogger, _DEFAULT_PROCESSORS, _DEFAULT_DICT_CLASS
+    BoundLogger, _DEFAULT_PROCESSORS, _DEFAULT_DICT_CLASS
 )
 
 
@@ -63,14 +63,6 @@ def test_processor_can_return_both_str_and_tuple():
     b1 = BoundLogger.wrap(logger, processors=[lambda *_: 'foo'])
     b2 = BoundLogger.wrap(logger, processors=[lambda *_: (('foo',), {})])
     assert b1.msg('foo') == b2.msg('foo')
-
-
-def test_meta():
-    """
-    Class hierarchy is sound.
-    """
-    assert issubclass(BoundLogger, BaseLogger)
-    assert isinstance(BoundLogger.wrap(None), BaseLogger)
 
 
 def test_wrapper_caches():
