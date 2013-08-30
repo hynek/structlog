@@ -20,10 +20,13 @@ from __future__ import absolute_import, division, print_function
 
 __version__ = '0.1.0'
 
-from structlog.loggers import BoundLogger  # flake8: noqa
+from structlog.loggers import (
+    BoundLogger, # flake8: noqa
+)
 from structlog.common import (
     JSONRenderer,
     KeyValueRenderer,
+    ThreadLocalDict,
     TimeStamper,
     format_exc_info,
 )  # flake8: noqa

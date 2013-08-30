@@ -12,14 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Common tools useful regardless of the logging framework.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 import json
 import sys
 import traceback
+import threading
 
 from functools import partial
 from operator import attrgetter
+from uuid import uuid4
 
 from structlog._compat import StringIO, unicode_type
 
@@ -66,27 +72,22 @@ class JSONRenderer(object):
         self._dumps_kw = dumps_kw
 
     def __call__(self, logger, name, event_dict):
-        return json.dumps(event_dict, cls=_ReprFallbackEncoder,
+        return json.dumps(event_dict, cls=_JSONFallbackEncoder,
                           **self._dumps_kw)
 
 
-class _ReprFallbackEncoder(json.JSONEncoder):
+class _JSONFallbackEncoder(json.JSONEncoder):
     """
-    A JSONEncoder that will use the repr(obj) as the default serialization
-    for objects that the base JSONEncoder does not know about.
-
-    This will ensure that even log messages that include unserializable objects
-    (like from 3rd party libraries) will still have reasonable representations
-    in the logged JSON and will actually be logged and not discarded by the
-    logging system because of a formatting error.
-
-    Shamelessly stolen from Rackspace's otter.
+    Serialize custom datatypes and pass the rest to repr().
     """
     def default(self, obj):
         """
-        Serialize obj as repr(obj).
+        Serialize obj with repr(obj) as fallback.
         """
-        return repr(obj)
+        if isinstance(obj, ThreadLocalDict):
+            return obj._dict
+        else:
+            return repr(obj)
 
 
 def format_exc_info(logger, name, event_dict):
@@ -126,7 +127,7 @@ try:
         """
         Add a timestamp to `event_dict`.
 
-        :param str format: strftime format string, or `iso` for `ISO 8601
+        :param str format: strftime format string, or ``"iso"`` for `ISO 8601
             <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
             timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
         :param str tz: timezone name to use, including `local`.
@@ -165,3 +166,69 @@ except ImportError:  # pragma: nocover
                 'TimeStamper class requires the arrow package '
                 '(https://pypi.python.org/pypi/arrow/).'
             )
+
+
+class ThreadLocalDict(object):
+    """
+    Wrap a dict-like class and keep the state *global* but *thread-local*.
+
+    Attempts to re-initialize only updates the wrapped dictionary.
+
+    Useful for short-lived threaded applications like requests in web app.
+
+    Use :func:`wrap` to instantiate and use :func:`BoundLog.new` to clear the
+    context.
+    """
+    @classmethod
+    def wrap(cls, dict_class):
+        """
+        Wrap a dict-like class and return the resulting class.
+
+        The wrapped class will be instantiated and kept global to the current
+        thread.
+
+        :param dict_class: Class used for keeping context.
+
+        :rtype: A class.
+        """
+        Wrapped = type('WrappedDict-' + str(uuid4()), (cls,), {})
+        Wrapped._tl = threading.local()
+        Wrapped._dict_class = dict_class
+        return Wrapped
+
+    def __init__(self, *args, **kw):
+        """
+        We cheat.  A context dict gets never recreated.
+        """
+        if args and isinstance(args[0], self.__class__):
+            # our state is global, no need to look at args[0] if it's of our
+            # class
+            self._dict.update(**kw)
+        else:
+            self._dict.update(*args, **kw)
+
+    @property
+    def _dict(self):
+        """
+        Return or create and return the current context.
+        """
+        try:
+            return self.__class__._tl.dict_
+        except AttributeError:
+            self.__class__._tl.dict_ = self.__class__._dict_class()
+            return self.__class__._tl.dict_
+
+    # Proxy methods necessary for structlog.
+    def __iter__(self):
+        return self._dict.__iter__()
+
+    def __setitem__(self, key, value):
+        self._dict[key] = value
+
+    def __len__(self):
+        return self._dict.__len__()
+
+    def __getattr__(self, name):
+        method = getattr(self._dict, name)
+        setattr(self, name, method)
+        return method

@@ -15,7 +15,7 @@ structlog Package
 .. automodule:: structlog.loggers
     :members: BoundLogger
     :undoc-members:
-    :show-inheritance:
+    :inherited-members:
 
 :mod:`common` Module
 --------------------

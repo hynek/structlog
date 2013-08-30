@@ -10,9 +10,8 @@ structlog: Structured Python Logging
 The purpose of ``structlog`` is to allow you to log structured_, easily parsable_ data even if your logger doesn’t support it.
 Contrary to other alternatives, ``structlog`` is agnostic about the underlying logging layer and wraps whatever your preferred logger is.
 
-Each log entry is a dictionary until it needs to be transformed into something that is understood by your logger – we call it an *event dictionary*.
-
-A nice feature is that you can build your log entry incrementally by binding values to your logger:
+The way to think about logging with structlog is that you log *events* that happen in certain *contexts*.
+A context is just a dictionary of key/value pairs and one of the neat features of structlog is that you can build your context as you go and there’s no need to think about it as soon as you need to log something out.
 
 .. code-block:: pycon
 
@@ -33,19 +32,26 @@ A nice feature is that you can build your log entry incrementally by binding val
 In other words, you tell your logger about values *as you learn about them* and it will include the information in all future log entries.
 This gives you much more complete logs without boilerplate code and conditionals.
 
-Especially in conjunction with web frameworks logging gets much more pleasing:
+structlog allows you to choose the dictionary implementation freely and ships one particularly handy one that allows you to keep your context in a global but thread local place.
+This is very handy in conjuction with multi-threaded applications like web apps:
+
+``file1.py``
 
 .. code-block:: python
 
+   import logging
    import uuid
 
    from flask import request
+   from structlog import BoundLogger, ThreadLocalDict
 
-   log = BoundLogger.wrap(logging.getLogger(__name__))
+   from .file2 import some_function
+
+   log = BoundLogger(logging.getLogger(__name__))
 
    @app.route('/login', methods=['POST', 'GET'])
    def some_route():
-       log = log.bind(
+       log.new(
            request_id=str(uuid.uuid4()),
            method=request.method,
            path=request.path,
@@ -53,8 +59,28 @@ Especially in conjunction with web frameworks logging gets much more pleasing:
        )
        # do something
        # ...
-       log = log.bind(foo='bar')
+       log.bind(foo='bar')
        # ...
+       some_function()
+       # ...
+
+   if __name__ == "__main__":
+      BoundLogger.configure(
+         context_class=structlog.ThreadLocalDict(dict),
+      )
+      app.run()
+
+``file2.py``
+
+.. code-block:: python
+
+   import logging
+
+   from structlog import BoundLogger
+
+   log = BoundLogger.wrap(logging.getLogger(__name__))
+
+   def some_function():
        # later then:
        log.error('user did something')
        # gives you:
@@ -65,7 +91,7 @@ Processors
 ----------
 
 The true power of ``structlog`` lies in its *composable log processors*.
-You can define a chain of callables that will get passed the wrapped logger, the name of the wrapped method, and the current ``event_dict`` as positional arguments.
+You can define a chain of callables that will get passed the wrapped logger, the name of the wrapped method, and the current context together with the current event (called ``event_dict``) as positional arguments.
 The return value of each processor is passed on to the next one as ``event_dict`` until finally the return value of the last processor gets passed into the wrapped logging method.
 Therefore, the last processor must adapt the ``event_dict`` into something the underlying logging method understands.
 
@@ -121,6 +147,7 @@ Requirements
 ------------
 
 Works with Python 2.6, 2.7, 3.2, and 3.3 as well as with PyPy with no additional dependencies.
+Some processors require additional packages if used.
 
 .. _structured: http://glyph.twistedmatrix.com/2009/06/who-wants-to-know.html
 .. _parsable:  http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/

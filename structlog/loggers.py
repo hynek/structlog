@@ -13,75 +13,74 @@
 # limitations under the License.
 
 """
-A flexible wrapper for loggers and its helper classes.
+Flexible wrappers for arbitrary loggers.
+
+Allow to bind values to itself and offer a flexible processing pipeline for
+each log entry before relaying the logging call to the wrapped logger.
+
+Use class factory method :func:`wrap` to instantiate, *not* the constructor.
 """
 
 from __future__ import absolute_import, division, print_function
 
 from functools import wraps
 
-from structlog._compat import string_types, OrderedDict
+from structlog._compat import (
+    OrderedDict,
+    string_types,
+)
 from structlog.common import format_exc_info, KeyValueRenderer
 
 
 _DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
-_DEFAULT_DICT_CLASS = OrderedDict
+_DEFAULT_CONTEXT_CLASS = OrderedDict
 
 
 class BoundLogger(object):
-    """
-    Wraps an arbitrary logger class.
-
-    Allows to bind values to itself and offers a flexible processing pipeline
-    for each log entry before relaying the logging call to the wrapped logger.
-
-    Use :func:`wrap` to instantiate, *not* `__init__`.
-    """
     _default_processors = _DEFAULT_PROCESSORS[:]
-    _default_dict_class = _DEFAULT_DICT_CLASS
+    _default_context_class = _DEFAULT_CONTEXT_CLASS
 
-    def __init__(self, logger, processors, dict_class, event_dict):
-        """
-        Use :func:`wrap`.
-        """
+    def __init__(self, logger, processors, context_class, context):
         self._logger = logger
         self._processors = processors
-        self._dict_class = dict_class
-        self._event_dict = event_dict
+        self._context_class = context_class
+        self._context = context
 
     @classmethod
-    def wrap(cls, logger, processors=None, dict_class=None):
+    def wrap(cls, logger, processors=None, context_class=None):
         """
-        Create a new `BoundLogger` for an arbitrary `logger`.
+        Create a new bound logger for an arbitrary `logger`.
 
-        Default values for *processors* and *dict_class* can be set using
+        Default values for *processors* and *context_class* can be set using
         :func:`configure`.
 
-        If you set *processors* here, calls to :func:`configure` have *no*
-        effect for the *respective* attribute.
+        If you set *processors* or *context_class* here, calls to
+        :func:`configure` have *no* effect for the *respective* attribute.
 
         In other words: selective overwritting of the defaults *is* possible.
 
         :param logger: An instance of a logger whose method calls will be
             wrapped.
         :param list processors: List of processors.
-        :param dict_class: Class to be used for internal dictionary (default:
-            `OrderedDict`).
+        :param context_class: Class to be used for internal dictionary
+            (default: `OrderedDict`).
 
-        :rtype: :class:`BoundLogger`
+        :rtype: `cls`
         """
         return cls(
             logger,
             processors,
-            dict_class,
-            dict_class() if dict_class else cls._default_dict_class(),
+            context_class,
+            context_class() if context_class else cls._default_context_class(),
         )
 
     @classmethod
-    def configure(cls, processors=None, dict_class=None):
+    def configure(cls, processors=None, context_class=None):
         """
-        Configures the **global** *processors* and *dict_class* that are used
-        if :func:`wrap` *has been* or *will be* called without arguments.
+        Configures the **global** *processors* and *context_class*.
+
+        They are used if :func:`wrap` *has been* or *will be* called without
+        arguments.
 
         Use :func:`reset_defaults` to undo your changes.
 
@@ -90,68 +89,88 @@ class BoundLogger(object):
         """
         if processors:
             cls._default_processors = processors
-        if dict_class:
-            cls._default_dict_class = dict_class
+        if context_class:
+            cls._default_context_class = context_class
 
     @classmethod
     def reset_defaults(cls):
         """
-        Resets default *processors*.
+        Resets default *processors*, and *context_class*.
         """
         cls._default_processors = _DEFAULT_PROCESSORS[:]
-        cls._default_dict_class = _DEFAULT_DICT_CLASS
-
-    def bind(self, **new_values):
-        """
-        Memorize all keyword arguments from *new_values* for future log calls.
-
-        :rtype: :class:`BoundLogger`
-        """
-        event_dict = self._current_dict_class(self._event_dict, **new_values)
-        return self.__class__(
-            self._logger,
-            self._processors,
-            self._dict_class,
-            event_dict
-        )
+        cls._default_context_class = _DEFAULT_CONTEXT_CLASS
 
     @property
     def _current_processors(self):
-        if self._processors:
+        if self._processors is not None:
             return self._processors
         else:
             return self.__class__._default_processors
 
     @property
-    def _current_dict_class(self):
-        return self._dict_class or self.__class__._default_dict_class
+    def _current_context_class(self):
+        if self._context_class is not None:
+            return self._context_class
+        else:
+            return self.__class__._default_context_class
 
     def __getattr__(self, name):
+        """
+        If not done yet, wrap the desired logger method & cache the result.
+        """
         log_meth = getattr(self._logger, name)
 
         @wraps(log_meth)
         def wrapped(event=None, **kw):
             """
             Before calling actual logger method, transform the accumulated
-            `event_dict` together with the event itself using the processor
+            `context` together with the event itself using the processor
             chain.
             """
-            res = self._current_dict_class(self._event_dict, **kw)
-            # ensure event to be the last k/v which is useful if an OrderedDict
-            # is used.
+            if self._context.__class__ != self._current_context_class:
+                # happens if a wrapped logger is called w/o binding anything.
+                # E.g. a different module calls directly log.info('event').
+                self._context = self._current_context_class(self._context)
+            # copy() makes sure that dicts like those from
+            # ThreadLocalDictWrapper don't get mangled.
+            event_dict = self._context.copy()
+            event_dict.update(**kw)
             if event:
-                res.update(event=event)
+                event_dict.update(event=event)
             for processor in self._current_processors:
-                res = processor(self._logger, name, res)
-                if res is None:
+                event_dict = processor(self._logger, name, event_dict)
+                if event_dict is None:
                     raise ValueError('Processor {0!r} returned None.'
                                      .format(processor))
-                elif res is False:
+                elif event_dict is False:
                     return
-            if isinstance(res, string_types):
-                args, kw = (res,), {}
+            if isinstance(event_dict, string_types):
+                args, kw = (event_dict,), {}
             else:
-                args, kw = res
+                args, kw = event_dict
             return log_meth(*args, **kw)
         setattr(self, name, wrapped)
         return wrapped
+
+    def bind(self, **new_values):
+        """
+        Return a new logger with *new_values* added to the existing ones.
+
+        :rtype: :class:`BoundLogger`
+        """
+        return self.__class__(
+            self._logger,
+            self._processors,
+            self._context_class,
+            self._current_context_class(self._context, **new_values)
+        )
+
+    def new(self, **initial_values):
+        """
+        Clear context and binds *initial_values*.
+
+        Only necessary with dict implemenations that keep global state like
+        :class:`ThreadLocalDict` when threads are re-used.
+        """
+        self._context.clear()
+        return self.bind(**initial_values)
