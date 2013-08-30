@@ -37,6 +37,8 @@ Especially in conjunction with web frameworks logging gets much more pleasing:
 
 .. code-block:: python
 
+   import uuid
+
    from flask import request
 
    log = BoundLogger.wrap(logging.getLogger(__name__))
@@ -44,6 +46,7 @@ Especially in conjunction with web frameworks logging gets much more pleasing:
    @app.route('/login', methods=['POST', 'GET'])
    def some_route():
        log = log.bind(
+           request_id=str(uuid.uuid4()),
            method=request.method,
            path=request.path,
            username=request.cookies.get('username'),
@@ -55,7 +58,7 @@ Especially in conjunction with web frameworks logging gets much more pleasing:
        # later then:
        log.error('user did something')
        # gives you:
-       # event='user did something' foo='bar' method='POST' path='/' username='jane'
+       # request_id='ffcdc44f-b952-4b5f-95e6-0f1f3a9ee5fd' event='user did something' foo='bar' method='POST' path='/' username='jane'
 
 
 Processors
