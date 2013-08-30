@@ -17,15 +17,17 @@ import json
 
 import pytest
 
+from freezegun import freeze_time
+
 import structlog
 
 from structlog._compat import u
 from structlog.common import (
     JSONRenderer,
     KeyValueRenderer,
+    TimeStamper,
     UnicodeEncoder,
     _ReprFallbackEncoder,
-    add_timestamp,
     format_exc_info,
 )
 
@@ -60,9 +62,38 @@ def test_ReprFallbackEncoder_falls_back():
     assert '{"date": "datetime.date(1980, 3, 25)"}' == s
 
 
-def test_add_timestamp():
-    d = add_timestamp(None, None, {})
-    assert isinstance(d['timestamp'], datetime.datetime)
+def test_TimeStamperDisallowsNonUTCUNIXTimestamps():
+    with pytest.raises(ValueError) as e:
+        TimeStamper(tz='CEST')
+    assert 'UNIX timestamps are always UTC.' == e.value.args[0]
+
+
+@freeze_time('1980-03-25 16:00:00', tz_offset=1)
+def test_TimeStamperInsertsUTCUNIXTimestampByDefault():
+    ts = TimeStamper()
+    d = ts(None, None, {})
+    assert 322848000 == d['timestamp']
+
+
+@freeze_time('1980-03-25 16:00:00')
+def test_TimeStamperTransplantsCorrectly():
+    ts = TimeStamper(fmt='iso', tz='CET')
+    d = ts(None, None, {})
+    assert '1980-03-25T17:00:00+01:00' == d['timestamp']
+
+
+@freeze_time('1980-03-25 16:00:00', tz_offset=1)
+def test_TimeStamperTransplantsCorrectlyToLocal():
+    ts = TimeStamper(fmt='iso', tz='lOcAl')
+    d = ts(None, None, {})
+    assert '1980-03-25T17:00:00+01:00' == d['timestamp']
+
+
+@freeze_time('1980-03-25 16:00:00')
+def test_TimeStamperFormats():
+    ts = TimeStamper(fmt='YYYY')
+    d = ts(None, None, {})
+    assert '1980' == d['timestamp']
 
 
 def test_format_exc_info_formats_tuple(monkeypatch):

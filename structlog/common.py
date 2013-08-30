@@ -14,10 +14,12 @@
 
 from __future__ import absolute_import, division, print_function
 
-import datetime
 import json
 import sys
 import traceback
+
+from functools import partial
+from operator import attrgetter
 
 from structlog._compat import StringIO, unicode_type
 
@@ -87,14 +89,6 @@ class _ReprFallbackEncoder(json.JSONEncoder):
         return repr(obj)
 
 
-def add_timestamp(logger, name, event_dict):
-    """
-    Add an UTC timestamp to `event_dict`.
-    """
-    event_dict['timestamp'] = datetime.datetime.utcnow()
-    return event_dict
-
-
 def format_exc_info(logger, name, event_dict):
     """
     Replace an `exc_info` field by an `exception` string field:
@@ -123,3 +117,51 @@ def _format_exception(exc_info):
     if s[-1:] == "\n":
         s = s[:-1]
     return s
+
+
+try:
+    import arrow
+
+    class TimeStamper(object):
+        """
+        Add a timestamp to `event_dict`.
+
+        :param str format: strftime format string, or `iso` for `ISO 8601
+            <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
+            timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
+        :param str tz: timezone name to use, including `local`.
+
+        Requires `arrow <https://pypi.python.org/pypi/arrow/>`_.
+        """
+        def __init__(self, fmt=None, tz='UTC'):
+            if fmt and fmt.lower() == 'iso':
+                self._fmt = arrow.Arrow.isoformat
+            elif fmt is None:
+                self._fmt = attrgetter('timestamp')
+            else:
+                self._fmt = partial(arrow.Arrow.format, fmt=fmt)
+
+            tzu = tz.upper()
+            if fmt is None and tzu != 'UTC':
+                raise ValueError('UNIX timestamps are always UTC.')
+
+            if tzu == 'UTC':
+                self._now = arrow.utcnow
+            elif tzu == 'LOCAL':
+                self._now = arrow.now
+            else:
+                self._now = partial(arrow.now, tz)
+
+        def __call__(self, logger, name, event_dict):
+            event_dict['timestamp'] = self._fmt(self._now())
+            return event_dict
+except ImportError:  # pragma: nocover
+    class TimeStamper(object):
+        """
+        `arrow <https://pypi.python.org/pypi/arrow/>`_ is missing.
+        """
+        def __init__(self, *args, **kw):
+            raise NotImplementedError(
+                'TimeStamper class requires the arrow package '
+                '(https://pypi.python.org/pypi/arrow/).'
+            )

@@ -24,6 +24,6 @@ from structlog.loggers import BoundLogger  # flake8: noqa
 from structlog.common import (
     JSONRenderer,
     KeyValueRenderer,
-    add_timestamp,
+    TimeStamper,
     format_exc_info,
 )  # flake8: noqa
