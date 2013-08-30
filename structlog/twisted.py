@@ -19,8 +19,67 @@ engine.
 
 from __future__ import absolute_import, division, print_function
 
-from structlog.common import KeyValueRenderer
+import sys
+
+from structlog import common
+from structlog._compat import string_types
 from twisted.python.failure import Failure
+
+
+_FAIL_TYPES = (BaseException, Failure)
+
+
+def _extractStuffAndWhy(eventDict):
+    """
+    Removes all possible *_why*s and *_stuff*s, analyzes exc_info and returns
+    a tuple of `(_stuff, _why, eventDict)`.
+
+    **Modifies** *eventDict*!
+    """
+    _stuff = eventDict.pop('_stuff', None)
+    _why = eventDict.pop('_why', None)
+    event = eventDict.pop('event', None)
+    if (
+        isinstance(_stuff, _FAIL_TYPES) and
+        isinstance(event, _FAIL_TYPES)
+    ):
+        raise ValueError('Both _stuff and event contain an Exception/Failure.')
+    # `log.err('event', _why='alsoEvent')` is ambiguous.
+    if _why and isinstance(event, string_types):
+        raise ValueError('Both `_why` and `event` supplied.')
+    # Two failures are ambiguos too.
+    if not isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
+        _why = _why or 'error'
+        _stuff = event
+    if isinstance(event, string_types):
+        _why = event
+    if not _stuff and sys.exc_info() != (None, None, None):
+        _stuff = Failure()
+    # Either we used the error ourselves or the user supplied one for
+    # formatting.  Avoid log.err() to dump another traceback into the log.
+    if isinstance(_stuff, BaseException):
+        _stuff = Failure(_stuff)
+    sys.exc_clear()
+    return _stuff, _why, eventDict
+
+
+class JSONRenderer(common.JSONRenderer):
+    """
+    Behaves like :class:`structlog.common.JSONRenderer` except that it
+    formats tracebacks and failures itself if called with `err()`.
+
+    *Not* an adapter like :class:`LogAdapter` but a real formatter.
+    """
+    def __call__(self, logger, name, eventDict):
+        _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
+        if name == 'err':
+            eventDict['event'] = _why
+            if isinstance(_stuff, Failure):
+                eventDict['exception'] = _stuff.getTraceback(detail='verbose')
+                _stuff.cleanFailure()
+        else:
+            eventDict['event'] = _why
+        return common.JSONRenderer.__call__(self, logger, name, eventDict)
 
 
 class LogAdapter(object):
@@ -37,7 +96,7 @@ class LogAdapter(object):
         """
         :param dictFormatter: A processor used to format the log message.
         """
-        self._dictFormatter = dictFormatter or KeyValueRenderer()
+        self._dictFormatter = dictFormatter or common.KeyValueRenderer()
 
     def __call__(self, logger, name, eventDict):
         if name == 'err':
@@ -45,18 +104,10 @@ class LogAdapter(object):
             #   - log.err(failure, _why='event', **kw)
             #   - log.err('event', **kw)
             #   - log.err(_stuff=failure, _why='event', **kw)
-            failure = eventDict.pop('_stuff', None)
-            event = eventDict.pop('event', None)
-            _why = eventDict.pop('_why', None)
-            if not failure and isinstance(event, (Exception, Failure)):
-                failure = event
-                event = None
-            # `log.err('event', _why='alsoEvent')` is ambiguous.
-            if event and _why:
-                raise ValueError('Both `_why` and `event` supplied.')
-            eventDict['event'] = event or _why
+            _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
+            eventDict['event'] = _why
             return ((), {
-                '_stuff': failure,
+                '_stuff': _stuff,
                 '_why': self._dictFormatter(logger, name, eventDict),
             })
         else:

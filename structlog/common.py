@@ -62,12 +62,12 @@ class JSONRenderer(object):
     """
     Render the `event_dict` using `json.dumps(even_dict, **json_kw)`.
     """
-    def __init__(self, **json_kw):
-        self._json_kw = json_kw
+    def __init__(self, **dumps_kw):
+        self._dumps_kw = dumps_kw
 
     def __call__(self, logger, name, event_dict):
         return json.dumps(event_dict, cls=_ReprFallbackEncoder,
-                          **self._json_kw)
+                          **self._dumps_kw)
 
 
 class _ReprFallbackEncoder(json.JSONEncoder):
