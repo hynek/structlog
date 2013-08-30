@@ -15,6 +15,7 @@
 import datetime
 import json
 
+import arrow
 import pytest
 
 from freezegun import freeze_time
@@ -82,11 +83,9 @@ def test_TimeStamperTransplantsCorrectly():
     assert '1980-03-25T17:00:00+01:00' == d['timestamp']
 
 
-@freeze_time('1980-03-25 16:00:00', tz_offset=1)
 def test_TimeStamperTransplantsCorrectlyToLocal():
     ts = TimeStamper(fmt='iso', tz='lOcAl')
-    d = ts(None, None, {})
-    assert '1980-03-25T17:00:00+01:00' == d['timestamp']
+    assert arrow.now == ts._now
 
 
 @freeze_time('1980-03-25 16:00:00')
