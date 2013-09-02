@@ -151,3 +151,9 @@ Some processors require additional packages if used.
 
 .. _structured: http://glyph.twistedmatrix.com/2009/06/who-wants-to-know.html
 .. _parsable:  http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/hynek/structlog/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
