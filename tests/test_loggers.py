@@ -60,6 +60,13 @@ class TestBinding(object):
         b = b.new()
         assert 'x' not in b._context
 
+    def test_comparison(self):
+        b = BoundLogger.wrap(None)
+        assert b == b.bind()
+        assert b is not b.bind()
+        assert b != b.bind(x=5)
+        assert b != 'test'
+
 
 class TestWrapper(object):
     def test_caches(self):

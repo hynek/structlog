@@ -46,6 +46,18 @@ class BoundLogger(object):
         self._context_class = context_class
         self._context = context
 
+    def __eq__(self, other):
+        try:
+            if self._context == other._context:
+                return True
+            else:
+                return False
+        except AttributeError:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     @classmethod
     def wrap(cls, logger, processors=None, context_class=None):
         """
