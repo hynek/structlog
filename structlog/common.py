@@ -52,6 +52,8 @@ class KeyValueRenderer(object):
 class UnicodeEncoder(object):
     """
     Encode unicode values in `event_dict`.
+
+    Useful for KeyValueRenderer if you don't want to see u-prefixes.
     """
     def __init__(self, encoding='utf-8', errors='backslashreplace'):
         self._encoding = encoding
@@ -66,7 +68,7 @@ class UnicodeEncoder(object):
 
 class JSONRenderer(object):
     """
-    Render the `event_dict` using `json.dumps(even_dict, **json_kw)`.
+    Render the `event_dict` using `json.dumps(event_dict, **json_kw)`.
     """
     def __init__(self, **dumps_kw):
         self._dumps_kw = dumps_kw

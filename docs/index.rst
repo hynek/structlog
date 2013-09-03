@@ -1,8 +1,20 @@
-Welcome to structlog's documentation!
-=====================================
+structlog: Structured Python Logging
+====================================
+
+.. include:: intro.rst
+   :start-after: :orphan:
+
+Intrigued? Have a look at more realistic :ref:`examples <examples>` and be completely convinced!
 
 User's Guide
 ------------
+
+.. toctree::
+   :maxdepth: 2
+
+   loggers
+   processors
+   examples
 
 API
 ---

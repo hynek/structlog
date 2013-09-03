@@ -1,0 +1,16 @@
+structlog: Structured Python Logging
+====================================
+
+.. image:: https://travis-ci.org/hynek/structlog.png?branch=master
+   :target: https://travis-ci.org/hynek/structlog
+
+.. image:: https://coveralls.io/repos/hynek/structlog/badge.png?branch=master
+    :target: https://coveralls.io/r/hynek/structlog?branch=master
+
+INTRO
+
+For more information please refer to the `package documentation <https://structlog.readthedocs.org>`_.
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/hynek/structlog/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free

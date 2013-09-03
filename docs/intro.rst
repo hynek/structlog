@@ -1,14 +1,4 @@
-structlog: Structured Python Logging
-====================================
-
-.. image:: https://travis-ci.org/hynek/structlog.png?branch=master
-   :target: https://travis-ci.org/hynek/structlog
-
-.. image:: https://coveralls.io/repos/hynek/structlog/badge.png?branch=master
-    :target: https://coveralls.io/r/hynek/structlog?branch=master
-
-
-
+:orphan:
 
 structlog makes `structured logging <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_ easy in Python with *any* underlying logger.
 It's licensed under the permissive `Apache License, version 2 <http://choosealicense.com/licenses/apache/>`_, available from `PyPI <https://pypi.python.org/pypi/structlog/>`_, and the source code can be found on `GitHub <https://github.com/hynek/structlog>`_.
@@ -42,9 +32,3 @@ This ability to bind values to a logger frees you from using conditionals, closu
 
 Additionally, structlog offers you a simple but flexible way to *filter* and *modify* your log entries using so called *processors* once you decide to actually log an event.
 The possibilities range from logging in JSON, over counting events as metrics, to dropping log entries triggered by your monitoring system.
-
-For more information please refer to the `package documentation <https://structlog.readthedocs.org>`_.
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/hynek/structlog/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
