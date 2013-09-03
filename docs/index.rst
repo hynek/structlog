@@ -14,6 +14,7 @@ User's Guide
 
    loggers
    processors
+   configuration
    examples
 
 API

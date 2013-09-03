@@ -1,0 +1,17 @@
+>>> from structlog import BoundLogger
+>>> class PrintLogger(object):
+...     def msg(self, message):
+...         print message
+>>> def processor(logger, method_name, event_dict):
+...     print 'I got called with', event_dict
+...     return repr(event_dict)
+>>> log = BoundLogger.wrap(PrintLogger(), processors=[processor])
+>>> log2 = log.bind(x=42)
+>>> log == log2
+False
+>>> log.msg('hello world')
+I got called with OrderedDict([('event', 'hello world')])
+OrderedDict([('event', 'hello world')])
+>>> log2.msg('hello world')
+I got called with OrderedDict([('x', 42), ('event', 'hello world')])
+OrderedDict([('x', 42), ('event', 'hello world')])

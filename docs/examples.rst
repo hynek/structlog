@@ -6,6 +6,8 @@ Examples
 This chapter is intended to give you a taste of realistic usage of structlog.
 
 
+.. _flask-example:
+
 Flask
 -----
 
@@ -21,6 +23,8 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using `new()` for re-initializing the logger).
 
+
+.. _twisted-example:
 
 Twisted
 -------

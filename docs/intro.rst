@@ -9,7 +9,7 @@ Motivation
 ----------
 
 Structured logging means that you don’t write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
-Effectively all you'll care about it to build a context as you go (e.g. if a user logs in, you bind the user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
+Effectively all you'll care about is to build a context as you go (e.g. if a user logs in, you bind the user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
 
 .. code-block:: pycon
 
