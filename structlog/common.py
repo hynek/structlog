@@ -178,8 +178,8 @@ class ThreadLocalDict(object):
 
     Useful for short-lived threaded applications like requests in web app.
 
-    Use :func:`wrap` to instantiate and use :func:`BoundLog.new` to clear the
-    context.
+    Use :func:`wrap` to instantiate and use
+    :func:`structlog.loggers.BoundLogger.new` to clear the context.
     """
     @classmethod
     def wrap(cls, dict_class):

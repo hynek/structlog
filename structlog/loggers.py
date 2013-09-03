@@ -37,6 +37,12 @@ _DEFAULT_CONTEXT_CLASS = OrderedDict
 
 
 class BoundLogger(object):
+    """
+    *Immutable*, context-carrying wrapper.
+
+    Use class factory method :func:`wrap` to instantiate, *not* the
+    constructor.
+    """
     _default_processors = _DEFAULT_PROCESSORS[:]
     _default_context_class = _DEFAULT_CONTEXT_CLASS
 
@@ -182,7 +188,7 @@ class BoundLogger(object):
         Clear context and binds *initial_values*.
 
         Only necessary with dict implemenations that keep global state like
-        :class:`ThreadLocalDict` when threads are re-used.
+        :class:`structlog.common.ThreadLocalDict` when threads are re-used.
         """
         self._context.clear()
         return self.bind(**initial_values)

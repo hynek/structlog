@@ -30,5 +30,14 @@ Effectively all you'll care about is to build a context as you go (e.g. if a use
 
 This ability to bind values to a logger frees you from using conditionals, closures, or special methods to log out all relevant data.
 
+You can start using structlog *today*, because:
+
+* Events are free-form and interpreted as strings by default.
+  Therefore the transition from traditional to structured logging one is seamless most of the time.
+  Just start wrapping your logger of choice and bind values later.
+  In the worst case you'll have to write some simple adapter.
+* You can use both bare logging and structlog at once.
+  structlog avoids monkeypatching so a peaceful co-existence between various loggers is unproblematic.
+
 Additionally, structlog offers you a simple but flexible way to *filter* and *modify* your log entries using so called *processors* once you decide to actually log an event.
 The possibilities range from logging in JSON, over counting events as metrics, to dropping log entries triggered by your monitoring system.

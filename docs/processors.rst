@@ -42,6 +42,16 @@ Additionally, the last processor can either return a string that is passed as th
 Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the call chain example above assumes this shortcut has been taken).
 
 
+Adapting and Formatting
+-----------------------
+
+The last processor in the chain has to make sure that the `event_dict` is transformed into something the wrapper logger method can deal with.
+Most of the time, this is just a string.
+
+The probably most useful formatter for string based loggers is :class:`structlog.common.JSONFormatter.`
+Advanced log aggregation and analysis tools like `logstash <http://logstash.net>`_ offer features like telling them “this is JSON, deal with it” instead of fiddling with regular expressions.
+
+
 Examples
 --------
 
@@ -58,3 +68,10 @@ How about dropping only log entries that are marked as coming from a certain pee
    :language: python
 
 Now, let's modify the event dictionary!
+If you log out to some analyzer, chances are they like `UNIX timestamps <http://en.wikipedia.org/wiki/UNIX_time>`_ -- let's add one!
+
+.. literalinclude:: code_examples/processors/timestamper.py
+   :language: python
+
+Easy, isn't it?
+Please note, that structlog comes with such an processor built in: :class:`structlog.common.TimeStamper`.

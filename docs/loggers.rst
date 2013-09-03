@@ -2,7 +2,7 @@ Loggers
 =======
 
 The center of structlog is the immutable log wrapper :class:`structlog.loggers.BoundLogger`.
-In it's core, it just allows you to wrap an *arbitrary* logging class (`wrap()` class method) to recreate itself with added data to the current context (``bind()`` and `new()`` methods) and relay log calls to the wrapped logger after processing the log entry with a chain of processors.
+In it's core, it just allows you to wrap an *arbitrary* logging class (:func:`structlog.loggers.BoundLogger.wrap` class method) to recreate itself with added data to the current context (:func:`structlog.loggers.BoundLogger.bind` and :func:`structlog.loggers.BoundLogger.new` methods) and relay log calls to the wrapped logger after processing the log entry with a chain of processors.
 
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
