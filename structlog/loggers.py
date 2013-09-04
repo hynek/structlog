@@ -29,7 +29,7 @@ from structlog._compat import (
     OrderedDict,
     string_types,
 )
-from structlog.common import format_exc_info, KeyValueRenderer
+from structlog.processors import format_exc_info, KeyValueRenderer
 
 
 _DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]

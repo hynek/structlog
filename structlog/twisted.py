@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-from structlog import common
+from structlog import processors
 from structlog._compat import string_types
 from twisted.python.failure import Failure
 
@@ -63,9 +63,9 @@ def _extractStuffAndWhy(eventDict):
     return _stuff, _why, eventDict
 
 
-class JSONRenderer(common.JSONRenderer):
+class JSONRenderer(processors.JSONRenderer):
     """
-    Behaves like :class:`structlog.common.JSONRenderer` except that it
+    Behaves like :class:`structlog.processors.JSONRenderer` except that it
     formats tracebacks and failures itself if called with `err()`.
 
     *Not* an adapter like :class:`LogAdapter` but a real formatter.
@@ -79,7 +79,7 @@ class JSONRenderer(common.JSONRenderer):
                 _stuff.cleanFailure()
         else:
             eventDict['event'] = _why
-        return common.JSONRenderer.__call__(self, logger, name, eventDict)
+        return processors.JSONRenderer.__call__(self, logger, name, eventDict)
 
 
 class LogAdapter(object):
@@ -96,7 +96,7 @@ class LogAdapter(object):
         """
         :param dictFormatter: A processor used to format the log message.
         """
-        self._dictFormatter = dictFormatter or common.KeyValueRenderer()
+        self._dictFormatter = dictFormatter or processors.KeyValueRenderer()
 
     def __call__(self, logger, name, eventDict):
         if name == 'err':

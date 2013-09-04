@@ -4,6 +4,8 @@ Processors
 The true power of ``structlog`` lies in its *combinable log processors*.
 A log processor is just a callable, i.e. a function or an instance of a class with a ``__call__()`` method.
 
+.. _chains:
+
 Chains
 ------
 
@@ -41,7 +43,7 @@ Parsing human-readable timestamps is tedious, not so `UNIX timestamps <http://en
    :language: python
 
 Easy, isn't it?
-Please note, that structlog comes with such an processor built in: :class:`structlog.common.TimeStamper`.
+Please note, that structlog comes with such an processor built in: :class:`structlog.processors.TimeStamper`.
 
 
 Return Values
@@ -74,12 +76,12 @@ Adapting and Rendering
 
 An important role is played by the *last* processor because its duty is to adapt the ``event_dict`` into something the underlying logging method understands.
 For that, it can either return a string that is passed as the first (and only) positional argument to the underlying logger or a tuple of ``(args, kwargs)`` that are passed as ``log_method(*args, **kwargs)``.
-Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the call chain example above assumes this shortcut has been taken).
+Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the example in :ref:`chains` assumes this shortcut has been taken).
 
-This should give you enough power to use it with any logging system.
+This should give you enough power to use structlog with any logging system.
 
 Examples
 ++++++++
 
-The probably most useful formatter for string based loggers is :class:`structlog.common.JSONRenderer`.
+The probably most useful formatter for string based loggers is :class:`structlog.processors.JSONRenderer`.
 Advanced log aggregation and analysis tools like `logstash <http://logstash.net>`_ offer features like telling them “this is JSON, deal with it” instead of fiddling with regular expressions.

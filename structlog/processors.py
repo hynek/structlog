@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Common tools useful regardless of the logging framework.
+Processors useful regardless of the logging framework.
 """
 
 from __future__ import absolute_import, division, print_function

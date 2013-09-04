@@ -21,10 +21,10 @@ structlog Package
     :undoc-members:
     :inherited-members:
 
-:mod:`common` Module
---------------------
+:mod:`processors` Module
+------------------------
 
-.. automodule:: structlog.common
+.. automodule:: structlog.processors
     :members:
     :undoc-members:
     :show-inheritance:

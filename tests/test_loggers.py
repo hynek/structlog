@@ -21,7 +21,7 @@ import pytest
 
 from pretend import stub
 
-from structlog.common import KeyValueRenderer
+from structlog.processors import KeyValueRenderer
 from structlog.loggers import (
     BoundLogger, _DEFAULT_PROCESSORS, _DEFAULT_CONTEXT_CLASS
 )

@@ -23,7 +23,7 @@ from freezegun import freeze_time
 import structlog
 
 from structlog._compat import u
-from structlog.common import (
+from structlog.processors import (
     JSONRenderer,
     KeyValueRenderer,
     TimeStamper,
@@ -101,7 +101,7 @@ class TestTimeStamper(object):
 
 class TestFormatExcInfo(object):
     def test_formats_tuple(self, monkeypatch):
-        monkeypatch.setattr(structlog.common,
+        monkeypatch.setattr(structlog.processors,
                             '_format_exception',
                             lambda exc_info: exc_info)
         d = format_exc_info(None, None, {'exc_info': (None, None, 42)})
