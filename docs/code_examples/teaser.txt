@@ -1,0 +1,9 @@
+>>> from structlog import BoundLogger
+>>> class PrintLogger(object):
+...     def info(self, message):
+...         print message
+>>> log = BoundLogger.wrap(PrintLogger())
+>>> log = log.bind(user='anonymous', some_key=23)
+>>> log = log.bind(user='hynek', source='http', another_key=42)
+>>> log.info('user.logged_in', happy=True)
+some_key=23 user='hynek' source='http' another_key=42 happy=True event='user.logged_in'

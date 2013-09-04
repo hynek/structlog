@@ -35,7 +35,7 @@ If you prefer to log less but with more context in each entry, you can bind ever
 .. literalinclude:: code_examples/twisted_echo.py
    :language: python
 
-Since Twisted's logging system is a big peculiar, structlog ships with an adapter (:class:`structlog.twisted.LogAdapter`) so it keeps behaving like you'd expect it to behave.
+Since Twisted's logging system is a bit peculiar, structlog ships with an adapter (:class:`structlog.twisted.LogAdapter`) so it keeps behaving like you'd expect it to behave.
 
 
 Processors

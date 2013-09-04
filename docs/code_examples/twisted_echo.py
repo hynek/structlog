@@ -19,6 +19,8 @@ class Echo(protocol.Protocol):
 
     def dataReceived(self, data):
         self._log.msg('got data', data=data)
+        # gives you:
+        # peer='127.0.0.1' connection_id='ffdfcf85-82c4-47be-9b80-e979598c0453' data='foo\n' event='got data'
         self.transport.write(data)
 
 if __name__ == "__main__":
