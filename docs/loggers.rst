@@ -28,7 +28,7 @@ Thread Local Context
 Additionally to the processor chain, BoundLogger's ``wrap`` class method offers a second argument: the dict-like class that is used for storing the context dictionary.
 By default, OrderedDict is used to keep you log data approximately in the same order as you put it in.
 
-In order to make your context thread local (that is: global, but only within your thread; in web frameworks this usually means within one request), structlog ships with a generic wrapper for dict-like classes called :class:`structlog.common.ThreadLocalDict`.
+In order to make your context thread local (that is: global, but only within your thread; in web frameworks this usually means within one request), structlog ships with a generic wrapper for dict-like classes called :class:`structlog.ThreadLocalDict`.
 
 .. warning::
 
