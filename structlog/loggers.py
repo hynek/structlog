@@ -188,7 +188,8 @@ class BoundLogger(object):
         Clear context and binds *initial_values*.
 
         Only necessary with dict implemenations that keep global state like
-        :class:`structlog.common.ThreadLocalDict` when threads are re-used.
+        :class:`structlog.threadlocal.ThreadLocalDict` when threads are
+        re-used.
         """
         self._context.clear()
         return self.bind(**initial_values)

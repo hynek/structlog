@@ -3,16 +3,18 @@
 structlog Package
 =================
 
+.. module:: structlog
+
 :mod:`structlog` Package
 ------------------------
 
 .. automodule:: structlog.__init__
-    :members:
+    :members: ThreadLocalDict
     :undoc-members:
     :show-inheritance:
 
 :mod:`loggers` Module
--------------------------
+---------------------
 
 .. automodule:: structlog.loggers
     :members: BoundLogger
@@ -31,6 +33,14 @@ structlog Package
 --------------------
 
 .. automodule:: structlog.stdlib
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`threadlocal` Module
+-------------------------
+
+.. automodule:: structlog.threadlocal
     :members:
     :undoc-members:
     :show-inheritance:

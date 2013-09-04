@@ -26,7 +26,9 @@ from structlog.loggers import (
 from structlog.common import (
     JSONRenderer,
     KeyValueRenderer,
-    ThreadLocalDict,
     TimeStamper,
     format_exc_info,
+)  # flake8: noqa
+from structlog.threadlocal import (
+    ThreadLocalDict,
 )  # flake8: noqa
