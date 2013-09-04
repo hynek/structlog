@@ -4,10 +4,10 @@ import uuid
 import twisted
 
 from structlog import BoundLogger
-from structlog.twisted import LogAdapter
+from structlog.twisted import get_logger, LogAdapter
 from twisted.internet import protocol, reactor
 
-logger = BoundLogger.wrap(twisted.python.log, processors=[LogAdapter()])
+logger = get_logger()
 
 
 class Echo(protocol.Protocol):
@@ -24,6 +24,9 @@ class Echo(protocol.Protocol):
         self.transport.write(data)
 
 if __name__ == "__main__":
+    BoundLogger.configure(
+        processors=[LogAdapter()]
+    )
     twisted.python.log.startLogging(sys.stderr)
     reactor.listenTCP(1234, protocol.Factory.forProtocol(Echo))
     reactor.run()

@@ -53,10 +53,14 @@ class TestThreadLocalDict(object):
         assert 42 == d._dict['x']
 
     def test_context_is_global_to_thread(self, D):
-        d = D({'a': 42})
+        d1 = D({'a': 42})
         d2 = D({'b': 23})
         d3 = D()
-        assert {'a': 42, 'b': 23} == d._dict == d2._dict == d3._dict
+        assert {'a': 42, 'b': 23} == d1._dict == d2._dict == d3._dict
+        assert d1 == d2 == d3
+        D_ = ThreadLocalDict.wrap(dict)
+        d_ = D_({'a': 42, 'b': 23})
+        assert d1 != d_
 
     def test_init_with_itself_works(self, D):
         d = D({'a': 42})
@@ -71,3 +75,8 @@ class TestThreadLocalDict(object):
         assert 1 == len(d)
         d.clear()
         assert 0 == len(d)
+
+    def test_repr(self, D):
+        r = repr(D({'a': 42}))
+        assert r.startswith('<WrappedDict-')
+        assert r.endswith("({'a': 42})>")

@@ -1,4 +1,3 @@
-import logging
 import uuid
 
 import flask
@@ -6,7 +5,7 @@ import structlog
 
 from .some_module import some_function
 
-log = structlog.BoundLogger.wrap(logging.getLogger(__name__))
+log = structlog.stdlib.get_logger()
 app = flask.Flask(__name__)
 
 

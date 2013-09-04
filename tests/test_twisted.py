@@ -18,7 +18,17 @@ import pytest
 pytest.importorskip('twisted')
 from twisted.python.failure import Failure, NoCurrentExceptionError
 
-from structlog.twisted import _extractStuffAndWhy, JSONRenderer, LogAdapter
+from structlog.twisted import (
+    BoundLogger,
+    JSONRenderer,
+    LogAdapter,
+    _extractStuffAndWhy,
+    get_logger,
+)
+
+
+def test_get_logger():
+    assert isinstance(get_logger(), BoundLogger)
 
 
 def _render_repr(_, __, event_dict):

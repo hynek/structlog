@@ -16,18 +16,28 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 
-from structlog.stdlib import filter_by_level, WARN, CRITICAL
+from structlog.stdlib import get_logger, filter_by_level, WARN, CRITICAL
 
 
-def test_filter_by_level_filters_lower_levels():
-    logger = logging.Logger(__name__)
-    logger.setLevel(CRITICAL)
-    assert False is filter_by_level(logger, 'warn', {})
+class TestGetLogger(object):
+    def test_respects_name(self):
+        l = get_logger('foobar')
+        assert 'foobar' == l._logger.name
+
+    def test_deduces_correct_name(self):
+        l = get_logger()
+        assert 'tests.test_stdlib' == l._logger.name
 
 
-def test_filter_by_level_passes_higher_levels():
-    logger = logging.Logger(__name__)
-    logger.setLevel(WARN)
-    event_dict = {'event': 'test'}
-    assert event_dict is filter_by_level(logger, 'warn', event_dict)
-    assert event_dict is filter_by_level(logger, 'error', event_dict)
+class TestFilterByLevel(object):
+    def test_filters_lower_levels(self):
+        logger = logging.Logger(__name__)
+        logger.setLevel(CRITICAL)
+        assert False is filter_by_level(logger, 'warn', {})
+
+    def test_passes_higher_levels(self):
+        logger = logging.Logger(__name__)
+        logger.setLevel(WARN)
+        event_dict = {'event': 'test'}
+        assert event_dict is filter_by_level(logger, 'warn', event_dict)
+        assert event_dict is filter_by_level(logger, 'error', event_dict)

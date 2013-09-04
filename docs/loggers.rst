@@ -12,6 +12,11 @@ It can wrap *anything*.
 Really.
 *No* depedency on stdlib logging *whatsoever*.
 
+For your convenience, there are simple helper functions for stdlib and Twisted though:
+
+* :func:`structlog.stdlib.get_logger`
+* :func:`structlog.twisted.get_logger`
+
 Immutability
 ------------
 
@@ -32,9 +37,7 @@ In order to make your context thread local (that is: global, but only within you
 
 .. warning::
 
-   You have have to remember to re-initialize your thread local context at the start of each request using ``new()`` (instead of ``bind()``).
-
-   So in case your application container reuses threads you don't start a new request with the context still filled with the last one.
+   You have have to remember to re-initialize your thread local context at the start of each request using ``new()`` (instead of ``bind()``) so in case your application container reuses threads you don't start a new request with the context still filled with data from the last one.
 
 Have a look at the :ref:`Flask example <flask-example>` how this works in practice.
 

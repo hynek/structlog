@@ -41,7 +41,7 @@ structlog Package
 -------------------------
 
 .. automodule:: structlog.threadlocal
-    :members:
+    :members: ThreadLocalDict
     :undoc-members:
     :show-inheritance:
 
@@ -49,7 +49,7 @@ structlog Package
 ---------------------
 
 .. automodule:: structlog.twisted
-    :members:
+    :members: get_logger, LogAdapter, JSONRenderer
     :undoc-members:
     :show-inheritance:
 

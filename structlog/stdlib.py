@@ -13,11 +13,37 @@
 # limitations under the License.
 
 """
-Processors specific to the logging module from the `Python standard library
-<http://docs.python.org/>`_.
+Processors and helpers specific to the logging module from the `Python standard
+library <http://docs.python.org/>`_.
 """
 
 from __future__ import absolute_import, division, print_function
+
+import logging
+import sys
+
+from structlog.loggers import BoundLogger
+
+
+def get_logger(name=None, processors=None, context_class=None):
+    """
+    Convenience function to get a wrapped stdlib logger.
+
+    :param str name: Name of the logger.  ``__name__`` of caller's module is
+        used if `None`.
+    :param list processors: List of processors that gets handed unaltered to
+        :func:`BoundLogger.wrap`.
+    :param type context_class: Dict-like class that gets handed unaltered to
+        :func:`BoundLogger.wrap`.
+    :rvalue: :class:`structlog.loggers.BoundLogger`
+    """
+    if not name:
+        name = sys._getframe().f_back.f_globals['__name__']
+    return BoundLogger.wrap(
+        logging.getLogger(name),
+        processors=processors,
+        context_class=context_class,
+    )
 
 
 # Adapted from the stdlib
@@ -44,9 +70,11 @@ _nameToLevel = {
 
 def filter_by_level(logger, name, event_dict):
     """
-    Abort before it gets expensive.
+    Check whether logging is configured to accept messages from this log level.
 
-    Should be the first processor if stdlib's filtering by level is used.
+    Should be the first processor if stdlib's filtering by level is used so
+    possibly expensive processors like exception formatters are avoided in the
+    first place..
     """
     if logger.isEnabledFor(_nameToLevel[name]):
         return event_dict

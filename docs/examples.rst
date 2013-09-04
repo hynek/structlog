@@ -23,6 +23,8 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using `new()` for re-initializing the logger).
 
+Please note that :func:`structlog.stdlib.get_logger` is a totally magic-free convenience function that just deduces the name of the caller's module and calls `BoundLogger.wrap()` on `logging.getLogger()`.
+
 
 .. _twisted-example:
 
@@ -36,6 +38,8 @@ If you prefer to log less but with more context in each entry, you can bind ever
    :language: python
 
 Since Twisted's logging system is a bit peculiar, structlog ships with an adapter (:class:`structlog.twisted.LogAdapter`) so it keeps behaving like you'd expect it to behave.
+
+Again, :func:`structlog.twisted.get_logger` is just a thin and simple convenience wrapper.
 
 
 Processors

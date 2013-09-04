@@ -70,6 +70,16 @@ class ThreadLocalDict(object):
             self.__class__._tl.dict_ = self.__class__._dict_class()
             return self.__class__._tl.dict_
 
+    def __repr__(self):
+        return '<{0}({1!r})>'.format(self.__class__.__name__, self._dict)
+
+    def __eq__(self, other):
+        # Same class == same dictionary
+        return self.__class__ == other.__class__
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     # Proxy methods necessary for structlog.
     def __iter__(self):
         return self._dict.__iter__()
