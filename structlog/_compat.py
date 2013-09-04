@@ -35,7 +35,16 @@ except ImportError:
     from io import StringIO  # flake8: noqa
 
 if sys.version_info[:2] == (2, 6):
-    from ordereddict import OrderedDict
+    try:
+        from ordereddict import OrderedDict
+    except ImportError:
+        class OrderedDict(object):
+            def __init__(self, *args, **kw):
+                raise NotImplementedError(
+                    'The ordereddict package is needed on Python 2.6. '
+                    'See <https://structlog.readthedocs.org/en/latest/'
+                    'installation.html>.'
+                )
 else:
     from collections import OrderedDict
 
