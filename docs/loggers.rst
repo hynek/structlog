@@ -28,7 +28,7 @@ Thread Local Context
 Additionally to the processor chain, BoundLogger's ``wrap`` class method offers a second argument: the dict-like class that is used for storing the context dictionary.
 By default, OrderedDict is used to keep you log data approximately in the same order as you put it in.
 
-In order to make your context thread local (that is: global, but only within your thread; in web frameworks this usually means within one request), structlog ships with a generic wrapper for dict-like classes called :class:`structlog.ThreadLocalDict`.
+In order to make your context thread local (that is: global, but only within your thread; in web frameworks this usually means within one request), structlog ships with a generic wrapper for dict-like classes called :class:`structlog.threadlocal.ThreadLocalDict`.
 
 .. warning::
 
@@ -38,5 +38,5 @@ In order to make your context thread local (that is: global, but only within you
 
 Have a look at the :ref:`Flask example <flask-example>` how this works in practice.
 
-.. [*] Please not that in Python's 'consenting adults spirit', structlog does *not* enforce the immutability with technical means.
+.. [*] Please note that in Python's 'consenting adults spirit', structlog does *not* enforce the immutability with technical means.
    However, if you don't meddle with undocumented data, the objects can be safely considered immutable.

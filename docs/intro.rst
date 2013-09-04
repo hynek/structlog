@@ -2,6 +2,7 @@
 
 structlog makes `structured logging <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_ easy in Python with *any* underlying logger.
 It's licensed under the permissive `Apache License, version 2 <http://choosealicense.com/licenses/apache/>`_, available from `PyPI <https://pypi.python.org/pypi/structlog/>`_, and the source code can be found on `GitHub <https://github.com/hynek/structlog>`_.
+The full documentation is on `ReadTheDocs <https://structlog.readthedocs.org>`_.
 
 structlog targets Python 2.6, 2.7, 3.2, and 3.3 as well PyPy with no additional dependencies for core functionality.
 
