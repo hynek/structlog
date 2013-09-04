@@ -31,10 +31,10 @@ def get_logger(name=None, processors=None, context_class=None):
 
     :param str name: Name of the logger.  ``__name__`` of caller's module is
         used if `None`.
-    :param list processors: List of processors that gets handed unaltered to
-        :func:`BoundLogger.wrap`.
-    :param type context_class: Dict-like class that gets handed unaltered to
-        :func:`BoundLogger.wrap`.
+    :param list processors: Gets passed unaltered to
+        :func:`structlog.loggers.BoundLogger.wrap`.
+    :param type context_class: Gets passed unaltered to
+        :func:`structlog.loggers.BoundLogger.wrap`.
     :rvalue: :class:`structlog.loggers.BoundLogger`
     """
     if not name:

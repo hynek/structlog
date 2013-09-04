@@ -1,3 +1,5 @@
+.. _processors:
+
 Processors
 ==========
 
@@ -46,8 +48,8 @@ Easy, isn't it?
 Please note, that structlog comes with such an processor built in: :class:`structlog.processors.TimeStamper`.
 
 
-Return Values
--------------
+Special Return Values
+---------------------
 
 There are two special return values that make the processor chain abort:
 
@@ -69,12 +71,14 @@ How about dropping only log entries that are marked as coming from a certain pee
 .. literalinclude:: code_examples/processors/conditional_dropper.py
    :language: python
 
+
 .. _adapting:
 
 Adapting and Rendering
 ----------------------
 
 An important role is played by the *last* processor because its duty is to adapt the ``event_dict`` into something the underlying logging method understands.
+
 For that, it can either return a string that is passed as the first (and only) positional argument to the underlying logger or a tuple of ``(args, kwargs)`` that are passed as ``log_method(*args, **kwargs)``.
 Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the example in :ref:`chains` assumes this shortcut has been taken).
 

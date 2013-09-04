@@ -80,8 +80,7 @@ class BoundLogger(object):
         :param logger: An instance of a logger whose method calls will be
             wrapped.
         :param list processors: List of processors.
-        :param context_class: Class to be used for internal dictionary
-            (default: `OrderedDict`).
+        :param context_class: Class to be used for internal dictionary.
 
         :rtype: `cls`
         """
@@ -114,6 +113,9 @@ class BoundLogger(object):
     def reset_defaults(cls):
         """
         Resets default *processors*, and *context_class*.
+
+        That means ``[format_exc_info, KeyValueRenderer()]`` for *processors*
+        and ``OrderedDict`` for *context_class*.
         """
         cls._default_processors = _DEFAULT_PROCESSORS[:]
         cls._default_context_class = _DEFAULT_CONTEXT_CLASS

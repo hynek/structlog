@@ -5,13 +5,9 @@
 >>> def processor(logger, method_name, event_dict):
 ...     print 'I got called with', event_dict
 ...     return repr(event_dict)
->>> log = BoundLogger.wrap(PrintLogger(), processors=[processor], context_class=dict)
->>> log2 = log.bind(x=42)
->>> log == log2
-False
+>>> BoundLogger.configure(processors=[processor], context_class=dict)
+>>> log = BoundLogger.wrap(PrintLogger())
 >>> log.msg('hello world')
 I got called with {'event': 'hello world'}
 {'event': 'hello world'}
->>> log2.msg('hello world')
-I got called with {'x': 42, 'event': 'hello world'}
-{'x': 42, 'event': 'hello world'}
+>>> BoundLogger.reset_defaults()

@@ -31,12 +31,11 @@ from structlog.threadlocal import ThreadLocalDict
 
 class KeyValueRenderer(object):
     """
-    Render `event_dict` as a list of `Key=Value` pairs.
+    Render `event_dict` as a list of ``Key=repr(Value)`` pairs.
+
+    :param bool sort_keys: Whether to sort keys when formatting.
     """
     def __init__(self, sort_keys=False):
-        """
-        :param bool sort_keys: Whether to sort keys when formatting.
-        """
         self._sort_keys = sort_keys
 
     def __call__(self, _, __, event_dict):
@@ -95,8 +94,15 @@ def format_exc_info(logger, name, event_dict):
     """
     Replace an `exc_info` field by an `exception` string field:
 
-    - if `exc_info` is a tuple, render it
-    - if `exc_info` is true, obtain exc_info ourselve and render that
+    If *event_dict* contains the key ``exc_info``, there are two possible
+    behaviors:
+
+    - If the value is a tuple, render it into the key ``exception``.
+    - If the value true but no tuple, obtain exc_info ourselves and render
+      that.
+
+    If there is no ``exc_info`` key, the *event_dict* is not touched.
+    This behavior is analogue to the one of the stdlib's logging.
     """
     exc_info = event_dict.pop('exc_info', None)
     if exc_info:

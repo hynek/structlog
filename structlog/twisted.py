@@ -32,10 +32,10 @@ def get_logger(processors=None, context_class=None):
     """
     Convenience function to get a wrapped Twisted logger.
 
-    :param list processors: List of processors that gets handed unaltered to
-        :func:`BoundLogger.wrap`.
-    :param type context_class: Dict-like class that gets handed unaltered to
-        :func:`BoundLogger.wrap`.
+    :param list processors: Gets passed unaltered to
+        :func:`structlog.loggers.BoundLogger.wrap`.
+    :param type context_class: Gets passed unaltered to
+        :func:`structlog.loggers.BoundLogger.wrap`.
     :rvalue: :class:`structlog.loggers.BoundLogger`
     """
     return BoundLogger.wrap(log, processors, context_class)
