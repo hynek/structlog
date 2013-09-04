@@ -9,7 +9,7 @@ structlog Package
 ------------------------
 
 .. automodule:: structlog.__init__
-    :members: ThreadLocalDict
+    :members:
     :undoc-members:
     :show-inheritance:
 
@@ -33,7 +33,7 @@ structlog Package
 --------------------
 
 .. automodule:: structlog.stdlib
-    :members:
+    :members: get_logger, filter_by_level
     :undoc-members:
     :show-inheritance:
 

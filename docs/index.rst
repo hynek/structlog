@@ -58,7 +58,7 @@ API
 .. toctree::
    :maxdepth: 4
 
-   structlog
+   api
 
 Additional Notes
 ----------------
