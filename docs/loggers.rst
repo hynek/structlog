@@ -68,6 +68,9 @@ The best place to perform your configuration varies with applications and framew
 **Pyramid**
    `Application constructor <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
 
+**Tornado**
+   WIP
+
 **Twisted**
    The `plugin definition <http://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
    If your app is not a plugin, put it into your `tac file <http://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
@@ -80,12 +83,18 @@ The best place to perform your configuration varies with applications and framew
 Immutability
 ------------
 
-The behavior of copying itself, adding new values, and returning the result is very for single-threaded applications that keep somehow their own context using classes or closures.
-Twisted is a :ref:`fine example <twisted-example>` for that.
-And if you can, you should stick to it because `immutable state <http://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
+   you should call some functions with some arguments.
 
-However, in the case of web frameworks, I realize that the passing loggers to every function and method seems rather cumbersome and intrusive.
-Hence structlog contains a slightly dirty but convenient trick: thread local context storage.
+   ---David Reid
+
+The behavior of copying itself, adding new values, and returning the result is useful for applications that keep somehow their own context using classes or closures.
+Twisted is a :ref:`fine example <twisted-example>` for that.
+Another possible approach is passing wrapped loggers around or log only within your view where you gather errors and events using return codes and exceptions.
+If you are willing to do that, you should stick to it because `immutable state <http://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
+Sooner or later, global state and mutable data lead to unpleasant surprises.
+
+However, in the case of conventional web development, I realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
+And since it's more important that people actually *use* structlog than to be pure and snobby, structlog contains a dirty but convenient trick: thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_.
 
 
 .. _threadlocal:
@@ -108,6 +117,7 @@ Then use an instance of the generated class as the context class::
    BoundLogger.configure(context_class=WrappedDictClass())
 
 Remember: the instance of the class is irrelevant, only the class *type* is important.
+
 :func:`structlog.threadlocal.ThreadLocalDict.wrap` returns always a *new* wrapped class:
 
 .. literalinclude:: code_examples/loggers/thread_local_classes.txt
@@ -121,6 +131,10 @@ Remember: the instance of the class is irrelevant, only the class *type* is impo
    You have have to remember to re-initialize your thread local context at the start of each request using ``new()`` (instead of ``bind()``) so in case your application container reuses threads you don't start a new request with the context still filled with data from the last one.
 
 This all may sound a bit confusing at first but the :ref:`Flask example <flask-example>` illustrates how simple and elegant this works in practice.
+
+The general sentiment against thread locals is that they're hard to test.
+In this case I feel like this is an acceptable trade-off.
+You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
 
 
 .. [*] Please note that in Python's 'consenting adults spirit', structlog does *not* enforce the immutability with technical means.
