@@ -13,6 +13,7 @@ The following folks helped forming structlog to what it is now:
 - `Glyph <https://github.com/glyph>`_
 - `Jack Pearkes <https://github.com/pearkes>`_
 - `Lynn Root <https://github.com/econchick>`_
+- `Noah Kantrowitz <https://github.com/coderanger>`_
 - `Tarek Ziadé <https://github.com/tarekziade>`_
 - `Thomas Heinrichsdobler <https://github.com/dertyp>`_
 - `Tom Lazar <https://github.com/tomster>`_
