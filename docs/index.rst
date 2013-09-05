@@ -7,11 +7,27 @@ Release v\ |version| (:ref:`Installation <install>`).
    :start-after: :orphan:
 
 
+Why You Want Structured Logging
+-------------------------------
+
+      I believe the widespread use of format strings in logging is based on two presumptions:
+
+      - The first level consumer of a log message is a human.
+      - The programer knows what information is needed to debug an issue.
+
+      I believe these presumptions are **no longer correct** in server side software.
+
+      ---`Paul Querna <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_
+
+Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a key/value-based *context* instead.
+
+
 Why You Want to Use structlog
 -----------------------------
 
-Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
-All you'll care about is to build a context as you go (e.g. if a user logs in, you bind their user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
+Because it's easy and you don't have to replace your underlying logger -- you just add structure to your log entries and format them to strings before they hit your real loggers -- whatever they are.
+
+structlog supports you with building your context as you go (e.g. if a user logs in, you bind their user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
 
 .. literalinclude:: code_examples/teaser.txt
    :language: pycon
@@ -20,7 +36,7 @@ All you'll care about is to build a context as you go (e.g. if a user logs in, y
 
 This ability to bind key/values pairs to a logger frees you from using conditionals, closures, or boilerplate methods to log out all relevant data.
 
-Additionally, structlog offers you a simple but flexible way to *filter* and *modify* your log entries using so called :ref:`processors <processors>` once you decide to actually log an event.
+Additionally, structlog offers you a flexible way to *filter* and *modify* your log entries using so called :ref:`processors <processors>` once you decide to actually log an event.
 The possibilities include logging in JSON, adding arbitrary meta data, counting events as metrics, or dropping log entries caused by your monitoring system.
 
 
