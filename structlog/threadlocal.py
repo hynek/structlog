@@ -30,13 +30,14 @@ def wrap_dict(dict_class):
 
     :rtype: A class.
     """
-    Wrapped = type('WrappedDict-' + str(uuid.uuid4()), (_ThreadLocalDict,), {})
+    Wrapped = type('WrappedDict-' + str(uuid.uuid4()),
+                   (_ThreadLocalDictWrapper,), {})
     Wrapped._tl = threading.local()
     Wrapped._dict_class = dict_class
     return Wrapped
 
 
-class _ThreadLocalDict(object):
+class _ThreadLocalDictWrapper(object):
     """
     Wrap a dict-like class and keep the state *global* but *thread-local*.
 

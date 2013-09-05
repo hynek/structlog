@@ -13,7 +13,7 @@ In it's core, all it does is:
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
 
-This example also demonstrates how structlog is *not* dependent on Python's or Twisted's logging.
+This example also demonstrates how structlog is *not* dependent on Python's standard library logging module.
 It can wrap *anything*.
 Really.
 *No* depedency on stdlib logging *whatsoever*.
@@ -58,7 +58,7 @@ structlog tries to behave in the least surprising way when it comes to handling 
 #. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.loggers.BoundLogger.configure` and uses them if so.
 
    Precautions are taken to convert the context class if it changes between bindings.
-   This is important because your top-level logger is likely to be created in global scope at import time; i.e. before you had the chance to configure your defaults.
+   This is important because your level logger is likely to be created in global scope at import time; i.e. before you had the chance to configure your defaults.
 #. If you haven't configured or passed anything at all, the default fallback values are used which means ``OrderedDict`` for context and :func:`structlog.processors.format_exc_info` and :class:`structlog.processors.KeyValueRenderer` for the processor chain.
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.loggers.BoundLogger.reset_defaults`.
@@ -83,7 +83,7 @@ The best place to perform your configuration varies with applications and framew
    The `plugin definition <http://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
    If your app is not a plugin, put it into your `tac file <http://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
 
-If you have no choice but *have* to configure on import time in global scope, or can't rule out for other reasons that that your `configure()` gets called only once, structlog offers :func:`structlog.loggers.BoundLogger.configure_once` that is a NOP if structlog has been configured before (no matter whether using `configure()` or `configure_once()`).
+If you have no choice but *have* to configure on import time in global scope, or can't rule out for other reasons that that your `configure()` gets called more than once, structlog offers :func:`structlog.loggers.BoundLogger.configure_once` that does nothing if structlog has been configured before (no matter whether using `configure()` or `configure_once()`).
 
 Immutability
 ------------
@@ -110,7 +110,7 @@ Thread Local Context
 Thread local storage makes your logger's context global but local to the current thread\ [*]_.
 In the case of web frameworks this means that your context becomes global to the current request.
 
-In order to make your context thread local, structlog ships with a function that can wrap any dict-like class and use it for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
+In order to make your context thread local, structlog ships with a function that can wrap any dict-like class to make it usable for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
 
 Within one thread, every instance of the returned class will have a *common* instance of the wrapped dict-like class:
 
@@ -121,7 +121,7 @@ Then use an instance of the generated class as the context class::
 
    BoundLogger.configure(context_class=WrappedDictClass())
 
-Remember: the instance of the class is irrelevant, only the class *type* matters.
+Remember: the instance of the class is irrelevant, only the class *type* matters because all instances of one class share the same data.
 
 :func:`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
 
@@ -129,11 +129,10 @@ Remember: the instance of the class is irrelevant, only the class *type* matters
    :language: pycon
    :start-after: wrap_dict(dict)
 
+The convenience of having a thread local context comes at a price though:
+
 .. warning::
-
-   The convenience of having a thread local context comes at a price:
-
-   You have have to remember to re-initialize your thread local context at the start of each request using ``new()`` (instead of ``bind()``) so in case your application container reuses threads you don't start a new request with the context still filled with data from the last one.
+   If you can't rule out that your application re-uses threads, you have have to remember to re-initialize your thread local context at the start of each request using ``new()`` (instead of ``bind()``) so you don't start a new request with the context still filled with data from the last one.
 
 This all may sound a bit confusing at first but the :ref:`Flask example <flask-example>` illustrates how simple and elegant this works in practice.
 

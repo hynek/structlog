@@ -1,6 +1,6 @@
 :orphan:
 
-structlog makes `structured logging <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_ in Python easy with *any* underlying logger.
+structlog makes `structured logging <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_ in Python easy by *augmenting* your *existing* logger.
 It's licensed under the permissive `Apache License, version 2 <http://choosealicense.com/licenses/apache/>`_, available from `PyPI <https://pypi.python.org/pypi/structlog/>`_, and the source code can be found on `GitHub <https://github.com/hynek/structlog>`_.
 The full documentation is on `Read the Docs <https://structlog.readthedocs.org>`_.
 

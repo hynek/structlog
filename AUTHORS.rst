@@ -1,5 +1,3 @@
-.. _authors:
-
 Authors
 -------
 
