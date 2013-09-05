@@ -6,18 +6,18 @@ The center of structlog is the immutable log wrapper :class:`structlog.loggers.B
 In it's core, all it does is:
 
 - wrapping an *arbitrary* logging class (:func:`structlog.loggers.BoundLogger.wrap`),
-- recreating itself with added data to the current context (:func:`structlog.loggers.BoundLogger.bind` and :func:`structlog.loggers.BoundLogger.new`),
+- recreating itself with (optional) additional context data (:func:`structlog.loggers.BoundLogger.bind` and :func:`structlog.loggers.BoundLogger.new`),
 - configuring global default values for the processor chain and the class used to keep the context (:func:`structlog.loggers.BoundLogger.configure`),
 - and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of processors.
 
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
 
-This example also demonstrates how structlog is *not* dependent on Python’s or Twisted’s logging.
+This example also demonstrates how structlog is *not* dependent on Python's or Twisted's logging.
 It can wrap *anything*.
 Really.
 *No* depedency on stdlib logging *whatsoever*.
-*Yes*, you can use your own logger.
+*Yes*, you can use your own logger underneath.
 
 To make the most common cases more convenient, there are helper functions for stdlib and Twisted though:
 
@@ -35,7 +35,14 @@ structlog allows you to set global default values for both ``processors`` and ``
    from structlog.stdlib import get_logger
    logger = get_logger()
 
-To achieve that you have to call :func:`structlog.loggers.BoundLogger.configure` on app initialization.
+or::
+
+   from structlog import BoundLogger
+   logger = BoundLogger.wrap(PrintLogger())
+
+if you don't use a directly supported logger.
+
+To achieve that you'll have to call :func:`structlog.loggers.BoundLogger.configure` on app initialization (if you're not content with the -- hopefully -- sane defaults that is).
 The previous example could thus have been written as following:
 
 .. literalinclude:: code_examples/loggers/simplest_configure.txt

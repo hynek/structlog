@@ -10,7 +10,7 @@ Release v\ |version| (:ref:`Installation <install>`).
 Why You Want to Use structlog
 -----------------------------
 
-Structured logging means that you don’t write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
+Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
 All you'll care about is to build a context as you go (e.g. if a user logs in, you bind their user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
 
 .. literalinclude:: code_examples/teaser.txt
