@@ -29,6 +29,3 @@ from structlog.processors import (
     TimeStamper,
     format_exc_info,
 )  # flake8: noqa
-from structlog.threadlocal import (
-    ThreadLocalDict,
-)  # flake8: noqa

@@ -15,21 +15,21 @@
 import pytest
 import threading
 
-from structlog.threadlocal import ThreadLocalDict
+from structlog.threadlocal import wrap_dict
 
 
 @pytest.fixture
 def D():
     """
-    Returns a dict wrapped in ThreadLocalDict.
+    Returns a dict wrapped in _ThreadLocalDict.
     """
-    return ThreadLocalDict.wrap(dict)
+    return wrap_dict(dict)
 
 
 class TestThreadLocalDict(object):
     def test_wrap_returns_distinct_classes(self):
-        D1 = ThreadLocalDict.wrap(dict)
-        D2 = ThreadLocalDict.wrap(dict)
+        D1 = wrap_dict(dict)
+        D2 = wrap_dict(dict)
         assert D1 != D2
         assert D1 is not D2
         D1.x = 42
@@ -45,7 +45,7 @@ class TestThreadLocalDict(object):
             def run(self):
                 assert 'x' not in self._d._dict
                 self._d['x'] = 23
-        d = ThreadLocalDict.wrap(dict)()
+        d = wrap_dict(dict)()
         d['x'] = 42
         t = TestThread(d)
         t.start()
@@ -58,7 +58,7 @@ class TestThreadLocalDict(object):
         d3 = D()
         assert {'a': 42, 'b': 23} == d1._dict == d2._dict == d3._dict
         assert d1 == d2 == d3
-        D_ = ThreadLocalDict.wrap(dict)
+        D_ = wrap_dict(dict)
         d_ = D_({'a': 42, 'b': 23})
         assert d1 != d_
 

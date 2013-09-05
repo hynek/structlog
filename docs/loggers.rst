@@ -105,9 +105,9 @@ Thread Local Context
 Thread local storage makes your logger's context global but local to the current thread\ [*]_.
 In the case of web frameworks this means that your context becomes global to the current request.
 
-In order to make your context thread local, structlog ships with a generic wrapper for dict-like classes called :class:`structlog.threadlocal.ThreadLocalDict`.
+In order to make your context thread local, structlog ships with a function that can wrap any dict-like class and use it for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
 
-Every instance of this class will have a common dictionary internally within the same thread.
+Within one thread, every instance of the returned class will have a *common* instance of the wrapped dict-like class:
 
 .. literalinclude:: code_examples/loggers/thread_local_dicts.txt
    :language: pycon
@@ -116,13 +116,13 @@ Then use an instance of the generated class as the context class::
 
    BoundLogger.configure(context_class=WrappedDictClass())
 
-Remember: the instance of the class is irrelevant, only the class *type* is important.
+Remember: the instance of the class is irrelevant, only the class *type* matters.
 
-:func:`structlog.threadlocal.ThreadLocalDict.wrap` returns always a *new* wrapped class:
+:func:`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
 
 .. literalinclude:: code_examples/loggers/thread_local_classes.txt
    :language: pycon
-   :start-after: ThreadLocalDict.wrap(dict)
+   :start-after: wrap_dict(dict)
 
 .. warning::
 

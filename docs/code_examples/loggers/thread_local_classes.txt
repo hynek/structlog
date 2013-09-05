@@ -1,6 +1,6 @@
->>> from structlog.threadlocal import ThreadLocalDict
->>> WrappedDictClass = ThreadLocalDict.wrap(dict)
->>> AnotherWrappedDictClass = ThreadLocalDict.wrap(dict)
+>>> from structlog.threadlocal import wrap_dict
+>>> WrappedDictClass = wrap_dict(dict)
+>>> AnotherWrappedDictClass = wrap_dict(dict)
 >>> WrappedDictClass() != AnotherWrappedDictClass()
 True
 >>> WrappedDictClass.__name__  # doctest: +SKIP

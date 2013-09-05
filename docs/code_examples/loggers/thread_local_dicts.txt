@@ -1,5 +1,5 @@
->>> from structlog.threadlocal import ThreadLocalDict
->>> WrappedDictClass = ThreadLocalDict.wrap(dict)
+>>> from structlog.threadlocal import wrap_dict
+>>> WrappedDictClass = wrap_dict(dict)
 >>> d1 = WrappedDictClass({'a': 1})
 >>> d2 = WrappedDictClass({'b': 2})
 >>> d3 = WrappedDictClass()

@@ -26,7 +26,7 @@ from functools import partial
 from operator import attrgetter
 
 from structlog._compat import StringIO, unicode_type
-from structlog.threadlocal import ThreadLocalDict
+from structlog.threadlocal import _ThreadLocalDict
 
 
 class KeyValueRenderer(object):
@@ -84,7 +84,7 @@ class _JSONFallbackEncoder(json.JSONEncoder):
         """
         Serialize obj with repr(obj) as fallback.
         """
-        if isinstance(obj, ThreadLocalDict):
+        if isinstance(obj, _ThreadLocalDict):
             return obj._dict
         else:
             return repr(obj)

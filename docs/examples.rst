@@ -51,6 +51,6 @@ Here you go:
 .. literalinclude:: code_examples/processors.txt
    :language: pycon
 
-structlog comes with many handy processors build right in – check them out in the :ref:`API <API>` documentation!
+structlog comes with many handy processors build right in – check them out in the :ref:`API <API>` documentation to learn more!
 
 Of course you can set default processors and context classes once globally.

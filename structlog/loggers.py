@@ -152,7 +152,7 @@ class BoundLogger(object):
                 # E.g. a different module calls directly log.info('event').
                 self._context = self._current_context_class(self._context)
             # copy() makes sure that dicts like those from
-            # ThreadLocalDictWrapper don't get mangled.
+            # _ThreadLocalDictWrapper don't get mangled.
             event_dict = self._context.copy()
             event_dict.update(**kw)
             if event:
@@ -190,8 +190,8 @@ class BoundLogger(object):
         Clear context and binds *initial_values*.
 
         Only necessary with dict implemenations that keep global state like
-        :class:`structlog.threadlocal.ThreadLocalDict` when threads are
-        re-used.
+        those wrapped by :func:`structlog.threadlocal.wrap_dict` when threads
+        are re-used.
         """
         self._context.clear()
         return self.bind(**initial_values)

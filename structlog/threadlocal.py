@@ -20,7 +20,23 @@ import threading
 import uuid
 
 
-class ThreadLocalDict(object):
+def wrap_dict(dict_class):
+    """
+    Wrap a dict-like class and return the resulting class.
+
+    The wrapped class and used to keep global in the current thread.
+
+    :param dict_class: Class used for keeping context.
+
+    :rtype: A class.
+    """
+    Wrapped = type('WrappedDict-' + str(uuid.uuid4()), (_ThreadLocalDict,), {})
+    Wrapped._tl = threading.local()
+    Wrapped._dict_class = dict_class
+    return Wrapped
+
+
+class _ThreadLocalDict(object):
     """
     Wrap a dict-like class and keep the state *global* but *thread-local*.
 
@@ -31,23 +47,6 @@ class ThreadLocalDict(object):
     Use :func:`wrap` to instantiate and use
     :func:`structlog.loggers.BoundLogger.new` to clear the context.
     """
-    @classmethod
-    def wrap(cls, dict_class):
-        """
-        Wrap a dict-like class and return the resulting class.
-
-        The wrapped class will be instantiated and kept global to the current
-        thread.
-
-        :param dict_class: Class used for keeping context.
-
-        :rtype: A class.
-        """
-        Wrapped = type('WrappedDict-' + str(uuid.uuid4()), (cls,), {})
-        Wrapped._tl = threading.local()
-        Wrapped._dict_class = dict_class
-        return Wrapped
-
     def __init__(self, *args, **kw):
         """
         We cheat.  A context dict gets never recreated.

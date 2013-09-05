@@ -25,6 +25,6 @@ def some_route():
 
 if __name__ == "__main__":
     structlog.BoundLogger.configure(
-        context_class=structlog.ThreadLocalDict(dict),
+        context_class=structlog.threadlocal.wrap_dict(dict),
     )
     app.run()

@@ -31,7 +31,7 @@ from structlog.processors import (
     _JSONFallbackEncoder,
     format_exc_info,
 )
-from structlog.threadlocal import ThreadLocalDict
+from structlog.threadlocal import wrap_dict
 
 
 @pytest.fixture
@@ -59,7 +59,7 @@ class TestJSONRenderer(object):
         )
 
     def test_FallbackEncoder_handles_ThreadLocalDictWrapped_dicts(self):
-        s = json.dumps(ThreadLocalDict.wrap(dict)({'a': 42}),
+        s = json.dumps(wrap_dict(dict)({'a': 42}),
                        cls=_JSONFallbackEncoder)
         assert '{"a": 42}' == s
 
