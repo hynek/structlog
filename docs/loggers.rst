@@ -83,7 +83,7 @@ The best place to perform your configuration varies with applications and framew
 Immutability
 ------------
 
-   you should call some functions with some arguments.
+   You should call some functions with some arguments.
 
    ---David Reid
 

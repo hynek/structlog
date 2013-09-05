@@ -27,7 +27,7 @@ The possibilities include logging in JSON, adding arbitrary meta data, counting 
 Why You Can Start Using structlog TODAY
 ---------------------------------------
 
-- You can use both bare logging and structlog at once.
+- You can use both bare logging and structlog at the same time.
   structlog avoids monkeypatching so a peaceful co-existence between various loggers is unproblematic.
 - Events are free-form and interpreted as strings by default.
   Therefore the transition from traditional to structured logging is seamless most of the time.
