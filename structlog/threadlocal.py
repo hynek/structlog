@@ -16,6 +16,7 @@
 Primitives to keep context global but thread local.
 """
 
+import contextlib
 import threading
 import uuid
 
@@ -35,6 +36,20 @@ def wrap_dict(dict_class):
     Wrapped._tl = threading.local()
     Wrapped._dict_class = dict_class
     return Wrapped
+
+
+@contextlib.contextmanager
+def tmp_bind(logger, **tmp_values):
+    """
+    Context manager for temporarily binding *tmp_values* to *logger*.
+
+    Use it with a `with`-statement.
+    """
+    saved = logger._context.__class__._tl.dict_.copy()
+    logger.bind(**tmp_values)
+    yield
+    logger._context.__class__._tl.dict_.clear()
+    logger._context.__class__._tl.dict_.update(saved)
 
 
 class _ThreadLocalDictWrapper(object):

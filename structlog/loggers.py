@@ -220,3 +220,9 @@ class BoundLogger(object):
         """
         self._context.clear()
         return self.bind(**initial_values)
+
+    def __repr__(self):
+        return '<BoundLogger(context={0!r}, processors={1!r})>'.format(
+            self._context,
+            self._current_processors,
+        )

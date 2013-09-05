@@ -41,7 +41,7 @@ structlog Package
 -------------------------
 
 .. automodule:: structlog.threadlocal
-    :members: wrap_dict
+    :members: wrap_dict, tmp_bind
     :undoc-members:
     :show-inheritance:
 

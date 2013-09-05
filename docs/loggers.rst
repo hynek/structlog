@@ -129,6 +129,12 @@ Remember: the instance of the class is irrelevant, only the class *type* matters
    :language: pycon
    :start-after: wrap_dict(dict)
 
+In order to be able to bind values temporarily, :mod:`structlog.threadlocal` comes with a helpful `context manager <http://docs.python.org/2/library/stdtypes.html#context-manager-types>`_: :func:`~structlog.threadlocal.tmp_bind`\ :
+
+.. literalinclude:: code_examples/loggers/thread_local_context_manager.txt
+   :language: pycon
+   :start-after: context_class=WrappedDictClass)
+
 The convenience of having a thread local context comes at a price though:
 
 .. warning::

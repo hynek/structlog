@@ -111,6 +111,10 @@ class TestWrapper(object):
         b2 = BoundLogger.wrap(logger, processors=[lambda *_: (('foo',), {})])
         assert b1.msg('foo') == b2.msg('foo')
 
+    def test_repr(self):
+        l = BoundLogger.wrap(None, processors=[1, 2, 3], context_class=dict)
+        assert '<BoundLogger(context={}, processors=[1, 2, 3])>' == repr(l)
+
 
 class ConfigureTestCase(unittest.TestCase):
     """

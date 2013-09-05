@@ -15,7 +15,9 @@
 import pytest
 import threading
 
-from structlog.threadlocal import wrap_dict
+from structlog import BoundLogger
+from structlog._compat import OrderedDict
+from structlog.threadlocal import wrap_dict, tmp_bind
 
 
 @pytest.fixture
@@ -24,6 +26,19 @@ def D():
     Returns a dict wrapped in _ThreadLocalDict.
     """
     return wrap_dict(dict)
+
+
+def test_tmp_bind(D):
+    import pretend
+    logger = pretend.stub(msg=lambda x: x)
+    l = BoundLogger.wrap(logger, context_class=wrap_dict(OrderedDict))
+    l.bind(y=23)  # make sure context isinstance D
+    with tmp_bind(l, x=42, y='foo'):
+        assert 42 == l._context._dict['x']
+    assert {'y': 23} == l._context._dict
+    with tmp_bind(l, x=42, y='foo'):
+        assert 42 == l._context._dict['x']
+    assert {'y': 23} == l._context._dict
 
 
 class TestThreadLocalDict(object):
