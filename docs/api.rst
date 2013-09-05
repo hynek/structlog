@@ -45,6 +45,14 @@ structlog Package
     :undoc-members:
     :show-inheritance:
 
+    .. class:: ThreadLocalDict
+
+       A thread local `dict`.
+
+    .. class:: ThreadLocalOrderedDict
+
+       A thread local `OrderedDict`.
+
 :mod:`twisted` Module
 ---------------------
 
