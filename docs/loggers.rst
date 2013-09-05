@@ -67,7 +67,8 @@ That can be handy in tests.
 The best place to perform your configuration varies with applications and frameworks:
 
 **Django**
-   WIP
+   Django has to date unfortunately no concept of an application assembler or "app is done" hooks.
+   Therefore the bottom of your ``settings.py`` will have to do.
 
 **Flask**
    WIP
@@ -82,10 +83,7 @@ The best place to perform your configuration varies with applications and framew
    The `plugin definition <http://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
    If your app is not a plugin, put it into your `tac file <http://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
 
-.. warning::
-
-   I discourage from configuring at import time in global scope -- Python's behavior in that regard is rather unpredictable and partly erroneous.
-
+If you have no choice but *have* to configure on import time in global scope, or can't rule out for other reasons that that your `configure()` gets called only once, structlog offers :func:`structlog.loggers.BoundLogger.configure_once` that is a NOP if structlog has been configured before (no matter whether using `configure()` or `configure_once()`).
 
 Immutability
 ------------

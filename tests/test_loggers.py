@@ -211,3 +211,19 @@ class ConfigureTestCase(unittest.TestCase):
         b.info('event')
         assert _DEFAULT_CONTEXT_CLASS is not b._context.__class__
         assert dict is b._context.__class__
+
+    def test_is_configured(self):
+        b = BoundLogger.wrap(None)
+        BoundLogger.configure()
+        assert True is b.is_configured
+        assert True is BoundLogger.is_configured
+        BoundLogger.reset_defaults()
+        assert False is b.is_configured
+        assert False is BoundLogger.is_configured
+
+    def test_configured_once(self):
+        b = BoundLogger.wrap(None)
+        BoundLogger.configure_once(context_class=dict)
+        assert dict is b._current_context_class
+        BoundLogger.configure_once(context_class=object)
+        assert dict is b._current_context_class

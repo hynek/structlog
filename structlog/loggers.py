@@ -46,6 +46,14 @@ class BoundLogger(object):
     _default_processors = _DEFAULT_PROCESSORS[:]
     _default_context_class = _DEFAULT_CONTEXT_CLASS
 
+    is_configured = False
+    """
+    Global class attribute. Set to `True` once :func:`configure` has run and
+    set to `False` again after calling :func:`reset_defaults`.
+
+    Do *not* change by hand.
+    """
+
     def __init__(self, logger, processors, context_class, context):
         self._logger = logger
         self._processors = processors
@@ -99,15 +107,29 @@ class BoundLogger(object):
         They are used if :func:`wrap` *has been* or *will be* called without
         arguments.
 
+        Also sets the global class attribute :attr:`is_configured` to `True`.
+
         Use :func:`reset_defaults` to undo your changes.
 
         :param list processors: same as in :func:`wrap`, except `None` means
             "no change".
         """
+        cls.is_configured = True
         if processors:
             cls._default_processors = processors
         if context_class:
             cls._default_context_class = context_class
+
+    @classmethod
+    def configure_once(cls, processors=None, context_class=None):
+        """
+        Calls :func:`configure` iff structlog isn't configured yet.
+
+        It does *not* matter whether is was configured using :func:`configure`
+        or :func:`configure_once` before.
+        """
+        if not cls.is_configured:
+            cls.configure(processors=processors, context_class=context_class)
 
     @classmethod
     def reset_defaults(cls):
@@ -116,7 +138,10 @@ class BoundLogger(object):
 
         That means ``[format_exc_info, KeyValueRenderer()]`` for *processors*
         and ``OrderedDict`` for *context_class*.
+
+        Also sets the global class attribute :attr:`is_configured` to `True`.
         """
+        cls.is_configured = False
         cls._default_processors = _DEFAULT_PROCESSORS[:]
         cls._default_context_class = _DEFAULT_CONTEXT_CLASS
 
