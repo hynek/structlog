@@ -12,7 +12,12 @@ Chains
 ------
 
 The *processor chain* is just a Python list of processors.
-Each processors will get passed the wrapped logger, the name of the wrapped method, and the current context together with the current event (called ``event_dict``) as positional arguments.
+Each processors receives three positional arguments:
+
+#. the wrapped logger,
+#. the name of the wrapped method,
+#. and the current context together with the current event (called ``event_dict``).
+
 The return value of each processor is passed on to the next one as ``event_dict`` until finally the return value of the last processor gets passed into the wrapped logging method.
 
 
