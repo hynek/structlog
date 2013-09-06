@@ -19,6 +19,18 @@ Really.
 *No* depedency on stdlib logging *whatsoever*.
 *Yes*, you can use your own logger underneath.
 
+.. note::
+
+   Free your mind from the preconception that log entries have to be serialized to strings eventually.
+   All structlog cares about is a *dictionary* of *keys* and *values*.
+   What happens to it depends on the logger you wrap and your processors alone.
+
+   This gives you the power to log directly to databases, statsd servers, web services, and whatnot.
+
+
+Convenience Helpers
++++++++++++++++++++
+
 To make the most common cases more convenient, there are helper functions for stdlib and Twisted though:
 
 - :func:`structlog.stdlib.get_logger`
