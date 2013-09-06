@@ -60,7 +60,7 @@ class TestTmpBind(object):
             'wrapped with wrap_dict.'
         )
 
-    def test_converts_yielded_logger(self, logger, OD):
+    def test_converts_passed_and_yielded_logger(self, logger, OD):
         """
         If the wrapped logger has been created before it was configured,
         the context may be in a wrong class.
@@ -68,11 +68,9 @@ class TestTmpBind(object):
         l = BoundLogger.wrap(logger)
         BoundLogger.configure(context_class=OD)
         with tmp_bind(l, x=42) as l2:
-            assert {'x': 42} == l2._context._dict
-            # This is why you should use the yielded logger!
-            assert {} == l._context
-            assert "x=42 event='bar'" == l2.msg('bar')
-            assert "x=42 event='bar'" == l.msg('bar')
+            assert l._context == l2._context
+            assert l._context.__class__ is l2._context.__class__
+            assert "x=42 event='bar'" == l2.msg('bar') == l.msg('bar')
         assert "event='bar'" == l.msg('bar')
 
     def test_bind(self, logger, OD):

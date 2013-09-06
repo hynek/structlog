@@ -53,18 +53,6 @@ def tmp_bind(logger, **tmp_values):
     >>> with tmp_bind(logger, x=5) as tmp_logger:
     ...     tmp_logger.msg('event')
     x=5 event='event'
-
-    Although the *logger* passed in and the logger yielded log out the same
-    data, it's possible that *logger* hasn't been converted to thread local
-    storage if the context class has been set using
-    :func:`structlog.loggers.BoundLogger.configure` and no values have been
-    bound to it before calling tmp_bind.
-
-    That means that if you bind additional values to your original logger,
-    you'd get surprising results.
-
-    Therefore I *strongly* recommend to use *only *the *yielded* logger inside
-    of the `with` block.
     """
     if not issubclass(logger._current_context_class, _ThreadLocalDictWrapper):
         raise ValueError(
@@ -72,6 +60,10 @@ def tmp_bind(logger, **tmp_values):
             'wrapped with wrap_dict.  You context class is {0!r}.'
             .format(logger._current_context_class)
         )
+    if not isinstance(logger._context, logger._current_context_class):
+        # This is a terrible thing to do.  But it avoids very confusing
+        # behavior.  Don't do this at home.
+        logger._context = logger._current_context_class(logger._context)
     saved = logger._context.copy()
     tmp_logger = logger.bind(**tmp_values)
     yield tmp_logger

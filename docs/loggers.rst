@@ -142,6 +142,10 @@ In order to be able to bind values temporarily to a logger, :mod:`structlog.thre
    :language: pycon
    :start-after: context_class=WrappedDictClass)
 
+
+Downsides & Caveats
++++++++++++++++++++
+
 The convenience of having a thread local context comes at a price though:
 
 .. warning::
