@@ -1,0 +1,6 @@
+>>> from structlog import ReturnLogger
+>>> ReturnLogger().msg(42) == 42
+True
+>>> obj = ['hi']
+>>> ReturnLogger().msg(obj) is obj
+True

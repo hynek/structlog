@@ -25,21 +25,23 @@ Really.
    All structlog cares about is a *dictionary* of *keys* and *values*.
    What happens to it depends on the logger you wrap and your processors alone.
 
-   This gives you the power to log directly to databases, statsd servers, web services, and whatnot.
+   This gives you the power to log directly to databases, log aggregation servers, web services, and whatnot.
 
 
 Convenience Helpers
 +++++++++++++++++++
 
-To make the most common cases more convenient, there are helper functions for stdlib and Twisted though:
+To make the most common cases more convenient, there are helper functions for stdlib and Twisted:
 
 - :func:`structlog.stdlib.get_logger`
 - :func:`structlog.twisted.get_logger`
 
 For even more convenience and accessibility, structlog *ships* with the class :class:`~structlog.loggers.PrintLogger` because it's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
-Additionally -- but arguably mostly for my own unit testing convenience -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.loggers.ReturnLogger`.
+Additionally -- but arguably mostly for my own unit testing convenience -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.loggers.ReturnLogger`:
 
+.. literalinclude:: code_examples/loggers/return_logger.txt
+   :language: pycon
 
 .. _configuration:
 
