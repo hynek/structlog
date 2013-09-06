@@ -163,11 +163,28 @@ Downsides & Caveats
 The convenience of having a thread local context comes at a price though:
 
 .. warning::
-   If you can't rule out that your application re-uses threads, you have have to remember to re-initialize your thread local context at the start of each request using :func:`~structlog.loggers.BoundLogger.new` (instead of :func:`~structlog.loggers.BoundLogger.bind`) so you don't start a new request with the context still filled with data from the last one.
+   - If you can't rule out that your application re-uses threads, you have have to remember to **initialize your thread local context** at the start of each request using :func:`~structlog.loggers.BoundLogger.new` (instead of :func:`~structlog.loggers.BoundLogger.bind`).
+     Otherwise you may start a new request with the context still filled with data from the request before.
+   - **Don't** stop assigning the results of your ``bind()``\ s and ``new()``\ s!
+
+     **Do**::
+
+      log = log.new(y=23)
+      log = log.bind(x=42)
+
+     **Don't**::
+
+      log.new(y=23)
+      log.bind(x=42)
+
+     Although the state is saved in a global data structure, your configuration may differ from what the logger was initialized in global scope.
+     structlog will convert the internals as soon as possible and the wrong usage should generally work, but it's still possible that some surprising behavior may arise.
 
 The general sentiment against thread locals is that they're hard to test.
 In this case I feel like this is an acceptable trade-off.
 You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
+
+This big red box is also what separates immutable local from mutable global data.
 
 
 .. [*] Please note that in Python's 'consenting adults spirit', structlog does *not* enforce the immutability with technical means.
