@@ -23,7 +23,7 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using `new()` for re-initializing the logger).
 
-Please note that :func:`structlog.stdlib.get_logger` is a totally magic-free convenience function that just deduces the name of the caller's module and calls `BoundLogger.wrap()` on `logging.getLogger()`.
+Please note that :func:`structlog.stdlib.get_logger` is a totally magic-free convenience function that just deduces the name of the caller's module and calls :func:`structlog.loggers.BoundLogger.wrap()` on `logging.getLogger() <http://docs.python.org/2/library/logging.html#logging.getLogger>`_.
 
 
 .. _twisted-example:
@@ -42,8 +42,12 @@ Since Twisted's logging system is a bit peculiar, structlog ships with an adapte
 Again, :func:`structlog.twisted.get_logger` is just a thin and simple convenience wrapper.
 
 
+.. _processors-examples:
+
 Processors
 ----------
+
+:ref:`Processors` are a both simple and powerful feature of structlog.
 
 So you want timestamps as part of the structure of the log entry, censor passwords, filter out log entries below your log level before they even get rendered, and get your output as JSON for convenient parsing?
 Here you go:
@@ -51,6 +55,6 @@ Here you go:
 .. literalinclude:: code_examples/processors.txt
    :language: pycon
 
-structlog comes with many handy processors build right in -- check them out in the :ref:`API <API>` documentation to learn more!
+structlog comes with many handy processors build right in -- check them out in the :mod:`API <structlog.processors>` documentation to learn more!
 
-Of course you can set default processors and context classes once globally.
+Of course you can :ref:`configure <configuration>` default processors and context classes globally.

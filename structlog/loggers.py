@@ -13,15 +13,12 @@
 # limitations under the License.
 
 """
-Flexible wrappers for arbitrary loggers.
-
-Allow to bind values to itself and offer a flexible processing pipeline for
-each log entry before relaying the logging call to the wrapped logger.
-
-Use class factory method :func:`wrap` to instantiate, *not* the constructor.
+Logger wrapper and some helper class.
 """
 
 from __future__ import absolute_import, division, print_function
+
+import sys
 
 from functools import wraps
 
@@ -36,9 +33,60 @@ _DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
 _DEFAULT_CONTEXT_CLASS = OrderedDict
 
 
+class PrintLogger(object):
+    """
+    Prints events into a file.
+
+    :param file file: File to print to. (default: stdout)
+
+    >>> from structlog import PrintLogger
+    >>> PrintLogger().msg('hello')
+    hello
+
+    Useful if you just capture your stdout with tools like `runit
+    <http://smarden.org/runit/>`_ or if you `forward your stderr to syslog
+    <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+
+    Also very useful for testing and examples since logging is sometimes
+    finicky in doctests.
+    """
+    def __init__(self, file=None):
+        self._file = file or sys.stdout
+
+    def __repr__(self):
+        return '<PrintLogger()>'
+
+    def msg(self, message):
+        """
+        Print *message*.
+        """
+        print(message, file=self._file)
+
+    err = info = warning = error = critical = log = msg
+
+
+class ReturnLogger(object):
+    """
+    Returns the string that it's called with.
+
+    >>> from structlog import ReturnLogger
+    >>> ReturnLogger().msg('hello')
+    'hello'
+
+    Useful for unit tests.
+    """
+    def msg(self, message):
+        """
+        Return *message*.
+        """
+        return message
+
+    err = info = warning = error = critical = log = msg
+
+
 class BoundLogger(object):
     """
-    *Immutable*, context-carrying wrapper.
+    Immutable, context-carrying wrapper.
 
     Use class factory method :func:`wrap` to instantiate, *not* the
     constructor.

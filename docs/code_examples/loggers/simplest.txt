@@ -2,10 +2,10 @@
 >>> class PrintLogger(object):
 ...     def msg(self, message):
 ...         print message
->>> def processor(logger, method_name, event_dict):
+>>> def proc(logger, method_name, event_dict):
 ...     print 'I got called with', event_dict
 ...     return repr(event_dict)
->>> log = BoundLogger.wrap(PrintLogger(), processors=[processor], context_class=dict)
+>>> log = BoundLogger.wrap(PrintLogger(), processors=[proc], context_class=dict)
 >>> log2 = log.bind(x=42)
 >>> log == log2
 False

@@ -14,10 +14,9 @@
 
 import threading
 
-import pretend
 import pytest
 
-from structlog import BoundLogger
+from structlog import BoundLogger, ReturnLogger
 from structlog._compat import OrderedDict
 from structlog.threadlocal import wrap_dict, tmp_bind
 
@@ -44,7 +43,7 @@ def logger():
     Returns a simple logger stub with a *msg* method that takes one argument
     which gets returned.
     """
-    return pretend.stub(msg=lambda x: x)
+    return ReturnLogger()
 
 
 class TestTmpBind(object):
@@ -56,10 +55,9 @@ class TestTmpBind(object):
         with pytest.raises(ValueError) as e:
             with tmp_bind(l, x=42):
                 pass
-        assert (
+        assert e.value.args[0].startswith(
             'tmp_bind works only with loggers whose context class has been '
             'wrapped with wrap_dict.'
-            == e.value.args[0]
         )
 
     def test_converts_yielded_logger(self, logger, OD):

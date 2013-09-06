@@ -37,18 +37,17 @@ structlog supports you with building your context as you go (e.g. if a user logs
 This ability to bind key/values pairs to a logger frees you from using conditionals, closures, or boilerplate methods to log out all relevant data.
 
 Additionally, structlog offers you a flexible way to *filter* and *modify* your log entries using so called :ref:`processors <processors>` once you decide to actually log an event.
-The possibilities include logging in JSON, adding arbitrary meta data like timestamps, counting events as metrics, or dropping log entries caused by your monitoring system.
+The possibilities include :class:`logging in JSON <structlog.processors.JSONRenderer>`, adding arbitrary meta data like :class:`timestamps <structlog.processors.TimeStamper>`, counting events as metrics, or :ref:`dropping log entries <cond_drop>` caused by your monitoring system.
 
 
 Why You Can Start Using structlog TODAY
 ---------------------------------------
 
-- You can use both bare logging and structlog at the same time.
+- You can use both your bare logger and as well as the same logger wrapped by structlog at the same time.
   structlog avoids monkeypatching so a peaceful co-existence between various loggers is unproblematic.
 - Events are free-form and interpreted as strings by default.
   Therefore the transition from traditional to structured logging is seamless most of the time.
   Just start wrapping your logger of choice and bind values later.
-  In the worst case you'll have to write some simple adapter.
 - If you don't like the idea of keeping the context within a local logger instance like in the example above, structlog offers transparent :ref:`thread local <threadlocal>` storage for your context.
 
 Intrigued? Have a look at more realistic :ref:`examples <examples>` and be completely convinced!

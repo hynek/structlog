@@ -23,8 +23,37 @@ from pretend import stub
 
 from structlog.processors import KeyValueRenderer
 from structlog.loggers import (
-    BoundLogger, _DEFAULT_PROCESSORS, _DEFAULT_CONTEXT_CLASS
+    BoundLogger,
+    PrintLogger,
+    ReturnLogger,
+    _DEFAULT_CONTEXT_CLASS,
+    _DEFAULT_PROCESSORS,
 )
+
+
+def test_return_logger():
+    obj = ['hello']
+    assert obj is ReturnLogger().msg(obj)
+
+
+class TestPrintLogger(object):
+    def test_prints_to_stdout_by_default(self, capsys):
+        PrintLogger().msg('hello')
+        out, err = capsys.readouterr()
+        assert 'hello\n' == out
+        assert '' == err
+
+    def test_prints_to_correct_file(self, tmpdir, capsys):
+        f = tmpdir.join('test.log')
+        fo = f.open('w')
+        PrintLogger(fo).msg('hello')
+        out, err = capsys.readouterr()
+        assert '' == out == err
+        fo.close()
+        assert 'hello\n' == f.read()
+
+    def test_repr(self):
+        assert '<PrintLogger()>' == repr(PrintLogger())
 
 
 class TestBinding(object):
@@ -32,8 +61,7 @@ class TestBinding(object):
         """
         Ensure BoundLogger is immutable by default.
         """
-        logger = stub(msg=lambda event: event, err=lambda event: event)
-        b = BoundLogger.wrap(logger,
+        b = BoundLogger.wrap(ReturnLogger(),
                              processors=[KeyValueRenderer(sort_keys=True)])
         b = b.bind(x=42, y=23)
         b1 = b.bind(foo='bar')
@@ -73,8 +101,7 @@ class TestWrapper(object):
         """
         __getattr__() gets called only once per logger method.
         """
-        logger = stub(msg=lambda event: event, err=lambda event: event)
-        b = BoundLogger.wrap(logger)
+        b = BoundLogger.wrap(ReturnLogger())
         assert 'msg' not in b.__dict__
         b.msg('foo')
         assert 'msg' in b.__dict__
@@ -84,13 +111,12 @@ class TestWrapper(object):
             assert b._context is not event_dict
             return False
 
-        b = BoundLogger.wrap(stub(info=lambda _: _), processors=[chk])
-        b.info('event')
+        b = BoundLogger.wrap(ReturnLogger, processors=[chk])
+        b.msg('event')
         assert 'event' not in b._context
 
     def test_processor_returning_none_raises_valueerror(self):
-        logger = stub(msg=lambda event: event)
-        b = BoundLogger.wrap(logger, processors=[lambda *_: None])
+        b = BoundLogger.wrap(ReturnLogger(), processors=[lambda *_: None])
         with pytest.raises(ValueError) as e:
             b.msg('boom')
         assert re.match(
@@ -98,15 +124,14 @@ class TestWrapper(object):
         )
 
     def test_processor_returning_false_silently_aborts_chain(self, capsys):
-        logger = stub(msg=lambda event: event)
         # The 2nd processor would raise a ValueError if reached.
-        b = BoundLogger.wrap(logger, processors=[lambda *_: False,
-                                                 lambda *_: None])
+        b = BoundLogger.wrap(ReturnLogger(), processors=[lambda *_: False,
+                                                         lambda *_: None])
         b.msg('silence!')
         assert ('', '') == capsys.readouterr()
 
     def test_processor_can_return_both_str_and_tuple(self):
-        logger = stub(msg=lambda args, **kw: (args, kw))
+        logger = stub(msg=lambda *args, **kw: (args, kw))
         b1 = BoundLogger.wrap(logger, processors=[lambda *_: 'foo'])
         b2 = BoundLogger.wrap(logger, processors=[lambda *_: (('foo',), {})])
         assert b1.msg('foo') == b2.msg('foo')
@@ -209,7 +234,7 @@ class ConfigureTestCase(unittest.TestCase):
 
         In that case, the context gets converted first.
         """
-        b = BoundLogger.wrap(stub(info=lambda _: _))
+        b = BoundLogger.wrap(ReturnLogger())
         BoundLogger.configure(context_class=dict)
         assert _DEFAULT_CONTEXT_CLASS is b._context.__class__
         b.info('event')

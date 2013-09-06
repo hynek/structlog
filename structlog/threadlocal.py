@@ -46,19 +46,31 @@ def tmp_bind(logger, **tmp_values):
     Use it with a `with`-statement.  Anything you bind here *or within* the
     with block will be erased afterwards.
 
-    Although the *logger* passed in and the logger yielded contain the same
+    >>> from structlog import BoundLogger, PrintLogger
+    >>> from structlog.threadlocal import tmp_bind, wrap_dict
+    >>> logger = BoundLogger.wrap(PrintLogger(),
+    ...                           context_class=wrap_dict(dict))
+    >>> with tmp_bind(logger, x=5) as tmp_logger:
+    ...     tmp_logger.msg('event')
+    x=5 event='event'
+
+    Although the *logger* passed in and the logger yielded log out the same
     data, it's possible that *logger* hasn't been converted to thread local
     storage if the context class has been set using
     :func:`structlog.loggers.BoundLogger.configure` and no values have been
     bound to it before calling tmp_bind.
 
-    Therefore I *strongly* recommend to use the *yielded* logger inside of the
-    with block.
+    That means that if you bind additional values to your original logger,
+    you'd get surprising results.
+
+    Therefore I *strongly* recommend to use *only *the *yielded* logger inside
+    of the `with` block.
     """
     if not issubclass(logger._current_context_class, _ThreadLocalDictWrapper):
         raise ValueError(
             'tmp_bind works only with loggers whose context class has been '
-            'wrapped with wrap_dict.'
+            'wrapped with wrap_dict.  You context class is {0!r}.'
+            .format(logger._current_context_class)
         )
     saved = logger._context.copy()
     tmp_logger = logger.bind(**tmp_values)

@@ -17,7 +17,7 @@ structlog Package
 ---------------------
 
 .. automodule:: structlog.loggers
-    :members: BoundLogger
+    :members: BoundLogger, PrintLogger, ReturnLogger
     :undoc-members:
     :inherited-members:
 

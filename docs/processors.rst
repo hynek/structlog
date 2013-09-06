@@ -4,14 +4,14 @@ Processors
 ==========
 
 The true power of ``structlog`` lies in its *combinable log processors*.
-A log processor is just a callable, i.e. a function or an instance of a class with a ``__call__()`` method.
+A log processor is a regular callable, i.e. a function or an instance of a class with a ``__call__()`` method.
 
 .. _chains:
 
 Chains
 ------
 
-The *processor chain* is just a Python list of processors.
+The *processor chain* is a plain Python list of processors.
 Each processors receives three positional arguments:
 
 #. the wrapped logger,
@@ -28,9 +28,7 @@ If you set up your logger like:
 
 .. code:: python
 
-   class PrintLogger(object):
-      def msg(self, message):
-         print(message)
+   from structlog import BoundLogger, PrintLogger
    wrapped_logger = PrintLogger()
    logger = BoundLogger.wrap(wrapped_logger, processors=[f1, f2, f3, f4])
    log = logger.new(x=42)
@@ -39,7 +37,15 @@ and call ``log.msg('some_event', y=23)``, it results in the following call chain
 
 .. code:: python
 
-   wrapped_logger.msg(f4(f3(f2(f1(wrapped_logger, 'msg', {'event': 'some_event', 'x': 42, 'y': 23})))))
+   wrapped_logger.msg(
+      f4(wrapped_logger, 'msg',
+         f3(wrapped_logger, 'msg',
+            f2(wrapped_logger, 'msg',
+               f1(wrapped_logger, 'msg', {'event': 'some_event', 'x': 42, 'y': 23})
+            )
+         )
+      )
+   )
 
 In this case, ``f4`` has to make sure it returns something ``wrapped_logger.msg`` can handle (see :ref:`adapting`).
 
@@ -50,7 +56,7 @@ Parsing human-readable timestamps is tedious, not so `UNIX timestamps <http://en
    :language: python
 
 Easy, isn't it?
-Please note, that structlog comes with such an processor built in: :class:`structlog.processors.TimeStamper`.
+Please note, that structlog comes with such an processor built in: :class:`~structlog.processors.TimeStamper`.
 
 
 Special Return Values
@@ -71,6 +77,9 @@ The following processor simply drops every entry.
    :language: python
 
 But we can do better than that!
+
+.. _cond_drop:
+
 How about dropping only log entries that are marked as coming from a certain peer (e.g. monitoring)?
 
 .. literalinclude:: code_examples/processors/conditional_dropper.py
@@ -92,5 +101,7 @@ This should give you enough power to use structlog with any logging system.
 Examples
 ++++++++
 
-The probably most useful formatter for string based loggers is :class:`structlog.processors.JSONRenderer`.
+The probably most useful formatter for string based loggers is :class:`~structlog.processors.JSONRenderer`.
 Advanced log aggregation and analysis tools like `logstash <http://logstash.net>`_ offer features like telling them “this is JSON, deal with it” instead of fiddling with regular expressions.
+
+More examples can be found in the :ref:`examples <processors-examples>` chapter.

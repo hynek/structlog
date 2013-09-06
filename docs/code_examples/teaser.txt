@@ -1,7 +1,4 @@
->>> from structlog import BoundLogger
->>> class PrintLogger(object):
-...     def info(self, message):
-...         print message
+>>> from structlog import BoundLogger, PrintLogger
 >>> log = BoundLogger.wrap(PrintLogger())
 >>> log = log.bind(user='anonymous', some_key=23)
 >>> log = log.bind(user='hynek', source='http', another_key=42)

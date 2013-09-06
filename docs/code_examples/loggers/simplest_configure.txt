@@ -1,11 +1,8 @@
->>> from structlog import BoundLogger
->>> class PrintLogger(object):
-...     def msg(self, message):
-...         print message
->>> def processor(logger, method_name, event_dict):
+>>> from structlog import BoundLogger, PrintLogger
+>>> def proc(logger, method_name, event_dict):
 ...     print 'I got called with', event_dict
 ...     return repr(event_dict)
->>> BoundLogger.configure(processors=[processor], context_class=dict)
+>>> BoundLogger.configure(processors=[proc], context_class=dict)
 >>> log = BoundLogger.wrap(PrintLogger())
 >>> log.msg('hello world')
 I got called with {'event': 'hello world'}

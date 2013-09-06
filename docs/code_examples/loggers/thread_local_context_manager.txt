@@ -1,8 +1,5 @@
->>> from structlog import BoundLogger
+>>> from structlog import BoundLogger, PrintLogger
 >>> from structlog.threadlocal import tmp_bind, wrap_dict
->>> class PrintLogger(object):
-...     def msg(self, message):
-...         print message
 >>> WrappedDictClass = wrap_dict(dict)
 >>> log = BoundLogger.wrap(PrintLogger(), context_class=WrappedDictClass)
 >>> log.bind(x=42)  # doctest: +ELLIPSIS
