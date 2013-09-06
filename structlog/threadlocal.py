@@ -43,13 +43,28 @@ def tmp_bind(logger, **tmp_values):
     """
     Context manager for temporarily binding *tmp_values* to *logger*.
 
-    Use it with a `with`-statement.
+    Use it with a `with`-statement.  Anything you bind here *or within* the
+    with block will be erased afterwards.
+
+    Although the *logger* passed in and the logger yielded contain the same
+    data, it's possible that *logger* hasn't been converted to thread local
+    storage if the context class has been set using
+    :func:`structlog.loggers.BoundLogger.configure` and no values have been
+    bound to it before calling tmp_bind.
+
+    Therefore I *strongly* recommend to use the *yielded* logger inside of the
+    with block.
     """
-    saved = logger._context.__class__._tl.dict_.copy()
-    logger.bind(**tmp_values)
-    yield
-    logger._context.__class__._tl.dict_.clear()
-    logger._context.__class__._tl.dict_.update(saved)
+    if not issubclass(logger._current_context_class, _ThreadLocalDictWrapper):
+        raise ValueError(
+            'tmp_bind works only with loggers whose context class has been '
+            'wrapped with wrap_dict.'
+        )
+    saved = logger._context.copy()
+    tmp_logger = logger.bind(**tmp_values)
+    yield tmp_logger
+    logger._current_context_class._tl.dict_.clear()
+    logger._current_context_class._tl.dict_.update(saved)
 
 
 class _ThreadLocalDictWrapper(object):

@@ -37,7 +37,7 @@ structlog supports you with building your context as you go (e.g. if a user logs
 This ability to bind key/values pairs to a logger frees you from using conditionals, closures, or boilerplate methods to log out all relevant data.
 
 Additionally, structlog offers you a flexible way to *filter* and *modify* your log entries using so called :ref:`processors <processors>` once you decide to actually log an event.
-The possibilities include logging in JSON, adding arbitrary meta data, counting events as metrics, or dropping log entries caused by your monitoring system.
+The possibilities include logging in JSON, adding arbitrary meta data like timestamps, counting events as metrics, or dropping log entries caused by your monitoring system.
 
 
 Why You Can Start Using structlog TODAY

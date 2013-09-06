@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
 import threading
+
+import pretend
+import pytest
 
 from structlog import BoundLogger
 from structlog._compat import OrderedDict
@@ -23,22 +25,70 @@ from structlog.threadlocal import wrap_dict, tmp_bind
 @pytest.fixture
 def D():
     """
-    Returns a dict wrapped in _ThreadLocalDict.
+    Returns a dict wrapped in _ThreadLocalDictWrapper.
     """
     return wrap_dict(dict)
 
 
-def test_tmp_bind(D):
-    import pretend
-    logger = pretend.stub(msg=lambda x: x)
-    l = BoundLogger.wrap(logger, context_class=wrap_dict(OrderedDict))
-    l.bind(y=23)  # make sure context isinstance D
-    with tmp_bind(l, x=42, y='foo'):
-        assert 42 == l._context._dict['x']
-    assert {'y': 23} == l._context._dict
-    with tmp_bind(l, x=42, y='foo'):
-        assert 42 == l._context._dict['x']
-    assert {'y': 23} == l._context._dict
+@pytest.fixture
+def OD():
+    """
+    Returns an OrderedDict wrapped in _ThreadLocalDictWrapper.
+    """
+    return wrap_dict(OrderedDict)
+
+
+@pytest.fixture
+def logger():
+    """
+    Returns a simple logger stub with a *msg* method that takes one argument
+    which gets returned.
+    """
+    return pretend.stub(msg=lambda x: x)
+
+
+class TestTmpBind(object):
+    def tearDown(self):
+        BoundLogger.reset_defaults()
+
+    def test_fails_on_non_tls(self, logger):
+        l = BoundLogger.wrap(logger)
+        with pytest.raises(ValueError) as e:
+            with tmp_bind(l, x=42):
+                pass
+        assert (
+            'tmp_bind works only with loggers whose context class has been '
+            'wrapped with wrap_dict.'
+            == e.value.args[0]
+        )
+
+    def test_converts_yielded_logger(self, logger, OD):
+        """
+        If the wrapped logger has been created before it was configured,
+        the context may be in a wrong class.
+        """
+        l = BoundLogger.wrap(logger)
+        BoundLogger.configure(context_class=OD)
+        with tmp_bind(l, x=42) as l2:
+            assert {'x': 42} == l2._context._dict
+            # This is why you should use the yielded logger!
+            assert {} == l._context
+            assert "x=42 event='bar'" == l2.msg('bar')
+            assert "x=42 event='bar'" == l.msg('bar')
+        assert "event='bar'" == l.msg('bar')
+
+    def test_bind(self, logger, OD):
+        l = BoundLogger.wrap(logger, context_class=OD)
+        l.bind(y=23)
+        assert isinstance(l._context, OD)
+        with tmp_bind(l, x=42, y='foo'):
+            assert 42 == l._context._dict['x']
+        assert {'y': 23} == l._context._dict
+        with tmp_bind(l, x=42, y='foo'):
+            assert 42 == l._context._dict['x']
+            assert "y='foo' x=42 event='foo'" == l.msg('foo')
+        assert {'y': 23} == l._context._dict
+        assert "y=23 event='foo'" == l.msg('foo')
 
 
 class TestThreadLocalDict(object):
