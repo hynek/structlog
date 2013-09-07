@@ -1,23 +1,38 @@
 Loggers
 =======
 
-The center of structlog is the immutable log wrapper :class:`~structlog.loggers.BoundLogger`.
+The center of structlog is the immutable log wrapper :class:`~structlog.BoundLogger`.
 
-In it's core, all it does is:
+All it does is:
 
-- wrapping an *arbitrary* logging class (:func:`~structlog.loggers.BoundLogger.wrap`),
-- recreating itself with (optional) additional context data (:func:`~structlog.loggers.BoundLogger.bind` and :func:`~structlog.loggers.BoundLogger.new`),
-- configuring global default values for the processor chain and the class used to keep the context (:func:`~structlog.loggers.BoundLogger.configure`),
+- Keeping a *context* and a *logger* it's wrapping,
+- recreating itself with (optional) additional context data (the :func:`~structlog..BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
 - and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of processors.
+
+You won't be instantiating it yourself though.
+For that there is the :func:`structlog.wrap_logger` function:
 
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
 
+As you can see, it accepts one mandatory and two optional arguments:
+
+**logger**
+   Only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
+   Since a wrapped logger without a logger doesn't make any sense, this argument is *mandatory*.
+
+**processors**
+   A list of callables that can :ref:`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
+
+   Default is ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]``.
+
+**context_class**
+   The class to save your context in.
+   Particularly useful for :ref:`thread local context storage <threadlocal>`.
+
+   Default is OrderedDict_.
+
 This example also demonstrates how structlog is *not* dependent on Python's standard library logging module.
-It can wrap *anything*.
-Really.
-*No* depedency on stdlib logging *whatsoever*.
-*Yes*, you can use your own logger underneath.
 
 .. note::
 
@@ -29,16 +44,16 @@ Really.
 
 
 Convenience Helpers
-+++++++++++++++++++
+-------------------
 
 To make the most common cases more convenient, there are helper functions for stdlib and Twisted:
 
 - :func:`structlog.stdlib.get_logger`
 - :func:`structlog.twisted.get_logger`
 
-For even more convenience and accessibility, structlog *ships* with the class :class:`~structlog.loggers.PrintLogger` because it's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+For even more convenience and accessibility, structlog *ships* with the class :class:`~structlog.PrintLogger` because it's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
-Additionally -- but arguably mostly for my own unit testing convenience -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.loggers.ReturnLogger`:
+Additionally -- but arguably mostly for my own unit testing convenience -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
 .. literalinclude:: code_examples/loggers/return_logger.txt
    :language: pycon
@@ -60,7 +75,7 @@ or::
 
 if you don't use a directly supported logger.
 
-To achieve that you'll have to call :func:`structlog.loggers.BoundLogger.configure` on app initialization (if you're not content with the -- hopefully -- sane defaults that is).
+To achieve that you'll have to call :func:`structlog.configure` on app initialization (if you're not content with the defaults that is).
 The previous example could thus have been written as following:
 
 .. literalinclude:: code_examples/loggers/simplest_configure.txt
@@ -71,20 +86,23 @@ The previous example could thus have been written as following:
 
 structlog tries to behave in the least surprising way when it comes to handling defaults and configuration:
 
-#. Passed `processors` and `context_class` arguments to :func:`structlog.loggers.BoundLogger.wrap` *always* take the highest precedence.
+#. Passed `processors` and `context_class` arguments to :func:`structlog.wrap_logger` *always* take the highest precedence.
    That means that you can overwrite whatever you've configured for each logger respectively.
-#. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.loggers.BoundLogger.configure` and uses them if so.
+#. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
 
-   Precautions are taken to convert the context class if it changes between bindings.
-   This is important because your level logger is likely to be created in global scope at import time; i.e. before you had the chance to configure your defaults.
-#. If you haven't configured or passed anything at all, the default fallback values are used which means ``OrderedDict`` for context and :func:`structlog.processors.format_exc_info` and :class:`structlog.processors.KeyValueRenderer` for the processor chain.
+   Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions)  most likely at import time and thus before you had a chance to configure structlog, they all return a proxy that returns a correct BoundLogger on first ``bind()``/``new()``.
 
-If necessary, you can always reset your global configuration back to default values using :func:`structlog.loggers.BoundLogger.reset_defaults`.
+   To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
+   Therefore if you have nothing to bind but intend to do lots of log calls in a function, it makes sense performance-wise to create a local logger by calling ``bind()`` or ``new()`` without any parameters.
+
+#. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain.
+
+If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
 
 
 Where to Configure
-++++++++++++++++++
+^^^^^^^^^^^^^^^^^^
 
 The best place to perform your configuration varies with applications and frameworks:
 
@@ -93,7 +111,7 @@ The best place to perform your configuration varies with applications and framew
    Therefore the bottom of your ``settings.py`` will have to do.
 
 **Flask**
-   WIP
+   TBD
 
 **Pyramid**
    `Application constructor <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
@@ -102,7 +120,8 @@ The best place to perform your configuration varies with applications and framew
    The `plugin definition <http://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
    If your app is not a plugin, put it into your `tac file <http://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
 
-If you have no choice but *have* to configure on import time in global scope, or can't rule out for other reasons that that your `configure()` gets called more than once, structlog offers :func:`structlog.loggers.BoundLogger.configure_once` that does nothing if structlog has been configured before (no matter whether using :func:`~structlog.loggers.BoundLogger.configure` or :func:`~structlog.loggers.BoundLogger.configure_once`).
+If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your :func:`structlog.configure` gets called more than once, structlog offers :func:`structlog.configure_once` that does nothing if structlog has been configured before (no matter whether using :func:`structlog.configure` or :func:`~structlog.configure_once`).
+
 
 Immutability
 ------------
@@ -121,13 +140,23 @@ However, in the case of conventional web development, I realize that passing log
 And since it's more important that people actually *use* structlog than to be pure and snobby, structlog contains a dirty but convenient trick: thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_.
 
 
+.. [*] In the spirit of Python's 'consenting adults', structlog doesn't enforce the immutability with technical means.
+   However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
+
+
 .. _threadlocal:
 
 Thread Local Context
 --------------------
 
-Thread local storage makes your logger's context global but local to the current thread\ [*]_.
-In the case of web frameworks this means that your context becomes global to the current request.
+Thread local storage makes your logger's context global but *only within the current thread*\ [*]_.
+In the case of web frameworks this usually means that your context becomes global to the current request.
+
+The following explanations may sound a bit confusing at first but the :ref:`Flask example <flask-example>` illustrates how simple and elegant this works in practice.
+
+
+Wrapped Dicts
+^^^^^^^^^^^^^
 
 In order to make your context thread local, structlog ships with a function that can wrap any dict-like class to make it usable for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
 
@@ -138,11 +167,11 @@ Within one thread, every instance of the returned class will have a *common* ins
 
 Then use an instance of the generated class as the context class::
 
-   BoundLogger.configure(context_class=WrappedDictClass())
+   configure(context_class=WrappedDictClass())
 
-This all may sound a bit confusing at first but the :ref:`Flask example <flask-example>` illustrates how simple and elegant this works in practice.
-
-Remember: the instance of the class is irrelevant, only the class *type* matters because all instances of one class share the same data.
+.. note::
+   **Remember**: the instance of the class *doesn't* matter.
+   Only the class *type* matters because *all* instances of one class *share* the *same* data.
 
 :func:`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
 
@@ -158,12 +187,12 @@ In order to be able to bind values temporarily to a logger, :mod:`structlog.thre
 
 
 Downsides & Caveats
-+++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^
 
 The convenience of having a thread local context comes at a price though:
 
 .. warning::
-   - If you can't rule out that your application re-uses threads, you have have to remember to **initialize your thread local context** at the start of each request using :func:`~structlog.loggers.BoundLogger.new` (instead of :func:`~structlog.loggers.BoundLogger.bind`).
+   - If you can't rule out that your application re-uses threads, you *must* remember to **initialize your thread local context** at the start of each request using :func:`~structlog.BoundLogger.new` (instead of :func:`~structlog.BoundLogger.bind`).
      Otherwise you may start a new request with the context still filled with data from the request before.
    - **Don't** stop assigning the results of your ``bind()``\ s and ``new()``\ s!
 
@@ -177,8 +206,9 @@ The convenience of having a thread local context comes at a price though:
       log.new(y=23)
       log.bind(x=42)
 
-     Although the state is saved in a global data structure, your configuration may differ from what the logger was initialized in global scope.
-     structlog will convert the internals as soon as possible and the wrong usage should generally work, but it's still possible that some surprising behavior may arise.
+     Although the state is saved in a global data structure, you still need the global wrapped logger produce a real bound logger.
+     Otherwise each log call will result in an instantiation of a temporary BoundLogger.
+     ee :ref:`configuration` for more details.
 
 The general sentiment against thread locals is that they're hard to test.
 In this case I feel like this is an acceptable trade-off.
@@ -187,7 +217,7 @@ You can easily write deterministic tests using a call-capturing processor if you
 This big red box is also what separates immutable local from mutable global data.
 
 
-.. [*] Please note that in Python's 'consenting adults spirit', structlog does *not* enforce the immutability with technical means.
-   However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
-
 .. [*] Gevent's monkeypatching `automatically <http://www.gevent.org/gevent.monkey.html>`_ adapts thread local storage to greenlet local storage.
+
+
+.. _OrderedDict: http://docs.python.org/2/library/collections.html#collections.OrderedDict

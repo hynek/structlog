@@ -1,2 +1,5 @@
+from structlog import DropEvent
+
+
 def dropper(logger, method_name, event_dict):
-    return False
+    raise DropEvent

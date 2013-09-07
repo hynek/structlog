@@ -11,18 +11,18 @@ A log processor is a regular callable, i.e. a function or an instance of a class
 Chains
 ------
 
-The *processor chain* is a plain Python list of processors.
+The *processor chain* is a list of processors.
 Each processors receives three positional arguments:
 
-#. the wrapped logger,
-#. the name of the wrapped method,
+#. the wrapped *logger*,
+#. the *name* of the wrapped method,
 #. and the current context together with the current event (called ``event_dict``).
 
 The return value of each processor is passed on to the next one as ``event_dict`` until finally the return value of the last processor gets passed into the wrapped logging method.
 
 
 Examples
-++++++++
+^^^^^^^^
 
 If you set up your logger like:
 
@@ -59,19 +59,12 @@ Easy, isn't it?
 Please note, that structlog comes with such an processor built in: :class:`~structlog.processors.TimeStamper`.
 
 
-Special Return Values
----------------------
+Filtering
+---------
 
-There are two special return values that make the processor chain abort:
+If a processor raises :exc:`structlog.DropEvent`, the event is silently dropped.
 
-- ``False`` aborts the processor chain and the log entry is silently dropped.
-- ``None`` raises an ``ValueError`` because you probably forgot to return a new value.
-
-
-Examples
-++++++++
-
-The following processor simply drops every entry.
+Therefore, the following processor drops every entry:
 
 .. literalinclude:: code_examples/processors/dropper.py
    :language: python
@@ -98,10 +91,12 @@ Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',),
 
 This should give you enough power to use structlog with any logging system.
 
+
 Examples
-++++++++
+^^^^^^^^
 
 The probably most useful formatter for string based loggers is :class:`~structlog.processors.JSONRenderer`.
 Advanced log aggregation and analysis tools like `logstash <http://logstash.net>`_ offer features like telling them “this is JSON, deal with it” instead of fiddling with regular expressions.
 
 More examples can be found in the :ref:`examples <processors-examples>` chapter.
+For a list of shipped processors, check out the :ref:`API documentation <procs>`.

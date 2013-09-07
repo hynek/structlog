@@ -20,6 +20,9 @@ import contextlib
 import threading
 import uuid
 
+from structlog._loggers import BoundLogger
+from structlog._config import BoundLoggerLazyProxy
+
 
 def wrap_dict(dict_class):
     """
@@ -41,34 +44,32 @@ def wrap_dict(dict_class):
 @contextlib.contextmanager
 def tmp_bind(logger, **tmp_values):
     """
-    Context manager for temporarily binding *tmp_values* to *logger*.
+    Return a temporary logger consisting of *logger*'s context + *tmp_values*.
 
-    Use it with a `with`-statement.  Anything you bind here *or within* the
-    with block will be erased afterwards.
+    Binding new values to *logger* does not affect the contents of the yielded
+    logger.
 
-    >>> from structlog import BoundLogger, PrintLogger
+    >>> from structlog import wrap_logger, PrintLogger
     >>> from structlog.threadlocal import tmp_bind, wrap_dict
-    >>> logger = BoundLogger.wrap(PrintLogger(),
-    ...                           context_class=wrap_dict(dict))
+    >>> logger = wrap_logger(PrintLogger(),  context_class=wrap_dict(dict))
     >>> with tmp_bind(logger, x=5) as tmp_logger:
+    ...     logger = logger.bind(y=3)
     ...     tmp_logger.msg('event')
     x=5 event='event'
+    >>> logger.msg('event')
+    y=3 event='event'
     """
-    if not issubclass(logger._current_context_class, _ThreadLocalDictWrapper):
-        raise ValueError(
-            'tmp_bind works only with loggers whose context class has been '
-            'wrapped with wrap_dict.  You context class is {0!r}.'
-            .format(logger._current_context_class)
-        )
-    if not isinstance(logger._context, logger._current_context_class):
-        # This is a terrible thing to do.  But it avoids very confusing
-        # behavior.  Don't do this at home.
-        logger._context = logger._current_context_class(logger._context)
-    saved = logger._context.copy()
-    tmp_logger = logger.bind(**tmp_values)
-    yield tmp_logger
-    logger._current_context_class._tl.dict_.clear()
-    logger._current_context_class._tl.dict_.update(saved)
+    if isinstance(logger, BoundLoggerLazyProxy):
+        logger = logger.bind()
+
+    ctx = logger._context._dict.__class__(logger._context._dict)
+    ctx.update(**tmp_values)
+
+    yield BoundLogger(
+        logger._logger,
+        processors=logger._processors,
+        context=ctx,
+    )
 
 
 class _ThreadLocalDictWrapper(object):
@@ -80,7 +81,7 @@ class _ThreadLocalDictWrapper(object):
     Useful for short-lived threaded applications like requests in web app.
 
     Use :func:`wrap` to instantiate and use
-    :func:`structlog.loggers.BoundLogger.new` to clear the context.
+    :func:`structlog._loggers.BoundLogger.new` to clear the context.
     """
     def __init__(self, *args, **kw):
         """
@@ -115,6 +116,7 @@ class _ThreadLocalDictWrapper(object):
         return not self.__eq__(other)
 
     # Proxy methods necessary for structlog.
+    # Dunder methods don't trigger __getattr__ so we need to proxy by hand.
     def __iter__(self):
         return self._dict.__iter__()
 

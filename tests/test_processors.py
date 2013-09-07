@@ -15,7 +15,6 @@
 import datetime
 import json
 
-import arrow
 import pytest
 
 from freezegun import freeze_time
@@ -73,30 +72,32 @@ class TestJSONRenderer(object):
 class TestTimeStamper(object):
     def test_disallowsNonUTCUNIXTimestamps(self):
         with pytest.raises(ValueError) as e:
-            TimeStamper(tz='CEST')
+            TimeStamper(utc=False)
         assert 'UNIX timestamps are always UTC.' == e.value.args[0]
 
-    @freeze_time('1980-03-25 16:00:00', tz_offset=1)
     def test_insertsUTCUNIXTimestampByDefault(self):
         ts = TimeStamper()
         d = ts(None, None, {})
-        assert 322848000 == d['timestamp']
+        # freezegun doesn't work with time.gmtime :(
+        assert isinstance(d['timestamp'], int)
 
     @freeze_time('1980-03-25 16:00:00')
-    def test_transplantsCorrectly(self):
-        ts = TimeStamper(fmt='iso', tz='CET')
+    def test_local(self):
+        ts = TimeStamper(fmt='iso', utc=False)
         d = ts(None, None, {})
-        assert '1980-03-25T17:00:00+01:00' == d['timestamp']
-
-    def test_transplantsCorrectlyToLocal(self):
-        ts = TimeStamper(fmt='iso', tz='lOcAl')
-        assert arrow.now == ts._now
+        assert '1980-03-25T16:00:00' == d['timestamp']
 
     @freeze_time('1980-03-25 16:00:00')
     def test_formats(self):
-        ts = TimeStamper(fmt='YYYY')
+        ts = TimeStamper(fmt='%Y')
         d = ts(None, None, {})
         assert '1980' == d['timestamp']
+
+    @freeze_time('1980-03-25 16:00:00')
+    def test_adds_Z_to_iso(self):
+        ts = TimeStamper(fmt='iso', utc=True)
+        d = ts(None, None, {})
+        assert '1980-03-25T16:00:00Z' == d['timestamp']
 
 
 class TestFormatExcInfo(object):

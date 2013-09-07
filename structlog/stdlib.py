@@ -22,7 +22,7 @@ from __future__ import absolute_import, division, print_function
 import logging
 import sys
 
-from structlog.loggers import BoundLogger
+from structlog import wrap_logger, DropEvent
 
 
 def get_logger(name=None, processors=None, context_class=None):
@@ -32,14 +32,14 @@ def get_logger(name=None, processors=None, context_class=None):
     :param str name: Name of the logger.  ``__name__`` of caller's module is
         used if `None`.
     :param list processors: Gets passed unaltered to
-        :func:`structlog.loggers.BoundLogger.wrap`.
+        :func:`structlog.wrap_logger`.
     :param type context_class: Gets passed unaltered to
-        :func:`structlog.loggers.BoundLogger.wrap`.
-    :rvalue: :class:`structlog.loggers.BoundLogger`
+        :func:`structlog.wrap_logger`.
+    :rvalue: :class:`structlog._loggers.BoundLogger`
     """
     if not name:
         name = sys._getframe().f_back.f_globals['__name__']
-    return BoundLogger.wrap(
+    return wrap_logger(
         logging.getLogger(name),
         processors=processors,
         context_class=context_class,
@@ -79,4 +79,4 @@ def filter_by_level(logger, name, event_dict):
     if logger.isEnabledFor(_nameToLevel[name]):
         return event_dict
     else:
-        return False
+        raise DropEvent

@@ -21,9 +21,8 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-from structlog import processors
+from structlog import processors, wrap_logger
 from structlog._compat import string_types
-from structlog.loggers import BoundLogger
 from twisted.python import log
 from twisted.python.failure import Failure
 
@@ -33,12 +32,12 @@ def get_logger(processors=None, context_class=None):
     Convenience function to get a wrapped Twisted logger.
 
     :param list processors: Gets passed unaltered to
-        :func:`structlog.loggers.BoundLogger.wrap`.
+        :func:`structlog.wrap_logger`.
     :param type context_class: Gets passed unaltered to
-        :func:`structlog.loggers.BoundLogger.wrap`.
-    :rvalue: :class:`structlog.loggers.BoundLogger`
+        :func:`structlog.wrap_logger`.
+    :rvalue: :class:`structlog._loggers.BoundLogger`
     """
-    return BoundLogger.wrap(log, processors, context_class)
+    return wrap_logger(log, processors, context_class)
 
 
 _FAIL_TYPES = (BaseException, Failure)

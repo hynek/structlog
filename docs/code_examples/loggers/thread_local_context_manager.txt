@@ -1,7 +1,7 @@
->>> from structlog import BoundLogger, PrintLogger
+>>> from structlog import PrintLogger, wrap_logger
 >>> from structlog.threadlocal import tmp_bind, wrap_dict
 >>> WrappedDictClass = wrap_dict(dict)
->>> log = BoundLogger.wrap(PrintLogger(), context_class=WrappedDictClass)
+>>> log = wrap_logger(PrintLogger(), context_class=WrappedDictClass)
 >>> log.bind(x=42)  # doctest: +ELLIPSIS
 <BoundLogger(context=<WrappedDict-...({'x': 42})>, ...)>
 >>> log.msg('event!')

@@ -16,8 +16,12 @@ import threading
 
 import pytest
 
-from structlog import BoundLogger, ReturnLogger
+from structlog import (
+    ReturnLogger,
+    wrap_logger,
+)
 from structlog._compat import OrderedDict
+from structlog._loggers import BoundLogger
 from structlog.threadlocal import wrap_dict, tmp_bind
 
 
@@ -30,11 +34,8 @@ def D():
 
 
 @pytest.fixture
-def OD():
-    """
-    Returns an OrderedDict wrapped in _ThreadLocalDictWrapper.
-    """
-    return wrap_dict(OrderedDict)
+def log():
+    return wrap_logger(logger(), context_class=wrap_dict(OrderedDict))
 
 
 @pytest.fixture
@@ -47,44 +48,23 @@ def logger():
 
 
 class TestTmpBind(object):
-    def tearDown(self):
-        BoundLogger.reset_defaults()
+    def test_yields_an_immutable_logger(self, log):
+        with tmp_bind(log, x=42) as tmp_logger:
+            assert isinstance(tmp_logger._context, dict)
+            assert isinstance(tmp_logger, BoundLogger)
 
-    def test_fails_on_non_tls(self, logger):
-        l = BoundLogger.wrap(logger)
-        with pytest.raises(ValueError) as e:
-            with tmp_bind(l, x=42):
-                pass
-        assert e.value.args[0].startswith(
-            'tmp_bind works only with loggers whose context class has been '
-            'wrapped with wrap_dict.'
-        )
+    def test_yields_a_new_bound_loggger_if_called_on_lazy_proxy(self, log):
+        with tmp_bind(log, x=42) as tmp_log:
+            assert "x=42 event='bar'" == tmp_log.msg('bar')
+        assert "event='bar'" == log.msg('bar')
 
-    def test_converts_passed_and_yielded_logger(self, logger, OD):
-        """
-        If the wrapped logger has been created before it was configured,
-        the context may be in a wrong class.
-        """
-        l = BoundLogger.wrap(logger)
-        BoundLogger.configure(context_class=OD)
-        with tmp_bind(l, x=42) as l2:
-            assert l._context == l2._context
-            assert l._context.__class__ is l2._context.__class__
-            assert "x=42 event='bar'" == l2.msg('bar') == l.msg('bar')
-        assert "event='bar'" == l.msg('bar')
-
-    def test_bind(self, logger, OD):
-        l = BoundLogger.wrap(logger, context_class=OD)
-        l.bind(y=23)
-        assert isinstance(l._context, OD)
-        with tmp_bind(l, x=42, y='foo'):
-            assert 42 == l._context._dict['x']
-        assert {'y': 23} == l._context._dict
-        with tmp_bind(l, x=42, y='foo'):
-            assert 42 == l._context._dict['x']
-            assert "y='foo' x=42 event='foo'" == l.msg('foo')
-        assert {'y': 23} == l._context._dict
-        assert "y=23 event='foo'" == l.msg('foo')
+    def test_bind(self, log):
+        log = log.bind(y=23)
+        with tmp_bind(log, x=42, y='foo') as tmp_log:
+            assert {'y': 'foo', 'x': 42} == tmp_log._context
+            assert {'y': 23} == log._context._dict
+        assert {'y': 23} == log._context._dict
+        assert "y=23 event='foo'" == log.msg('foo')
 
 
 class TestThreadLocalDict(object):

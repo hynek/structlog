@@ -5,13 +5,14 @@ import structlog
 
 from .some_module import some_function
 
-log = structlog.stdlib.get_logger()
+
+logger = structlog.stdlib.get_logger()
 app = flask.Flask(__name__)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def some_route():
-    log.new(
+    log = logger.new(
         request_id=str(uuid.uuid4()),
     )
     # do something
@@ -24,7 +25,7 @@ def some_route():
     # ...
 
 if __name__ == "__main__":
-    structlog.BoundLogger.configure(
+    structlog.configure(
         context_class=structlog.threadlocal.wrap_dict(dict),
     )
     app.run()

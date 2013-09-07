@@ -18,15 +18,14 @@ Processors useful regardless of the logging framework.
 
 from __future__ import absolute_import, division, print_function
 
+import calendar
+import datetime
 import json
 import sys
+import time
 import traceback
 
-from functools import partial
-from operator import attrgetter
-
 from structlog._compat import StringIO, unicode_type
-from structlog.threadlocal import _ThreadLocalDictWrapper
 
 
 class KeyValueRenderer(object):
@@ -84,6 +83,8 @@ class _JSONFallbackEncoder(json.JSONEncoder):
         """
         Serialize obj with repr(obj) as fallback.
         """
+        # circular imports :(
+        from structlog.threadlocal import _ThreadLocalDictWrapper
         if isinstance(obj, _ThreadLocalDictWrapper):
             return obj._dict
         else:
@@ -127,49 +128,33 @@ def _format_exception(exc_info):
     return s
 
 
-try:
-    import arrow
+class TimeStamper(object):
+    """
+    Add a timestamp to `event_dict`.
 
-    class TimeStamper(object):
-        """
-        Add a timestamp to `event_dict`.
+    :param str format: strftime format string, or ``"iso"`` for `ISO 8601
+        <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
+        timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
+    :param bool utc: Whether timestamp should be in UTC or local time.
 
-        :param str format: strftime format string, or ``"iso"`` for `ISO 8601
-            <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
-            timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
-        :param str tz: timezone name to use, including `local`.
+    """
+    def __init__(self, fmt=None, utc=True):
+        if fmt is None and not utc:
+            raise ValueError('UNIX timestamps are always UTC.')
 
-        Requires `arrow <https://pypi.python.org/pypi/arrow/>`_.
-        """
-        def __init__(self, fmt=None, tz='UTC'):
-            if fmt and fmt.lower() == 'iso':
-                self._fmt = arrow.Arrow.isoformat
-            elif fmt is None:
-                self._fmt = attrgetter('timestamp')
+        now_method = getattr(datetime.datetime, 'utcnow' if utc else 'now')
+        if fmt is None:
+            self._stamper = lambda: calendar.timegm(time.gmtime())
+        elif fmt.upper() == 'ISO':
+            if utc:
+                self._stamper = lambda: now_method().isoformat() + 'Z'
             else:
-                self._fmt = partial(arrow.Arrow.format, fmt=fmt)
+                self._stamper = lambda: now_method().isoformat()
+        else:
+            def fmt_stamper():
+                return now_method().strftime(fmt)
+            self._stamper = fmt_stamper
 
-            tzu = tz.upper()
-            if fmt is None and tzu != 'UTC':
-                raise ValueError('UNIX timestamps are always UTC.')
-
-            if tzu == 'UTC':
-                self._now = arrow.utcnow
-            elif tzu == 'LOCAL':
-                self._now = arrow.now
-            else:
-                self._now = partial(arrow.now, tz)
-
-        def __call__(self, logger, name, event_dict):
-            event_dict['timestamp'] = self._fmt(self._now())
-            return event_dict
-except ImportError:  # pragma: nocover
-    class TimeStamper(object):
-        """
-        `arrow <https://pypi.python.org/pypi/arrow/>`_ is missing.
-        """
-        def __init__(self, *args, **kw):
-            raise NotImplementedError(
-                'TimeStamper class requires the arrow package '
-                '(https://pypi.python.org/pypi/arrow/).'
-            )
+    def __call__(self, _, __, event_dict):
+        event_dict['timestamp'] = self._stamper()
+        return event_dict

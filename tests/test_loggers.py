@@ -14,21 +14,18 @@
 
 from __future__ import absolute_import, division, print_function
 
-import re
-import unittest
-
 import pytest
 
-from pretend import stub
+from pretend import raiser, stub
 
-from structlog.processors import KeyValueRenderer
-from structlog.loggers import (
+from structlog._config import _CONFIG
+from structlog._loggers import (
     BoundLogger,
+    DropEvent,
     PrintLogger,
     ReturnLogger,
-    _DEFAULT_CONTEXT_CLASS,
-    _DEFAULT_PROCESSORS,
 )
+from structlog.processors import KeyValueRenderer
 
 
 def test_return_logger():
@@ -53,7 +50,20 @@ class TestPrintLogger(object):
         assert 'hello\n' == f.read()
 
     def test_repr(self):
-        assert '<PrintLogger()>' == repr(PrintLogger())
+        assert repr(PrintLogger()).startswith(
+            "<PrintLogger(file="
+        )
+
+
+def buildBL(logger=None, processors=None, context=None):
+    """
+    Convenience function to build BoundLoggers with sane defaults.
+    """
+    return BoundLogger(
+        logger or ReturnLogger(),
+        processors or _CONFIG.default_processors,
+        context if context is not None else _CONFIG.default_context_class(),
+    )
 
 
 class TestBinding(object):
@@ -61,8 +71,7 @@ class TestBinding(object):
         """
         Ensure BoundLogger is immutable by default.
         """
-        b = BoundLogger.wrap(ReturnLogger(),
-                             processors=[KeyValueRenderer(sort_keys=True)])
+        b = buildBL(processors=[KeyValueRenderer(sort_keys=True)])
         b = b.bind(x=42, y=23)
         b1 = b.bind(foo='bar')
         assert (
@@ -80,7 +89,7 @@ class TestBinding(object):
         )
 
     def test_new_clears_state(self):
-        b = BoundLogger.wrap(None)
+        b = buildBL()
         b = b.bind(x=42)
         assert 42 == b._context['x']
         b = b.bind()
@@ -89,7 +98,7 @@ class TestBinding(object):
         assert 'x' not in b._context
 
     def test_comparison(self):
-        b = BoundLogger.wrap(None)
+        b = buildBL()
         assert b == b.bind()
         assert b is not b.bind()
         assert b != b.bind(x=5)
@@ -101,7 +110,7 @@ class TestWrapper(object):
         """
         __getattr__() gets called only once per logger method.
         """
-        b = BoundLogger.wrap(ReturnLogger())
+        b = buildBL()
         assert 'msg' not in b.__dict__
         b.msg('foo')
         assert 'msg' in b.__dict__
@@ -109,150 +118,28 @@ class TestWrapper(object):
     def test_copies_context_before_processing(self):
         def chk(_, __, event_dict):
             assert b._context is not event_dict
-            return False
+            return ''
 
-        b = BoundLogger.wrap(ReturnLogger, processors=[chk])
+        b = buildBL(processors=[chk])
         b.msg('event')
         assert 'event' not in b._context
 
-    def test_processor_returning_none_raises_valueerror(self):
-        b = BoundLogger.wrap(ReturnLogger(), processors=[lambda *_: None])
-        with pytest.raises(ValueError) as e:
-            b.msg('boom')
-        assert re.match(
-            r'Processor \<function .+\> returned None.', e.value.args[0]
-        )
-
-    def test_processor_returning_false_silently_aborts_chain(self, capsys):
-        # The 2nd processor would raise a ValueError if reached.
-        b = BoundLogger.wrap(ReturnLogger(), processors=[lambda *_: False,
-                                                         lambda *_: None])
+    def test_processor_raising_DropEvent_silently_aborts_chain(self, capsys):
+        b = buildBL(processors=[raiser(DropEvent), raiser(ValueError)])
         b.msg('silence!')
-        assert ('', '') == capsys.readouterr()
+        assert (('', '') == capsys.readouterr())
+
+    def test_chain_does_not_swallow_all_exceptions(self):
+        b = buildBL(processors=[raiser(ValueError)])
+        with pytest.raises(ValueError):
+            b.msg('boom')
 
     def test_processor_can_return_both_str_and_tuple(self):
         logger = stub(msg=lambda *args, **kw: (args, kw))
-        b1 = BoundLogger.wrap(logger, processors=[lambda *_: 'foo'])
-        b2 = BoundLogger.wrap(logger, processors=[lambda *_: (('foo',), {})])
+        b1 = buildBL(logger, processors=[lambda *_: 'foo'])
+        b2 = buildBL(logger, processors=[lambda *_: (('foo',), {})])
         assert b1.msg('foo') == b2.msg('foo')
 
     def test_repr(self):
-        l = BoundLogger.wrap(None, processors=[1, 2, 3], context_class=dict)
+        l = buildBL(processors=[1, 2, 3], context={})
         assert '<BoundLogger(context={}, processors=[1, 2, 3])>' == repr(l)
-
-
-class ConfigureTestCase(unittest.TestCase):
-    """
-    There's some global state here so we use a class to be able to clean up.
-    """
-    def setUp(self):
-        self.b_def = BoundLogger.wrap(None)
-
-    def tearDown(self):
-        BoundLogger.reset_defaults()
-
-    def test_reset(self):
-        x = stub()
-        BoundLogger.configure(processors=[x], context_class=dict)
-        BoundLogger.reset_defaults()
-        b = BoundLogger.wrap(None)
-        assert x is not b._current_processors[0]
-        assert self.b_def._current_processors == b._current_processors
-        assert _DEFAULT_PROCESSORS == b._current_processors
-        assert _DEFAULT_CONTEXT_CLASS == b._current_context_class
-
-    def test_just_processors(self):
-        x = stub()
-        BoundLogger.configure(processors=[x])
-        b = BoundLogger.wrap(None)
-        assert x == b._current_processors[0]
-
-    def test_just_context_class(self):
-        BoundLogger.configure(context_class=dict)
-        b = BoundLogger.wrap(None)
-        assert dict is b._current_context_class
-
-    def test_overwrite_processors(self):
-        x = stub()
-        z = stub()
-        BoundLogger.configure(processors=[x])
-        b = BoundLogger.wrap(None, processors=[z])
-        assert 1 == len(b._current_processors)
-        assert z is b._current_processors[0]
-
-    def test_affects_all(self):
-        x = stub()
-        b = BoundLogger.wrap(None)
-        BoundLogger.configure(processors=[x], context_class=dict)
-        assert 1 == len(b._current_processors)
-        assert x is b._current_processors[0]
-        assert dict is b._current_context_class
-
-    def test_bind_changes_type_of_dict_if_necessary(self):
-        b = BoundLogger.wrap(None)
-        b.configure(context_class=dict)
-        assert _DEFAULT_CONTEXT_CLASS is b._context.__class__
-        b = b.bind(x=42)
-        assert _DEFAULT_CONTEXT_CLASS is not b._context.__class__
-        assert dict is b._context.__class__
-
-    def test_configure_does_not_affect_overwritten(self):
-        """
-        This is arguably an ugly test.  However it aspires to prove that any
-        order of configuring and wrapping works as advertised.
-        """
-        x = stub()
-        z = stub()
-        BoundLogger.configure(processors=[x])
-        b = BoundLogger.wrap(None, processors=[z], context_class=dict)
-        part_def_b = BoundLogger.wrap(None)
-        def_b1 = BoundLogger.wrap(None)
-        BoundLogger.configure(processors=[x])
-        assert 1 == len(b._current_processors)
-        assert dict is b._current_context_class
-        assert z is b._current_processors[0]
-        def_b2 = BoundLogger.wrap(None)
-        assert 1 == len(def_b1._current_processors)
-        assert x is def_b1._current_processors[0]
-        assert 1 == len(def_b2._current_processors)
-        assert x is def_b2._current_processors[0]
-        assert x is part_def_b._current_processors[0]
-        assert (
-            def_b1._current_processors is BoundLogger._default_processors
-        )
-        assert (
-            def_b2._current_processors is BoundLogger._default_processors
-        )
-        assert (part_def_b._current_processors is
-                BoundLogger._default_processors)
-        assert dict is b._context_class
-
-    def test_wrapper_converts_context_if_necessary(self):
-        """
-        If a logger logs without binding, the context is still of the default
-        dict class instead of the one configured.
-
-        In that case, the context gets converted first.
-        """
-        b = BoundLogger.wrap(ReturnLogger())
-        BoundLogger.configure(context_class=dict)
-        assert _DEFAULT_CONTEXT_CLASS is b._context.__class__
-        b.info('event')
-        assert _DEFAULT_CONTEXT_CLASS is not b._context.__class__
-        assert dict is b._context.__class__
-
-    def test_is_configured(self):
-        b = BoundLogger.wrap(None)
-        BoundLogger.configure()
-        assert True is b.is_configured
-        assert True is BoundLogger.is_configured
-        BoundLogger.reset_defaults()
-        assert False is b.is_configured
-        assert False is BoundLogger.is_configured
-
-    def test_configured_once(self):
-        b = BoundLogger.wrap(None)
-        BoundLogger.configure_once(context_class=dict)
-        assert dict is b._current_context_class
-        BoundLogger.configure_once(context_class=object)
-        assert dict is b._current_context_class

@@ -8,18 +8,28 @@ structlog Package
 :mod:`structlog` Package
 ------------------------
 
-.. automodule:: structlog.__init__
-    :members:
+.. autofunction:: wrap_logger
+.. autofunction:: configure
+.. autofunction:: configure_once
+.. autofunction:: reset_defaults
+
+.. autoclass:: BoundLogger
+   :members: new, bind
+
+.. autoclass:: PrintLogger
+.. autoclass:: ReturnLogger
+
+.. autoexception:: DropEvent
+
+:mod:`threadlocal` Module
+-------------------------
+
+.. automodule:: structlog.threadlocal
+    :members: wrap_dict, tmp_bind
     :undoc-members:
     :show-inheritance:
 
-:mod:`loggers` Module
----------------------
-
-.. automodule:: structlog.loggers
-    :members: BoundLogger, PrintLogger, ReturnLogger
-    :undoc-members:
-    :inherited-members:
+.. _procs:
 
 :mod:`processors` Module
 ------------------------
@@ -34,14 +44,6 @@ structlog Package
 
 .. automodule:: structlog.stdlib
     :members: get_logger, filter_by_level
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`threadlocal` Module
--------------------------
-
-.. automodule:: structlog.threadlocal
-    :members: wrap_dict, tmp_bind
     :undoc-members:
     :show-inheritance:
 

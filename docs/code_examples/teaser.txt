@@ -1,5 +1,5 @@
->>> from structlog import BoundLogger, PrintLogger
->>> log = BoundLogger.wrap(PrintLogger())
+>>> from structlog import PrintLogger, wrap_logger
+>>> log = wrap_logger(PrintLogger())
 >>> log = log.bind(user='anonymous', some_key=23)
 >>> log = log.bind(user='hynek', source='http', another_key=42)
 >>> log.info('user.logged_in', happy=True)

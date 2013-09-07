@@ -18,8 +18,9 @@ import pytest
 pytest.importorskip('twisted')
 from twisted.python.failure import Failure, NoCurrentExceptionError
 
+from structlog._compat import OrderedDict
+from structlog._config import BoundLoggerLazyProxy
 from structlog.twisted import (
-    BoundLogger,
     JSONRenderer,
     LogAdapter,
     _extractStuffAndWhy,
@@ -28,7 +29,7 @@ from structlog.twisted import (
 
 
 def test_get_logger():
-    assert isinstance(get_logger(), BoundLogger)
+    assert isinstance(get_logger(), BoundLoggerLazyProxy)
 
 
 def _render_repr(_, __, event_dict):
@@ -178,7 +179,8 @@ def jr():
 
 class TestJSONRenderer(object):
     def test_dumpsKWsAreHandedThrough(self, jr):
-        d = {'x': 'foo', 'a': 'bar'}
+        d = OrderedDict(x='foo')
+        d.update(a='bar')
         jr_sorted = JSONRenderer(sort_keys=True)
         assert jr_sorted(None, 'err', d) != jr(None, 'err', d)
 
@@ -191,5 +193,5 @@ class TestJSONRenderer(object):
 
     def test_handlesFailure(self, jr):
         rv = jr(None, 'err', {'event': Failure(ValueError())})
-        assert 'Failure: exceptions.ValueError:' in rv
+        assert 'Failure: exceptions.ValueError' in rv
         assert '"event": "error"' in rv

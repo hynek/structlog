@@ -13,21 +13,33 @@
 # limitations under the License.
 
 """
-Painless structural logging.
+Painless structured logging.
 """
 
 from __future__ import absolute_import, division, print_function
 
 __version__ = '0.1.0'
 
-from structlog.loggers import (
+from structlog._config import (
+    configure,
+    configure_once,
+    reset_defaults,
+    wrap_logger,
+)  # flake8: noqa
+from structlog._loggers import (
+    BoundLogger,
+    DropEvent,
     PrintLogger,
     ReturnLogger,
-    BoundLogger, # flake8: noqa
-)
-from structlog.processors import (
-    JSONRenderer,
-    KeyValueRenderer,
-    TimeStamper,
-    format_exc_info,
 )  # flake8: noqa
+
+__all__ = [
+    BoundLogger,
+    DropEvent,
+    PrintLogger,
+    ReturnLogger,
+    configure,
+    configure_once,
+    reset_defaults,
+    wrap_logger,
+]

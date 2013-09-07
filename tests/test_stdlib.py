@@ -16,6 +16,9 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 
+import pytest
+
+from structlog import DropEvent
 from structlog.stdlib import get_logger, filter_by_level, WARN, CRITICAL
 
 
@@ -33,7 +36,8 @@ class TestFilterByLevel(object):
     def test_filters_lower_levels(self):
         logger = logging.Logger(__name__)
         logger.setLevel(CRITICAL)
-        assert False is filter_by_level(logger, 'warn', {})
+        with pytest.raises(DropEvent):
+            filter_by_level(logger, 'warn', {})
 
     def test_passes_higher_levels(self):
         logger = logging.Logger(__name__)
