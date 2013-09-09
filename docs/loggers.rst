@@ -198,6 +198,8 @@ In order to be able to bind values temporarily to a logger, :mod:`structlog.thre
    :language: pycon
    :start-after: context_class=WrappedDictClass)
 
+If you want to detach a logger from thread local data, there's :func:`structlog.threadlocal.as_immutable`.
+
 
 Downsides & Caveats
 ^^^^^^^^^^^^^^^^^^^

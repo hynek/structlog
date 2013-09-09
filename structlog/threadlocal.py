@@ -44,19 +44,25 @@ def as_immutable(logger):
     """
     Extract the context from a thread local logger into an immutable logger.
 
+    :param BoundLogger logger: A logger with *possibly* thread local state.
+
     Useful if you want to save and use the context but not modify the global
     state.  For example in class constructors.
     """
     if isinstance(logger, BoundLoggerLazyProxy):
         logger = logger.bind()
 
-    ctx = logger._context._dict.__class__(logger._context._dict)
-
-    return logger.__class__(
-        logger._logger,
-        processors=logger._processors,
-        context=ctx,
-    )
+    try:
+        ctx = logger._context._tl.dict_.__class__(logger._context._dict)
+        bl = logger.__class__(
+            logger._logger,
+            processors=logger._processors,
+            context={},
+        )
+        bl._context = ctx
+        return bl
+    except AttributeError:
+        return logger
 
 
 @contextlib.contextmanager

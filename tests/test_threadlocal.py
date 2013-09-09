@@ -67,21 +67,26 @@ class TestTmpBind(object):
         assert "y=23 event='foo'" == log.msg('foo')
 
 
-def TestAsImmutable(object):
+class TestAsImmutable(object):
     def test_does_not_affect_global(self, log):
         log = log.bind(x=42)
-        il = as_immutable(logger)
+        il = as_immutable(log)
         assert isinstance(il._context, dict)
-        il = log.bind(y=23)
+        il = il.bind(y=23)
         assert {'x': 42, 'y': 23} == il._context
-        assert {'x': 42} == log._context
+        assert {'x': 42} == log._context._dict
 
     def test_converts_proxy(self, log):
-        il = as_immutable(logger)
-        il = log.bind(y=23)
+        il = as_immutable(log)
+        il = il.bind(y=23)
         assert isinstance(il._context, dict)
         assert {'y': 23} == il._context
-        assert {} == log._context
+        assert {} == log._context._dict
+
+    def test_works_with_immutable(self, log):
+        il = as_immutable(log)
+        assert isinstance(il._context, dict)
+        assert isinstance(as_immutable(il), BoundLogger)
 
 
 class TestThreadLocalDict(object):
