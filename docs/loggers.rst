@@ -5,8 +5,8 @@ The center of structlog is the immutable log wrapper :class:`~structlog.BoundLog
 
 All it does is:
 
-- Keeping a *context* and a *logger* it's wrapping,
-- recreating itself with (optional) additional context data (the :func:`~structlog..BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
+- Keeping a *context* and a *logger* that it's wrapping,
+- recreating itself with (optional) additional context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
 - and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of processors.
 
 You won't be instantiating it yourself though.
@@ -15,7 +15,7 @@ For that there is the :func:`structlog.wrap_logger` function:
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
 
-As you can see, it accepts one mandatory and two optional arguments:
+As you can see, it accepts one mandatory and a few optional arguments:
 
 **logger**
    Only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
@@ -31,6 +31,18 @@ As you can see, it accepts one mandatory and two optional arguments:
    Particularly useful for :ref:`thread local context storage <threadlocal>`.
 
    Default is OrderedDict_.
+
+Additionally, the following arguments are allowed too:
+
+**wrapper_class**
+   A class to use instead of :class:`~structlog.BoundLogger` for wrapping.
+   This is useful if you want to sub-class BoundLogger and add custom logging methods.
+   BoundLogger's bind/new methods are sub-classing friendly so you won't have to re-implement them.
+   Please refer to the :ref:`related example <wrapper_class-example>` how this may look like.
+
+**initial_values**
+   The values that new wrapped loggers are automatically constructed with.
+   Useful for example if you want to have the module name as part of the context.
 
 This example also demonstrates how structlog is *not* dependent on Python's standard library logging module.
 
@@ -63,7 +75,8 @@ Additionally -- but arguably mostly for my own unit testing convenience -- struc
 Configuration
 -------------
 
-structlog allows you to set global default values for both ``processors`` and ``context_class`` so ideally your logging boilerplate in regular application consists only of::
+structlog allows you to set global default values for ``processors``, ``wrapper_class`` and ``context_class``.
+So ideally your logging boilerplate in regular application consists only of::
 
    from structlog.stdlib import get_logger
    logger = get_logger()
@@ -75,7 +88,7 @@ or::
 
 if you don't use a directly supported logger.
 
-To achieve that you'll have to call :func:`structlog.configure` on app initialization (if you're not content with the defaults that is).
+To achieve that you'll have to call :func:`structlog.configure` on app initialization (of course, only if you're not content with the defaults).
 The previous example could thus have been written as following:
 
 .. literalinclude:: code_examples/loggers/simplest_configure.txt
@@ -86,11 +99,11 @@ The previous example could thus have been written as following:
 
 structlog tries to behave in the least surprising way when it comes to handling defaults and configuration:
 
-#. Passed `processors` and `context_class` arguments to :func:`structlog.wrap_logger` *always* take the highest precedence.
+#. Passed `processors`, `wrapper_class`, and `context_class` arguments to :func:`structlog.wrap_logger` *always* take the highest precedence.
    That means that you can overwrite whatever you've configured for each logger respectively.
 #. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
 
-   Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions)  most likely at import time and thus before you had a chance to configure structlog, they all return a proxy that returns a correct BoundLogger on first ``bind()``/``new()``.
+   Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions) most likely at import time and thus before you had a chance to configure structlog, they all return a proxy that returns a correct wrapped logger on first ``bind()``/``new()``.
 
    To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
    Therefore if you have nothing to bind but intend to do lots of log calls in a function, it makes sense performance-wise to create a local logger by calling ``bind()`` or ``new()`` without any parameters.

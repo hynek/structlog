@@ -26,6 +26,7 @@ from structlog._config import (
     _CONFIG,
     _BUILTIN_DEFAULT_CONTEXT_CLASS,
     _BUILTIN_DEFAULT_PROCESSORS,
+    _BUILTIN_DEFAULT_WRAPPER_CLASS,
     configure,
     configure_once,
     reset_defaults,
@@ -37,9 +38,15 @@ from structlog._loggers import BoundLogger
 @pytest.fixture
 def proxy():
     """
-    Returns a BoundLoggerLazyProx constructed w/o paramaters & None as logger.
+    Returns a BoundLoggerLazyProxy constructed w/o paramaters & None as logger.
     """
     return BoundLoggerLazyProxy(None)
+
+
+class Wrapper(BoundLogger):
+    """
+    Custom wrapper class for testing.
+    """
 
 
 class TestConfigure(object):
@@ -55,11 +62,12 @@ class TestConfigure(object):
 
     def test_reset(self, proxy):
         x = stub()
-        configure(processors=[x], context_class=dict)
+        configure(processors=[x], context_class=dict, wrapper_class=Wrapper)
         reset_defaults()
         b = proxy.bind()
         assert [x] != b._processors
         assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
+        assert isinstance(b, _BUILTIN_DEFAULT_WRAPPER_CLASS)
         assert _BUILTIN_DEFAULT_CONTEXT_CLASS == b._context.__class__
 
     def test_just_processors(self, proxy):
@@ -97,7 +105,8 @@ class TestBoundLoggerLazyProxy(object):
             initial_values={'foo': 42},
         )
         assert (
-            "<BoundLoggerLazyProxy(processors=[1, 2, 3], "
+            "<BoundLoggerLazyProxy(logger=None, wrapper_class=None, "
+            "processors=[1, 2, 3], "
             "context_class=<%s 'dict'>, "
             "initial_values={'foo': 42})>"
             % ('class' if PY3 else 'type',)
@@ -142,6 +151,16 @@ class TestBoundLoggerLazyProxy(object):
     def test_bind_binds_new_values(self, proxy):
         b = proxy.bind(c=3)
         assert {'c': 3} == b._context
+
+    def test_honors_wrapper_class(self):
+        p = BoundLoggerLazyProxy(None, wrapper_class=Wrapper)
+        b = p.bind()
+        assert isinstance(b, Wrapper)
+
+    def test_honors_wrapper_from_config(self, proxy):
+        configure(wrapper_class=Wrapper)
+        b = proxy.bind()
+        assert isinstance(b, Wrapper)
 
     def test_new_binds_only_initial_values_impolicit_ctx_class(self, proxy):
         proxy = BoundLoggerLazyProxy(None, initial_values={'a': 1, 'b': 2})

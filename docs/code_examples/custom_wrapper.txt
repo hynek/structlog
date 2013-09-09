@@ -1,0 +1,14 @@
+>>> from structlog import BoundLogger, PrintLogger, wrap_logger
+>>> class SemanticLogger(BoundLogger):
+...    def msg(self, event, **kw):
+...        if not 'status' in kw:
+...            self.info(event, status='ok', **kw)
+...        else:
+...            self.info(event, **kw)
+...
+...    def user_error(self, event, **kw):
+...        self.msg(event, status='user_error', **kw)
+>>> log = wrap_logger(PrintLogger(), wrapper_class=SemanticLogger)
+>>> log = log.bind(user='fprefect')
+>>> log.user_error('user.forgot_towel')
+user='fprefect' status='user_error' event='user.forgot_towel'

@@ -57,4 +57,19 @@ Here you go:
 
 structlog comes with many handy processors build right in -- for a list of shipped processors, check out the :ref:`API documentation <procs>`.
 
-Of course you can :ref:`configure <configuration>` default processors and context classes globally.
+
+.. _wrapper_class-example:
+
+Custom Wrapper Classes
+----------------------
+
+A custom wrapper class helps you to cast the shackles of your underlying logging system even further and get rid of even more boilerplate.
+
+.. literalinclude:: code_examples/custom_wrapper.txt
+   :language: pycon
+
+I like to have semantically meaningful logger names.
+If you agree, this is a nice way to achieve that.
+
+
+Of course, you can :ref:`configure <configuration>` default processors, the wrapper class and the context classes globally.

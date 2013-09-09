@@ -22,7 +22,7 @@ from structlog import (
 )
 from structlog._compat import OrderedDict
 from structlog._loggers import BoundLogger
-from structlog.threadlocal import wrap_dict, tmp_bind
+from structlog.threadlocal import as_immutable, wrap_dict, tmp_bind
 
 
 @pytest.fixture
@@ -65,6 +65,23 @@ class TestTmpBind(object):
             assert {'y': 23} == log._context._dict
         assert {'y': 23} == log._context._dict
         assert "y=23 event='foo'" == log.msg('foo')
+
+
+def TestAsImmutable(object):
+    def test_does_not_affect_global(self, log):
+        log = log.bind(x=42)
+        il = as_immutable(logger)
+        assert isinstance(il._context, dict)
+        il = log.bind(y=23)
+        assert {'x': 42, 'y': 23} == il._context
+        assert {'x': 42} == log._context
+
+    def test_converts_proxy(self, log):
+        il = as_immutable(logger)
+        il = log.bind(y=23)
+        assert isinstance(il._context, dict)
+        assert {'y': 23} == il._context
+        assert {} == log._context
 
 
 class TestThreadLocalDict(object):

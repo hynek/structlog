@@ -104,6 +104,18 @@ class TestBinding(object):
         assert b != b.bind(x=5)
         assert b != 'test'
 
+    def test_bind_keeps_class(self):
+        class Wrapper(BoundLogger):
+            pass
+        b = Wrapper(None, [], {})
+        assert isinstance(b.bind(), Wrapper)
+
+    def test_new_keeps_class(self):
+        class Wrapper(BoundLogger):
+            pass
+        b = Wrapper(None, [], {})
+        assert isinstance(b.new(), Wrapper)
+
 
 class TestWrapper(object):
     def test_caches(self):

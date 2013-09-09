@@ -14,9 +14,17 @@ Chains
 The *processor chain* is a list of processors.
 Each processors receives three positional arguments:
 
-#. the wrapped *logger*,
-#. the *name* of the wrapped method,
-#. and the current context together with the current event (called ``event_dict``).
+**logger**
+   Your wrapped logger object.
+   For example `logging.Logger <http://docs.python.org/2/library/logging.html#logging.Logger>`_.
+
+**method_name**
+   The name of the wrapped method.
+   If you called ``log.warn('foo')``, it will be ``"warn"``.
+
+**event_dict**
+   Current context together with the current event.
+   If the context was ``{'a': 42}`` and the event is ``"foo"``, the initial ``event_dict`` will be ``{'a':42, 'event': 'foo'}``.
 
 The return value of each processor is passed on to the next one as ``event_dict`` until finally the return value of the last processor gets passed into the wrapped logging method.
 

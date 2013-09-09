@@ -20,7 +20,6 @@ import contextlib
 import threading
 import uuid
 
-from structlog._loggers import BoundLogger
 from structlog._config import BoundLoggerLazyProxy
 
 
@@ -41,6 +40,25 @@ def wrap_dict(dict_class):
     return Wrapped
 
 
+def as_immutable(logger):
+    """
+    Extract the context from a thread local logger into an immutable logger.
+
+    Useful if you want to save and use the context but not modify the global
+    state.  For example in class constructors.
+    """
+    if isinstance(logger, BoundLoggerLazyProxy):
+        logger = logger.bind()
+
+    ctx = logger._context._dict.__class__(logger._context._dict)
+
+    return logger.__class__(
+        logger._logger,
+        processors=logger._processors,
+        context=ctx,
+    )
+
+
 @contextlib.contextmanager
 def tmp_bind(logger, **tmp_values):
     """
@@ -59,17 +77,7 @@ def tmp_bind(logger, **tmp_values):
     >>> logger.msg('event')
     y=3 event='event'
     """
-    if isinstance(logger, BoundLoggerLazyProxy):
-        logger = logger.bind()
-
-    ctx = logger._context._dict.__class__(logger._context._dict)
-    ctx.update(**tmp_values)
-
-    yield BoundLogger(
-        logger._logger,
-        processors=logger._processors,
-        context=ctx,
-    )
+    yield as_immutable(logger).bind(**tmp_values)
 
 
 class _ThreadLocalDictWrapper(object):
