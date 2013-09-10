@@ -136,25 +136,28 @@ class TimeStamper(object):
         <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
-
     """
-    def __init__(self, fmt=None, utc=True):
+    def __new__(cls, fmt=None, utc=True):
         if fmt is None and not utc:
             raise ValueError('UNIX timestamps are always UTC.')
 
         now_method = getattr(datetime.datetime, 'utcnow' if utc else 'now')
         if fmt is None:
-            self._stamper = lambda: calendar.timegm(time.gmtime())
+            def stamper(self, _, __, event_dict):
+                event_dict['timestamp'] = calendar.timegm(time.gmtime())
+                return event_dict
         elif fmt.upper() == 'ISO':
             if utc:
-                self._stamper = lambda: now_method().isoformat() + 'Z'
+                def stamper(self, _, __, event_dict):
+                    event_dict['timestamp'] = now_method().isoformat() + 'Z'
+                    return event_dict
             else:
-                self._stamper = lambda: now_method().isoformat()
+                def stamper(self, _, __, event_dict):
+                    event_dict['timestamp'] = now_method().isoformat()
+                    return event_dict
         else:
-            def fmt_stamper():
-                return now_method().strftime(fmt)
-            self._stamper = fmt_stamper
+            def stamper(self, _, __, event_dict):
+                event_dict['timestamp'] = now_method().strftime(fmt)
+                return event_dict
 
-    def __call__(self, _, __, event_dict):
-        event_dict['timestamp'] = self._stamper()
-        return event_dict
+        return type('TimeStamper', (object,), {'__call__': stamper})()
