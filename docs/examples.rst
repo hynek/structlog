@@ -24,7 +24,7 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using `new()` for re-initializing the logger).
 
 Please note that :class:`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger() <http://docs.python.org/2/library/logging.html#logging.getLogger>`_. with it.
-It's used by :func:`struclog.get_logger` to rid you of logging boilerplate in application code.
+It's used by :func:`structlog.get_logger` to rid you of logging boilerplate in application code.
 
 
 .. _twisted-example:
@@ -45,6 +45,7 @@ gives you something like:
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=1 data='123\n' event='echoed data!'
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=2 data='456\n' event='echoed data!'
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=3 data='foo\n' event='echoed data!'
+  ... peer='10.10.0.1' connection_id='85234511-...' count=1 data='cba\n' event='echoed data!'
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=4 data='bar\n' event='echoed data!' 
 
 Since Twisted's logging system is a bit peculiar, structlog ships with an :class:`adapter <structlog.twisted.EventAdapter>` so it keeps behaving like you'd expect it to behave.

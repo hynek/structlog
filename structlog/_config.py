@@ -57,9 +57,11 @@ def get_logger(**initial_values):
     Convenience function that returns a logger according to configuration.
 
     >>> from structlog import get_logger
-    >>> log = get_logger()
+    >>> log = get_logger(y=23)
     >>> log.msg('hello', x=42)
-    x=42 event='hello'
+    y=23 x=42 event='hello'
+
+    :param initial_values: Values that are used to prepopulate your contexts.
 
     See :ref:`configuration` for details.
     """

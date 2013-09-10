@@ -10,7 +10,7 @@ All it does is:
 - and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of processors.
 
 You won't be instantiating it yourself though.
-For that there is the :func:`structlog.wrap_logger` function:
+For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in :ref:`configuration`):
 
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
@@ -18,8 +18,8 @@ For that there is the :func:`structlog.wrap_logger` function:
 As you can see, it accepts one mandatory and a few optional arguments:
 
 **logger**
-   Only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
-   Since a wrapped logger without a logger doesn't make any sense, this argument is *mandatory*.
+   The one an only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
+   If you wish to use the configured logger factory, set it to `None`.
 
 **processors**
    A list of callables that can :ref:`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
@@ -55,12 +55,13 @@ This example also demonstrates how structlog is *not* dependent on Python's stan
    This gives you the power to log directly to databases, log aggregation servers, web services, and whatnot.
 
 
-Convenience Helpers
--------------------
+Shipped Loggers
+---------------
 
-For convenience and accessibility, structlog *ships* with the class :class:`~structlog.PrintLogger` because it's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+To save you the hassle of using standard library logging for simple stdout logging, structlog ships a :class:`~structlog.PrintLogger`.
+It's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
-Additionally -- but arguably mostly for my own unit testing convenience -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
+Additionally -- mostly for unit testing -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
 .. literalinclude:: code_examples/loggers/return_logger.txt
    :language: pycon
@@ -89,6 +90,16 @@ The previous example could thus have been written as following:
    :start-after: return repr(event_dict)
    :end-before: reset_defaults
 
+In fact, it could even be written like
+
+.. literalinclude:: code_examples/loggers/get_logger_configure.txt
+   :language: pycon
+   :emphasize-lines: 7
+   :start-after: return repr(event_dict)
+   :end-before: reset_defaults
+
+because :class:`~structlog.processors.PrintLogger` is the default LoggerFactory used (see :ref:`logger-factories`).
+
 structlog tries to behave in the least surprising way when it comes to handling defaults and configuration:
 
 #. Passed `processors`, `wrapper_class`, and `context_class` arguments to :func:`structlog.wrap_logger` *always* take the highest precedence.
@@ -105,6 +116,7 @@ structlog tries to behave in the least surprising way when it comes to handling 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
 
+.. _logger-factories:
 
 Logger Factories
 ^^^^^^^^^^^^^^^^
@@ -113,7 +125,7 @@ To make :func:`structlog.get_logger` work, one needs one more option that hasn't
 
 It is a callable that returns the logger that gets wrapped and returned.
 In the simplest case, it's a function that returns a logger -- or just a class.
-But you can also pass in an instance of a class witch a ``__call__`` method for more complicated setups.
+But you can also pass in an instance of a class with a ``__call__`` method for more complicated setups.
 
 For the common cases of standard library logging and Twisted logging, structlog comes with two factories built right in:
 
@@ -129,6 +141,8 @@ So all it takes to use structlog with standard library logging is this::
    >>> log.critical('this is too easy!')
    event='this is too easy!'
 
+The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
+
 Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger` with the default values exaplained above.
 I don't believe silent loggers are a sensible default.
 
@@ -136,14 +150,15 @@ I don't believe silent loggers are a sensible default.
 Where to Configure
 ^^^^^^^^^^^^^^^^^^
 
-The best place to perform your configuration varies with applications and frameworks:
+The best place to perform your configuration varies with applications and frameworks.
+Ideally as late as possible but *before* non-framework (i.e. your) code is executed.
 
 **Django**
    Django has to date unfortunately no concept of an application assembler or "app is done" hooks.
    Therefore the bottom of your ``settings.py`` will have to do.
 
 **Flask**
-   TBD
+   HALP? :(
 
 **Pyramid**
    `Application constructor <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
@@ -152,7 +167,7 @@ The best place to perform your configuration varies with applications and framew
    The `plugin definition <http://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
    If your app is not a plugin, put it into your `tac file <http://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
 
-If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your :func:`structlog.configure` gets called more than once, structlog offers :func:`structlog.configure_once` that does nothing if structlog has been configured before (no matter whether using :func:`structlog.configure` or :func:`~structlog.configure_once`).
+If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your :func:`structlog.configure` gets called more than once, structlog offers :func:`structlog.configure_once` that raises a warning if structlog has been configured before (no matter whether using :func:`structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.
 
 
 Immutability
@@ -244,7 +259,7 @@ The convenience of having a thread local context comes at a price though:
 
      Although the state is saved in a global data structure, you still need the global wrapped logger produce a real bound logger.
      Otherwise each log call will result in an instantiation of a temporary BoundLogger.
-     ee :ref:`configuration` for more details.
+     See :ref:`configuration` for more details.
 
 The general sentiment against thread locals is that they're hard to test.
 In this case I feel like this is an acceptable trade-off.
