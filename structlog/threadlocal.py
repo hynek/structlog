@@ -17,10 +17,30 @@ Primitives to keep context global but thread local.
 """
 
 import contextlib
-import threading
 import uuid
 
 from structlog._config import BoundLoggerLazyProxy
+
+try:
+    from greenlet import getcurrent
+except ImportError:  # pragma: nocover
+    from threading import local as ThreadLocal
+else:
+    class ThreadLocal(object):
+        """
+        threading.local() replacement for greenlets.
+        """
+        def __init__(self):
+            self.__dict__["_prefix"] = str(id(self))
+
+        def __getattr__(self, name):
+            return getattr(getcurrent(), self._prefix + name)
+
+        def __setattr__(self, name, val):
+            setattr(getcurrent(), self._prefix + name, val)
+
+        def __delattr__(self, name):
+            delattr(getcurrent(), self._prefix + name)
 
 
 def wrap_dict(dict_class):
@@ -35,7 +55,7 @@ def wrap_dict(dict_class):
     """
     Wrapped = type('WrappedDict-' + str(uuid.uuid4()),
                    (_ThreadLocalDictWrapper,), {})
-    Wrapped._tl = threading.local()
+    Wrapped._tl = ThreadLocal()
     Wrapped._dict_class = dict_class
     return Wrapped
 

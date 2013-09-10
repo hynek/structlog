@@ -12,6 +12,7 @@ The following folks helped forming structlog into what it is now:
 - `David Reid <http://dreid.org>`_
 - `Donald Stufft <https://github.com/dstufft>`_
 - `Glyph <https://github.com/glyph>`_
+- `Holger Krekel <https://github.com/hpk42>`_
 - `Jack Pearkes <https://github.com/pearkes>`_
 - `Jean-Paul Calderone <http://as.ynchrono.us>`_
 - `Lynn Root <https://github.com/econchick>`_

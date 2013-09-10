@@ -253,7 +253,6 @@ You can easily write deterministic tests using a call-capturing processor if you
 This big red box is also what separates immutable local from mutable global data.
 
 
-.. [*] Gevent's monkeypatching `automatically <http://www.gevent.org/gevent.monkey.html>`_ adapts thread local storage to greenlet local storage.
-
+.. [*] Special care has been taken to detect and support greenlets properly.
 
 .. _OrderedDict: http://docs.python.org/2/library/collections.html#collections.OrderedDict

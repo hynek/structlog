@@ -140,3 +140,21 @@ class TestThreadLocalDict(object):
         r = repr(D({'a': 42}))
         assert r.startswith('<WrappedDict-')
         assert r.endswith("({'a': 42})>")
+
+    def test_is_greenlet_local(self, D):
+        greenlet = pytest.importorskip("greenlet")
+        d = wrap_dict(dict)()
+        d['x'] = 42
+
+        def run():
+            assert 'x' not in d._dict
+            d['x'] = 23
+
+        greenlet.greenlet(run).switch()
+        assert 42 == d._dict["x"]
+
+    def test_delattr(self, D):
+        d = wrap_dict(dict)()
+        d['x'] = 42
+        assert 42 == d._dict["x"]
+        del d.__class__._tl.dict_
