@@ -22,6 +22,7 @@ import warnings
 from structlog._compat import OrderedDict
 from structlog._loggers import (
     BoundLogger,
+    PrintLogger,
 )
 from structlog.processors import (
     KeyValueRenderer,
@@ -31,6 +32,7 @@ from structlog.processors import (
 _BUILTIN_DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = OrderedDict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
+_BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLogger
 
 
 class _Configuration(object):
@@ -41,12 +43,27 @@ class _Configuration(object):
     default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class = _BUILTIN_DEFAULT_WRAPPER_CLASS
+    logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY
 
 
 _CONFIG = _Configuration()
 """
 Global defaults used when arguments to :func:`wrap_logger` are omitted.
 """
+
+
+def get_logger(**initial_values):
+    """
+    Convenience function that returns a logger according to configuration.
+
+    >>> from structlog import get_logger
+    >>> log = get_logger()
+    >>> log.msg('hello', x=42)
+    x=42 event='hello'
+
+    See :ref:`configuration` for details.
+    """
+    return wrap_logger(None, **initial_values)
 
 
 def wrap_logger(logger, processors=None, wrapper_class=None,
@@ -63,7 +80,7 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     In other words: selective overwriting of the defaults *is* possible.
 
     :param logger: An instance of a logger whose method calls will be
-        wrapped.
+        wrapped.  Use configured logger factory if `None`.
     :param list processors: List of processors.
     :param type wrapper_class: Class to use for wrapping loggers instead of
         :class:`structlog.BoundLogger`.
@@ -80,7 +97,8 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     )
 
 
-def configure(processors=None, wrapper_class=None, context_class=None):
+def configure(processors=None, wrapper_class=None, context_class=None,
+              logger_factory=None):
     """
     Configures the **global** *processors* and *context_class*.
 
@@ -102,9 +120,11 @@ def configure(processors=None, wrapper_class=None, context_class=None):
         _CONFIG.default_wrapper_class = wrapper_class
     if context_class:
         _CONFIG.default_context_class = context_class
+    if logger_factory:
+        _CONFIG.logger_factory = logger_factory
 
 
-def configure_once(processors=None, wrapper_class=None, context_class=None):
+def configure_once(*args, **kw):
     """
     Configures iff structlog isn't configured yet.
 
@@ -114,7 +134,7 @@ def configure_once(processors=None, wrapper_class=None, context_class=None):
     Raises a RuntimeWarning if repeated configuration is attempted.
     """
     if not _CONFIG.is_configured:
-        configure(processors, context_class)
+        configure(*args, **kw)
     else:
         warnings.warn('Repeated configuration attempted.', RuntimeWarning)
 
@@ -132,6 +152,7 @@ def reset_defaults():
     _CONFIG.default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
     _CONFIG.default_wrapper_class = _BUILTIN_DEFAULT_WRAPPER_CLASS
     _CONFIG.default_context_class = _BUILTIN_DEFAULT_CONTEXT_CLASS
+    _CONFIG.logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY
 
 
 class BoundLoggerLazyProxy(object):
@@ -160,6 +181,9 @@ class BoundLoggerLazyProxy(object):
         )
 
     def bind(self, **new_values):
+        """
+        Assembles a new BoundLogger from arguments and configuration.
+        """
         if self._context_class:
             ctx = self._context_class(self._initial_values)
         else:
@@ -167,6 +191,8 @@ class BoundLoggerLazyProxy(object):
         if new_values:
             ctx.update(new_values)
         cls = self._wrapper_class or _CONFIG.default_wrapper_class
+        if not self._logger:
+            self._logger = _CONFIG.logger_factory()
         return cls(
             self._logger,
             processors=self._processors or _CONFIG.default_processors,
@@ -175,11 +201,7 @@ class BoundLoggerLazyProxy(object):
 
     def new(self, **new_values):
         """
-        Clear context and binds *initial_values*.
-
-        Only necessary with dict implemenations that keep global state like
-        those wrapped by :func:`structlog.threadlocal.wrap_dict` when threads
-        are re-used.
+        Clear context, then bind.
         """
         if self._context_class:
             self._context_class().clear()

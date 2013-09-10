@@ -13,7 +13,8 @@
 # limitations under the License.
 
 """
-Processors and helpers specific to the logging module from the `Python standard
+Processors and helpers specific to the `logging module
+<http://docs.python.org/2/library/logging.html>`_ from the `Python standard
 library <http://docs.python.org/>`_.
 """
 
@@ -22,28 +23,25 @@ from __future__ import absolute_import, division, print_function
 import logging
 import sys
 
-from structlog import wrap_logger, DropEvent
+from structlog import DropEvent
 
 
-def get_logger(name=None, processors=None, context_class=None):
+class LoggerFactory(object):
     """
-    Convenience function to get a wrapped stdlib logger.
+    Build a standard library logger when an *instance* is called.
 
-    :param str name: Name of the logger.  ``__name__`` of caller's module is
-        used if `None`.
-    :param list processors: Gets passed unaltered to
-        :func:`structlog.wrap_logger`.
-    :param type context_class: Gets passed unaltered to
-        :func:`structlog.wrap_logger`.
-    :rvalue: :class:`structlog._loggers.BoundLogger`
+    Usage:
+        configure(logger_class=structlog.stdlib.LoggerFactory())
     """
-    if not name:
-        name = sys._getframe().f_back.f_globals['__name__']
-    return wrap_logger(
-        logging.getLogger(name),
-        processors=processors,
-        context_class=context_class,
-    )
+    def __call__(self):
+        """
+        Deduces the caller's module name and create a stdlib logger.
+
+        :rtype: `logging.Logger`
+        """
+        return logging.getLogger(
+            sys._getframe().f_back.f_back.f_globals['__name__']
+        )
 
 
 # Adapted from the stdlib

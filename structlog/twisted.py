@@ -21,23 +21,24 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-from structlog import processors, wrap_logger
+from structlog import processors
 from structlog._compat import string_types
-from twisted.python import log
 from twisted.python.failure import Failure
 
 
-def get_logger(processors=None, context_class=None):
+class LoggerFactory(object):
     """
-    Convenience function to get a wrapped Twisted logger.
+    Build a Twisted logger when an *instance* is called.
 
-    :param list processors: Gets passed unaltered to
-        :func:`structlog.wrap_logger`.
-    :param type context_class: Gets passed unaltered to
-        :func:`structlog.wrap_logger`.
-    :rvalue: :class:`structlog._loggers.BoundLogger`
+    Usage:
+        configure(logger_class=structlog.twisted.LoggerFactory())
     """
-    return wrap_logger(log, processors, context_class)
+    def __call__(self, name=None):
+        """
+        :rvalue: A new Twisted logger.
+        """
+        from twisted.python import log
+        return log
 
 
 _FAIL_TYPES = (BaseException, Failure)
@@ -82,7 +83,8 @@ class JSONRenderer(processors.JSONRenderer):
     Behaves like :class:`structlog.processors.JSONRenderer` except that it
     formats tracebacks and failures itself if called with `err()`.
 
-    *Not* an adapter like :class:`LogAdapter` but a real formatter.
+    *Not* an adapter like :class:`EventAdapter` but a real formatter.  Nor does
+    it require to be adapted using it.
     """
     def __call__(self, logger, name, eventDict):
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
@@ -96,9 +98,11 @@ class JSONRenderer(processors.JSONRenderer):
         return processors.JSONRenderer.__call__(self, logger, name, eventDict)
 
 
-class LogAdapter(object):
+class EventAdapter(object):
     """
-    Wrap Twisted's logging module.  Make a wrapped `twisted.python.log.err
+    Adapt an ``event_dict`` to Twisted logging system.
+
+    Particularly, make a wrapped `twisted.python.log.err
     <http://twistedmatrix.com/documents/current/
     api/twisted.python.log.html#err>`_ behave as expected.
 

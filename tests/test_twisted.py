@@ -19,17 +19,17 @@ pytest.importorskip('twisted')
 from twisted.python.failure import Failure, NoCurrentExceptionError
 
 from structlog._compat import OrderedDict
-from structlog._config import BoundLoggerLazyProxy
 from structlog.twisted import (
     JSONRenderer,
-    LogAdapter,
+    EventAdapter,
+    LoggerFactory,
     _extractStuffAndWhy,
-    get_logger,
 )
 
 
-def test_get_logger():
-    assert isinstance(get_logger(), BoundLoggerLazyProxy)
+def test_LoggerFactory():
+    from twisted.python import log
+    assert log is LoggerFactory()()
 
 
 def _render_repr(_, __, event_dict):
@@ -87,19 +87,19 @@ class TestExtractStuffAndWhy(object):
                 Failure()
 
 
-class TestLogAdapter(object):
+class TestEventAdapter(object):
     """
     Some tests here are redundant because they predate _extractStuffAndWhy.
     """
-    def test_LogAdapterFormatsLog(self):
-        la = LogAdapter(_render_repr)
+    def test_EventAdapterFormatsLog(self):
+        la = EventAdapter(_render_repr)
         assert "{'foo': 'bar'}" == la(None, 'msg', {'foo': 'bar'})
 
     def test_transforms_whyIntoEvent(self):
         """
         log.err(_stuff=exc, _why='foo') makes the output 'event="foo"'
         """
-        la = LogAdapter(_render_repr)
+        la = EventAdapter(_render_repr)
         error = ValueError('test')
         rv = la(None, 'err', {
             '_stuff': error,
@@ -115,7 +115,7 @@ class TestLogAdapter(object):
         """
         log.err(exc, _why='foo') makes the output 'event="foo"'
         """
-        la = LogAdapter(_render_repr)
+        la = EventAdapter(_render_repr)
         error = ValueError('test')
         rv = la(None, 'err', {'event': error, '_why': 'foo'})
         assert () == rv[0]
@@ -127,7 +127,7 @@ class TestLogAdapter(object):
         """
         log.err(_stuff=exc, _why='event')
         """
-        la = LogAdapter(_render_repr)
+        la = EventAdapter(_render_repr)
         error = ValueError('test')
         rv = la(None, 'err', {'_stuff': error, '_why': 'foo'})
         assert () == rv[0]
@@ -139,7 +139,7 @@ class TestLogAdapter(object):
         """
         log.err('event')
         """
-        la = LogAdapter(_render_repr)
+        la = EventAdapter(_render_repr)
         assert ((), {
             '_stuff': None,
             '_why': "{'event': 'someEvent'}",
@@ -151,7 +151,7 @@ class TestLogAdapter(object):
         """
         log.err(_why='event')
         """
-        la = LogAdapter(_render_repr)
+        la = EventAdapter(_render_repr)
         assert ((), {
             '_stuff': None,
             '_why': "{'event': 'someEvent'}",
@@ -160,7 +160,7 @@ class TestLogAdapter(object):
         })
 
     def test_catchesConflictingEventAnd_why(self):
-        la = LogAdapter(_render_repr)
+        la = EventAdapter(_render_repr)
         with pytest.raises(ValueError) as e:
             la(None, 'err', {
                 'event': 'someEvent',

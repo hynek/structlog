@@ -13,35 +13,14 @@
 # limitations under the License.
 
 """
-Painless structured logging.
+Helper function for testing the deduction of stdlib logger names.
+
+Since the logger factories are called from within structlog._config, they have
+to skip a frame.  Calling them here emulates that.
 """
 
 from __future__ import absolute_import, division, print_function
 
-__version__ = '0.1.0'
 
-from structlog._config import (
-    configure,
-    configure_once,
-    get_logger,
-    reset_defaults,
-    wrap_logger,
-)
-from structlog._loggers import (
-    BoundLogger,
-    DropEvent,
-    PrintLogger,
-    ReturnLogger,
-)
-
-__all__ = [
-    BoundLogger,
-    DropEvent,
-    PrintLogger,
-    ReturnLogger,
-    configure,
-    configure_once,
-    get_logger,
-    reset_defaults,
-    wrap_logger,
-]
+def additional_frame(callable):
+    return callable()

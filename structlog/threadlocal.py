@@ -29,9 +29,9 @@ def wrap_dict(dict_class):
 
     The wrapped class and used to keep global in the current thread.
 
-    :param dict_class: Class used for keeping context.
+    :param type dict_class: Class used for keeping context.
 
-    :rtype: A class.
+    :rtype: type
     """
     Wrapped = type('WrappedDict-' + str(uuid.uuid4()),
                    (_ThreadLocalDictWrapper,), {})

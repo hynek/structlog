@@ -26,9 +26,11 @@ from structlog._config import (
     _CONFIG,
     _BUILTIN_DEFAULT_CONTEXT_CLASS,
     _BUILTIN_DEFAULT_PROCESSORS,
+    _BUILTIN_DEFAULT_LOGGER_FACTORY,
     _BUILTIN_DEFAULT_WRAPPER_CLASS,
     configure,
     configure_once,
+    get_logger,
     reset_defaults,
     wrap_logger,
 )
@@ -69,6 +71,7 @@ class TestConfigure(object):
         assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
         assert isinstance(b, _BUILTIN_DEFAULT_WRAPPER_CLASS)
         assert _BUILTIN_DEFAULT_CONTEXT_CLASS == b._context.__class__
+        assert _BUILTIN_DEFAULT_LOGGER_FACTORY is _CONFIG.logger_factory
 
     def test_just_processors(self, proxy):
         x = stub()
@@ -93,6 +96,13 @@ class TestConfigure(object):
         configure()
         reset_defaults()
         assert False is _CONFIG.is_configured
+
+    def test_configures_logger_factory(self):
+        def f():
+            pass
+
+        configure(logger_factory=f)
+        assert f is _CONFIG.logger_factory
 
 
 class TestBoundLoggerLazyProxy(object):
@@ -198,3 +208,11 @@ class TestFunctions(object):
         assert 1 == len(warns)
         assert RuntimeWarning == warns[0].category
         assert 'Repeated configuration attempted.' == warns[0].message.args[0]
+
+    def test_get_logger_configures_according_to_config(self):
+        b = get_logger().bind()
+        assert isinstance(b._logger,
+                          _BUILTIN_DEFAULT_LOGGER_FACTORY().__class__)
+        assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
+        assert isinstance(b, _BUILTIN_DEFAULT_WRAPPER_CLASS)
+        assert _BUILTIN_DEFAULT_CONTEXT_CLASS == b._context.__class__

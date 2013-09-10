@@ -8,6 +8,7 @@ structlog Package
 :mod:`structlog` Package
 ------------------------
 
+.. autofunction:: get_logger
 .. autofunction:: wrap_logger
 .. autofunction:: configure
 .. autofunction:: configure_once
@@ -43,15 +44,17 @@ structlog Package
 --------------------
 
 .. automodule:: structlog.stdlib
-    :members: get_logger, filter_by_level
-    :undoc-members:
-    :show-inheritance:
+
+.. autoclass:: LoggerFactory
+   :members: __call__
+.. autofunction:: filter_by_level
 
 :mod:`twisted` Module
 ---------------------
 
 .. automodule:: structlog.twisted
-    :members: get_logger, LogAdapter, JSONRenderer
-    :undoc-members:
-    :show-inheritance:
+
+.. autoclass:: LoggerFactory
+.. autoclass:: EventAdapter
+.. autoclass:: JSONRenderer
 

@@ -19,17 +19,19 @@ import logging
 import pytest
 
 from structlog import DropEvent
-from structlog.stdlib import get_logger, filter_by_level, WARN, CRITICAL
+from structlog.stdlib import LoggerFactory, filter_by_level, WARN, CRITICAL
+
+from .additional_frame import additional_frame
 
 
-class TestGetLogger(object):
-    def test_respects_name(self):
-        l = get_logger('foobar')
-        assert 'foobar' == l._logger.name
-
+class TestLoggerFactory(object):
     def test_deduces_correct_name(self):
-        l = get_logger()
-        assert 'tests.test_stdlib' == l._logger.name
+        """
+        The factory isn't called directly but from structlog._config so
+        deducing has to be slightly smarter.
+        """
+        l = additional_frame(LoggerFactory())
+        assert 'tests.test_stdlib' == l.name
 
 
 class TestFilterByLevel(object):

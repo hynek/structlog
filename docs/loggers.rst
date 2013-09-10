@@ -58,12 +58,7 @@ This example also demonstrates how structlog is *not* dependent on Python's stan
 Convenience Helpers
 -------------------
 
-To make the most common cases more convenient, there are helper functions for stdlib and Twisted:
-
-- :func:`structlog.stdlib.get_logger`
-- :func:`structlog.twisted.get_logger`
-
-For even more convenience and accessibility, structlog *ships* with the class :class:`~structlog.PrintLogger` because it's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+For convenience and accessibility, structlog *ships* with the class :class:`~structlog.PrintLogger` because it's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
 Additionally -- but arguably mostly for my own unit testing convenience -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
@@ -75,18 +70,15 @@ Additionally -- but arguably mostly for my own unit testing convenience -- struc
 Configuration
 -------------
 
-structlog allows you to set global default values for ``processors``, ``wrapper_class`` and ``context_class``.
-So ideally your logging boilerplate in regular application consists only of::
+To make logging as unintrusive and straight-forward to use as possible, structlog comes with a plethora of configuration options and convenience functions.
+Let me start at the end and introduce you to the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger`.
+
+The goal is to reduce your per-file logging boilerplate to::
 
    from structlog.stdlib import get_logger
    logger = get_logger()
 
-or::
-
-   from structlog import BoundLogger
-   logger = BoundLogger.wrap(YourLogger())
-
-if you don't use a directly supported logger.
+while still giving you the full power via configuration.
 
 To achieve that you'll have to call :func:`structlog.configure` on app initialization (of course, only if you're not content with the defaults).
 The previous example could thus have been written as following:
@@ -112,6 +104,33 @@ structlog tries to behave in the least surprising way when it comes to handling 
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
+
+
+Logger Factories
+^^^^^^^^^^^^^^^^
+
+To make :func:`structlog.get_logger` work, one needs one more option that hasn't been discussed yet: ``logger_factory``.
+
+It is a callable that returns the logger that gets wrapped and returned.
+In the simplest case, it's a function that returns a logger -- or just a class.
+But you can also pass in an instance of a class witch a ``__call__`` method for more complicated setups.
+
+For the common cases of standard library logging and Twisted logging, structlog comes with two factories built right in:
+
+- :class:`structlog.stdlib.LoggerFactory`
+- :class:`structlog.twisted.LoggerFactory`
+
+So all it takes to use structlog with standard library logging is this::
+
+   >>> from structlog import get_logger, configure
+   >>> from structlog.stdlib import LoggerFactory
+   >>> configure(logger_factory=LoggerFactory())
+   >>> log = get_logger()
+   >>> log.critical('this is too easy!')
+   event='this is too easy!'
+
+Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger` with the default values exaplained above.
+I don't believe silent loggers are a sensible default.
 
 
 Where to Configure

@@ -1,31 +1,44 @@
 import sys
 import uuid
 
+import structlog
 import twisted
 
-from structlog import BoundLogger
-from structlog.twisted import get_logger, LogAdapter
 from twisted.internet import protocol, reactor
 
-logger = get_logger()
+logger = structlog.get_logger()
+
+
+class Counter(object):
+    i = 0
+
+    def inc(self):
+        self.i += 1
+
+    def __repr__(self):
+        return str(self.i)
 
 
 class Echo(protocol.Protocol):
     def connectionMade(self):
+        self._counter = Counter()
         self._log = logger.new(
             connection_id=str(uuid.uuid4()),
             peer=self.transport.getPeer().host,
+            count=self._counter,
         )
 
     def dataReceived(self, data):
-        self._log.msg('got data', data=data)
-        # gives you:
-        # peer='127.0.0.1' connection_id='ffdfcf85-82c4-47be-9b80-e979598c0453' data='foo\n' event='got data'
+        self._counter.inc()
+        log = self._log.bind(data=data)
         self.transport.write(data)
+        log.msg('echoed data!')
 
 if __name__ == "__main__":
-    BoundLogger.configure(
-        processors=[LogAdapter()]
+    from structlog.twisted import LoggerFactory, EventAdapter
+    structlog.configure(
+        processors=[EventAdapter()],
+        logger_factory=LoggerFactory(),
     )
     twisted.python.log.startLogging(sys.stderr)
     reactor.listenTCP(1234, protocol.Factory.forProtocol(Echo))

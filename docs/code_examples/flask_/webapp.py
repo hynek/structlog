@@ -6,7 +6,7 @@ import structlog
 from .some_module import some_function
 
 
-logger = structlog.stdlib.get_logger()
+logger = structlog.get_logger()
 app = flask.Flask(__name__)
 
 
@@ -27,5 +27,6 @@ def some_route():
 if __name__ == "__main__":
     structlog.configure(
         context_class=structlog.threadlocal.wrap_dict(dict),
+        logger_factory=structlog.stdlib.LoggerFactory(),
     )
     app.run()
