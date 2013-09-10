@@ -68,10 +68,7 @@ def as_immutable(logger):
 @contextlib.contextmanager
 def tmp_bind(logger, **tmp_values):
     """
-    Return a temporary logger consisting of *logger*'s context + *tmp_values*.
-
-    Binding new values to *logger* does not affect the contents of the yielded
-    logger.
+    Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
 
     >>> from structlog import wrap_logger, PrintLogger
     >>> from structlog.threadlocal import tmp_bind, wrap_dict
@@ -79,11 +76,14 @@ def tmp_bind(logger, **tmp_values):
     >>> with tmp_bind(logger, x=5) as tmp_logger:
     ...     logger = logger.bind(y=3)
     ...     tmp_logger.msg('event')
-    x=5 event='event'
+    y=3 x=5 event='event'
     >>> logger.msg('event')
-    y=3 event='event'
+    event='event'
     """
-    yield as_immutable(logger).bind(**tmp_values)
+    saved = as_immutable(logger)._context
+    yield logger.bind(**tmp_values)
+    logger._context.clear()
+    logger._context.update(saved)
 
 
 class _ThreadLocalDictWrapper(object):

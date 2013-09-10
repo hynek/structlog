@@ -48,11 +48,6 @@ def logger():
 
 
 class TestTmpBind(object):
-    def test_yields_an_immutable_logger(self, log):
-        with tmp_bind(log, x=42) as tmp_logger:
-            assert isinstance(tmp_logger._context, dict)
-            assert isinstance(tmp_logger, BoundLogger)
-
     def test_yields_a_new_bound_loggger_if_called_on_lazy_proxy(self, log):
         with tmp_bind(log, x=42) as tmp_log:
             assert "x=42 event='bar'" == tmp_log.msg('bar')
@@ -61,8 +56,10 @@ class TestTmpBind(object):
     def test_bind(self, log):
         log = log.bind(y=23)
         with tmp_bind(log, x=42, y='foo') as tmp_log:
-            assert {'y': 'foo', 'x': 42} == tmp_log._context
-            assert {'y': 23} == log._context._dict
+            assert (
+                {'y': 'foo', 'x': 42}
+                == tmp_log._context._dict == log._context._dict
+            )
         assert {'y': 23} == log._context._dict
         assert "y=23 event='foo'" == log.msg('foo')
 
