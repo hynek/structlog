@@ -3,8 +3,10 @@ python: 2.7
 env:
     - TOX_ENV=py26
     - TOX_ENV=py27
+    - TOX_ENV=py27-green
     - TOX_ENV=py32
     - TOX_ENV=py33
+    - TOX_ENV=py33-green
     - TOX_ENV=docs
     - TOX_ENV=flake8
 
