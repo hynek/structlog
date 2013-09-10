@@ -26,7 +26,7 @@ try:
 except ImportError:  # pragma: nocover
     from threading import local as ThreadLocal
 else:
-    class ThreadLocal(object):
+    class ThreadLocal(object):  # pragma: nocover
         """
         threading.local() replacement for greenlets.
         """
