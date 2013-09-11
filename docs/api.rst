@@ -9,6 +9,7 @@ structlog Package
 ------------------------
 
 .. autofunction:: get_logger
+.. autofunction:: getLogger
 .. autofunction:: wrap_logger
 .. autofunction:: configure
 .. autofunction:: configure_once

@@ -72,7 +72,7 @@ Configuration
 -------------
 
 To make logging as unintrusive and straight-forward to use as possible, structlog comes with a plethora of configuration options and convenience functions.
-Let me start at the end and introduce you to the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger`.
+Let me start at the end and introduce you to the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger` (and its Twisted-friendly alias :func:`structlog.getLogger`).
 
 The goal is to reduce your per-file logging boilerplate to::
 

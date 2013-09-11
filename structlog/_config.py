@@ -64,8 +64,20 @@ def get_logger(**initial_values):
     :param initial_values: Values that are used to prepopulate your contexts.
 
     See :ref:`configuration` for details.
+
+    If you prefer CamelCase, there's an alias for your reading pleasure:
+    :func:`structlog.getLogger`.
     """
     return wrap_logger(None, **initial_values)
+
+
+getLogger = get_logger
+"""
+CamelCase alias for :func:`structlog.get_logger`.
+
+This function is supposed to be in every source file -- I don't want it to
+stick out like a sore thumb in frameworks like Twisted or Zope.
+"""
 
 
 def wrap_logger(logger, processors=None, wrapper_class=None,
@@ -184,7 +196,7 @@ class BoundLoggerLazyProxy(object):
 
     def bind(self, **new_values):
         """
-        Assembles a new BoundLogger from arguments and configuration.
+        Assemble a new BoundLogger from arguments and configuration.
         """
         if self._context_class:
             ctx = self._context_class(self._initial_values)

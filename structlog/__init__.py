@@ -23,6 +23,7 @@ __version__ = '0.1.0'
 from structlog._config import (
     configure,
     configure_once,
+    getLogger,
     get_logger,
     reset_defaults,
     wrap_logger,
@@ -34,6 +35,7 @@ from structlog._loggers import (
     ReturnLogger,
 )
 
+
 __all__ = [
     BoundLogger,
     DropEvent,
@@ -41,6 +43,7 @@ __all__ = [
     ReturnLogger,
     configure,
     configure_once,
+    getLogger,
     get_logger,
     reset_defaults,
     wrap_logger,
