@@ -5,13 +5,13 @@ The center of structlog is the immutable log wrapper :class:`~structlog.BoundLog
 
 All it does is:
 
-- Keeping a *context* and a *logger* that it's wrapping,
+- Keeping a *context dictionary* and a *logger* that it's wrapping,
 - recreating itself with (optional) *additional* context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
 - recreating itself with *less* data (:func:`~structlog.BoundLogger.unbind`),
-- and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of processors.
+- and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of :ref:`processors <processors>`.
 
 You won't be instantiating it yourself though.
-For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in :ref:`configuration`):
+For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in a minute):
 
 .. literalinclude:: code_examples/loggers/simplest.txt
    :language: pycon
@@ -44,8 +44,6 @@ Additionally, the following arguments are allowed too:
 **initial_values**
    The values that new wrapped loggers are automatically constructed with.
    Useful for example if you want to have the module name as part of the context.
-
-This example also demonstrates how structlog is *not* dependent on Python's standard library logging module.
 
 .. note::
 
@@ -106,16 +104,22 @@ structlog tries to behave in the least surprising way when it comes to handling 
 #. Passed `processors`, `wrapper_class`, and `context_class` arguments to :func:`structlog.wrap_logger` *always* take the highest precedence.
    That means that you can overwrite whatever you've configured for each logger respectively.
 #. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
-
-   Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions) most likely at import time and thus before you had a chance to configure structlog, they all return a proxy that returns a correct wrapped logger on first ``bind()``/``new()``.
-
-   To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
-   Therefore if you have nothing to bind but intend to do lots of log calls in a function, it makes sense performance-wise to create a local logger by calling ``bind()`` or ``new()`` without any parameters.
-
 #. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain.
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
+
+
+.. note::
+
+   Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions) most likely at import time and thus before you had a chance to configure structlog, they return a **proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
+
+   Therefore, you must not call ``new()`` or ``bind()`` in module scope!
+   Use :func:`~structlog.get_logger`\ 's ``initial_values`` to achieve pre-populated contexts.
+
+   To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
+   Therefore if you have nothing to bind but intend to do lots of log calls in a function, it makes sense performance-wise to create a local logger by calling ``bind()`` or ``new()`` without any parameters.
+
 
 .. _logger-factories:
 
@@ -144,7 +148,7 @@ So all it takes to use structlog with standard library logging is this::
 
 The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
 
-.. warning::
+.. note::
 
    `LoggerFactory()`-style factories always need to get passed as *instances* like in the examples above.
    While neither allows for customization using parameters yet, they may do so in the future.
