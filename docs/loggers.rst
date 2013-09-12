@@ -20,7 +20,7 @@ As you can see, it accepts one mandatory and a few optional arguments:
 
 **logger**
    The one an only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
-   If you wish to use the configured logger factory, set it to `None`.
+   If you wish to use a :ref:`configured logger factory <logger-factories>`, set it to `None`.
 
 **processors**
    A list of callables that can :ref:`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
@@ -144,6 +144,11 @@ So all it takes to use structlog with standard library logging is this::
 
 The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
 
+.. warning::
+
+   `LoggerFactory()`-style factories always need to get passed as *instances* like in the examples above.
+   While neither allows for customization using parameters yet, they may do so in the future.
+
 Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger` with the default values exaplained above.
 I don't believe silent loggers are a sensible default.
 
@@ -153,6 +158,7 @@ Where to Configure
 
 The best place to perform your configuration varies with applications and frameworks.
 Ideally as late as possible but *before* non-framework (i.e. your) code is executed.
+If you use standard library's logging, it makes sense to configure them next to each other.
 
 **Django**
    Django has to date unfortunately no concept of an application assembler or "app is done" hooks.

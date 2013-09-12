@@ -19,7 +19,7 @@ Why You Want Structured Logging
 
       ---`Paul Querna <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_
 
-Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a key/value-based *context* instead.
+Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a  *context* instead.
 
 
 Why You Want to Use structlog
@@ -50,7 +50,7 @@ Why You Can Start Using structlog TODAY
   Just start wrapping your logger of choice and bind values later.
 - If you don't like the idea of keeping the context within a local logger instance like in the example above, structlog offers transparent :ref:`thread local <threadlocal>` storage for your context.
 
-Intrigued? Have a look at more realistic :ref:`examples <examples>` and be completely convinced!
+Intrigued? :ref:`Get started now <getting-started>` or have a look at more realistic :ref:`examples <examples>` and be completely convinced!
 
 User's Guide
 ------------
@@ -58,7 +58,6 @@ User's Guide
 .. toctree::
    :maxdepth: 2
 
-   installation
    getting-started
    loggers
    processors

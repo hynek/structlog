@@ -1,0 +1,8 @@
+>>> import logging
+>>> logging.basicConfig()
+>>> from structlog import get_logger, configure
+>>> from structlog.stdlib import LoggerFactory
+>>> configure(logger_factory=LoggerFactory())  # doctest: +SKIP
+>>> log = get_logger()
+>>> log.warn('it works!', difficulty='easy')  # doctest: +SKIP
+WARNING:structlog...:difficulty='easy' event='it works!'
