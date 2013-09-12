@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Primitives to keep context global but thread local.
+Primitives to keep context global but thread (and greenlet) local.
 """
 
 import contextlib
@@ -51,7 +51,7 @@ def wrap_dict(dict_class):
 
     :param type dict_class: Class used for keeping context.
 
-    :rtype: type
+    :rtype: `type`
     """
     Wrapped = type('WrappedDict-' + str(uuid.uuid4()),
                    (_ThreadLocalDictWrapper,), {})
@@ -65,9 +65,7 @@ def as_immutable(logger):
     Extract the context from a thread local logger into an immutable logger.
 
     :param BoundLogger logger: A logger with *possibly* thread local state.
-
-    Useful if you want to save and use the context but not modify the global
-    state.  For example in class constructors.
+    :rtype: :class:`~structlog.BoundLogger` with an immutable context.
     """
     if isinstance(logger, BoundLoggerLazyProxy):
         logger = logger.bind()

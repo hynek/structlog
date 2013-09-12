@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """
-Processors specific to the `Twisted <http://twistedmatrix.com/>`_ networking
-engine.
+Processors and tools specific to the `Twisted <http://twistedmatrix.com/>`_
+networking engine.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -30,8 +30,9 @@ class LoggerFactory(object):
     """
     Build a Twisted logger when an *instance* is called.
 
-    Usage:
-        configure(logger_class=structlog.twisted.LoggerFactory())
+    >>> from structlog import configure
+    >>> from structlog.twisted import LoggerFactory
+    >>> configure(logger_factory=LoggerFactory())
     """
     def __call__(self, name=None):
         """

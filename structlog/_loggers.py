@@ -91,7 +91,7 @@ class BoundLogger(object):
     Immutable, context-carrying wrapper.
 
     Public only for sub-classing, not intended to be instantiated by yourself.
-    See :func:`structlog._config.wrap_logger`.
+    See :func:`~structlog.wrap_logger` and :func:`~structlog.get_logger`.
     """
     def __init__(self, logger, processors, context):
         self._logger = logger
@@ -141,16 +141,18 @@ class BoundLogger(object):
             del bl._context[key]
         return bl
 
-    def new(self, **initial_values):
+    def new(self, **new_values):
         """
-        Clear context and binds *initial_values*.
+        Clear context and binds *initial_values* using :func:`bind`.
 
-        Only necessary with dict implemenations that keep global state like
+        Only necessary with dict implementations that keep global state like
         those wrapped by :func:`structlog.threadlocal.wrap_dict` when threads
         are re-used.
+
+        :rtype: :class:`BoundLogger`
         """
         self._context.clear()
-        return self.bind(**initial_values)
+        return self.bind(**new_values)
 
     def __getattr__(self, name):
         """

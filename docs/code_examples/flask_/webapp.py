@@ -25,8 +25,10 @@ def some_route():
     # ...
 
 if __name__ == "__main__":
+    from structlog.stdlib import LoggerFactory
+    from structlog.threadlocal import wrap_dict
     structlog.configure(
-        context_class=structlog.threadlocal.wrap_dict(dict),
-        logger_factory=structlog.stdlib.LoggerFactory(),
+        context_class=wrap_dict(dict),
+        logger_factory=LoggerFactory(),
     )
     app.run()

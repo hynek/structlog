@@ -27,9 +27,10 @@ structlog Package
 -------------------------
 
 .. automodule:: structlog.threadlocal
-    :members: wrap_dict, tmp_bind, as_immutable
-    :undoc-members:
-    :show-inheritance:
+
+.. autofunction:: wrap_dict
+.. autofunction:: tmp_bind(logger, **tmp_values)
+.. autofunction:: as_immutable
 
 .. _procs:
 

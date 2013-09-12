@@ -12,7 +12,7 @@ class ConditionalDropper(object):
         {'peer': '10.0.0.1', 'event': 'foo'}
         >>> cd(None, None, {'event': 'foo', 'peer': '127.0.0.1'})
         Traceback (most recent call last):
-            ...
+        ...
         DropEvent
         """
         if event_dict.get('peer') == self._peer_to_ignore:

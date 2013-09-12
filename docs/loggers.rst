@@ -109,7 +109,6 @@ structlog tries to behave in the least surprising way when it comes to handling 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
 
-
 .. note::
 
    Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions) most likely at import time and thus before you had a chance to configure structlog, they return a **proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
@@ -169,7 +168,7 @@ If you use standard library's logging, it makes sense to configure them next to 
    Therefore the bottom of your ``settings.py`` will have to do.
 
 **Flask**
-   HALP? :(
+   See `Logging Application Errors <http://flask.pocoo.org/docs/errorhandling/>`_.
 
 **Pyramid**
    `Application constructor <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.

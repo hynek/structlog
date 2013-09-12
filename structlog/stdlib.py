@@ -30,8 +30,9 @@ class LoggerFactory(object):
     """
     Build a standard library logger when an *instance* is called.
 
-    Usage:
-        configure(logger_class=structlog.stdlib.LoggerFactory())
+    >>> from structlog import configure
+    >>> from structlog.stdlib import LoggerFactory
+    >>> configure(logger_factory=LoggerFactory())
     """
     def __call__(self):
         """
@@ -72,7 +73,18 @@ def filter_by_level(logger, name, event_dict):
 
     Should be the first processor if stdlib's filtering by level is used so
     possibly expensive processors like exception formatters are avoided in the
-    first place..
+    first place.
+
+    >>> import logging
+    >>> from structlog.stdlib import filter_by_level
+    >>> logging.basicConfig(level=logging.WARN)
+    >>> logger = logging.getLogger()
+    >>> filter_by_level(logger, 'warn', {})
+    {}
+    >>> filter_by_level(logger, 'debug', {})
+    Traceback (most recent call last):
+    ...
+    DropEvent
     """
     if logger.isEnabledFor(_nameToLevel[name]):
         return event_dict

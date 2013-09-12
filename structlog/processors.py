@@ -32,6 +32,10 @@ class KeyValueRenderer(object):
     """
     Render `event_dict` as a list of ``Key=repr(Value)`` pairs.
 
+    >>> from structlog.processors import KeyValueRenderer
+    >>> KeyValueRenderer()(None, None, {'a': 42, 'b': [1, 2, 3]})
+    'a=42 b=[1, 2, 3]'
+
     :param bool sort_keys: Whether to sort keys when formatting.
     """
     def __init__(self, sort_keys=False):
@@ -50,7 +54,16 @@ class UnicodeEncoder(object):
     """
     Encode unicode values in `event_dict`.
 
-    Useful for KeyValueRenderer if you don't want to see u-prefixes.
+    Useful for :class:`KeyValueRenderer` if you don't want to see u-prefixes:
+
+    >>> from structlog.processors import KeyValueRenderer, UnicodeEncoder
+    >>> KeyValueRenderer()(None, None, {'foo': u'bar'})
+    "foo=u'bar'"
+    >>> KeyValueRenderer()(None, None,
+    ...                    UnicodeEncoder()(None, None, {'foo': u'bar'}))
+    "foo='bar'"
+
+    Just put it in the processor chain before `KeyValueRenderer`.
     """
     def __init__(self, encoding='utf-8', errors='backslashreplace'):
         self._encoding = encoding
@@ -66,6 +79,11 @@ class UnicodeEncoder(object):
 class JSONRenderer(object):
     """
     Render the `event_dict` using `json.dumps(event_dict, **json_kw)`.
+
+    >>> from structlog.processors import JSONRenderer
+    >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
+    '{"a": 42, "b": [1, 2, 3]}'
+
     """
     def __init__(self, **dumps_kw):
         self._dumps_kw = dumps_kw
@@ -104,6 +122,13 @@ def format_exc_info(logger, name, event_dict):
 
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
+
+    >>> from structlog.processors import format_exc_info
+    >>> try:
+    ...     raise ValueError
+    ... except ValueError:
+    ...     format_exc_info(None, None, {'exc_info': True})# doctest: +ELLIPSIS
+    {'exception': 'Traceback (most recent call last):...
     """
     exc_info = event_dict.pop('exc_info', None)
     if exc_info:
@@ -136,6 +161,14 @@ class TimeStamper(object):
         <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
+
+    >>> from structlog.processors import TimeStamper
+    >>> TimeStamper()(None, None, {})  # doctest: +SKIP
+    {'timestamp': 1378994017}
+    >>> TimeStamper(fmt='iso')(None, None, {})  # doctest: +SKIP
+    {'timestamp': '2013-09-12T13:54:26.996778Z'}
+    >>> TimeStamper(fmt='%Y')(None, None, {})  # doctest: +SKIP
+    {'timestamp': '2013'}
     """
     def __init__(self, fmt=None, utc=True):
         pass  # pragma: nocover  -- never used, just for sphinx

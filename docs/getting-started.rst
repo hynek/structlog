@@ -35,7 +35,7 @@ And indeed, the simplest possible usage looks like this:
 Here, structlog takes full advantage of its hopefully useful default settings:
 
 - Output is sent to `standard out`_ instead of exploding into the user's face.
-  Yes, that seems a rather controversial attitude toward logging.
+  Yes, that seems a rather controversial attitude towards logging.
 - All keywords are formatted using :class:`structlog.processors.KeyValueRenderer`.
   That in turn uses `repr()`_ to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects.
@@ -43,7 +43,7 @@ Here, structlog takes full advantage of its hopefully useful default settings:
 It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
 
 There you go, structured logging!
-However, this alone wouldn't warrant an own package.
+However, this alone wouldn't warrant its own package.
 After all, there's even a recipe_ on structured logging for the standard library.
 So let's go a step further.
 
@@ -81,7 +81,7 @@ For structlog, a log entry is just a dictionary called *event dict[ionary]*:
 
 - You can pre-build a part of the dictionary step by step.
   These pre-saved values are called the *context*.
-- As soon as an *event* happens -- which is a dictionary too -- it is merged together with the *context* to the *event dict* and logged out.
+- As soon as an *event* happens -- which is a dictionary too -- it is merged together with the *context* to an *event dict* and logged out.
 - To keep as much order of the keys as possible, an OrderedDict_ is used for the context by default.
 - The recommended way of binding values is the one in these examples: creating new loggers with a new context.
   If you're okay with giving up immutable local state for convenience, you can also use :ref:`thread/greenlet local storage <threadlocal>` for the context.
@@ -92,7 +92,7 @@ structlog and Standard Library's logging
 
 structlog's primary application isn't printing though.
 Instead, it's intended to wrap your *existing* loggers and **add** *structure* and *incremental context building* to them.
-For that, structlog is *completely* agnostic of your underlying logger -- you can use it with any logger you prefer.
+For that, structlog is *completely* agnostic of your underlying logger -- you can use it with any logger you like.
 
 The most prominent example of such an 'existing logger' is without doubt the logging module in the standard library.
 To make this common case as simple as possible, structlog comes with some tools to help you:

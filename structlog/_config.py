@@ -61,7 +61,7 @@ def get_logger(**initial_values):
     >>> log.msg('hello', x=42)
     y=23 x=42 event='hello'
 
-    :param initial_values: Values that are used to prepopulate your contexts.
+    :param initial_values: Values that are used to pre-populate your contexts.
 
     See :ref:`configuration` for details.
 
@@ -85,8 +85,8 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     """
     Create a new bound logger for an arbitrary `logger`.
 
-    Default values for *processors* and *context_class* can be set using
-    :func:`configure`.
+    Default values for *processors*, *wrapper_class*, and *context_class* can
+    be set using :func:`configure`.
 
     If you set *processors* or *context_class* here, calls to
     :func:`configure` have *no* effect for the *respective* attribute.
@@ -95,12 +95,14 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
 
     :param logger: An instance of a logger whose method calls will be
         wrapped.  Use configured logger factory if `None`.
-    :param list processors: List of processors.
+    :param processors: List of processors.
+    :type processors: list of callables
     :param type wrapper_class: Class to use for wrapping loggers instead of
         :class:`structlog.BoundLogger`.
-    :param context_class: Class to be used for internal dictionary.
+    :param type context_class: Class to be used for internal dictionary.
 
-    :rtype: `cls`
+    :rtype: A proxy that creates a correctly configured bound logger when
+        necessary.
     """
     return BoundLoggerLazyProxy(
         logger,
@@ -114,11 +116,13 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
 def configure(processors=None, wrapper_class=None, context_class=None,
               logger_factory=None):
     """
-    Configures the **global** *processors* and *context_class*.
+    Configures the **global** defaults.
 
     They are used if :func:`wrap_logger` has been called without arguments.
 
-    Also sets the global class attribute :attr:`is_configured` to `True`.
+    Also sets the global class attribute :attr:`is_configured` to `True` on
+    first call.  Can be called several times, keeping an argument at `None`
+    leaves is unchanged from the current setting.
 
     Use :func:`reset_defaults` to undo your changes.
 
@@ -155,10 +159,12 @@ def configure_once(*args, **kw):
 
 def reset_defaults():
     """
-    Resets default *processors*, and *context_class*.
+    Resets global default values to builtins.
 
-    That means ``[format_exc_info, KeyValueRenderer()]`` for *processors*
-    and ``OrderedDict`` for *context_class*.
+    That means [:func:`~structlog.processors.format_exc_info`,
+    :class:`~structlog.processors.KeyValueRenderer`] for *processors*,
+    :class:`~structlog.BoundLogger` for *wrapper_class*, ``OrderedDict`` for
+    *context_class*, and :class:`~structlog.PrintLogger` for *logger_factory*.
 
     Also sets the global class attribute :attr:`is_configured` to `True`.
     """
