@@ -128,6 +128,19 @@ class BoundLogger(object):
             self._context.__class__(self._context, **new_values)
         )
 
+    def unbind(self, *keys):
+        """
+        Return a new logger with *keys* removed from the context.
+
+        :raises KeyError: If the key is not part of the context.
+
+        :rtype: :class:`BoundLogger`
+        """
+        bl = self.bind()
+        for key in keys:
+            del bl._context[key]
+        return bl
+
     def new(self, **initial_values):
         """
         Clear context and binds *initial_values*.

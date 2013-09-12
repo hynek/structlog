@@ -162,6 +162,11 @@ class TestBoundLoggerLazyProxy(object):
         b = proxy.bind(c=3)
         assert {'c': 3} == b._context
 
+    def test_unbind_unbinds_from_initial_values(self):
+        p = BoundLoggerLazyProxy(None, initial_values={'a': 1, 'b': 2})
+        b = p.unbind('a')
+        assert {'b': 2} == b._context
+
     def test_honors_wrapper_class(self):
         p = BoundLoggerLazyProxy(None, wrapper_class=Wrapper)
         b = p.bind()

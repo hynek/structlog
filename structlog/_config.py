@@ -175,8 +175,8 @@ class BoundLoggerLazyProxy(object):
 
     Takes both configuration and instantiation parameters into account.
 
-    The only points where a BoundLogger changes state are bind() and new()
-    and that return the actual BoundLogger
+    The only points where a BoundLogger changes state are bind(), unbind(), and
+    new() and that return the actual BoundLogger.
     """
     def __init__(self, logger, wrapper_class=None, processors=None,
                  context_class=None, initial_values=None):
@@ -212,6 +212,14 @@ class BoundLoggerLazyProxy(object):
             processors=self._processors or _CONFIG.default_processors,
             context=ctx,
         )
+
+    def unbind(self, *keys):
+        """
+        Same as bind, except unbind *keys* first.
+
+        In our case that could be only initial values.
+        """
+        return self.bind().unbind(*keys)
 
     def new(self, **new_values):
         """

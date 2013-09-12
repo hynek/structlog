@@ -157,6 +157,9 @@ class _ThreadLocalDictWrapper(object):
     def __setitem__(self, key, value):
         self._dict[key] = value
 
+    def __delitem__(self, key):
+        self._dict.__delitem__(key)
+
     def __len__(self):
         return self._dict.__len__()
 

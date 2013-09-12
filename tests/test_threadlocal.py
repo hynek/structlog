@@ -154,7 +154,13 @@ class TestThreadLocalDict(object):
         assert 42 == d._dict["x"]
 
     def test_delattr(self, D):
-        d = wrap_dict(dict)()
+        d = D()
         d['x'] = 42
         assert 42 == d._dict["x"]
         del d.__class__._tl.dict_
+
+    def test_del(self, D):
+        d = D()
+        d['x'] = 13
+        del d['x']
+        assert 'x' not in d._dict

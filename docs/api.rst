@@ -16,7 +16,7 @@ structlog Package
 .. autofunction:: reset_defaults
 
 .. autoclass:: BoundLogger
-   :members: new, bind
+   :members: new, bind, unbind
 
 .. autoclass:: PrintLogger
 .. autoclass:: ReturnLogger

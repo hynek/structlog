@@ -55,7 +55,7 @@ class TestPrintLogger(object):
         )
 
 
-def buildBL(logger=None, processors=None, context=None):
+def build_bl(logger=None, processors=None, context=None):
     """
     Convenience function to build BoundLoggers with sane defaults.
     """
@@ -71,7 +71,7 @@ class TestBinding(object):
         """
         Ensure BoundLogger is immutable by default.
         """
-        b = buildBL(processors=[KeyValueRenderer(sort_keys=True)])
+        b = build_bl(processors=[KeyValueRenderer(sort_keys=True)])
         b = b.bind(x=42, y=23)
         b1 = b.bind(foo='bar')
         assert (
@@ -89,7 +89,7 @@ class TestBinding(object):
         )
 
     def test_new_clears_state(self):
-        b = buildBL()
+        b = build_bl()
         b = b.bind(x=42)
         assert 42 == b._context['x']
         b = b.bind()
@@ -98,7 +98,7 @@ class TestBinding(object):
         assert 'x' not in b._context
 
     def test_comparison(self):
-        b = buildBL()
+        b = build_bl()
         assert b == b.bind()
         assert b is not b.bind()
         assert b != b.bind(x=5)
@@ -116,13 +116,17 @@ class TestBinding(object):
         b = Wrapper(None, [], {})
         assert isinstance(b.new(), Wrapper)
 
+    def test_unbind(self):
+        b = build_bl().bind(x=42, y=23).unbind('x', 'y')
+        assert {} == b._context
+
 
 class TestWrapper(object):
     def test_caches(self):
         """
         __getattr__() gets called only once per logger method.
         """
-        b = buildBL()
+        b = build_bl()
         assert 'msg' not in b.__dict__
         b.msg('foo')
         assert 'msg' in b.__dict__
@@ -132,26 +136,26 @@ class TestWrapper(object):
             assert b._context is not event_dict
             return ''
 
-        b = buildBL(processors=[chk])
+        b = build_bl(processors=[chk])
         b.msg('event')
         assert 'event' not in b._context
 
     def test_processor_raising_DropEvent_silently_aborts_chain(self, capsys):
-        b = buildBL(processors=[raiser(DropEvent), raiser(ValueError)])
+        b = build_bl(processors=[raiser(DropEvent), raiser(ValueError)])
         b.msg('silence!')
         assert (('', '') == capsys.readouterr())
 
     def test_chain_does_not_swallow_all_exceptions(self):
-        b = buildBL(processors=[raiser(ValueError)])
+        b = build_bl(processors=[raiser(ValueError)])
         with pytest.raises(ValueError):
             b.msg('boom')
 
     def test_processor_can_return_both_str_and_tuple(self):
         logger = stub(msg=lambda *args, **kw: (args, kw))
-        b1 = buildBL(logger, processors=[lambda *_: 'foo'])
-        b2 = buildBL(logger, processors=[lambda *_: (('foo',), {})])
+        b1 = build_bl(logger, processors=[lambda *_: 'foo'])
+        b2 = build_bl(logger, processors=[lambda *_: (('foo',), {})])
         assert b1.msg('foo') == b2.msg('foo')
 
     def test_repr(self):
-        l = buildBL(processors=[1, 2, 3], context={})
+        l = build_bl(processors=[1, 2, 3], context={})
         assert '<BoundLogger(context={}, processors=[1, 2, 3])>' == repr(l)

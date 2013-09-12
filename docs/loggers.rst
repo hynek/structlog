@@ -6,7 +6,8 @@ The center of structlog is the immutable log wrapper :class:`~structlog.BoundLog
 All it does is:
 
 - Keeping a *context* and a *logger* that it's wrapping,
-- recreating itself with (optional) additional context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
+- recreating itself with (optional) *additional* context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
+- recreating itself with *less* data (:func:`~structlog.BoundLogger.unbind`),
 - and finally relaying *all* other method calls to the wrapped logger after processing the log entry with the configured chain of processors.
 
 You won't be instantiating it yourself though.
