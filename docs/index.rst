@@ -61,6 +61,7 @@ User's Guide
    getting-started
    loggers
    processors
+   twisted
    examples
 
 API

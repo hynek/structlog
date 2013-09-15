@@ -59,4 +59,6 @@ structlog Package
 .. autoclass:: LoggerFactory
 .. autoclass:: EventAdapter
 .. autoclass:: JSONRenderer
-
+.. autofunction:: plainJSONStdOutLogger
+.. autofunction:: JSONLogObserverWrapper
+.. autoclass:: PlainFileLogObserver

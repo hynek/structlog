@@ -16,14 +16,20 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 pytest.importorskip('twisted')
-from twisted.python.failure import Failure, NoCurrentExceptionError
 
-from structlog._compat import OrderedDict
+from pretend import call_recorder, call
+from twisted.python.failure import Failure, NoCurrentExceptionError
+from twisted.python.log import ILogObserver
+
+from structlog._compat import OrderedDict, StringIO
 from structlog.twisted import (
-    JSONRenderer,
     EventAdapter,
+    JSONRenderer,
+    JSONLogObserverWrapper,
     LoggerFactory,
+    PlainFileLogObserver,
     _extractStuffAndWhy,
+    plainJSONStdOutLogger,
 )
 
 
@@ -172,26 +178,86 @@ class TestEventAdapter(object):
 @pytest.fixture
 def jr():
     """
-    A plain JSONRenderer.
+    A plain Twisted JSONRenderer.
     """
     return JSONRenderer()
 
 
 class TestJSONRenderer(object):
     def test_dumpsKWsAreHandedThrough(self, jr):
+        """
+        JSONRenderer allows for setting arguments that are passed to
+        json.dumps().  Make sure they are passed.
+        """
         d = OrderedDict(x='foo')
         d.update(a='bar')
         jr_sorted = JSONRenderer(sort_keys=True)
         assert jr_sorted(None, 'err', d) != jr(None, 'err', d)
 
     def test_handlesMissingFailure(self, jr):
-        assert '{"event": "foo"}' == jr(None, 'err', {'event': 'foo'})
-        assert '{"event": "foo"}' == jr(None, 'err', {'_why': 'foo'})
+        assert '{"event": "foo"}' == jr(None, 'err', {'event': 'foo'})[0][0]
+        assert '{"event": "foo"}' == jr(None, 'err', {'_why': 'foo'})[0][0]
 
     def test_msgWorksToo(self, jr):
-        assert '{"event": "foo"}' == jr(None, 'msg', {'_why': 'foo'})
+        assert '{"event": "foo"}' == jr(None, 'msg', {'_why': 'foo'})[0][0]
 
     def test_handlesFailure(self, jr):
-        rv = jr(None, 'err', {'event': Failure(ValueError())})
+        rv = jr(None, 'err', {'event': Failure(ValueError())})[0][0]
         assert 'Failure: exceptions.ValueError' in rv
         assert '"event": "error"' in rv
+
+    def test_setsStructLogField(self, jr):
+        """
+        Formatted entries are marked so they can be identified without guessing
+        for example in JSONLogObserverWrapper.
+        """
+        assert {'_structlog': True} == jr(None, 'msg', {'_why': 'foo'})[1]
+
+
+class TestPlainFileLogObserver(object):
+    def test_writesOnlyMessageWithLF(self):
+        sio = StringIO()
+        PlainFileLogObserver(sio).emit({'system': 'some system',
+                                        'message': ('hello',)})
+        assert 'hello\n' == sio.getvalue()
+
+
+class TestJSONObserverWrapper(object):
+    def test_IsAnObserver(self):
+        assert ILogObserver.implementedBy(JSONLogObserverWrapper)
+
+    def test_callsWrappedObserver(self):
+        """
+        The wrapper always runs the wrapped observer in the end.
+        """
+        o = call_recorder(lambda *a, **kw: None)
+        JSONLogObserverWrapper(o).emit({'message': ('hello',)})
+        assert 1 == len(o.calls)
+
+    def test_jsonifiesPlainLogEntries(self):
+        """
+        Entries that aren't formatted by JSONRenderer are rendered as JSON
+        now.
+        """
+        o = call_recorder(lambda *a, **kw: None)
+        JSONLogObserverWrapper(o).emit({'message': ('hello',), 'system': '-'})
+        assert [
+            call({'message': ('{"event": "hello", "system": "-"}',),
+                  '_structlog': True, 'system': '-'})
+        ] == o.calls
+
+    def test_leavesStructLogAlone(self):
+        """
+        Entries that are formatted by JSONRenderer are left alone.
+        """
+        d = {'message': ('hello',), '_structlog': True}
+
+        def verify(eventDict):
+            assert d == eventDict
+
+        JSONLogObserverWrapper(verify).emit(d)
+
+
+class TestPlainJSONStdOutLogger(object):
+    def test_returnsAcallable(self):
+        assert callable(plainJSONStdOutLogger())

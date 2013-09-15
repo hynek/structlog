@@ -46,7 +46,7 @@ from structlog._loggers import (
 
 try:
     from structlog import twisted
-except ImportError:
+except ImportError:  # pragma: nocover
     twisted = None
 
 

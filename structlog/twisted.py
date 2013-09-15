@@ -20,10 +20,14 @@ networking engine.
 from __future__ import absolute_import, division, print_function
 
 import sys
+import json
 
 from twisted.python.failure import Failure
+from twisted.python.log import ILogObserver, textFromEventDict
+from zope.interface import implementer
 
 from structlog._compat import string_types
+from structlog._utils import until_not_interrupted
 from structlog.processors import (
     KeyValueRenderer,
     # can't import processors module because of circular imports
@@ -91,6 +95,9 @@ class JSONRenderer(_JSONRenderer):
 
     *Not* an adapter like :class:`EventAdapter` but a real formatter.  Nor does
     it require to be adapted using it.
+
+    Use together with a :func:`withJSONObserver`-wrapped Twisted logger like
+    :func:`plainJSONStdOutLogger` for pure-JSON logs.
     """
     def __call__(self, logger, name, eventDict):
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
@@ -101,7 +108,70 @@ class JSONRenderer(_JSONRenderer):
                 _stuff.cleanFailure()
         else:
             eventDict['event'] = _why
-        return _JSONRenderer.__call__(self, logger, name, eventDict)
+        return ((_JSONRenderer.__call__(self, logger, name, eventDict),),
+                {'_structlog': True})
+
+
+class PlainFileLogObserver(object):
+    """
+    Write only the the plain message without timestamps or anything else.
+
+    Great to just print JSON to stdout where you catch it with something like
+    runit.
+    """
+    def __init__(self, file):
+        self._write = file.write
+        self._flush = file.flush
+
+    def emit(self, eventDict):
+        until_not_interrupted(self._write, textFromEventDict(eventDict) + '\n')
+        until_not_interrupted(self._flush)
+
+
+@implementer(ILogObserver)
+class JSONLogObserverWrapper(object):
+    """
+    Wrap a log *observer* and render non-:class:`JSONRenderer` entries to JSON.
+
+    :param ILogObserver observer: Twisted log observer to wrap.  For example
+        :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
+        <http://twistedmatrix.com/documents/current/api/twisted.python.log.
+        FileLogObserver.html>`_
+    """
+    def __init__(self, observer):
+        self._observer = observer
+
+    def emit(self, eventDict):
+        if '_structlog' not in eventDict:
+            eventDict['message'] = (json.dumps({
+                'event': textFromEventDict(eventDict),
+                'system': eventDict.get('system'),
+            }),)
+            eventDict['_structlog'] = True
+        return self._observer(eventDict)
+
+
+def plainJSONStdOutLogger():
+    """
+    Return a logger that writes only the message to stdout.
+
+    Transforms non-:class:`~structlog.twisted.JSONRenderer` messages to JSON.
+
+    To be used together with :class:`JSONRenderer` and Twisted plugins. For
+    example like::
+
+        $ twistd -n --logger structlog.twisted.plainJSONStdOutLogger web
+        {"event": "Log opened.", "system": "-"}
+        {"event": "twistd 13.1.0 (python 2.7.3) starting up.", "system": "-"}
+        {"event": "reactor class: twisted...EPollReactor.", "system": "-"}
+        {"event": "Site starting on 8080", "system": "-"}
+        {"event": "Starting factory <twisted.web.server.Site ...>", ...}
+        ...
+
+    Composes :class:`PlainFileLogObserver` and :class:`JSONLogObserverWrapper`
+    to a usable logger.
+    """
+    return JSONLogObserverWrapper(PlainFileLogObserver(sys.stdout).emit).emit
 
 
 class EventAdapter(object):
