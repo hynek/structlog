@@ -34,6 +34,7 @@ class Echo(protocol.Protocol):
         self.transport.write(data)
         log.msg('echoed data!')
 
+
 if __name__ == "__main__":
     structlog.configure(
         processors=[structlog.twisted.EventAdapter()],
