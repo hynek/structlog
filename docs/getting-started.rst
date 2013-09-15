@@ -38,7 +38,7 @@ Here, structlog takes full advantage of its hopefully useful default settings:
   Yes, that seems a rather controversial attitude towards logging.
 - All keywords are formatted using :class:`structlog.processors.KeyValueRenderer`.
   That in turn uses `repr()`_ to serialize all values to strings.
-  Thus, it's easy to add support for logging of your own objects.
+  Thus, it's easy to add support for logging of your own objects\ [*]_.
 
 It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
 
@@ -109,6 +109,9 @@ Liked what you saw?
 
 Now you're all set for the rest of the user's guide.
 If you want to see more code, make sure to check out the :ref:`examples`!
+
+.. [*] In production, you're more likely to use :class:`~structlog.processors.JSONRenderer` that can also be customized using a ``__structlog__`` method so you don't have to change your repr methods to something they weren't originally intended for.
+
 
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _`repr()`: http://docs.python.org/2/reference/datamodel.html#object.__repr__

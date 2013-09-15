@@ -84,6 +84,24 @@ class JSONRenderer(object):
     >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
     '{"a": 42, "b": [1, 2, 3]}'
 
+    Bound objects are attempted to be serialize using a ``__structlog__`
+    method.  If none is defined, ``repr()`` is used:
+
+    >>> class C1(object):
+    ...     def __structlog__(self):
+    ...         return ['C1!']
+    ...     def __repr__(self):
+    ...         return '__structlog__ took precedence'
+    >>> class C2(object):
+    ...     def __repr__(self):
+    ...         return 'No __structlog__, so this is used.'
+    >>> from structlog.processors import JSONRenderer
+    >>> JSONRenderer(sort_keys=True)(None, None, {'c1': C1(), 'c2': C2()})
+    '{"c1": ["C1!"], "c2": "No __structlog__, so this is used."}'
+
+    Please note that additionally to strings, you can also return any type
+    the standard library JSON module knows about -- like in this example
+    a list.
     """
     def __init__(self, **dumps_kw):
         self._dumps_kw = dumps_kw
@@ -95,7 +113,7 @@ class JSONRenderer(object):
 
 class _JSONFallbackEncoder(json.JSONEncoder):
     """
-    Serialize custom datatypes and pass the rest to repr().
+    Serialize custom datatypes and pass the rest to __structlog__ & repr().
     """
     def default(self, obj):
         """
@@ -106,7 +124,10 @@ class _JSONFallbackEncoder(json.JSONEncoder):
         if isinstance(obj, _ThreadLocalDictWrapper):
             return obj._dict
         else:
-            return repr(obj)
+            try:
+                return obj.__structlog__()
+            except AttributeError:
+                return repr(obj)
 
 
 def format_exc_info(logger, name, event_dict):
