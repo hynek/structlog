@@ -2,7 +2,7 @@ Authors
 -------
 
 structlog is written and maintained by `Hynek Schlawack <http://hynek.me/>`_.
-It’s inspired on previous work done by `Jean-Paul Calderone <http://as.ynchrono.us>`_ and `David Reid <http://dreid.org>`_.
+It’s inspired by previous work done by `Jean-Paul Calderone <http://as.ynchrono.us>`_ and `David Reid <http://dreid.org>`_.
 
 The following folks helped forming structlog into what it is now:
 
