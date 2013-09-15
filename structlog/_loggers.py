@@ -25,6 +25,9 @@ from functools import wraps
 from structlog._compat import (
     string_types,
 )
+from structlog._exc import (
+    DropEvent
+)
 
 
 class PrintLogger(object):
@@ -76,14 +79,6 @@ class ReturnLogger(object):
         return message
 
     err = info = warning = error = critical = log = msg
-
-
-class DropEvent(BaseException):
-    """
-    If raised by an processor, the event gets silently dropped.
-
-    Derives from BaseException because it's technically not an error.
-    """
 
 
 class BoundLogger(object):

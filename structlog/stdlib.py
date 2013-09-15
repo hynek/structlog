@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 import logging
 import sys
 
-from structlog import DropEvent
+from structlog._exc import DropEvent
 
 
 class LoggerFactory(object):

@@ -21,9 +21,14 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-from structlog import processors
-from structlog._compat import string_types
 from twisted.python.failure import Failure
+
+from structlog._compat import string_types
+from structlog.processors import (
+    KeyValueRenderer,
+    # can't import processors module because of circular imports
+    JSONRenderer as _JSONRenderer
+)
 
 
 class LoggerFactory(object):
@@ -63,7 +68,7 @@ def _extractStuffAndWhy(eventDict):
     # `log.err('event', _why='alsoEvent')` is ambiguous.
     if _why and isinstance(event, string_types):
         raise ValueError('Both `_why` and `event` supplied.')
-    # Two failures are ambiguos too.
+    # Two failures are ambiguous too.
     if not isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
         _why = _why or 'error'
         _stuff = event
@@ -79,7 +84,7 @@ def _extractStuffAndWhy(eventDict):
     return _stuff, _why, eventDict
 
 
-class JSONRenderer(processors.JSONRenderer):
+class JSONRenderer(_JSONRenderer):
     """
     Behaves like :class:`structlog.processors.JSONRenderer` except that it
     formats tracebacks and failures itself if called with `err()`.
@@ -96,7 +101,7 @@ class JSONRenderer(processors.JSONRenderer):
                 _stuff.cleanFailure()
         else:
             eventDict['event'] = _why
-        return processors.JSONRenderer.__call__(self, logger, name, eventDict)
+        return _JSONRenderer.__call__(self, logger, name, eventDict)
 
 
 class EventAdapter(object):
@@ -115,7 +120,7 @@ class EventAdapter(object):
         """
         :param dictFormatter: A processor used to format the log message.
         """
-        self._dictFormatter = dictFormatter or processors.KeyValueRenderer()
+        self._dictFormatter = dictFormatter or KeyValueRenderer()
 
     def __call__(self, logger, name, eventDict):
         if name == 'err':

@@ -18,7 +18,7 @@ import logging
 
 import pytest
 
-from structlog import DropEvent
+from structlog._exc import DropEvent
 from structlog.stdlib import LoggerFactory, filter_by_level, WARN, CRITICAL
 
 from .additional_frame import additional_frame

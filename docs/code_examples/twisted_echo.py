@@ -35,10 +35,9 @@ class Echo(protocol.Protocol):
         log.msg('echoed data!')
 
 if __name__ == "__main__":
-    from structlog.twisted import LoggerFactory, EventAdapter
     structlog.configure(
-        processors=[EventAdapter()],
-        logger_factory=LoggerFactory(),
+        processors=[structlog.twisted.EventAdapter()],
+        logger_factory=structlog.twisted.LoggerFactory(),
     )
     twisted.python.log.startLogging(sys.stderr)
     reactor.listenTCP(1234, protocol.Factory.forProtocol(Echo))

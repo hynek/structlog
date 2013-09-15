@@ -20,6 +20,12 @@ from __future__ import absolute_import, division, print_function
 
 __version__ = '0.2.0dev'
 
+
+from structlog import (
+    processors,
+    stdlib,
+    threadlocal,
+)
 from structlog._config import (
     configure,
     configure_once,
@@ -28,12 +34,20 @@ from structlog._config import (
     reset_defaults,
     wrap_logger,
 )
+from structlog._exc import (
+    DropEvent,
+)
 from structlog._loggers import (
     BoundLogger,
-    DropEvent,
     PrintLogger,
     ReturnLogger,
 )
+
+
+try:
+    from structlog import twisted
+except ImportError:
+    twisted = None
 
 
 __all__ = [
@@ -46,5 +60,9 @@ __all__ = [
     getLogger,
     get_logger,
     reset_defaults,
+    processors,
+    stdlib,
+    threadlocal,
+    twisted,
     wrap_logger,
 ]
