@@ -14,5 +14,6 @@ pyrepl==0.8.4
 pytest==2.3.5
 pytest-cov==1.6
 python-dateutil==1.5
+releases>=0.2.0
 wmctrl==0.1
 zope.interface==4.0.5

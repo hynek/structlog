@@ -40,7 +40,6 @@ setup(
     version=find_version('structlog', '__init__.py'),
     description='Painless structural logging.',
     long_description=(read('README.rst') + '\n\n' +
-                      read('HISTORY.rst') + '\n\n' +
                       read('AUTHORS.rst')),
     url='http://github.com/hynek/structlog/',
     license='Apache License, Version 2.0',
