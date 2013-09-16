@@ -16,6 +16,8 @@
 Primitives to keep context global but thread (and greenlet) local.
 """
 
+from __future__ import absolute_import, division, print_function
+
 import contextlib
 import uuid
 
