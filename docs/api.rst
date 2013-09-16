@@ -19,6 +19,7 @@ structlog Package
    :members: new, bind, unbind
 
 .. autoclass:: PrintLogger
+   :members: msg, err, info, warning, error, critical, log
 .. autoclass:: ReturnLogger
 
 .. autoexception:: DropEvent

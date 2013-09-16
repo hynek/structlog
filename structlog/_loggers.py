@@ -22,12 +22,9 @@ import sys
 
 from functools import wraps
 
-from structlog._compat import (
-    string_types,
-)
-from structlog._exc import (
-    DropEvent
-)
+from structlog._compat import string_types
+from structlog._exc import DropEvent
+from structlog._utils import until_not_interrupted
 
 
 class PrintLogger(object):
@@ -49,6 +46,8 @@ class PrintLogger(object):
     """
     def __init__(self, file=None):
         self._file = file or sys.stdout
+        self._write = self._file.write
+        self._flush = self._file.flush
 
     def __repr__(self):
         return '<PrintLogger(file={0!r})>'.format(self._file)
@@ -57,7 +56,8 @@ class PrintLogger(object):
         """
         Print *message*.
         """
-        print(message, file=self._file)
+        until_not_interrupted(self._write, message + '\n')
+        until_not_interrupted(self._flush)
 
     err = info = warning = error = critical = log = msg
 

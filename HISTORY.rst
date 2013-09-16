@@ -8,6 +8,7 @@ History
 
 - Allow custom serialization in JSONRenderer without abusing __repr__.
 - Enhance Twisted support by offering JSONification of non-structlog log entries.
+- PrintLogger now uses proper I/O routines and is thus viable not only for examples but also for production.
 
 
 0.1.0 (2013-09-12)
