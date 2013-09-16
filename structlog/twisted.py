@@ -121,6 +121,9 @@ class PlainFileLogObserver(object):
     runit.
 
     :param file file: File to print to.
+
+
+    .. versionadded:: 0.2.0
     """
     def __init__(self, file):
         self._write = file.write
@@ -140,6 +143,8 @@ class JSONLogObserverWrapper(object):
         :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
         <http://twistedmatrix.com/documents/current/api/twisted.python.log.
         FileLogObserver.html>`_
+
+    .. versionadded:: 0.2.0
     """
     def __init__(self, observer):
         self._observer = observer
@@ -173,6 +178,8 @@ def plainJSONStdOutLogger():
 
     Composes :class:`PlainFileLogObserver` and :class:`JSONLogObserverWrapper`
     to a usable logger.
+
+    .. versionadded:: 0.2.0
     """
     return JSONLogObserverWrapper(PlainFileLogObserver(sys.stdout))
 

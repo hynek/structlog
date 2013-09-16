@@ -108,6 +108,9 @@ class JSONRenderer(object):
     Please note that additionally to strings, you can also return any type
     the standard library JSON module knows about -- like in this example
     a list.
+
+    .. versionchanged:: 0.2.0
+        Added support for ``__structlog__`` serialization method.
     """
     def __init__(self, **dumps_kw):
         self._dumps_kw = dumps_kw
