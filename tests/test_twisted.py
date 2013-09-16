@@ -215,10 +215,13 @@ class TestJSONRenderer(object):
 
 
 class TestPlainFileLogObserver(object):
+    def test_isLogObserver(self):
+        assert ILogObserver.providedBy(PlainFileLogObserver(StringIO()))
+
     def test_writesOnlyMessageWithLF(self):
         sio = StringIO()
-        PlainFileLogObserver(sio).emit({'system': 'some system',
-                                        'message': ('hello',)})
+        PlainFileLogObserver(sio)({'system': 'some system',
+                                   'message': ('hello',)})
         assert 'hello\n' == sio.getvalue()
 
 
@@ -231,7 +234,7 @@ class TestJSONObserverWrapper(object):
         The wrapper always runs the wrapped observer in the end.
         """
         o = call_recorder(lambda *a, **kw: None)
-        JSONLogObserverWrapper(o).emit({'message': ('hello',)})
+        JSONLogObserverWrapper(o)({'message': ('hello',)})
         assert 1 == len(o.calls)
 
     def test_jsonifiesPlainLogEntries(self):
@@ -240,7 +243,7 @@ class TestJSONObserverWrapper(object):
         now.
         """
         o = call_recorder(lambda *a, **kw: None)
-        JSONLogObserverWrapper(o).emit({'message': ('hello',), 'system': '-'})
+        JSONLogObserverWrapper(o)({'message': ('hello',), 'system': '-'})
         assert [
             call({'message': ('{"event": "hello", "system": "-"}',),
                   '_structlog': True, 'system': '-'})
@@ -255,9 +258,9 @@ class TestJSONObserverWrapper(object):
         def verify(eventDict):
             assert d == eventDict
 
-        JSONLogObserverWrapper(verify).emit(d)
+        JSONLogObserverWrapper(verify)(d)
 
 
 class TestPlainJSONStdOutLogger(object):
-    def test_returnsAcallable(self):
-        assert callable(plainJSONStdOutLogger())
+    def test_isLogObserver(self):
+        assert ILogObserver.providedBy(plainJSONStdOutLogger())

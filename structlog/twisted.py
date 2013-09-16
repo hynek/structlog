@@ -112,6 +112,7 @@ class JSONRenderer(_JSONRenderer):
                 {'_structlog': True})
 
 
+@implementer(ILogObserver)
 class PlainFileLogObserver(object):
     """
     Write only the the plain message without timestamps or anything else.
@@ -123,7 +124,7 @@ class PlainFileLogObserver(object):
         self._write = file.write
         self._flush = file.flush
 
-    def emit(self, eventDict):
+    def __call__(self, eventDict):
         until_not_interrupted(self._write, textFromEventDict(eventDict) + '\n')
         until_not_interrupted(self._flush)
 
@@ -141,7 +142,7 @@ class JSONLogObserverWrapper(object):
     def __init__(self, observer):
         self._observer = observer
 
-    def emit(self, eventDict):
+    def __call__(self, eventDict):
         if '_structlog' not in eventDict:
             eventDict['message'] = (json.dumps({
                 'event': textFromEventDict(eventDict),
@@ -171,7 +172,7 @@ def plainJSONStdOutLogger():
     Composes :class:`PlainFileLogObserver` and :class:`JSONLogObserverWrapper`
     to a usable logger.
     """
-    return JSONLogObserverWrapper(PlainFileLogObserver(sys.stdout).emit).emit
+    return JSONLogObserverWrapper(PlainFileLogObserver(sys.stdout))
 
 
 class EventAdapter(object):
