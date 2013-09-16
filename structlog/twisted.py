@@ -119,6 +119,8 @@ class PlainFileLogObserver(object):
 
     Great to just print JSON to stdout where you catch it with something like
     runit.
+
+    :param file file: File to print to.
     """
     def __init__(self, file):
         self._write = file.write
@@ -158,8 +160,8 @@ def plainJSONStdOutLogger():
 
     Transforms non-:class:`~structlog.twisted.JSONRenderer` messages to JSON.
 
-    To be used together with :class:`JSONRenderer` and Twisted plugins. For
-    example like::
+    Ideal for JSONifying log entries from Twisted plugins and libraries that
+    are outside of your control::
 
         $ twistd -n --logger structlog.twisted.plainJSONStdOutLogger web
         {"event": "Log opened.", "system": "-"}
@@ -183,15 +185,19 @@ class EventAdapter(object):
     <http://twistedmatrix.com/documents/current/
     api/twisted.python.log.html#err>`_ behave as expected.
 
-    **Must** be the last processor in the chain and requires a `dictFormatter`
+    :param callable dictRenderer: Renderer that is used for the actual
+        log message.  Please note that structlog comes with a dedicated
+        :class:`JSONRenderer`.
+
+    **Must** be the last processor in the chain and requires a `dictRenderer`
     for the actual formatting as an constructor argument in order to be able to
     fully support the original behaviors of ``log.msg()`` and ``log.err()``.
     """
-    def __init__(self, dictFormatter=None):
+    def __init__(self, dictRenderer=None):
         """
-        :param dictFormatter: A processor used to format the log message.
+        :param dictRenderer: A processor used to format the log message.
         """
-        self._dictFormatter = dictFormatter or KeyValueRenderer()
+        self._dictRenderer = dictRenderer or KeyValueRenderer()
 
     def __call__(self, logger, name, eventDict):
         if name == 'err':
@@ -203,7 +209,7 @@ class EventAdapter(object):
             eventDict['event'] = _why
             return ((), {
                 '_stuff': _stuff,
-                '_why': self._dictFormatter(logger, name, eventDict),
+                '_why': self._dictRenderer(logger, name, eventDict),
             })
         else:
-            return self._dictFormatter(logger, name, eventDict)
+            return self._dictRenderer(logger, name, eventDict)

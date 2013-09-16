@@ -32,11 +32,11 @@ class KeyValueRenderer(object):
     """
     Render `event_dict` as a list of ``Key=repr(Value)`` pairs.
 
+    :param bool sort_keys: Whether to sort keys when formatting.
+
     >>> from structlog.processors import KeyValueRenderer
     >>> KeyValueRenderer()(None, None, {'a': 42, 'b': [1, 2, 3]})
     'a=42 b=[1, 2, 3]'
-
-    :param bool sort_keys: Whether to sort keys when formatting.
     """
     def __init__(self, sort_keys=False):
         self._sort_keys = sort_keys
@@ -53,6 +53,10 @@ class KeyValueRenderer(object):
 class UnicodeEncoder(object):
     """
     Encode unicode values in `event_dict`.
+
+    :param str encoding: Encoding to encode to (default: ``'utf-8'``.
+    :param str errors: How to cope with encoding errors (default
+        ``'backslashreplace'``).
 
     Useful for :class:`KeyValueRenderer` if you don't want to see u-prefixes:
 
@@ -79,6 +83,8 @@ class UnicodeEncoder(object):
 class JSONRenderer(object):
     """
     Render the `event_dict` using `json.dumps(event_dict, **json_kw)`.
+
+    :param json_kw: Are passed unmodified to `json.dumps()`.
 
     >>> from structlog.processors import JSONRenderer
     >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
