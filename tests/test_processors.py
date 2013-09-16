@@ -42,11 +42,46 @@ def event_dict():
     return {'a': A(), 'b': [3, 4], 'x': 7, 'y': 'test', 'z': (1, 2)}
 
 
-def test_KeyValueRenderer(event_dict):
-    assert (
-        r"a=<A(\o/)> b=[3, 4] x=7 y='test' z=(1, 2)" ==
-        KeyValueRenderer(sort_keys=True)(None, None, event_dict)
-    )
+class TestKeyValueRenderer(object):
+    def test_sort_keys(self, event_dict):
+        assert (
+            r"a=<A(\o/)> b=[3, 4] x=7 y='test' z=(1, 2)" ==
+            KeyValueRenderer(sort_keys=True)(None, None, event_dict)
+        )
+
+    def test_order_complete(self, event_dict):
+        assert (
+            r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
+            KeyValueRenderer(key_order=['y', 'b', 'a', 'z', 'x'])
+            (None, None, event_dict)
+        )
+
+    def test_order_missing(self, event_dict):
+        """
+        Missing keys get rendered as None.
+        """
+        assert (
+            r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
+            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'])
+            (None, None, event_dict)
+        )
+
+    def test_order_extra(self, event_dict):
+        """
+        Extra keys get sorted if sort_keys=True.
+        """
+        event_dict['B'] = 'B'
+        event_dict['A'] = 'A'
+        assert (
+            r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'" ==
+            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
+                             sort_keys=True)
+            (None, None, event_dict)
+        )
+
+    def test_random_order(self, event_dict):
+        rv = KeyValueRenderer()(None, None, event_dict)
+        assert isinstance(rv, str)
 
 
 class TestJSONRenderer(object):

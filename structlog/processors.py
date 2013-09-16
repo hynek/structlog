@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 import calendar
 import datetime
 import json
+import operator
 import sys
 import time
 import traceback
@@ -33,21 +34,48 @@ class KeyValueRenderer(object):
     Render `event_dict` as a list of ``Key=repr(Value)`` pairs.
 
     :param bool sort_keys: Whether to sort keys when formatting.
+    :param list key_order: List of keys that should be rendered in this exact
+        order.  Missing keys will be rendered as `None`, extra keys depending
+        on *sort_keys* and the dict class.
+
+        .. versionadded:: 0.2.0
 
     >>> from structlog.processors import KeyValueRenderer
-    >>> KeyValueRenderer()(None, None, {'a': 42, 'b': [1, 2, 3]})
+    >>> KeyValueRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
     'a=42 b=[1, 2, 3]'
+    >>> KeyValueRenderer(key_order=['b', 'a'])(None, None,
+    ...                                       {'a': 42, 'b': [1, 2, 3]})
+    'b=[1, 2, 3] a=42'
     """
-    def __init__(self, sort_keys=False):
-        self._sort_keys = sort_keys
+    def __init__(self, sort_keys=False, key_order=None):
+        # Use an optimized version for each case.
+        if key_order and sort_keys:
+            def ordered_items(event_dict):
+                items = []
+                for key in key_order:
+                    value = event_dict.pop(key, None)
+                    items.append((key, value))
+                items += sorted(event_dict.items())
+                return items
+        elif key_order:
+            def ordered_items(event_dict):
+                items = []
+                for key in key_order:
+                    value = event_dict.pop(key, None)
+                    items.append((key, value))
+                items += event_dict.items()
+                return items
+        elif sort_keys:
+            def ordered_items(event_dict):
+                return sorted(event_dict.items())
+        else:
+            ordered_items = operator.methodcaller('items')
+
+        self._ordered_items = ordered_items
 
     def __call__(self, _, __, event_dict):
-        if self._sort_keys:
-            items = sorted(event_dict.items())
-        else:
-            items = event_dict.items()
-
-        return ' '.join(k + '=' + repr(v) for k, v in items)
+        return ' '.join(k + '=' + repr(v)
+                        for k, v in self._ordered_items(event_dict))
 
 
 class UnicodeEncoder(object):
