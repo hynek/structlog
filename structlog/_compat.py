@@ -42,7 +42,7 @@ if sys.version_info[:2] == (2, 6):
             def __init__(self, *args, **kw):
                 raise NotImplementedError(
                     'The ordereddict package is needed on Python 2.6. '
-                    'See <https://structlog.readthedocs.org/en/latest/'
+                    'See <http://www.structlog.org/en/latest/'
                     'installation.html>.'
                 )
 else:
