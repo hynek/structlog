@@ -26,7 +26,7 @@ from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver, textFromEventDict
 from zope.interface import implementer
 
-from structlog._compat import string_types
+from structlog._compat import PY2, string_types
 from structlog._utils import until_not_interrupted
 from structlog.processors import (
     KeyValueRenderer,
@@ -84,7 +84,8 @@ def _extractStuffAndWhy(eventDict):
     # formatting.  Avoid log.err() to dump another traceback into the log.
     if isinstance(_stuff, BaseException):
         _stuff = Failure(_stuff)
-    sys.exc_clear()
+    if PY2:
+        sys.exc_clear()
     return _stuff, _why, eventDict
 
 
