@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.2.0 <2013-09-17>`
 - :feature:`0` Promote to stable, thus henceforth a strict backward compatibility policy is put into effect.
   See :ref:`contributing`.
 - :feature:`0` Add `key_order` option to :class:`structlog.processors.KeyValueRenderer` for more predictable log entries with any `dict` class.
