@@ -6,7 +6,7 @@ import twisted
 
 from twisted.internet import protocol, reactor
 
-logger = structlog.get_logger()
+logger = structlog.getLogger()
 
 
 class Counter(object):
