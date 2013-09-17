@@ -76,7 +76,7 @@ class TestAsImmutable(object):
     def test_converts_proxy(self, log):
         il = as_immutable(log)
         assert isinstance(il._context, dict)
-        assert {} == log._context._dict
+        assert isinstance(il, BoundLogger)
 
     def test_works_with_immutable(self, log):
         il = as_immutable(log)
