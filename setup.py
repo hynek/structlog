@@ -47,7 +47,7 @@ setup(
     author_email='hs@ox.cx',
     packages=find_packages(exclude=['tests*']),
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',

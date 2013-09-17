@@ -13,7 +13,7 @@ Why You Want Structured Logging
       I believe the widespread use of format strings in logging is based on two presumptions:
 
       - The first level consumer of a log message is a human.
-      - The programer knows what information is needed to debug an issue.
+      - The programmer knows what information is needed to debug an issue.
 
       I believe these presumptions are **no longer correct** in server side software.
 
@@ -32,7 +32,6 @@ structlog supports you with building your context as you go (e.g. if a user logs
 .. literalinclude:: code_examples/teaser.txt
    :language: pycon
    :start-after: log =
-
 
 This ability to bind key/values pairs to a logger frees you from using conditionals, closures, or boilerplate methods to log out all relevant data.
 
@@ -78,6 +77,7 @@ Additional Notes
 .. toctree::
    :maxdepth: 1
 
+   contributing
    license
    changelog
 

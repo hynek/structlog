@@ -19,13 +19,18 @@ def some_route():
     # ...
     log.info('user logged in', user='test-user')
     # gives you:
-    # request_id='ffcdc44f-b952-4b5f-95e6-0f1f3a9ee5fd' event='user logged in' user='test-user'
+    # event='user logged in' request_id='ffcdc44f-b952-4b5f-95e6-0f1f3a9ee5fd' user='test-user'
     # ...
     some_function()
     # ...
 
 if __name__ == "__main__":
     structlog.configure(
+        processors=[
+            structlog.processors.KeyValueRenderer(
+                key_order=['event', 'request_id'],
+            ),
+        ],
         context_class=structlog.threadlocal.wrap_dict(dict),
         logger_factory=structlog.stdlib.LoggerFactory(),
     )
