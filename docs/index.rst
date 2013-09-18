@@ -1,7 +1,7 @@
 structlog: Structured Logging in Python
 =======================================
 
-Release v\ |version| (:ref:`Installation <install>`).
+Release v\ |version| (:doc:`What's new? <changelog>`).
 
 .. include:: intro.rst
    :start-after: :orphan:
