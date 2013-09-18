@@ -3,6 +3,10 @@
 Twisted Support
 ===============
 
+.. warning::
+   Currently, the Twisted-specific code is *not* tested against Python 3.3.
+   This is caused by this_ Twisted bug and will remedied once that bug is fixed.
+
 Additionally to the smart logger wrappers :class:`~structlog.twisted.JSONRenderer` and :class:`~structlog.twisted.EventAdapter` that make sure that *your* log entries are well-formatted, structlog comes with a wrapper for Twisted's log observers to ensure the rest of your logs are in JSON too: :func:`~structlog.twisted.JSONLogObserverWrapper`.
 
 What it does is determining whether a log entry has been formatted by :class:`~structlog.twisted.JSONRenderer`  and if not, converts the log entry to JSON with `event` being the log message and putting Twisted's `system` into a second key.
@@ -27,6 +31,8 @@ To get a clean log without timestamps and additional system fields (``[-]``), st
 And finally, to get *fast* and *efficiently machine-readable* timestamps, you can either pipe your output to tai64n_ or use runit_ in the first place.
 If you have only moderate amounts of log entries, you can also just send them to syslogd_.
 
+
 .. _tai64n: http://cr.yp.to/daemontools/tai64n.html
 .. _runit: http://smarden.org/runit/
 .. _syslogd: http://en.wikipedia.org/wiki/Syslogd
+.. _this: http://twistedmatrix.com/trac/ticket/6540
