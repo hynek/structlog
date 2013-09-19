@@ -20,6 +20,7 @@ import pytest
 
 from pretend import stub
 
+from structlog._base import BoundLoggerBase
 from structlog._compat import PY3
 from structlog._config import (
     BoundLoggerLazyProxy,
@@ -34,7 +35,6 @@ from structlog._config import (
     reset_defaults,
     wrap_logger,
 )
-from structlog._loggers import BoundLogger
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def proxy():
     return BoundLoggerLazyProxy(None)
 
 
-class Wrapper(BoundLogger):
+class Wrapper(BoundLoggerBase):
     """
     Custom wrapper class for testing.
     """
@@ -123,10 +123,10 @@ class TestBoundLoggerLazyProxy(object):
         ) == repr(p)
 
     def test_returns_bound_logger_on_bind(self, proxy):
-        assert isinstance(proxy.bind(), BoundLogger)
+        assert isinstance(proxy.bind(), BoundLoggerBase)
 
     def test_returns_bound_logger_on_new(self, proxy):
-        assert isinstance(proxy.new(), BoundLogger)
+        assert isinstance(proxy.new(), BoundLoggerBase)
 
     def test_prefers_args_over_config(self):
         p = BoundLoggerLazyProxy(None, processors=[1, 2, 3],

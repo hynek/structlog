@@ -16,12 +16,10 @@ import threading
 
 import pytest
 
-from structlog import (
-    ReturnLogger,
-    wrap_logger,
-)
+from structlog._base import BoundLoggerBase
+from structlog._config import wrap_logger
 from structlog._compat import OrderedDict
-from structlog._loggers import BoundLogger
+from structlog._loggers import ReturnLogger
 from structlog.threadlocal import as_immutable, wrap_dict, tmp_bind
 
 
@@ -76,12 +74,12 @@ class TestAsImmutable(object):
     def test_converts_proxy(self, log):
         il = as_immutable(log)
         assert isinstance(il._context, dict)
-        assert isinstance(il, BoundLogger)
+        assert isinstance(il, BoundLoggerBase)
 
     def test_works_with_immutable(self, log):
         il = as_immutable(log)
         assert isinstance(il._context, dict)
-        assert isinstance(as_immutable(il), BoundLogger)
+        assert isinstance(as_immutable(il), BoundLoggerBase)
 
 
 class TestThreadLocalDict(object):

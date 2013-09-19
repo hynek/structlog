@@ -26,6 +26,9 @@ from structlog import (
     stdlib,
     threadlocal,
 )
+from structlog._base import (
+    BoundLoggerBase,
+)
 from structlog._config import (
     configure,
     configure_once,
@@ -37,8 +40,10 @@ from structlog._config import (
 from structlog._exc import (
     DropEvent,
 )
+from structlog._generic import (
+    BoundLogger
+)
 from structlog._loggers import (
-    BoundLogger,
     PrintLogger,
     ReturnLogger,
 )
@@ -52,6 +57,7 @@ except ImportError:  # pragma: nocover
 
 __all__ = [
     BoundLogger,
+    BoundLoggerBase,
     DropEvent,
     PrintLogger,
     ReturnLogger,
@@ -59,8 +65,8 @@ __all__ = [
     configure_once,
     getLogger,
     get_logger,
-    reset_defaults,
     processors,
+    reset_defaults,
     stdlib,
     threadlocal,
     twisted,
