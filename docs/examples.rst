@@ -46,12 +46,13 @@ gives you something like:
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=2 data='456\n' event='echoed data!'
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=3 data='foo\n' event='echoed data!'
   ... peer='10.10.0.1' connection_id='85234511-...' count=1 data='cba\n' event='echoed data!'
-  ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=4 data='bar\n' event='echoed data!' 
+  ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=4 data='bar\n' event='echoed data!'
 
 Since Twisted's logging system is a bit peculiar, structlog ships with an :class:`adapter <structlog.twisted.EventAdapter>` so it keeps behaving like you'd expect it to behave.
 
 I'd also like to point out the Counter class that doesn't do anything spectacular but gets bound *once* per connection to the logger and since its repr is the number itself, it's logged out correctly for each event.
 This shows off the strength of keeping a dict of objects for context instead of passing around serialized strings.
+
 
 .. _processors-examples:
 
@@ -63,24 +64,36 @@ Processors
 So you want timestamps as part of the structure of the log entry, censor passwords, filter out log entries below your log level before they even get rendered, and get your output as JSON for convenient parsing?
 Here you go:
 
-.. literalinclude:: code_examples/processors.txt
-   :language: pycon
+.. doctest::
+
+   >>> import datetime, logging, sys
+   >>> from structlog import wrap_logger
+   >>> from structlog.processors import JSONRenderer
+   >>> from structlog.stdlib import filter_by_level
+   >>> logging.basicConfig(stream=sys.stdout, format='%(message)s')
+   >>> def add_timestamp(_, __, event_dict):
+   ...     event_dict['timestamp'] = datetime.datetime.utcnow()
+   ...     return event_dict
+   >>> def censor_password(_, __, event_dict):
+   ...     pw = event_dict.get('password')
+   ...     if pw:
+   ...         event_dict['password'] = '*CENSORED*'
+   ...     return event_dict
+   >>> log = wrap_logger(
+   ...     logging.getLogger(__name__),
+   ...     processors=[
+   ...         filter_by_level,
+   ...         add_timestamp,
+   ...         censor_password,
+   ...         JSONRenderer(indent=1, sort_keys=True)
+   ...     ]
+   ... )
+   >>> log.info('something.filtered')
+   >>> log.warning('something.not_filtered', password='secret') # doctest: +SKIP
+   {
+   "event": "something.not_filtered",
+   "password": "*CENSORED*",
+   "timestamp": "datetime.datetime(..., ..., ..., ..., ...)"
+   }
 
 structlog comes with many handy processors build right in -- for a list of shipped processors, check out the :ref:`API documentation <procs>`.
-
-
-.. _wrapper_class-example:
-
-Custom Wrapper Classes
-----------------------
-
-A custom wrapper class helps you to cast the shackles of your underlying logging system even further and get rid of even more boilerplate.
-
-.. literalinclude:: code_examples/custom_wrapper.txt
-   :language: pycon
-
-I like to have semantically meaningful logger names.
-If you agree, this is a nice way to achieve that.
-
-
-Of course, you can :ref:`configure <configuration>` default processors, the wrapper class and the context classes globally.

@@ -27,10 +27,24 @@ class BoundLoggerBase(object):
     Immutable context carrier.
 
     Doesn't do any actual logging; examples for useful subclasses are:
+
         - the generic :class:`BoundLogger` that can wrap anything,
         - :class:`structlog.twisted.BoundLogger`,
         - and :class:`structlog.stdlib.BoundLogger`.
+
+    See also :doc:`custom-wrappers`.
     """
+    _logger = None
+    """
+    Wrapped logger.
+
+    .. note::
+
+        Despite underscore available **read-only** to custom wrapper classes.
+
+        See also :doc:`custom-wrappers`.
+    """
+
     def __init__(self, logger, processors, context):
         self._logger = logger
         self._processors = processors
@@ -97,14 +111,26 @@ class BoundLoggerBase(object):
 
     def _process_event(self, method_name, event, event_kw):
         """
-        Combines *event_kw* with *_context* to `event_dict` and runs the chain.
+        Combines creates an `event_dict` and runs the chain.
 
-        Call it from wrapped log methods before passing the arguments.
+        Call it to combine your *event* and *context* into an event_dict and
+        process using the processor chain.
 
-        Despite the underscore, this is a supported public API.
-
+        :param str method_name: The name of the logger method.  Is passed into
+            the processors.
+        :param event: The event -- usually the first positional argument to a
+            logger.
+        :param event_kw: Additional event keywords.  For example if someone
+            calls ``log.msg('foo', bar=42)``, *event* would to be ``'foo'``
+            and *event_kw* ``{'bar': 42}``.
         :raises: :class:`structlog.DropEvent` if log entry should be dropped.
         :rtype: `tuple` of `(*args, **kw)`
+
+        .. note::
+
+            Despite underscore available to custom wrapper classes.
+
+            See also :doc:`custom-wrappers`.
         """
         event_dict = self._context.copy()
         event_dict.update(**event_kw)
@@ -119,9 +145,26 @@ class BoundLoggerBase(object):
 
     def _proxy_to_logger(self, method_name, event=None, **event_kw):
         """
-        Run processor chain on event & call *method_name* on `self._logger`.
+        Run processor chain on event & call *method_name* on wrapped logger.
 
-        Despite the underscore, this is a supported public convenience API.
+        DRY convenience method that runs :func:`_process_event`, takes care of
+        handling :exc:`structlog.DropEvent`, and finally calls *method_name* on
+        :attr:`_logger` with the result.
+
+        :param str method_name: The name of the method that's going to get
+            called.  Technically it should be identical to the method the
+            user called because it also get passed into processors.
+        :param event: The event -- usually the first positional argument to a
+            logger.
+        :param event_kw: Additional event keywords.  For example if someone
+            calls ``log.msg('foo', bar=42)``, *event* would to be ``'foo'``
+            and *event_kw* ``{'bar': 42}``.
+
+        .. note::
+
+            Despite underscore available to custom wrapper classes.
+
+            See also :doc:`custom-wrappers`.
         """
         try:
             args, kw = self._process_event(method_name, event, event_kw)

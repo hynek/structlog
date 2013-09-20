@@ -1,6 +1,11 @@
 Loggers
 =======
 
+.. testcleanup:: *
+
+   import structlog
+   structlog.reset_defaults()
+
 The center of structlog is the immutable log wrapper :class:`~structlog.BoundLogger`.
 
 All it does is:
@@ -13,8 +18,31 @@ All it does is:
 You won't be instantiating it yourself though.
 For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in a minute):
 
-.. literalinclude:: code_examples/loggers/simplest.txt
-   :language: pycon
+.. doctest::
+
+   >>> from structlog import wrap_logger
+   >>> class PrintLogger(object):
+   ...     def msg(self, message):
+   ...         print message
+   >>> def proc(logger, method_name, event_dict):
+   ...     print 'I got called with', event_dict
+   ...     return repr(event_dict)
+   >>> log = wrap_logger(PrintLogger(), processors=[proc], context_class=dict)
+   >>> log2 = log.bind(x=42)
+   >>> log == log2
+   False
+   >>> log.msg('hello world')
+   I got called with {'event': 'hello world'}
+   {'event': 'hello world'}
+   >>> log2.msg('hello world')
+   I got called with {'x': 42, 'event': 'hello world'}
+   {'x': 42, 'event': 'hello world'}
+   >>> log3 = log2.unbind('x')
+   >>> log == log3
+   True
+   >>> log3.msg('nothing bound anymore', foo='but you can structure the event too')
+   I got called with {'foo': 'but you can structure the event too', 'event': 'nothing bound anymore'}
+   {'foo': 'but you can structure the event too', 'event': 'nothing bound anymore'}
 
 As you can see, it accepts one mandatory and a few optional arguments:
 
@@ -62,8 +90,15 @@ It's handy for both examples and in combination with tools like `runit <http://s
 
 Additionally -- mostly for unit testing -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
-.. literalinclude:: code_examples/loggers/return_logger.txt
-   :language: pycon
+.. doctest::
+
+   >>> from structlog import ReturnLogger
+   >>> ReturnLogger().msg(42) == 42
+   True
+   >>> obj = ['hi']
+   >>> ReturnLogger().msg(obj) is obj
+   True
+
 
 .. _configuration:
 
@@ -83,19 +118,32 @@ while still giving you the full power via configuration.
 To achieve that you'll have to call :func:`structlog.configure` on app initialization (of course, only if you're not content with the defaults).
 The previous example could thus have been written as following:
 
-.. literalinclude:: code_examples/loggers/simplest_configure.txt
-   :language: pycon
-   :emphasize-lines: 8-9
-   :start-after: return repr(event_dict)
-   :end-before: reset_defaults
+.. testsetup:: config
+
+   from structlog import PrintLogger, configure, reset_defaults, wrap_logger, get_logger
+   from structlog.threadlocal import wrap_dict
+   def proc(logger, method_name, event_dict):
+      print 'I got called with', event_dict
+      return repr(event_dict)
+
+.. doctest:: config
+
+   >>> configure(processors=[proc], context_class=dict)
+   >>> log = wrap_logger(PrintLogger())
+   >>> log.msg('hello world')
+   I got called with {'event': 'hello world'}
+   {'event': 'hello world'}
+
 
 In fact, it could even be written like
 
-.. literalinclude:: code_examples/loggers/get_logger_configure.txt
-   :language: pycon
-   :emphasize-lines: 7
-   :start-after: return repr(event_dict)
-   :end-before: reset_defaults
+.. doctest:: config
+
+   >>> configure(processors=[proc], context_class=dict)
+   >>> log = get_logger()
+   >>> log.msg('hello world')
+   I got called with {'event': 'hello world'}
+   {'event': 'hello world'}
 
 because :class:`~structlog.processors.PrintLogger` is the default LoggerFactory used (see :ref:`logger-factories`).
 
@@ -219,8 +267,21 @@ In order to make your context thread local, structlog ships with a function that
 
 Within one thread, every instance of the returned class will have a *common* instance of the wrapped dict-like class:
 
-.. literalinclude:: code_examples/loggers/thread_local_dicts.txt
-   :language: pycon
+.. doctest::
+
+   >>> from structlog.threadlocal import wrap_dict
+   >>> WrappedDictClass = wrap_dict(dict)
+   >>> d1 = WrappedDictClass({'a': 1})
+   >>> d2 = WrappedDictClass({'b': 2})
+   >>> d3 = WrappedDictClass()
+   >>> d3['c'] = 3
+   >>> d1 is d3
+   False
+   >>> d1 == d2 == d3 == WrappedDictClass()
+   True
+   >>> d3  # doctest: +ELLIPSIS
+   <WrappedDict-...({'a': 1, 'c': 3, 'b': 2})>
+
 
 Then use an instance of the generated class as the context class::
 
@@ -232,15 +293,39 @@ Then use an instance of the generated class as the context class::
 
 :func:`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
 
-.. literalinclude:: code_examples/loggers/thread_local_classes.txt
-   :language: pycon
-   :start-after: wrap_dict(dict)
+.. doctest::
+
+   >>> from structlog.threadlocal import wrap_dict
+   >>> WrappedDictClass = wrap_dict(dict)
+   >>> AnotherWrappedDictClass = wrap_dict(dict)
+   >>> WrappedDictClass() != AnotherWrappedDictClass()
+   True
+   >>> WrappedDictClass.__name__  # doctest: +SKIP
+   WrappedDict-41e8382d-bee5-430e-ad7d-133c844695cc
+   >>> AnotherWrappedDictClass.__name__   # doctest: +SKIP
+   WrappedDict-e0fc330e-e5eb-42ee-bcec-ffd7bd09ad09
+
 
 In order to be able to bind values temporarily to a logger, :mod:`structlog.threadlocal` comes with a `context manager <http://docs.python.org/2/library/stdtypes.html#context-manager-types>`_: :func:`~structlog.threadlocal.tmp_bind`\ :
 
-.. literalinclude:: code_examples/loggers/thread_local_context_manager.txt
-   :language: pycon
-   :start-after: context_class=WrappedDictClass)
+.. testsetup:: ctx
+
+   from structlog import PrintLogger, wrap_logger
+   from structlog.threadlocal import tmp_bind, wrap_dict
+   WrappedDictClass = wrap_dict(dict)
+   log = wrap_logger(PrintLogger(), context_class=WrappedDictClass)
+
+.. doctest:: ctx
+
+   >>> log.bind(x=42)  # doctest: +ELLIPSIS
+   <BoundLogger(context=<WrappedDict-...({'x': 42})>, ...)>
+   >>> log.msg('event!')
+   x=42 event='event!'
+   >>> with tmp_bind(log, x=23, y='foo') as tmp_log:
+   ...     tmp_log.msg('another event!')
+   y='foo' x=23 event='another event!'
+   >>> log.msg('one last event!')
+   x=42 event='one last event!'
 
 The state before the ``with`` statement is saved and restored once it's left.
 

@@ -29,9 +29,14 @@ Because it's easy and you don't have to replace your underlying logger -- you ju
 
 structlog supports you with building your context as you go (e.g. if a user logs in, you bind their user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
 
-.. literalinclude:: code_examples/teaser.txt
-   :language: pycon
-   :start-after: log =
+.. doctest::
+
+   >>> from structlog import get_logger
+   >>> log = get_logger()
+   >>> log = log.bind(user='anonymous', some_key=23)
+   >>> log = log.bind(user='hynek', source='http', another_key=42)
+   >>> log.info('user.logged_in', happy=True)
+   some_key=23 user='hynek' source='http' another_key=42 happy=True event='user.logged_in'
 
 This ability to bind key/values pairs to a logger frees you from using conditionals, closures, or boilerplate methods to log out all relevant data.
 
@@ -79,6 +84,7 @@ It also provides tools for easily writing your own concrete wrappers.
    :maxdepth: 2
 
    twisted
+   custom-wrappers
    logging-best-practices
 
 

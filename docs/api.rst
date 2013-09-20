@@ -24,6 +24,9 @@ structlog Package
 
 .. autoexception:: DropEvent
 
+.. autoclass:: BoundLoggerBase
+   :members: new, bind, unbind, _logger, _process_event, _proxy_to_logger
+
 :mod:`threadlocal` Module
 -------------------------
 

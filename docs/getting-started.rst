@@ -29,8 +29,12 @@ Your First Log Entry
 A lot of effort went into making structlog accessible without reading pages of documentation.
 And indeed, the simplest possible usage looks like this:
 
-.. literalinclude:: code_examples/getting-started/plain.txt
-   :language: pycon
+.. doctest::
+
+   >>> import structlog
+   >>> log = structlog.get_logger()
+   >>> log.msg('greeted', whom='world', more_than_a_string=[1, 2, 3])
+   whom='world' more_than_a_string=[1, 2, 3] event='greeted'
 
 Here, structlog takes full advantage of its hopefully useful default settings:
 
@@ -97,9 +101,16 @@ For that, structlog is *completely* agnostic of your underlying logger -- you ca
 The most prominent example of such an 'existing logger' is without doubt the logging module in the standard library.
 To make this common case as simple as possible, structlog comes with some tools to help you:
 
+.. doctest::
 
-.. literalinclude:: code_examples/getting-started/stdlib.txt
-   :language: pycon
+   >>> import logging
+   >>> logging.basicConfig()
+   >>> from structlog import get_logger, configure
+   >>> from structlog.stdlib import LoggerFactory
+   >>> configure(logger_factory=LoggerFactory())  # doctest: +SKIP
+   >>> log = get_logger()
+   >>> log.warn('it works!', difficulty='easy')  # doctest: +SKIP
+   WARNING:structlog...:difficulty='easy' event='it works!'
 
 In other words, you tell structlog that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.
 
