@@ -189,6 +189,38 @@ class TestBoundLoggerLazyProxy(object):
         b = proxy.new(foo=42)
         assert {'a': 1, 'b': 2, 'foo': 42} == b._context
 
+    def test_rebinds_bind_method(self, proxy):
+        """
+        To save time, be rebind the bind method once the logger has been
+        cached.
+        """
+        configure(cache_logger_on_first_use=True)
+        bind = proxy.bind
+        proxy.bind()
+        assert bind != proxy.bind
+
+    def test_does_not_cache_by_default(self, proxy):
+        """
+        Proxy's bind method doesn't change by default.
+        """
+        bind = proxy.bind
+        proxy.bind()
+        assert bind == proxy.bind
+
+    def test_argument_takes_precedence_over_configuration(self):
+        configure(cache_logger_on_first_use=True)
+        proxy = BoundLoggerLazyProxy(None, cache_logger_on_first_use=False)
+        bind = proxy.bind
+        proxy.bind()
+        assert bind == proxy.bind
+
+    def test_argument_takes_precedence_over_configuration2(self):
+        configure(cache_logger_on_first_use=False)
+        proxy = BoundLoggerLazyProxy(None, cache_logger_on_first_use=True)
+        bind = proxy.bind
+        proxy.bind()
+        assert bind != proxy.bind
+
 
 class TestFunctions(object):
     def teardown_method(self, method):
