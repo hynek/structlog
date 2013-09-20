@@ -75,7 +75,7 @@ getLogger = get_logger
 """
 CamelCase alias for :func:`structlog.get_logger`.
 
-This function is supposed to be in every source file -- I don't want it to
+This function is supposed to be in every source file -- we don't want it to
 stick out like a sore thumb in frameworks like Twisted or Zope.
 """
 

@@ -193,7 +193,7 @@ Another possible approach is passing wrapped loggers around or log only within y
 If you are willing to do that, you should stick to it because `immutable state <http://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
 Sooner or later, global state and mutable data lead to unpleasant surprises.
 
-However, in the case of conventional web development, I realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
+However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
 And since it's more important that people actually *use* structlog than to be pure and snobby, structlog contains a dirty but convenient trick: thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_.
 
 
@@ -272,7 +272,7 @@ The convenience of having a thread local context comes at a price though:
      See :ref:`configuration` for more details.
 
 The general sentiment against thread locals is that they're hard to test.
-In this case I feel like this is an acceptable trade-off.
+In this case we feel like this is an acceptable trade-off.
 You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
 
 This big red box is also what separates immutable local from mutable global data.
