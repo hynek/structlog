@@ -51,8 +51,13 @@ Why You Can Start Using structlog TODAY
 
 Intrigued? :ref:`Get started now <getting-started>` or have a look at more realistic :ref:`examples <examples>` and be completely convinced!
 
+
 User's Guide
 ------------
+
+
+Basics
+^^^^^^
 
 .. toctree::
    :maxdepth: 2
@@ -60,8 +65,22 @@ User's Guide
    getting-started
    loggers
    processors
-   twisted
    examples
+
+
+Integration with Existing Systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+structlog can be used immediately with any existing logger.
+However it comes with special wrappers for the Python standard library and Twisted that are optimized and contain less magic and sport a better performance.
+It also provides tools for easily writing your own concrete wrappers.
+
+.. toctree::
+   :maxdepth: 2
+
+   twisted
+   logging-best-practices
+
 
 API
 ---

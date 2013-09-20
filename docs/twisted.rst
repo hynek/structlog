@@ -1,5 +1,3 @@
-.. _twisted:
-
 Twisted Support
 ===============
 
@@ -23,16 +21,12 @@ There is obviously some redundancy here.
 Also, I'm presuming that if you write out JSON logs, you're going to let something else parse them which makes the human-readable date entries more trouble than they're worth.
 
 
-Logging Best Practices
-----------------------
+Best Practices
+--------------
 
 To get a clean log without timestamps and additional system fields (``[-]``), structlog comes with :class:`~structlog.twisted.PlainFileLogObserver` that only writes the plain message to a file and :func:`~structlog.twisted.plainJSONStdOutLogger` that composes it with the afromentioned :func:`~structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise.
 
-And finally, to get *fast* and *efficiently machine-readable* timestamps, you can either pipe your output to tai64n_ or use runit_ in the first place.
-If you have only moderate amounts of log entries, you can also just send them to syslogd_.
+See also :doc:`logging-best-practices`.
 
 
-.. _tai64n: http://cr.yp.to/daemontools/tai64n.html
-.. _runit: http://smarden.org/runit/
-.. _syslogd: http://en.wikipedia.org/wiki/Syslogd
 .. _this: http://twistedmatrix.com/trac/ticket/6540
