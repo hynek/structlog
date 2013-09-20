@@ -73,7 +73,7 @@ class BoundLoggerBase(object):
         """
         Return a new logger with *new_values* added to the existing ones.
 
-        :rtype: :class:`BoundLogger`
+        :rtype: `self.__class__`
         """
         return self.__class__(
             self._logger,
@@ -87,7 +87,7 @@ class BoundLoggerBase(object):
 
         :raises KeyError: If the key is not part of the context.
 
-        :rtype: :class:`BoundLogger`
+        :rtype: `self.__class__`
         """
         bl = self.bind()
         for key in keys:
@@ -102,7 +102,7 @@ class BoundLoggerBase(object):
         those wrapped by :func:`structlog.threadlocal.wrap_dict` when threads
         are re-used.
 
-        :rtype: :class:`BoundLogger`
+        :rtype: `self.__class__`
         """
         self._context.clear()
         return self.bind(**new_values)

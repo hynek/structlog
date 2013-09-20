@@ -60,6 +60,9 @@ structlog Package
 
 .. automodule:: structlog.twisted
 
+.. autoclass:: BoundLogger
+   :members: bind, unbind, new, msg, err
+
 .. autoclass:: LoggerFactory
 .. autoclass:: EventAdapter
 .. autoclass:: JSONRenderer

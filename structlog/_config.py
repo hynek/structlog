@@ -94,8 +94,8 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     Default values for *processors*, *wrapper_class*, and *context_class* can
     be set using :func:`configure`.
 
-    If you set an attribute here, :func:`configure` have *no* effect for the
-    *respective* attribute.
+    If you set an attribute here, :func:`configure` calls have *no* effect for
+    the *respective* attribute.
 
     In other words: selective overwriting of the defaults while keeping some
     *is* possible.

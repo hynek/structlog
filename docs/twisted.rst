@@ -5,7 +5,44 @@ Twisted
    Currently, the Twisted-specific code is *not* tested against Python 3.3.
    This is caused by this_ Twisted bug and will remedied once that bug is fixed.
 
-Additionally to the smart logger wrappers :class:`~structlog.twisted.JSONRenderer` and :class:`~structlog.twisted.EventAdapter` that make sure that *your* log entries are well-formatted, structlog comes with a wrapper for Twisted's log observers to ensure the rest of your logs are in JSON too: :func:`~structlog.twisted.JSONLogObserverWrapper`.
+
+Concrete Bound Logger
+---------------------
+
+To make structlog's behavior less magicy, it ships with a Twisted-specific wrapper class that has an explicit API instead of improvising: :class:`structlog.twisted.BoundLogger`.
+It behaves exactly like the generic :class:`structlog.BoundLogger` but is slightly faster due to less overhead, has an explicit API (basically :func:`~structlog.twisted.BoundLogger.msg` and :func:`~structlog.twisted.BoundLogger.err`), hence causing less cryptic error messages if you get method names wrong.
+
+
+Processors
+----------
+
+structlog comes with two Twisted-specific processors:
+
+:class:`~structlog.twisted.EventAdapter`
+   Needs to be put at the end of the processing chain and adapts the event dictionary to something Twisted's logging system can digest.
+   It formats the event using a renderer that needs to be passed into the constructor::
+
+      configure(processors=[EventAdapter(KeyValueRenderer()])
+
+
+:class:`~structlog.twisted.JSONRenderer`
+   Goes a step further and circumvents Twisted logger's Exception/Failure handling and renders it itself as JSON strings.
+   That gives you regular and simple-to-parse single-line JSON log entries no matter what happens.
+
+A sensible configuration for Twisted applications would be therefore::
+
+   configure(
+      processors=[structlog.twisted.JSONRenderer()],
+      context_class=dict,
+      logger_factory=structlog.twisted.LoggerFactory(),
+      wrapper_class=structlog.twisted.BoundLogger,
+   )
+
+
+Bending Foreign Logging To Your Will
+------------------------------------
+
+structlog comes with a wrapper for Twisted's log observers to ensure the rest of your logs are in JSON too: :func:`~structlog.twisted.JSONLogObserverWrapper`.
 
 What it does is determining whether a log entry has been formatted by :class:`~structlog.twisted.JSONRenderer`  and if not, converts the log entry to JSON with `event` being the log message and putting Twisted's `system` into a second key.
 
@@ -20,9 +57,20 @@ becomes::
 There is obviously some redundancy here.
 Also, I'm presuming that if you write out JSON logs, you're going to let something else parse them which makes the human-readable date entries more trouble than they're worth.
 
-To get a clean log without timestamps and additional system fields (``[-]``), structlog comes with :class:`~structlog.twisted.PlainFileLogObserver` that only writes the plain message to a file and :func:`~structlog.twisted.plainJSONStdOutLogger` that composes it with the aforementioned :func:`~structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise.
+To get a clean log without timestamps and additional system fields (``[-]``), structlog comes with :class:`~structlog.twisted.PlainFileLogObserver` that writes only the plain message to a file and :func:`~structlog.twisted.plainJSONStdOutLogger` that composes it with the aforementioned :func:`~structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise straight to `standard out`_::
+
+
+   $ twistd -n --logger structlog.twisted.plainJSONStdOutLogger web
+   {"event": "Log opened.", "system": "-"}
+   {"event": "twistd 13.1.0 (python 2.7.3) starting up.", "system": "-"}
+   {"event": "reactor class: twisted...EPollReactor.", "system": "-"}
+   {"event": "Site starting on 8080", "system": "-"}
+   {"event": "Starting factory <twisted.web.server.Site ...>", ...}
+   ...
+
 
 See also :doc:`logging-best-practices`.
 
 
 .. _this: http://twistedmatrix.com/trac/ticket/6540
+.. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29

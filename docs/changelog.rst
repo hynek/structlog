@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- :feature:`0` :class:`structlog.ReturnLogger` now allows arbitrary positional and keyword arguments.
+- :feature:`0` Add Twisted specific BoundLogger that has an explicit API instead of intercepting unknown method calls.
+  See :class:`structlog.twisted.BoundLogger`.
 - :feature:`0` Allow logger proxies that are returned by :func:`structlog.get_logger` and :func:`structlog.wrap_logger` to cache the BoundLogger they assemble according to configuration on first use.
   See :doc:`performance` and the `cache_logger_on_first_use` of :func:`structlog.configure` and :func:`structlog.wrap_logger`.
 - :feature:`0` Extract a common base class for loggers that does nothing except keeping the context state.

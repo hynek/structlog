@@ -65,13 +65,22 @@ class ReturnLogger(object):
     >>> from structlog import ReturnLogger
     >>> ReturnLogger().msg('hello')
     'hello'
+    >>> ReturnLogger().msg('hello', when='again')
+    (('hello',), {'when': 'again'})
 
     Useful for unit tests.
+
+    .. versionchanged:: 0.3.0
+        Allow for arbitrary arguments and keyword arguments to be passed in.
     """
-    def msg(self, message):
+    def msg(self, *args, **kw):
         """
-        Return *message*.
+        Return tuple of ``args, kw`` or just ``args[0]`` if only one arg passed
         """
-        return message
+        # Slightly convoluted for backwards compatibility.
+        if len(args) == 1 and not kw:
+            return args[0]
+        else:
+            return args, kw
 
     err = info = warning = error = critical = log = msg

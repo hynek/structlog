@@ -21,8 +21,11 @@ from pretend import call_recorder, call
 from twisted.python.failure import Failure, NoCurrentExceptionError
 from twisted.python.log import ILogObserver
 
+from structlog._config import _CONFIG
 from structlog._compat import OrderedDict, StringIO
+from structlog._loggers import ReturnLogger
 from structlog.twisted import (
+    BoundLogger,
     EventAdapter,
     JSONRenderer,
     JSONLogObserverWrapper,
@@ -40,6 +43,40 @@ def test_LoggerFactory():
 
 def _render_repr(_, __, event_dict):
     return repr(event_dict)
+
+
+def build_bl(logger=None, processors=None, context=None):
+    """
+    Convenience function to build BoundLoggerses with sane defaults.
+    """
+    return BoundLogger(
+        logger or ReturnLogger(),
+        processors or _CONFIG.default_processors,
+        context if context is not None else _CONFIG.default_context_class(),
+    )
+
+
+class TestBoundLogger(object):
+    def test_msg(self):
+        bl = build_bl()
+        assert "foo=42 event='event'" == bl.msg('event', foo=42)
+
+    def test_errVanilla(self):
+        bl = build_bl()
+        assert "foo=42 event='event'" == bl.err('event', foo=42)
+
+    def test_errWithFailure(self):
+        bl = build_bl(processors=[EventAdapter()])
+        try:
+            raise ValueError
+        except ValueError:
+            # Use str() for comparison to avoid tricky
+            # deep-compares of Failures.
+            assert (
+                str(((), {'_stuff': Failure(ValueError()),
+                          '_why': "foo=42 event='event'"}))
+                == str(bl.err('event', foo=42))
+            )
 
 
 class TestExtractStuffAndWhy(object):

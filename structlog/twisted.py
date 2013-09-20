@@ -19,20 +19,42 @@ networking engine.
 
 from __future__ import absolute_import, division, print_function
 
-import sys
 import json
+import sys
 
 from twisted.python.failure import Failure
+from twisted.python import log
 from twisted.python.log import ILogObserver, textFromEventDict
 from zope.interface import implementer
 
+from structlog._base import BoundLoggerBase
 from structlog._compat import PY2, string_types
 from structlog._utils import until_not_interrupted
 from structlog.processors import (
     KeyValueRenderer,
-    # can't import processors module because of circular imports
-    JSONRenderer as _JSONRenderer
+    # can't import processors module without risking circular imports
+    JSONRenderer as GenericJSONRenderer
 )
+
+
+class BoundLogger(BoundLoggerBase):
+    """
+    Twisted-specific version of :class:`structlog.BoundLogger`.
+
+    Works exactly like the generic one except that it takes advantage of
+    knowing the logging methods in advance.
+    """
+    def msg(self, event=None, **kw):
+        """
+        Process event and call ``log.msg()`` with the result.
+        """
+        return self._proxy_to_logger('msg', event, **kw)
+
+    def err(self, event=None, **kw):
+        """
+        Process event and call ``log.err()`` with the result.
+        """
+        return self._proxy_to_logger('err', event, **kw)
 
 
 class LoggerFactory(object):
@@ -47,7 +69,6 @@ class LoggerFactory(object):
         """
         :rvalue: A new Twisted logger.
         """
-        from twisted.python import log
         return log
 
 
@@ -89,7 +110,7 @@ def _extractStuffAndWhy(eventDict):
     return _stuff, _why, eventDict
 
 
-class JSONRenderer(_JSONRenderer):
+class JSONRenderer(GenericJSONRenderer):
     """
     Behaves like :class:`structlog.processors.JSONRenderer` except that it
     formats tracebacks and failures itself if called with `err()`.
@@ -97,8 +118,8 @@ class JSONRenderer(_JSONRenderer):
     *Not* an adapter like :class:`EventAdapter` but a real formatter.  Nor does
     it require to be adapted using it.
 
-    Use together with a :func:`withJSONObserver`-wrapped Twisted logger like
-    :func:`plainJSONStdOutLogger` for pure-JSON logs.
+    Use together with a :class:`JSONLogObserverWrapper`-wrapped Twisted logger
+    like :func:`plainJSONStdOutLogger` for pure-JSON logs.
     """
     def __call__(self, logger, name, eventDict):
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
@@ -109,7 +130,7 @@ class JSONRenderer(_JSONRenderer):
                 _stuff.cleanFailure()
         else:
             eventDict['event'] = _why
-        return ((_JSONRenderer.__call__(self, logger, name, eventDict),),
+        return ((GenericJSONRenderer.__call__(self, logger, name, eventDict),),
                 {'_structlog': True})
 
 
