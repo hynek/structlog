@@ -1,5 +1,5 @@
-Twisted Support
-===============
+Twisted
+=======
 
 .. warning::
    Currently, the Twisted-specific code is *not* tested against Python 3.3.
@@ -20,11 +20,7 @@ becomes::
 There is obviously some redundancy here.
 Also, I'm presuming that if you write out JSON logs, you're going to let something else parse them which makes the human-readable date entries more trouble than they're worth.
 
-
-Best Practices
---------------
-
-To get a clean log without timestamps and additional system fields (``[-]``), structlog comes with :class:`~structlog.twisted.PlainFileLogObserver` that only writes the plain message to a file and :func:`~structlog.twisted.plainJSONStdOutLogger` that composes it with the afromentioned :func:`~structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise.
+To get a clean log without timestamps and additional system fields (``[-]``), structlog comes with :class:`~structlog.twisted.PlainFileLogObserver` that only writes the plain message to a file and :func:`~structlog.twisted.plainJSONStdOutLogger` that composes it with the aforementioned :func:`~structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise.
 
 See also :doc:`logging-best-practices`.
 

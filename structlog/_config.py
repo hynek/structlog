@@ -137,15 +137,10 @@ def configure(processors=None, wrapper_class=None, context_class=None,
     :param callable logger_factory:
     :param bool cache_logger_on_first_use: `wrap_logger` doesn't return an
         actual wrapped logger but a proxy that assembles one when it's first
-        used.
+        used.  If this option is set to `True`, this assembled logger is
+        cached.
 
-        The reason is that loggers are usually wrapped in module scope before
-        the user had a chance to configure them.  If this option is set to
-        `True`, this assembled logger is cached.
-
-        This is better for performance but on the other hand doesn't allow for
-        re-configuration.  Since this is a rather surprising behavior, it's off
-        by default.
+        See :doc:`performance`.
 
         .. versionadded:: 0.3.0
     """

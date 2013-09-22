@@ -19,11 +19,11 @@ Why You Want Structured Logging
 
       ---`Paul Querna <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_
 
-Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a  *context* instead.
+Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
 
 
-Why You Want to Use structlog
------------------------------
+Why structlog?
+--------------
 
 Because it's easy and you don't have to replace your underlying logger -- you just add structure to your log entries and format them to strings before they hit your real loggers.
 
@@ -42,17 +42,9 @@ This ability to bind key/values pairs to a logger frees you from using condition
 
 Additionally, structlog offers you a flexible way to *filter* and *modify* your log entries using so called :ref:`processors <processors>` before the entry is passed to your real logger.
 The possibilities include :class:`logging in JSON <structlog.processors.JSONRenderer>`, adding arbitrary meta data like :class:`timestamps <structlog.processors.TimeStamper>`, counting events as metrics, or :ref:`dropping log entries <cond_drop>` caused by your monitoring system.
+structlog is also flexible enough to allow transparent :ref:`thread local <threadlocal>` storage for your context if you don't like the idea of local bindings as in the example above.
 
-
-Why You Can Start Using structlog TODAY
----------------------------------------
-
-- You can use both your bare logger and as well as the same logger wrapped by structlog at the same time.
-  structlog avoids monkeypatching so a peaceful co-existence between various loggers is unproblematic.
-- Events are free-form and interpreted as strings by default.
-  Therefore the transition from traditional to structured logging is seamless most of the time.
-  Just start wrapping your logger of choice and bind values later.
-- If you don't like the idea of keeping the context within a local logger instance like in the example above, structlog offers transparent :ref:`thread local <threadlocal>` storage for your context.
+Since structlog avoids monkey-patching and events are fully free-form, you can start using it **today**!
 
 Intrigued? :ref:`Get started now <getting-started>` or have a look at more realistic :ref:`examples <examples>` and be completely convinced!
 
@@ -77,15 +69,24 @@ Integration with Existing Systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 structlog can be used immediately with any existing logger.
-However it comes with special wrappers for the Python standard library and Twisted that are optimized and contain less magic and sport a better performance.
-It also provides tools for easily writing your own concrete wrappers.
+However it comes with special wrappers for the Python standard library and Twisted that are optimized for their respective underlying loggers and contain less magic.
 
 .. toctree::
    :maxdepth: 2
 
+   standard-library
    twisted
-   custom-wrappers
    logging-best-practices
+
+
+Advanced Topics
+^^^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 2
+
+   custom-wrappers
+   performance
 
 
 API

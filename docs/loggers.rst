@@ -149,10 +149,10 @@ because :class:`~structlog.processors.PrintLogger` is the default LoggerFactory 
 
 structlog tries to behave in the least surprising way when it comes to handling defaults and configuration:
 
-#. Passed `processors`, `wrapper_class`, and `context_class` arguments to :func:`structlog.wrap_logger` *always* take the highest precedence.
+#. Arguments passed to :func:`structlog.wrap_logger` *always* take the highest precedence over configuration.
    That means that you can overwrite whatever you've configured for each logger respectively.
 #. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
-#. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain.
+#. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain, and `False` for `cache_logger_on_first_use`.
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
@@ -166,6 +166,7 @@ That can be handy in tests.
 
    To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
    Therefore if you have nothing to bind but intend to do lots of log calls in a function, it makes sense performance-wise to create a local logger by calling ``bind()`` or ``new()`` without any parameters.
+   See also :doc:`performance`.
 
 
 .. _logger-factories:

@@ -21,7 +21,7 @@ A very nice approach is to simply log to `standard out`_ and let other tools tak
 runit
 ^^^^^
 
-One runner that makes this very easy is the venerable runit_ project which made a part of its design: server processes don't detach but log to standard out instead.
+One runner that makes this very easy is the venerable runit_ project which made it a part of its design: server processes don't detach but log to standard out instead.
 There it gets processed by other software -- potentially by one of its own tools: svlogd_.
 We use it extensively and it has proven itself extremely robust and capable; check out `this tutorial`_ if you'd like to try it.
 
@@ -72,7 +72,7 @@ Logstash with Lumberjack
 
 Logstash_ is a great way to parse, save, and search your logs.
 
-The general modus operandi is that you have `log shippers`_ that parse your log files and forward the log entries to your Logstash server.
+The general modus operandi is that you have `log shippers`_ that parse your log files and forward the log entries to your Logstash server and store is in elasticsearch_.
 If your log entries consist -- as suggested -- of a tai64n_ timestamp and a JSON dictionary, this is pretty easy and efficient.
 
 If you can't decide on a log shipper, Lumberjack_ works really well.
@@ -106,3 +106,4 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _svlogd: http://smarden.org/runit/svlogd.8.html
 .. _syslogd: http://en.wikipedia.org/wiki/Syslogd
 .. _tai64n: http://cr.yp.to/daemontools/tai64n.html
+.. _elasticsearch: http://www.elasticsearch.org

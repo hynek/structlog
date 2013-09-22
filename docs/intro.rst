@@ -1,6 +1,7 @@
 :orphan:
 
 structlog makes structured logging in Python easy by *augmenting* your *existing* logger.
+It allows you to split your log entries up into key/value pairs and build them incrementally without annoying boilerplate code.
 
 It's licensed under the permissive `Apache License, version 2 <http://choosealicense.com/licenses/apache/>`_, available from `PyPI <https://pypi.python.org/pypi/structlog/>`_, and the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at `http://www.structlog.org/ <http://www.structlog.org>`_.
 

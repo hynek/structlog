@@ -1,6 +1,11 @@
 Changelog
 =========
 
+- :feature:`0` Allow logger proxies that are returned by :func:`structlog.get_logger` and :func:`structlog.wrap_logger` to cache the BoundLogger they assemble according to configuration on first use.
+  See :doc:`performance` and the `cache_logger_on_first_use` of :func:`structlog.configure` and :func:`structlog.wrap_logger`.
+- :feature:`0` Extract a common base class for loggers that does nothing except keeping the context state.
+  This makes writing custom loggers much easier and more straight-forward.
+  See :class:`structlog.BoundLoggerBase`.
 - :release:`0.2.0 <2013-09-17>`
 - :feature:`0` Promote to stable, thus henceforth a strict backward compatibility policy is put into effect.
   See :ref:`contributing`.
