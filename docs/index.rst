@@ -1,5 +1,5 @@
-structlog: Structured Logging in Python
-=======================================
+Structured Logging in Python
+============================
 
 Release v\ |version| (:doc:`What's new? <changelog>`).
 
