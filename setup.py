@@ -41,7 +41,7 @@ setup(
     description='Painless structural logging.',
     long_description=(read('README.rst') + '\n\n' +
                       read('AUTHORS.rst')),
-    url='http://github.com/hynek/structlog/',
+    url='http://www.structlog.org/',
     license='Apache License, Version 2.0',
     author= 'Hynek Schlawack',
     author_email='hs@ox.cx',
