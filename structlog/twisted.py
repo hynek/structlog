@@ -15,6 +15,8 @@
 """
 Processors and tools specific to the `Twisted <http://twistedmatrix.com/>`_
 networking engine.
+
+See also :doc:`structlog's Twisted support <twisted>`.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -43,6 +45,13 @@ class BoundLogger(BoundLoggerBase):
 
     Works exactly like the generic one except that it takes advantage of
     knowing the logging methods in advance.
+
+    Use it like::
+
+        configure(
+            wrapper_class=structlog.twisted.BoundLogger,
+        )
+
     """
     def msg(self, event=None, **kw):
         """

@@ -19,10 +19,24 @@ Processors
 structlog comes with two Twisted-specific processors:
 
 :class:`~structlog.twisted.EventAdapter`
-   Needs to be put at the end of the processing chain and adapts the event dictionary to something Twisted's logging system can digest.
+   This is useful if you have an existing Twisted application and just want to wrap your loggers for now.
+   It takes care of transforming your event dictionary into something `twisted.python.log.err <http://twistedmatrix.com/documents/current/api/twisted.python.log.html#err>`_ can digest.
+
+   For example::
+
+      def onError(fail):
+         failure = fail.trap(MoonExploded)
+         log.err(failure, _why='event-that-happend')
+
+   will still work as expected.
+
+   Needs to be put at the end of the processing chain.
    It formats the event using a renderer that needs to be passed into the constructor::
 
       configure(processors=[EventAdapter(KeyValueRenderer()])
+
+   The drawback of this approach is that Twisted will format your exceptions as multi-line log entries which is painful to parse.
+   Therefore structlog comes with:
 
 
 :class:`~structlog.twisted.JSONRenderer`
