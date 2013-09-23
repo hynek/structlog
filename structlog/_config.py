@@ -133,6 +133,9 @@ def configure(processors=None, wrapper_class=None, context_class=None,
     :param list processors: List of processors.
     :param type wrapper_class: Class to use for wrapping loggers instead of
         :class:`structlog.BoundLogger`.
+
+        See :doc:`standard-library`, :doc:`twisted`, and
+        :doc:`custom-wrappers`.
     :param context_class: Class to be used for internal dictionary.
     :param callable logger_factory:
     :param bool cache_logger_on_first_use: `wrap_logger` doesn't return an
