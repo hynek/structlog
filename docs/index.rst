@@ -71,7 +71,7 @@ Integration with Existing Systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 structlog can be used immediately with any existing logger.
-However it comes with special wrappers for the Python standard library and Twisted that are optimized for their respective underlying loggers and contain less guesswork and magic.
+However it comes with special wrappers for the Python standard library and Twisted that are optimized for their respective underlying loggers and contain less magic.
 
 .. toctree::
    :maxdepth: 2
@@ -85,7 +85,7 @@ Advanced Topics
 ^^^^^^^^^^^^^^^
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    custom-wrappers
    performance

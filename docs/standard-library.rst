@@ -38,6 +38,7 @@ Suggested Configuration
       context_class=dict,
       logger_factory=structlog.stdlib.LoggerFactory(),
       wrapper_class=structlog.stdlib.BoundLogger,
+      cache_logger_on_first_use=True,
    )
 
 See also :doc:`logging-best-practices`.

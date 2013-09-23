@@ -114,6 +114,8 @@ To make this common case as simple as possible, structlog comes with some tools 
 
 In other words, you tell structlog that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.
 
+Since structlog is mainly used together with standard library's logging, there's :doc:`more <standard-library>` goodness to make it as fast and convenient as possible.
+
 
 Liked what you saw?
 -------------------
