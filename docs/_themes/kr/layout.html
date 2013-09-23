@@ -1,0 +1,43 @@
+{%- extends "basic/layout.html" %}
+{%- block extrahead %}
+  {{ super() }}
+  {% if theme_touch_icon %}
+    <link rel="apple-touch-icon" href="{{ pathto('_static/' ~ theme_touch_icon, 1) }}" />
+  {% endif %}
+  <link media="only screen and (max-device-width: 480px)" href="{{
+    pathto('_static/small_flask.css', 1) }}" type= "text/css" rel="stylesheet" />
+  <link href="{{pathto('_static/structlog.css', 1)}}" type= "text/css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  <script type="text/javascript">
+  $(document).ready(function() {
+    var originalFontSize = 12;
+    var sectionWidth = $('#logo').width();
+    var maxSpanWidth = 0;
+    $('#logo span').each(function(){
+      var spanWidth = $(this).width() || sectionWidth;
+      var newFontSize = (sectionWidth/spanWidth) * originalFontSize;
+      $(this).css({"font-size" : newFontSize, "line-height" : newFontSize/1 + "px"});
+    });
+
+    $('#logo span').each(function(){
+      maxSpanWidth = Math.max(maxSpanWidth, $(this).width());
+    });
+    $('#logo hr').width(maxSpanWidth);
+  });
+  </script>
+{% endblock %}
+{%- block sidebarlogo %}
+<div id="logo">
+<a href="{{ pathto(master_doc) }}">
+    <p><span>structlog</span></p>
+<hr style="width: 150px;" />
+</a>
+</div>
+{% endblock %}
+{%- block relbar2 %}{% endblock %}
+{%- block footer %}
+    <div class="footer">
+      &copy; Copyright {{ copyright }}.
+    </div>
+{%- endblock %}

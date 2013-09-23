@@ -32,3 +32,13 @@ Third Party Code
 
 The compatibility code that makes this software run on both Python 2 and 3 is heavily inspired and partly copy and pasted from the `MIT <http://choosealicense.com/licenses/mit/>`_-licensed `six <https://bitbucket.org/gutworth/six/>`_ by Benjamin Peterson.
 The only reason why it’s not used as a dependency is to avoid any runtime dependency in the first place.
+
+The Sphinx (documentation) theme is an adapted version of the `Write The Docs`_ theme which in turn is an adapted version of the requests_ docs theme_ by `Kenneth Reitz`_ which in turn is an adapted version of the Flask_ docs theme by `Armin Ronacher`_.
+
+
+.. _`Write The Docs`: http://write-the-docs.readthedocs.org/
+.. _requests: http://www.python-requests.org/
+.. _theme: https://github.com/kennethreitz/requests/tree/master/docs/_themes
+.. _`Kenneth Reitz`: https://github.com/kennethreitz/
+.. _Flask: https://github.com/mitsuhiko/flask
+.. _`Armin Ronacher`: https://github.com/mitsuhiko/
