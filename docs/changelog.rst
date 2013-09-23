@@ -1,8 +1,13 @@
 Changelog
 =========
 
+- :release:`0.3.0 <2013-09-23>`
+- :support:`0` Greatly enhanced and polished the documentation and added a new theme based on Write The Docs, requests, and Flask.
+  See :doc:`license`.
+- :feature:`0` Add Python Standard Library-specific BoundLogger that has an explicit API instead of intercepting unknown method calls.
+  See :class:`structlog.stdlib.BoundLogger`.
 - :feature:`0` :class:`structlog.ReturnLogger` now allows arbitrary positional and keyword arguments.
-- :feature:`0` Add Twisted specific BoundLogger that has an explicit API instead of intercepting unknown method calls.
+- :feature:`0` Add Twisted-specific BoundLogger that has an explicit API instead of intercepting unknown method calls.
   See :class:`structlog.twisted.BoundLogger`.
 - :feature:`0` Allow logger proxies that are returned by :func:`structlog.get_logger` and :func:`structlog.wrap_logger` to cache the BoundLogger they assemble according to configuration on first use.
   See :doc:`performance` and the `cache_logger_on_first_use` of :func:`structlog.configure` and :func:`structlog.wrap_logger`.
