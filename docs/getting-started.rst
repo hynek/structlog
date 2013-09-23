@@ -20,7 +20,7 @@ If you're running Python 2.6 and want to use ``OrderedDict``\ s for your context
    $ pip install ordereddict
 
 If the order of the keys of your context doesn't matter (e.g. if you're logging JSON that gets parsed anyway), simply use a vanilla ``dict`` to avoid this dependency.
-See :ref:`configuration` on how to achieve that.
+See :doc:`configuration` on how to achieve that.
 
 
 Your First Log Entry
