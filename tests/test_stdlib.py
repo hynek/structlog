@@ -19,9 +19,27 @@ import logging
 import pytest
 
 from structlog._exc import DropEvent
-from structlog.stdlib import LoggerFactory, filter_by_level, WARN, CRITICAL
+from structlog._loggers import ReturnLogger
+from structlog.stdlib import (
+    BoundLogger,
+    CRITICAL,
+    LoggerFactory,
+    WARN,
+    filter_by_level,
+)
 
 from .additional_frame import additional_frame
+
+
+def build_bl(logger=None, processors=None, context=None):
+    """
+    Convenience function to build BoundLogger with sane defaults.
+    """
+    return BoundLogger(
+        logger or ReturnLogger(),
+        processors,
+        {}
+    )
 
 
 class TestLoggerFactory(object):
@@ -47,3 +65,14 @@ class TestFilterByLevel(object):
         event_dict = {'event': 'test'}
         assert event_dict is filter_by_level(logger, 'warn', event_dict)
         assert event_dict is filter_by_level(logger, 'error', event_dict)
+
+
+class TestBoundLogger(object):
+    @pytest.mark.parametrize(('method_name'), [
+        'debug', 'info', 'warning', 'error', 'critical',
+    ])
+    def test_proxies_to_correct_method(self, method_name):
+        def return_method_name(_, method_name, __):
+            return method_name
+        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
+        assert method_name == getattr(bl, method_name)('event')

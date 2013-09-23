@@ -23,7 +23,54 @@ from __future__ import absolute_import, division, print_function
 import logging
 import sys
 
+from structlog._base import BoundLoggerBase
 from structlog._exc import DropEvent
+
+
+class BoundLogger(BoundLoggerBase):
+    """
+    Python Standard Library version of :class:`structlog.BoundLogger`.
+    Works exactly like the generic one except that it takes advantage of
+    knowing the logging methods in advance.
+
+    Use it like::
+
+        configure(
+            wrapper_class=structlog.stdlib.BoundLogger,
+        )
+
+    """
+    def debug(self, event=None, **kw):
+        """
+        Process event and call ``Logger.debug()`` with the result.
+        """
+        return self._proxy_to_logger('debug', event, **kw)
+
+    def info(self, event=None, **kw):
+        """
+        Process event and call ``Logger.info()`` with the result.
+        """
+        return self._proxy_to_logger('info', event, **kw)
+
+    def warning(self, event=None, **kw):
+        """
+        Process event and call ``Logger.warning()`` with the result.
+        """
+        return self._proxy_to_logger('warning', event, **kw)
+
+    warn = warning
+
+    def error(self, event=None, **kw):
+        """
+        Process event and call ``Logger.error()`` with the result.
+        """
+        return self._proxy_to_logger('error', event, **kw)
+
+    def critical(self, event=None, **kw):
+        """
+        Process event and call ``Logger.critical()`` with the result.
+        """
+        return self._proxy_to_logger('critical', event, **kw)
 
 
 class LoggerFactory(object):

@@ -10,7 +10,11 @@ Concrete Bound Logger
 ---------------------
 
 To make structlog's behavior less magicy, it ships with a Twisted-specific wrapper class that has an explicit API instead of improvising: :class:`structlog.twisted.BoundLogger`.
-It behaves exactly like the generic :class:`structlog.BoundLogger` but is slightly faster due to less overhead, has an explicit API (basically :func:`~structlog.twisted.BoundLogger.msg` and :func:`~structlog.twisted.BoundLogger.err`), hence causing less cryptic error messages if you get method names wrong.
+It behaves exactly like the generic :class:`structlog.BoundLogger` except:
+
+- it's slightly faster due to less overhead,
+- has an explicit API (:func:`~structlog.twisted.BoundLogger.msg` and :func:`~structlog.twisted.BoundLogger.err`),
+- hence causing less cryptic error messages if you get method names wrong.
 
 
 Processors
@@ -43,15 +47,6 @@ structlog comes with two Twisted-specific processors:
    Goes a step further and circumvents Twisted logger's Exception/Failure handling and renders it itself as JSON strings.
    That gives you regular and simple-to-parse single-line JSON log entries no matter what happens.
 
-A sensible configuration for Twisted applications would be therefore::
-
-   configure(
-      processors=[structlog.twisted.JSONRenderer()],
-      context_class=dict,
-      logger_factory=structlog.twisted.LoggerFactory(),
-      wrapper_class=structlog.twisted.BoundLogger,
-   )
-
 
 Bending Foreign Logging To Your Will
 ------------------------------------
@@ -82,6 +77,20 @@ To get a clean log without timestamps and additional system fields (``[-]``), st
    {"event": "Starting factory <twisted.web.server.Site ...>", ...}
    ...
 
+
+Suggested Configuration
+-----------------------
+
+::
+
+   import structlog
+
+   structlog.configure(
+      processors=[structlog.twisted.JSONRenderer()],
+      context_class=dict,
+      logger_factory=structlog.twisted.LoggerFactory(),
+      wrapper_class=structlog.twisted.BoundLogger,
+   )
 
 See also :doc:`logging-best-practices`.
 
