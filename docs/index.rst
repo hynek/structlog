@@ -91,16 +91,8 @@ Advanced Topics
    performance
 
 
-API
----
-
-.. toctree::
-   :maxdepth: 4
-
-   api
-
-Additional Notes
-----------------
+Project Information
+-------------------
 
 .. toctree::
    :maxdepth: 1
@@ -110,9 +102,18 @@ Additional Notes
    changelog
 
 
+API Reference
+-------------
+
+.. toctree::
+   :maxdepth: 4
+
+   api
+
+
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+- :ref:`genindex`
+- :ref:`modindex`
+- :ref:`search`
