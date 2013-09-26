@@ -98,6 +98,10 @@ structlog Package
 
 ----
 
+.. autoclass:: TimeStamper(fmt=None, utc=True)
+
+----
+
 :mod:`stdlib` Module
 --------------------
 
