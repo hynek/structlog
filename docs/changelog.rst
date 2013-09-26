@@ -1,7 +1,8 @@
 Changelog
 =========
 
-- :support:`0` Add forgotten :class:`structog.processors.TimeStamper` to API documentation.
+- :release:`0.3.1 <2013-09-26>`
+- :support:`0 backported` Add forgotten :class:`structog.processors.TimeStamper` to API documentation.
 - :release:`0.3.0 <2013-09-23>`
 - :support:`0` Greatly enhanced and polished the documentation and added a new theme based on Write The Docs, requests, and Flask.
   See :doc:`license`.
