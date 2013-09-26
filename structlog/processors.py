@@ -228,9 +228,6 @@ class TimeStamper(object):
     >>> TimeStamper(fmt='%Y')(None, None, {})  # doctest: +SKIP
     {'timestamp': '2013'}
     """
-    def __init__(self, fmt=None, utc=True):
-        pass  # pragma: nocover  -- never used, just for sphinx
-
     def __new__(cls, fmt=None, utc=True):
         if fmt is None and not utc:
             raise ValueError('UNIX timestamps are always UTC.')
