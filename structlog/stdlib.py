@@ -87,9 +87,14 @@ class LoggerFactory(object):
 
         :rtype: `logging.Logger`
         """
-        return logging.getLogger(
-            sys._getframe().f_back.f_back.f_globals['__name__']
-        )
+        f = sys._getframe()
+        name = f.f_globals['__name__']
+
+        # We skip all frames that originate from within structlog.
+        while name.startswith('structlog.'):
+            f = f.f_back
+            name = f.f_globals['__name__']
+        return logging.getLogger(name)
 
 
 # Adapted from the stdlib
