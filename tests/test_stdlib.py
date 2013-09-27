@@ -30,7 +30,7 @@ from structlog.stdlib import (
     filter_by_level,
     FixedFindCallerLogger,
 )
-from structlog._config import wrap_logger
+
 from .additional_frame import additional_frame
 
 
