@@ -48,8 +48,10 @@ class TestLoggerFactory(object):
         The factory isn't called directly but from structlog._config so
         deducing has to be slightly smarter.
         """
-        l = additional_frame(LoggerFactory())
-        assert 'tests.test_stdlib' == l.name
+        assert 'tests.additional_frame' == (
+            additional_frame(LoggerFactory()).name
+        )
+        assert 'tests.test_stdlib' == LoggerFactory()().name
 
 
 class TestFilterByLevel(object):
