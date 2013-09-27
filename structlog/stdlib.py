@@ -94,12 +94,11 @@ class LoggerFactory(object):
     >>> from structlog import configure
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
+
+    :param bool fix_find_caller: By default False, it will fix the findCaller() of stdlib for wrapped loggers.
+
     """
     def __init__(self, fix_find_caller=True, *args, **kwargs):
-        """
-            :param bool fix_find_caller: By default False, it will fix the findCaller() of stdlib for wrapped loggers.
-        """
-
         super(LoggerFactory, self).__init__(*args, **kwargs)
         if fix_find_caller:
             logging.setLoggerClass(FixedFindCallerLogger)
