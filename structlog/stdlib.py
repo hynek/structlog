@@ -33,9 +33,9 @@ class FixedFindCallerLogger(logging.Logger):
         Finds the first caller frame outside of structlog so that the caller info is populated for wrapping stdlib.
         This logger gets set as the default one when using LoggerFactory.
         """
-        f = sys._getframe().f_back
+        f = sys._getframe()
         name = f.f_globals['__name__']
-        while name.startswith('structlog.'):
+        while name.startswith('structlog.') or name == 'logging':
             f = f.f_back
             name = f.f_globals['__name__']
         return f.f_code.co_filename, f.f_lineno, f.f_code.co_name

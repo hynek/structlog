@@ -19,6 +19,7 @@ import os
 import logging
 
 import pytest
+from pretend import call_recorder
 
 from structlog._exc import DropEvent
 from structlog._loggers import ReturnLogger
@@ -65,6 +66,17 @@ class TestLoggerFactory(object):
         file_name, line_number, func_name = additional_frame(logger.findCaller)
         assert file_name.endswith('additional_frame.py')
         assert func_name == 'additional_frame'
+
+    def test_find_caller(self, monkeypatch):
+        logger = LoggerFactory()()
+        log_handle = call_recorder(lambda x: None)
+        monkeypatch.setattr(logger, 'handle', log_handle)
+        logger.error('Test')
+        assert log_handle.calls
+        log_record = log_handle.calls[0].args[0]
+        assert log_record.funcName == 'test_find_caller'
+        assert log_record.name == __name__
+        assert log_record.filename == os.path.basename(__file__)
 
 
     def test_sets_correct_logger(self):
