@@ -14,6 +14,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import os
+
 import logging
 
 import pytest
@@ -26,8 +28,9 @@ from structlog.stdlib import (
     LoggerFactory,
     WARN,
     filter_by_level,
+    FixedFindCallerLogger,
 )
-
+from structlog._config import wrap_logger
 from .additional_frame import additional_frame
 
 
@@ -52,6 +55,29 @@ class TestLoggerFactory(object):
             additional_frame(LoggerFactory()).name
         )
         assert 'tests.test_stdlib' == LoggerFactory()().name
+
+
+    def test_deduces_correct_caller(self):
+        logger = FixedFindCallerLogger('test')
+        file_name, line_number, func_name = logger.findCaller()
+        assert file_name == os.path.realpath(__file__)
+        assert func_name == 'test_deduces_correct_caller'
+        file_name, line_number, func_name = additional_frame(logger.findCaller)
+        assert file_name.endswith('additional_frame.py')
+        assert func_name == 'additional_frame'
+
+
+    def test_sets_correct_logger(self):
+        original_class = logging.getLoggerClass()
+        try:
+            logging.setLoggerClass(logging.Logger)
+            LoggerFactory()
+            assert logging.getLoggerClass() is FixedFindCallerLogger
+            logging.setLoggerClass(logging.Logger)
+            LoggerFactory(fix_find_caller=False)
+            assert logging.getLoggerClass() is logging.Logger
+        finally:
+            logging.setLoggerClass(original_class)
 
 
 class TestFilterByLevel(object):
