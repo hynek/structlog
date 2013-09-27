@@ -27,6 +27,20 @@ from structlog._base import BoundLoggerBase
 from structlog._exc import DropEvent
 
 
+class FixedFindCallerLogger(logging.Logger):
+    def findCaller(self):
+        """
+        Finds the first caller frame outside of structlog so that the caller info is populated for wrapping stdlib.
+        This logger gets set as the default one when using LoggerFactory.
+        """
+        f = sys._getframe().f_back
+        name = f.f_globals['__name__']
+        while name.startswith('structlog.'):
+            f = f.f_back
+            name = f.f_globals['__name__']
+        return f.f_code.co_filename, f.f_lineno, f.f_code.co_name
+
+
 class BoundLogger(BoundLoggerBase):
     """
     Python Standard Library version of :class:`structlog.BoundLogger`.
@@ -81,6 +95,16 @@ class LoggerFactory(object):
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
     """
+    def __init__(self, fix_find_caller=True, *args, **kwargs):
+        """
+            :param bool fix_find_caller: By default False, it will fix the findCaller() of stdlib for wrapped loggers.
+        """
+
+        super(LoggerFactory, self).__init__(*args, **kwargs)
+        if fix_find_caller:
+            logging.setLoggerClass(FixedFindCallerLogger)
+
+
     def __call__(self):
         """
         Deduces the caller's module name and create a stdlib logger.
