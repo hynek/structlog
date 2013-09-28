@@ -31,6 +31,7 @@ from structlog.stdlib import (
     filter_by_level,
     FixedFindCallerLogger,
 )
+from structlog._compat import PY3
 
 from .additional_frame import additional_frame
 
@@ -60,12 +61,15 @@ class TestLoggerFactory(object):
 
     def test_deduces_correct_caller(self):
         logger = FixedFindCallerLogger('test')
-        file_name, line_number, func_name = logger.findCaller()
+        file_name, line_number, func_name = logger.findCaller()[:3]
         assert file_name == os.path.realpath(__file__)
         assert func_name == 'test_deduces_correct_caller'
-        file_name, line_number, func_name = additional_frame(logger.findCaller)
-        assert file_name.endswith('additional_frame.py')
-        assert func_name == 'additional_frame'
+
+    @pytest.mark.skipif("sys.version_info <= (3,0)")
+    def test_stack_info_in_py3(self):
+        logger = FixedFindCallerLogger('test')
+        testing, is_, fun, stack_info = logger.findCaller(True)
+        assert 'testing, is_, fun' in stack_info
 
     def test_find_caller(self, monkeypatch):
         logger = LoggerFactory()()
