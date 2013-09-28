@@ -14,9 +14,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+import os
+
 import logging
 
 import pytest
+from pretend import call_recorder
 
 from structlog._exc import DropEvent
 from structlog._loggers import ReturnLogger
@@ -26,7 +29,9 @@ from structlog.stdlib import (
     LoggerFactory,
     WARN,
     filter_by_level,
+    FixedFindCallerLogger,
 )
+from structlog._compat import PY3
 
 from .additional_frame import additional_frame
 
@@ -52,6 +57,43 @@ class TestLoggerFactory(object):
             additional_frame(LoggerFactory()).name
         )
         assert 'tests.test_stdlib' == LoggerFactory()().name
+
+
+    def test_deduces_correct_caller(self):
+        logger = FixedFindCallerLogger('test')
+        file_name, line_number, func_name = logger.findCaller()[:3]
+        assert file_name == os.path.realpath(__file__)
+        assert func_name == 'test_deduces_correct_caller'
+
+    @pytest.mark.skipif("sys.version_info <= (3,0)")
+    def test_stack_info_in_py3(self):
+        logger = FixedFindCallerLogger('test')
+        testing, is_, fun, stack_info = logger.findCaller(True)
+        assert 'testing, is_, fun' in stack_info
+
+    def test_find_caller(self, monkeypatch):
+        logger = LoggerFactory()()
+        log_handle = call_recorder(lambda x: None)
+        monkeypatch.setattr(logger, 'handle', log_handle)
+        logger.error('Test')
+        assert log_handle.calls
+        log_record = log_handle.calls[0].args[0]
+        assert log_record.funcName == 'test_find_caller'
+        assert log_record.name == __name__
+        assert log_record.filename == os.path.basename(__file__)
+
+
+    def test_sets_correct_logger(self):
+        original_class = logging.getLoggerClass()
+        try:
+            logging.setLoggerClass(logging.Logger)
+            LoggerFactory()
+            assert logging.getLoggerClass() is FixedFindCallerLogger
+            logging.setLoggerClass(logging.Logger)
+            LoggerFactory(fix_find_caller=False)
+            assert logging.getLoggerClass() is logging.Logger
+        finally:
+            logging.setLoggerClass(original_class)
 
 
 class TestFilterByLevel(object):
