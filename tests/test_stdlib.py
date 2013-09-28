@@ -29,9 +29,9 @@ from structlog.stdlib import (
     LoggerFactory,
     WARN,
     filter_by_level,
-    FixedFindCallerLogger,
+    _FixedFindCallerLogger,
 )
-from structlog._compat import PY3
+from structlog._compat import PY2
 
 from .additional_frame import additional_frame
 
@@ -48,6 +48,16 @@ def build_bl(logger=None, processors=None, context=None):
 
 
 class TestLoggerFactory(object):
+    def setup_method(self, method):
+        """
+        The stdlib logger factory modifies global state to fix caller
+        identification.
+        """
+        self.original_logger = logging.getLoggerClass()
+
+    def teardown_method(self, method):
+        logging.setLoggerClass(self.original_logger)
+
     def test_deduces_correct_name(self):
         """
         The factory isn't called directly but from structlog._config so
@@ -58,18 +68,23 @@ class TestLoggerFactory(object):
         )
         assert 'tests.test_stdlib' == LoggerFactory()().name
 
-
     def test_deduces_correct_caller(self):
-        logger = FixedFindCallerLogger('test')
+        logger = _FixedFindCallerLogger('test')
         file_name, line_number, func_name = logger.findCaller()[:3]
         assert file_name == os.path.realpath(__file__)
         assert func_name == 'test_deduces_correct_caller'
 
-    @pytest.mark.skipif("sys.version_info <= (3,0)")
-    def test_stack_info_in_py3(self):
-        logger = FixedFindCallerLogger('test')
-        testing, is_, fun, stack_info = logger.findCaller(True)
+    @pytest.mark.skipif(PY2, reason="Py3-only")
+    def test_stack_info(self):
+        logger = _FixedFindCallerLogger('test')
+        testing, is_, fun, stack_info = logger.findCaller(stack_info=True)
         assert 'testing, is_, fun' in stack_info
+
+    @pytest.mark.skipif(PY2, reason="Py3-only")
+    def test_no_stack_info_by_default(self):
+        logger = _FixedFindCallerLogger('test')
+        testing, is_, fun, stack_info = logger.findCaller()
+        assert None is stack_info
 
     def test_find_caller(self, monkeypatch):
         logger = LoggerFactory()()
@@ -82,18 +97,10 @@ class TestLoggerFactory(object):
         assert log_record.name == __name__
         assert log_record.filename == os.path.basename(__file__)
 
-
     def test_sets_correct_logger(self):
-        original_class = logging.getLoggerClass()
-        try:
-            logging.setLoggerClass(logging.Logger)
-            LoggerFactory()
-            assert logging.getLoggerClass() is FixedFindCallerLogger
-            logging.setLoggerClass(logging.Logger)
-            LoggerFactory(fix_find_caller=False)
-            assert logging.getLoggerClass() is logging.Logger
-        finally:
-            logging.setLoggerClass(original_class)
+        assert logging.getLoggerClass() is logging.Logger
+        LoggerFactory()
+        assert logging.getLoggerClass() is _FixedFindCallerLogger
 
 
 class TestFilterByLevel(object):

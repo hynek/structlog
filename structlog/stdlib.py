@@ -28,10 +28,15 @@ from structlog._base import BoundLoggerBase
 from structlog._exc import DropEvent
 from structlog._compat import PY3, StringIO
 
-class FixedFindCallerLoggerPy3(logging.Logger):
+
+class _FixedFindCallerLogger(logging.Logger):
+    """
+    Change the behavior of findCaller to cope with structlog's extra frames.
+    """
     def findCaller(self, stack_info=False):
         """
-        Finds the first caller frame outside of structlog so that the caller info is populated for wrapping stdlib.
+        Finds the first caller frame outside of structlog so that the caller
+        info is populated for wrapping stdlib.
         This logger gets set as the default one when using LoggerFactory.
         """
         f = sys._getframe()
@@ -39,35 +44,22 @@ class FixedFindCallerLoggerPy3(logging.Logger):
         while name.startswith('structlog.') or name == 'logging':
             f = f.f_back
             name = f.f_globals['__name__']
-        sinfo = None
-        if stack_info:
-            sio = StringIO()
-            sio.write('Stack (most recent call last):\n')
-            traceback.print_stack(f, file=sio)
-            sinfo = sio.getvalue()
-            if sinfo[-1] == '\n':
-                sinfo = sinfo[:-1]
-            sio.close()
 
-        return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
+        if PY3:  # pragma: nocover
+            sinfo = None
+            if stack_info:
+                sio = StringIO()
+                sio.write('Stack (most recent call last):\n')
+                traceback.print_stack(f, file=sio)
+                sinfo = sio.getvalue()
+                if sinfo[-1] == '\n':
+                    sinfo = sinfo[:-1]
+                sio.close()
 
-class FixedFindCallerLoggerPy2(logging.Logger):
-    def findCaller(self):
-        """
-        Finds the first caller frame outside of structlog so that the caller info is populated for wrapping stdlib.
-        This logger gets set as the default one when using LoggerFactory.
-        """
-        f = sys._getframe()
-        name = f.f_globals['__name__']
-        while name.startswith('structlog.') or name == 'logging':
-            f = f.f_back
-            name = f.f_globals['__name__']
-        return f.f_code.co_filename, f.f_lineno, f.f_code.co_name
+            return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
+        else:
+            return f.f_code.co_filename, f.f_lineno, f.f_code.co_name
 
-if PY3:
-    FixedFindCallerLogger= FixedFindCallerLoggerPy3
-else:
-    FixedFindCallerLogger= FixedFindCallerLoggerPy2
 
 class BoundLogger(BoundLoggerBase):
     """
@@ -122,15 +114,10 @@ class LoggerFactory(object):
     >>> from structlog import configure
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
-
-    :param bool fix_find_caller: By default False, it will fix the findCaller() of stdlib for wrapped loggers.
-
     """
-    def __init__(self, fix_find_caller=True, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(LoggerFactory, self).__init__(*args, **kwargs)
-        if fix_find_caller:
-            logging.setLoggerClass(FixedFindCallerLogger)
-
+        logging.setLoggerClass(_FixedFindCallerLogger)
 
     def __call__(self):
         """

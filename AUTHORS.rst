@@ -13,6 +13,7 @@ The following folks helped forming structlog into what it is now:
 - `Daniel Lindsley <https://github.com/toastdriven>`_
 - `David Reid <http://dreid.org>`_
 - `Donald Stufft <https://github.com/dstufft>`_
+- `George-Cristian Bîrzan <https://github.com/gcbirzan>`_
 - `Glyph <https://github.com/glyph>`_
 - `Holger Krekel <https://github.com/hpk42>`_
 - `Itamar Turner-Trauring <https://github.com/itamarst>`_
@@ -23,8 +24,6 @@ The following folks helped forming structlog into what it is now:
 - `Tarek Ziadé <https://github.com/tarekziade>`_
 - `Thomas Heinrichsdobler <https://github.com/dertyp>`_
 - `Tom Lazar <https://github.com/tomster>`_
-- `George-Cristian Bîrzan <https://github.com/gcbirzan>`_
-
 
 Some of them disapprove of the addition of thread local context data. :)
 
