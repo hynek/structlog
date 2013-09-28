@@ -28,10 +28,12 @@ from structlog._base import BoundLoggerBase
 from structlog._exc import DropEvent
 from structlog._compat import PY3, StringIO
 
+
 class FixedFindCallerLoggerPy3(logging.Logger):
     def findCaller(self, stack_info=False):
         """
-        Finds the first caller frame outside of structlog so that the caller info is populated for wrapping stdlib.
+        Finds the first caller frame outside of structlog so that the caller
+        info is populated for wrapping stdlib.
         This logger gets set as the default one when using LoggerFactory.
         """
         f = sys._getframe()
@@ -51,10 +53,12 @@ class FixedFindCallerLoggerPy3(logging.Logger):
 
         return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
 
+
 class FixedFindCallerLoggerPy2(logging.Logger):
     def findCaller(self):
         """
-        Finds the first caller frame outside of structlog so that the caller info is populated for wrapping stdlib.
+        Finds the first caller frame outside of structlog so that the caller
+        info is populated for wrapping stdlib.
         This logger gets set as the default one when using LoggerFactory.
         """
         f = sys._getframe()
@@ -64,10 +68,12 @@ class FixedFindCallerLoggerPy2(logging.Logger):
             name = f.f_globals['__name__']
         return f.f_code.co_filename, f.f_lineno, f.f_code.co_name
 
+
 if PY3:
-    FixedFindCallerLogger= FixedFindCallerLoggerPy3
+    FixedFindCallerLogger = FixedFindCallerLoggerPy3
 else:
-    FixedFindCallerLogger= FixedFindCallerLoggerPy2
+    FixedFindCallerLogger = FixedFindCallerLoggerPy2
+
 
 class BoundLogger(BoundLoggerBase):
     """
@@ -123,14 +129,14 @@ class LoggerFactory(object):
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
 
-    :param bool fix_find_caller: By default False, it will fix the findCaller() of stdlib for wrapped loggers.
+    :param bool fix_find_caller: By default False, it will fix the findCaller()
+        of stdlib for wrapped loggers.
 
     """
     def __init__(self, fix_find_caller=True, *args, **kwargs):
         super(LoggerFactory, self).__init__(*args, **kwargs)
         if fix_find_caller:
             logging.setLoggerClass(FixedFindCallerLogger)
-
 
     def __call__(self):
         """
