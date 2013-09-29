@@ -52,7 +52,7 @@ class TestTmpBind(object):
         assert "event='bar'" == log.msg('bar')
 
     def test_bind(self, log):
-        log = log.bind(y=23)
+        log = log.new(y=23)
         with tmp_bind(log, x=42, y='foo') as tmp_log:
             assert (
                 {'y': 'foo', 'x': 42}
