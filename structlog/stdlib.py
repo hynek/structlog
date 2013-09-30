@@ -23,6 +23,7 @@ from __future__ import absolute_import, division, print_function
 import logging
 import traceback
 import sys
+import os
 
 from structlog._base import BoundLoggerBase
 from structlog._exc import DropEvent
@@ -42,6 +43,7 @@ class FixedFindCallerLoggerPy3(logging.Logger):
             f = f.f_back
             name = f.f_globals['__name__']
         sinfo = None
+        file_name = os.path.normcase(f.f_code.co_filename)
         if stack_info:
             sio = StringIO()
             sio.write('Stack (most recent call last):\n')
@@ -51,7 +53,7 @@ class FixedFindCallerLoggerPy3(logging.Logger):
                 sinfo = sinfo[:-1]
             sio.close()
 
-        return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
+        return file_name, f.f_lineno, f.f_code.co_name, sinfo
 
 
 class FixedFindCallerLoggerPy2(logging.Logger):
