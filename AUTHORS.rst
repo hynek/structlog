@@ -9,7 +9,7 @@ The development is kindly supported by `Variomedia AG <https://www.variomedia.de
 The following folks helped forming structlog into what it is now:
 
 - `Alex Gaynor <https://github.com/alex>`_
-- `Christopher Armstrong <https://github.com/radeex>`_
+- `Christopher Armstrong <https://github.com/radix>`_
 - `Daniel Lindsley <https://github.com/toastdriven>`_
 - `David Reid <http://dreid.org>`_
 - `Donald Stufft <https://github.com/dstufft>`_
