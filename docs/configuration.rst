@@ -100,6 +100,9 @@ So all it takes to use structlog with standard library logging is this::
    >>> log.critical('this is too easy!')
    event='this is too easy!'
 
+This uses a custom logger in order to override the default findCaller() so that it displays the correct caller.
+
+
 The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
 
 .. note::
