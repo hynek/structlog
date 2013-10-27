@@ -94,7 +94,7 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _Lumberjack: https://github.com/jordansissel/lumberjack
 .. _RabbitMQ: http://www.rabbitmq.com
 .. _`Graylog's Extended Log Format`: http://graylog2.org/about/gelf
-.. _`daemon showdown`: http://tech.cueup.com/blog/2013/03/08/running-daemons/
+.. _`daemon showdown`: https://web.archive.org/web/20130907200323/http://tech.cueup.com/blog/2013/03/08/running-daemons/
 .. _`log shippers`: http://cookbook.logstash.net/recipes/log-shippers/
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _`they can be switched off`: http://blog.abhijeetr.com/2013/01/disable-rate-limiting-in-rsyslog-v5.html

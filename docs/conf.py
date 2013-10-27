@@ -311,3 +311,13 @@ epub_copyright = u'2013, Author'
 
 # Allow duplicate toc entries.
 #epub_tocdup = True
+
+linkcheck_ignore = [
+    # fake links
+    r'https://github.com/hynek/structlog/issues/0',
+    # throws a 406 for unknown reasons
+    r'http://www.elasticsearch.org',
+]
+
+# Twisted's trac tends to be slow
+linkcheck_timeout = 30

@@ -17,7 +17,7 @@ Why You Want Structured Logging
 
       I believe these presumptions are **no longer correct** in server side software.
 
-      ---`Paul Querna <http://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_
+      ---`Paul Querna <https://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_
 
 Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
 
