@@ -39,8 +39,7 @@ setup(
     name='structlog',
     version=find_version('structlog', '__init__.py'),
     description='Painless structural logging.',
-    long_description=(read('README.rst') + '\n\n' +
-                      read('AUTHORS.rst')),
+    long_description=read('README.rst'),
     url='http://www.structlog.org/',
     license='Apache License, Version 2.0',
     author= 'Hynek Schlawack',
