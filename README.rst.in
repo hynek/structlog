@@ -8,7 +8,3 @@ structlog: Structured Python Logging
     :target: https://coveralls.io/r/hynek/structlog?branch=master
 
 INTRO
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/hynek/structlog/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free

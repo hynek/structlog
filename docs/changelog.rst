@@ -1,7 +1,9 @@
 Changelog
 =========
 
-- :bug:`5` Fix stdlib's meta data (e.g. function names, line numbers) extraction.
+- :feature:`0` Allow the standard library name guesser to ignore certain frame names.
+  This is useful together with frameworks.
+- :feature:`5` Add meta data (e.g. function names, line numbers) extraction for wrapped stdlib loggers.
 - :release:`0.3.2 <2013-09-27>`
 - :bug:`0` Fix stdlib's name guessing.
 - :release:`0.3.1 <2013-09-26>`

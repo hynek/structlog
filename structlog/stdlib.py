@@ -111,25 +111,35 @@ class LoggerFactory(object):
     """
     Build a standard library logger when an *instance* is called.
 
+    Sets a custom logger using `logging.setLogggerClass` so variables in
+    log format are expanded properly.
+
     >>> from structlog import configure
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
+
+    :param ignore_frame_names: When guessing the name of a logger, skip frames
+        whose names *start* with one of these.  For example, in pyramid
+        applications you'll want to set it to
+        ``['venusian', 'pyramid.config']``.
+    :type ignore_frame_names: `list` of `str`
     """
-    def __init__(self, *args, **kwargs):
-        super(LoggerFactory, self).__init__(*args, **kwargs)
+    def __init__(self, ignore_frame_names=None):
+        self._ignore = ['structlog.'] + (ignore_frame_names or [])
         logging.setLoggerClass(_FixedFindCallerLogger)
 
     def __call__(self):
         """
-        Deduces the caller's module name and create a stdlib logger.
+        Deduce the caller's module name and create a stdlib logger.
 
         :rtype: `logging.Logger`
         """
         f = sys._getframe()
         name = f.f_globals['__name__']
 
-        # We skip all frames that originate from within structlog.
-        while name.startswith('structlog.'):
+        # We skip all frames that originate from within structlog or one of the
+        # configured names.
+        while any(name.startswith(i) for i in self._ignore):
             f = f.f_back
             name = f.f_globals['__name__']
         return logging.getLogger(name)

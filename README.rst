@@ -18,7 +18,3 @@ It's licensed under `Apache License, version 2 <http://choosealicense.com/licens
 structlog targets Python 2.6, 2.7, 3.2, and 3.3 as well as PyPy with no additional dependencies for core functionality.
 
 If you need any help, visit us on ``#structlog`` on `Freenode <http://freenode.net>`_!
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/hynek/structlog/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
