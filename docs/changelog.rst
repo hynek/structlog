@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :bug:`5` Fix stdlib's meta data (e.g. function names, line numbers) extraction.
 - :bug:`0` Fix stdlib's name guessing.
 - :release:`0.3.1 <2013-09-26>`
 - :support:`0 backported` Add forgotten :class:`structlog.processors.TimeStamper` to API documentation.
