@@ -320,4 +320,4 @@ linkcheck_ignore = [
 ]
 
 # Twisted's trac tends to be slow
-linkcheck_timeout = 30
+linkcheck_timeout = 300
