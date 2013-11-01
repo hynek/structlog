@@ -124,6 +124,16 @@ class JSONRenderer(GenericJSONRenderer):
     Behaves like :class:`structlog.processors.JSONRenderer` except that it
     formats tracebacks and failures itself if called with `err()`.
 
+    .. note::
+
+        This ultimately means that the messages get logged out using `msg()`,
+        and *not* `err()` which renders failures in separate lines.
+
+        Therefore it will break your tests that contain assertions using
+        `flushLoggedErrors <http://twistedmatrix.com/documents/
+        current/api/twisted.trial.unittest.SynchronousTestCase.html
+        #flushLoggedErrors>`_.
+
     *Not* an adapter like :class:`EventAdapter` but a real formatter.  Nor does
     it require to be adapted using it.
 
