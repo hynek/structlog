@@ -94,6 +94,10 @@ structlog Package
 
 ----
 
+.. autoclass:: UnicodeEncoder
+
+----
+
 .. autofunction:: format_exc_info
 
 ----

@@ -95,7 +95,10 @@ class UnicodeEncoder(object):
     ...                    UnicodeEncoder()(None, None, {'foo': u'bar'}))
     "foo='bar'"
 
-    Just put it in the processor chain before `KeyValueRenderer`.
+    or :class:`JSONRenderer` and :class:`structlog.twisted.JSONRenderer` to
+    make sure user-supplied strings don't break the renderer.
+
+    Just put it in the processor chain before the renderer.
     """
     def __init__(self, encoding='utf-8', errors='backslashreplace'):
         self._encoding = encoding
