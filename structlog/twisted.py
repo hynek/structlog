@@ -74,8 +74,10 @@ class LoggerFactory(object):
     >>> from structlog.twisted import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
     """
-    def __call__(self, name=None):
+    def __call__(self, *args):
         """
+        Positional arguments are ignored.
+
         :rvalue: A new Twisted logger.
         """
         return log

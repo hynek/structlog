@@ -23,6 +23,25 @@ import sys
 from structlog._utils import until_not_interrupted
 
 
+class PrintLoggerFactory(object):
+    """
+    Produces :class:`PrintLogger`\ s.
+
+    To be used with :func:`structlog.configure`\ 's `logger_factory`.
+
+    :param file file: File to print to. (default: stdout)
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 0.4.0
+    """
+    def __init__(self, file=None):
+        self._file = file
+
+    def __call__(self, *args):
+        return PrintLogger(self._file)
+
+
 class PrintLogger(object):
     """
     Prints events into a file.
@@ -56,6 +75,23 @@ class PrintLogger(object):
         until_not_interrupted(self._flush)
 
     err = debug = info = warning = error = critical = log = msg
+
+
+class ReturnLoggerFactory(object):
+    """
+    Produces and caches :class:`ReturnLogger`\ s.
+
+    To be used with :func:`structlog.configure`\ 's `logger_factory`.
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 0.4.0
+    """
+    def __init__(self):
+        self._logger = ReturnLogger()
+
+    def __call__(self, *args):
+        return self._logger
 
 
 class ReturnLogger(object):

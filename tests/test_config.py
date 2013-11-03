@@ -18,7 +18,7 @@ import warnings
 
 import pytest
 
-from pretend import stub
+from pretend import call_recorder, call, stub
 
 from structlog._base import BoundLoggerBase
 from structlog._compat import PY3
@@ -112,13 +112,14 @@ class TestBoundLoggerLazyProxy(object):
     def test_repr(self):
         p = BoundLoggerLazyProxy(
             None, processors=[1, 2, 3], context_class=dict,
-            initial_values={'foo': 42},
+            initial_values={'foo': 42}, logger_factory_args=(4, 5),
         )
         assert (
             "<BoundLoggerLazyProxy(logger=None, wrapper_class=None, "
             "processors=[1, 2, 3], "
             "context_class=<%s 'dict'>, "
-            "initial_values={'foo': 42})>"
+            "initial_values={'foo': 42}, "
+            "logger_factory_args=(4, 5))>"
             % ('class' if PY3 else 'type',)
         ) == repr(p)
 
@@ -253,3 +254,13 @@ class TestFunctions(object):
         assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
         assert isinstance(b, _BUILTIN_DEFAULT_WRAPPER_CLASS)
         assert _BUILTIN_DEFAULT_CONTEXT_CLASS == b._context.__class__
+
+    def test_get_logger_passes_positional_arguments_to_logger_factory(self):
+        """
+        Ensure `get_logger` passes optional positional arguments through to
+        the logger factory.
+        """
+        factory = call_recorder(lambda *args: object())
+        configure(logger_factory=factory)
+        get_logger('test').bind(x=42)
+        assert [call('test')] == factory.calls

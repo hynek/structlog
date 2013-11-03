@@ -45,7 +45,9 @@ from structlog._generic import (
 )
 from structlog._loggers import (
     PrintLogger,
+    PrintLoggerFactory,
     ReturnLogger,
+    ReturnLoggerFactory,
 )
 
 
@@ -60,7 +62,9 @@ __all__ = [
     BoundLoggerBase,
     DropEvent,
     PrintLogger,
+    PrintLoggerFactory,
     ReturnLogger,
+    ReturnLoggerFactory,
     configure,
     configure_once,
     getLogger,

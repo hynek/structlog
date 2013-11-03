@@ -86,6 +86,15 @@ It is a callable that returns the logger that gets wrapped and returned.
 In the simplest case, it's a function that returns a logger -- or just a class.
 But you can also pass in an instance of a class with a ``__call__`` method for more complicated setups.
 
+.. versionadded:: 0.4.0
+   :func:`structlog.get_logger` can optionally take positional parameters.
+
+These will be passed to the logger factories.
+For example, if you use run ``structlog.get_logger('a name')`` and configure structlog to use the standard library :class:`~structlog.stdlib.LoggerFactory` which has support for positional parameters, the returned logger will have the name ``'a name'``.
+
+When writing custom logger factories, they should always accept positional parameters even if they don't use them.
+That makes sure that loggers are interchangeable.
+
 For the common cases of standard library logging and Twisted logging, structlog comes with two factories built right in:
 
 - :class:`structlog.stdlib.LoggerFactory`

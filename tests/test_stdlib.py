@@ -111,6 +111,14 @@ class TestLoggerFactory(object):
         LoggerFactory()
         assert logging.getLoggerClass() is _FixedFindCallerLogger
 
+    def test_positional_argument_avoids_guessing(self):
+        """
+        If a positional argument is passed to the factory, it's used as the
+        name instead of guessing.
+        """
+        l = LoggerFactory()('foo')
+        assert 'foo' == l.name
+
 
 class TestFilterByLevel(object):
     def test_filters_lower_levels(self):

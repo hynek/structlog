@@ -42,14 +42,20 @@ structlog Package
 
 ----
 
+.. autoclass:: PrintLoggerFactory
+
+----
+
 .. autoclass:: ReturnLogger
    :members: msg, err, debug, info, warning, error, critical, log
 
+----
+
+.. autoclass:: ReturnLoggerFactory
 
 ----
 
 .. autoexception:: DropEvent
-
 
 ----
 

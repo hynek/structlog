@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :feature:`12` Allow optional positional arguments for :func:`structlog.get_logger` that are passed to logger factories.
+  The standard library factory uses this for explicit logger naming.
 - :feature:`0` Add :class:`structlog.processors.ExceptionPrettyPrinter` for development and testing when multiline log entries aren't just acceptable but even helpful.
 - :feature:`0` Allow the standard library name guesser to ignore certain frame names.
   This is useful together with frameworks.

@@ -22,7 +22,7 @@ import warnings
 from structlog._compat import OrderedDict
 from structlog._generic import BoundLogger
 from structlog._loggers import (
-    PrintLogger,
+    PrintLoggerFactory,
 )
 from structlog.processors import (
     KeyValueRenderer,
@@ -32,7 +32,7 @@ from structlog.processors import (
 _BUILTIN_DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = OrderedDict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
-_BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLogger
+_BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLoggerFactory()
 _BUILTIN_CACHE_LOGGER_ON_FIRST_USE = False
 
 
@@ -54,7 +54,7 @@ Global defaults used when arguments to :func:`wrap_logger` are omitted.
 """
 
 
-def get_logger(**initial_values):
+def get_logger(*args, **initial_values):
     """
     Convenience function that returns a logger according to configuration.
 
@@ -62,6 +62,12 @@ def get_logger(**initial_values):
     >>> log = get_logger(y=23)
     >>> log.msg('hello', x=42)
     y=23 x=42 event='hello'
+
+    :param args: *Optional* positional arguments that are passed unmodified to
+        the logger factory.  Therefore it depends on the factory what they
+        mean.
+
+        .. versionadded:: 0.4.0
 
     :param initial_values: Values that are used to pre-populate your contexts.
 
@@ -73,7 +79,7 @@ def get_logger(**initial_values):
     If you prefer CamelCase, there's an alias for your reading pleasure:
     :func:`structlog.getLogger`.
     """
-    return wrap_logger(None, **initial_values)
+    return wrap_logger(None, logger_factory_args=args, **initial_values)
 
 
 getLogger = get_logger
@@ -87,7 +93,7 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 
 def wrap_logger(logger, processors=None, wrapper_class=None,
                 context_class=None, cache_logger_on_first_use=None,
-                **initial_values):
+                logger_factory_args=None, **initial_values):
     """
     Create a new bound logger for an arbitrary `logger`.
 
@@ -101,6 +107,10 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     *is* possible.
 
     :param initial_values: Values that are used to pre-populate your contexts.
+    :param tuple logger_factory_args: Values that are passed unmodified as
+        ``*logger_factory_args`` to the logger factory if not `None`.
+
+        .. versionadded:: 0.4.0
 
     :rtype: A proxy that creates a correctly configured bound logger when
         necessary.
@@ -114,6 +124,7 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
         context_class=context_class,
         cache_logger_on_first_use=cache_logger_on_first_use,
         initial_values=initial_values,
+        logger_factory_args=logger_factory_args,
     )
 
 
@@ -136,8 +147,9 @@ def configure(processors=None, wrapper_class=None, context_class=None,
 
         See :doc:`standard-library`, :doc:`twisted`, and
         :doc:`custom-wrappers`.
-    :param context_class: Class to be used for internal dictionary.
-    :param callable logger_factory:
+    :param type context_class: Class to be used for internal context keeping.
+    :param callable logger_factory: Factory to be called to create a new
+        logger that shall be wrapped.
     :param bool cache_logger_on_first_use: `wrap_logger` doesn't return an
         actual wrapped logger but a proxy that assembles one when it's first
         used.  If this option is set to `True`, this assembled logger is
@@ -206,23 +218,28 @@ class BoundLoggerLazyProxy(object):
 
     If and only if configuration says so, that actual BoundLogger is cached on
     first usage.
+
+    .. versionchanged:: 0.4.0
+        Added support for `logger_factory_args`.
     """
     def __init__(self, logger, wrapper_class=None, processors=None,
                  context_class=None, cache_logger_on_first_use=None,
-                 initial_values=None):
+                 initial_values=None, logger_factory_args=None):
         self._logger = logger
         self._wrapper_class = wrapper_class
         self._processors = processors
         self._context_class = context_class
         self._cache_logger_on_first_use = cache_logger_on_first_use
         self._initial_values = initial_values or {}
+        self._logger_factory_args = logger_factory_args or ()
 
     def __repr__(self):
         return (
             '<BoundLoggerLazyProxy(logger={0._logger!r}, wrapper_class='
             '{0._wrapper_class!r}, processors={0._processors!r}, '
             'context_class={0._context_class!r}, '
-            'initial_values={0._initial_values!r})>'.format(self)
+            'initial_values={0._initial_values!r}, '
+            'logger_factory_args={0._logger_factory_args!r})>'.format(self)
         )
 
     def bind(self, **new_values):
@@ -235,7 +252,7 @@ class BoundLoggerLazyProxy(object):
             ctx = _CONFIG.default_context_class(self._initial_values)
         cls = self._wrapper_class or _CONFIG.default_wrapper_class
         if not self._logger:
-                self._logger = _CONFIG.logger_factory()
+            self._logger = _CONFIG.logger_factory(*self._logger_factory_args)
         logger = cls(
             self._logger,
             processors=self._processors or _CONFIG.default_processors,

@@ -128,12 +128,18 @@ class LoggerFactory(object):
         self._ignore = ['structlog.'] + (ignore_frame_names or [])
         logging.setLoggerClass(_FixedFindCallerLogger)
 
-    def __call__(self):
+    def __call__(self, *args):
         """
         Deduce the caller's module name and create a stdlib logger.
 
+        If an optional argument is passed, it will be used as the logger name
+        instead of guesswork.
+
         :rtype: `logging.Logger`
         """
+        if args:
+            return logging.getLogger(args[0])
+
         f = sys._getframe()
         name = f.f_globals['__name__']
 
