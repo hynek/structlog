@@ -272,6 +272,8 @@ class ExceptionPrettyPrinter(object):
     It's tolerant to having `format_exc_info` in front of itself in the
     processor chain but doesn't require it.  In other words, it handles both
     `exception` as well as `exc_info` keys.
+
+    .. versionadded:: 0.4.0
     """
     def __init__(self, file=None):
         if file is not None:
