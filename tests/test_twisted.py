@@ -86,7 +86,7 @@ class TestExtractStuffAndWhy(object):
                                  'event': Failure(TypeError)})
         assert (
             'Both _stuff and event contain an Exception/Failure.'
-            == e.value.message
+            == e.value.args[0]
         )
 
     def test_failsOnConflictingEventAnd_why(self):
@@ -94,7 +94,7 @@ class TestExtractStuffAndWhy(object):
             _extractStuffAndWhy({'_why': 'foo', 'event': 'bar'})
         assert (
             'Both `_why` and `event` supplied.'
-            == e.value.message
+            == e.value.args[0]
         )
 
     def test_handlesFailures(self):
@@ -209,7 +209,7 @@ class TestEventAdapter(object):
                 'event': 'someEvent',
                 '_why': 'someReason',
             })
-        assert 'Both `_why` and `event` supplied.' == e.value.message
+        assert 'Both `_why` and `event` supplied.' == e.value.args[0]
 
 
 @pytest.fixture
