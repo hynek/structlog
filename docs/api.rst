@@ -102,6 +102,10 @@ structlog Package
 
 ----
 
+.. autoclass:: ExceptionPrettyPrinter
+
+----
+
 .. autoclass:: TimeStamper(fmt=None, utc=True)
 
 ----

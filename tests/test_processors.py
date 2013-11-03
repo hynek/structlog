@@ -14,6 +14,7 @@
 
 import datetime
 import json
+import sys
 
 import pytest
 
@@ -21,8 +22,9 @@ from freezegun import freeze_time
 
 import structlog
 
-from structlog._compat import u
+from structlog._compat import u, StringIO
 from structlog.processors import (
+    ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
     TimeStamper,
@@ -31,6 +33,11 @@ from structlog.processors import (
     format_exc_info,
 )
 from structlog.threadlocal import wrap_dict
+
+
+@pytest.fixture
+def sio():
+    return StringIO()
 
 
 @pytest.fixture
@@ -162,3 +169,74 @@ class TestUnicodeEncoder(object):
     def test_passes_arguments(self):
         ue = UnicodeEncoder('latin1', 'xmlcharrefreplace')
         assert {'foo': b'&#8211;'} == ue(None, None, {'foo': u('\u2013')})
+
+
+class TestExceptionPrettyPrinter(object):
+    def test_stderr_by_default(self):
+        """
+        If no file is supplied, use stderr.
+        """
+        epp = ExceptionPrettyPrinter()
+        assert sys.stderr is epp._file
+
+    def test_prints_exception(self, sio):
+        """
+        If there's an `exception` key in the event_dict, just print it out.
+        This happens if `format_exc_info` was run before us in the chain.
+        """
+        epp = ExceptionPrettyPrinter(file=sio)
+        try:
+            raise ValueError
+        except ValueError:
+            ed = format_exc_info(None, None, {'exc_info': True})
+        epp(None, None, ed)
+
+        out = sio.getvalue()
+        assert 'test_prints_exception' in out
+        assert 'raise ValueError' in out
+
+    def test_removes_exception_after_printing(self, sio):
+        """
+        After pretty printing `exception` is removed from the event_dict.
+        """
+        epp = ExceptionPrettyPrinter(sio)
+        try:
+            raise ValueError
+        except ValueError:
+            ed = format_exc_info(None, None, {'exc_info': True})
+        assert 'exception' in ed
+        new_ed = epp(None, None, ed)
+        assert 'exception' not in new_ed
+
+    def test_handles_exc_info(self, sio):
+        """
+        If `exc_info` is passed in, it behaves like `format_exc_info`.
+        """
+        epp = ExceptionPrettyPrinter(sio)
+        try:
+            raise ValueError
+        except ValueError:
+            epp(None, None, {'exc_info': True})
+
+        out = sio.getvalue()
+        assert 'test_handles_exc_info' in out
+        assert 'raise ValueError' in out
+
+    def test_removes_exc_info_after_printing(self, sio):
+        """
+        After pretty printing `exception` is removed from the event_dict.
+        """
+        epp = ExceptionPrettyPrinter(sio)
+        try:
+            raise ValueError
+        except ValueError:
+            ed = epp(None, None, {'exc_info': True})
+        assert 'exc_info' not in ed
+
+    def test_nop_if_no_exception(self, sio):
+        """
+        If there is no exception, don't print anything.
+        """
+        epp = ExceptionPrettyPrinter(sio)
+        epp(None, None, {})
+        assert '' == sio.getvalue()

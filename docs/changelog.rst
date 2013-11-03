@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`0` Add :class:`structlog.processors.ExceptionPrettyPrinter` for development and testing when multiline log entries aren't just acceptable but even helpful.
 - :feature:`0` Allow the standard library name guesser to ignore certain frame names.
   This is useful together with frameworks.
 - :feature:`5` Add meta data (e.g. function names, line numbers) extraction for wrapped stdlib loggers.

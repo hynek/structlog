@@ -255,3 +255,38 @@ class TimeStamper(object):
                 return event_dict
 
         return type('TimeStamper', (object,), {'__call__': stamper})()
+
+
+class ExceptionPrettyPrinter(object):
+    """
+    Pretty print exceptions and remove them from the `event_dict`.
+
+    :param file file: Target file for output (default: `sys.stdout`).
+
+    This processor is mostly for development and testing so you can read
+    exceptions properly formatted.
+
+    It behaves like :func:`format_exc_info` except it removes the exception
+    data from the event dictionary after printing it.
+
+    It's tolerant to having `format_exc_info` in front of itself in the
+    processor chain but doesn't require it.  In other words, it handles both
+    `exception` as well as `exc_info` keys.
+    """
+    def __init__(self, file=None):
+        if file is not None:
+            self._file = file
+        else:
+            self._file = sys.stdout
+
+    def __call__(self, logger, name, event_dict):
+        exc = event_dict.pop('exception', None)
+        if exc is None:
+            exc_info = event_dict.pop('exc_info', None)
+            if exc_info:
+                if not isinstance(exc_info, tuple):
+                    exc_info = sys.exc_info()
+                exc = _format_exception(exc_info)
+        if exc:
+            print(exc, file=self._file)
+        return event_dict
