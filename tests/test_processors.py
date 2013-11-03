@@ -172,12 +172,12 @@ class TestUnicodeEncoder(object):
 
 
 class TestExceptionPrettyPrinter(object):
-    def test_stderr_by_default(self):
+    def test_stdout_by_default(self):
         """
-        If no file is supplied, use stderr.
+        If no file is supplied, use stdout.
         """
         epp = ExceptionPrettyPrinter()
-        assert sys.stderr is epp._file
+        assert sys.stdout is epp._file
 
     def test_prints_exception(self, sio):
         """
