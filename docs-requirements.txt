@@ -1,3 +1,3 @@
--e git+https://github.com/hynek/releases.git@patch-1#egg=releases
+-e git+https://github.com/bitprophet/releases.git#egg=releases
 sphinx
 twisted

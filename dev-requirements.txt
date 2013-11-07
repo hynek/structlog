@@ -7,5 +7,4 @@ freezegun
 pretend
 pytest-cov
 pytest
-Twisted
 wheel
