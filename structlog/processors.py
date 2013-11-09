@@ -24,9 +24,13 @@ import json
 import operator
 import sys
 import time
-import traceback
 
-from structlog._compat import StringIO, unicode_type
+from structlog._compat import unicode_type
+from structlog._frames import (
+    _find_first_app_frame_and_name,
+    _format_exception,
+    _format_stack,
+)
 
 
 class KeyValueRenderer(object):
@@ -199,21 +203,6 @@ def format_exc_info(logger, name, event_dict):
     return event_dict
 
 
-def _format_exception(exc_info):
-    """
-    Prettyprint an `exc_info` tuple.
-
-    Shamelessly stolen from stdlib's logging module.
-    """
-    sio = StringIO()
-    traceback.print_exception(exc_info[0], exc_info[1], exc_info[2], None, sio)
-    s = sio.getvalue()
-    sio.close()
-    if s[-1:] == "\n":
-        s = s[:-1]
-    return s
-
-
 class TimeStamper(object):
     """
     Add a timestamp to `event_dict`.
@@ -291,4 +280,24 @@ class ExceptionPrettyPrinter(object):
                 exc = _format_exception(exc_info)
         if exc:
             print(exc, file=self._file)
+        return event_dict
+
+
+class StackInfoRenderer(object):
+    """
+    Add stack information with key `stack` if `stack_info` is true.
+
+    Useful when you want to attach a stack dump to a log entry without
+    involving an exception.
+
+    It works analogously to the `stack_info` argument of the Python 3 standard
+    library logging but works on both 2 and 3.
+
+    .. versionadded:: 0.4.0
+    """
+    def __call__(self, logger, name, event_dict):
+        if event_dict.pop('stack_info', None):
+            event_dict['stack'] = _format_stack(
+                _find_first_app_frame_and_name()[0]
+            )
         return event_dict

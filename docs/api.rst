@@ -108,6 +108,10 @@ structlog Package
 
 ----
 
+.. autoclass:: StackInfoRenderer
+
+----
+
 .. autoclass:: ExceptionPrettyPrinter
 
 ----

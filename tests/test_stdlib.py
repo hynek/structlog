@@ -100,7 +100,6 @@ class TestLoggerFactory(object):
         log_handle = call_recorder(lambda x: None)
         monkeypatch.setattr(logger, 'handle', log_handle)
         logger.error('Test')
-        assert log_handle.calls
         log_record = log_handle.calls[0].args[0]
         assert log_record.funcName == 'test_find_caller'
         assert log_record.name == __name__

@@ -26,10 +26,15 @@ from structlog._loggers import (
 )
 from structlog.processors import (
     KeyValueRenderer,
+    StackInfoRenderer,
     format_exc_info,
 )
 
-_BUILTIN_DEFAULT_PROCESSORS = [format_exc_info, KeyValueRenderer()]
+_BUILTIN_DEFAULT_PROCESSORS = [
+    StackInfoRenderer(),
+    format_exc_info,
+    KeyValueRenderer()
+]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = OrderedDict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
 _BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLoggerFactory()
@@ -191,7 +196,8 @@ def reset_defaults():
     """
     Resets global default values to builtins.
 
-    That means [:func:`~structlog.processors.format_exc_info`,
+    That means [:class:`~structlog.processors.StackInfoRenderer`,
+    :func:`~structlog.processors.format_exc_info`,
     :class:`~structlog.processors.KeyValueRenderer`] for *processors*,
     :class:`~structlog.BoundLogger` for *wrapper_class*, ``OrderedDict`` for
     *context_class*, :class:`~structlog.PrintLogger` for *logger_factory*, and

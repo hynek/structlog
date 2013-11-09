@@ -21,12 +21,11 @@ library <http://docs.python.org/>`_.
 from __future__ import absolute_import, division, print_function
 
 import logging
-import traceback
-import sys
 
 from structlog._base import BoundLoggerBase
 from structlog._exc import DropEvent
-from structlog._compat import PY3, StringIO
+from structlog._compat import PY3
+from structlog._frames import _format_stack, _find_first_app_frame_and_name
 
 
 class _FixedFindCallerLogger(logging.Logger):
@@ -39,23 +38,12 @@ class _FixedFindCallerLogger(logging.Logger):
         info is populated for wrapping stdlib.
         This logger gets set as the default one when using LoggerFactory.
         """
-        f = sys._getframe()
-        name = f.f_globals['__name__']
-        while name.startswith('structlog.') or name == 'logging':
-            f = f.f_back
-            name = f.f_globals['__name__']
-
+        f, name = _find_first_app_frame_and_name(['logging'])
         if PY3:  # pragma: nocover
-            sinfo = None
             if stack_info:
-                sio = StringIO()
-                sio.write('Stack (most recent call last):\n')
-                traceback.print_stack(f, file=sio)
-                sinfo = sio.getvalue()
-                if sinfo[-1] == '\n':
-                    sinfo = sinfo[:-1]
-                sio.close()
-
+                sinfo = _format_stack(f)
+            else:
+                sinfo = None
             return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
         else:
             return f.f_code.co_filename, f.f_lineno, f.f_code.co_name
@@ -125,7 +113,7 @@ class LoggerFactory(object):
     :type ignore_frame_names: `list` of `str`
     """
     def __init__(self, ignore_frame_names=None):
-        self._ignore = ['structlog.'] + (ignore_frame_names or [])
+        self._ignore = ignore_frame_names
         logging.setLoggerClass(_FixedFindCallerLogger)
 
     def __call__(self, *args):
@@ -140,14 +128,9 @@ class LoggerFactory(object):
         if args:
             return logging.getLogger(args[0])
 
-        f = sys._getframe()
-        name = f.f_globals['__name__']
-
         # We skip all frames that originate from within structlog or one of the
         # configured names.
-        while any(name.startswith(i) for i in self._ignore):
-            f = f.f_back
-            name = f.f_globals['__name__']
+        _, name = _find_first_app_frame_and_name(self._ignore)
         return logging.getLogger(name)
 
 

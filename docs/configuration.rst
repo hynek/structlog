@@ -58,7 +58,7 @@ structlog tries to behave in the least surprising way when it comes to handling 
 #. Arguments passed to :func:`structlog.wrap_logger` *always* take the highest precedence over configuration.
    That means that you can overwrite whatever you've configured for each logger respectively.
 #. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
-#. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain, and `False` for `cache_logger_on_first_use`.
+#. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:class:`~structlog.processors.StackInfoRenderer`, :func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain, and `False` for `cache_logger_on_first_use`.
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.

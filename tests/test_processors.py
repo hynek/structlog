@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import, division, print_function
+
 import datetime
 import json
 import sys
@@ -27,6 +29,7 @@ from structlog.processors import (
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
+    StackInfoRenderer,
     TimeStamper,
     UnicodeEncoder,
     _JSONFallbackEncoder,
@@ -240,3 +243,28 @@ class TestExceptionPrettyPrinter(object):
         epp = ExceptionPrettyPrinter(sio)
         epp(None, None, {})
         assert '' == sio.getvalue()
+
+
+@pytest.fixture
+def sir():
+    return StackInfoRenderer()
+
+
+class TestStackInfoRenderer(object):
+    def test_removes_stack_info(self, sir):
+        """
+        The `stack_info` key is removed from `event_dict`.
+        """
+        ed = sir(None, None, {'stack_info': True})
+        assert 'stack_info' not in ed
+
+    def test_adds_stack_if_asked(self, sir):
+        """
+        If `stack_info` is true, `stack` is added.
+        """
+        ed = sir(None, None, {'stack_info': True})
+        assert 'stack' in ed
+
+    def test_renders_correct_stack(self, sir):
+        ed = sir(None, None, {'stack_info': True})
+        assert "ed = sir(None, None, {'stack_info': True})" in ed['stack']
