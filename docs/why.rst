@@ -2,7 +2,7 @@ Why…
 ====
 
 … Structured Logging?
---------------------
+---------------------
 
       I believe the widespread use of format strings in logging is based on two presumptions:
 
@@ -17,7 +17,7 @@ Structured logging means that you don't write hard-to-parse and hard-to-keep-con
 
 
 … structlog?
------------
+------------
 
 Because it's easy and you don't have to replace your underlying logger -- you just add structure to your log entries and format them to strings before they hit your real loggers.
 
