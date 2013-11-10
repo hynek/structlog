@@ -38,7 +38,7 @@ def find_version(*file_paths):
 setup(
     name='structlog',
     version=find_version('structlog', '__init__.py'),
-    description='Painless structural logging.',
+    description='Painless structured logging.',
     long_description=read('README.rst'),
     url='http://www.structlog.org/',
     license='Apache License, Version 2.0',
