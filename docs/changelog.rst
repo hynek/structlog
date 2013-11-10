@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.4.0 <2013-11-10>`
 - :feature:`6` Add :class:`structlog.processors.StackInfoRenderer` for adding stack information to log entries without involving exceptions.
   Also added it to default processor chain.
 - :feature:`12` Allow optional positional arguments for :func:`structlog.get_logger` that are passed to logger factories.

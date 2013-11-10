@@ -25,7 +25,7 @@ For…
 
 - …reasons why structured logging in general and structlog in particular are the way to go, consult :doc:`why`.
 - …more realistic examples, peek into  :doc:`examples`.
-- …getting started right away, jumpt straight into :doc:`getting-started`.
+- …getting started right away, jump straight into :doc:`getting-started`.
 
 Since structlog avoids monkey-patching and events are fully free-form, you can start using it **today**!
 
