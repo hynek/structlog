@@ -125,7 +125,7 @@ class JSONRenderer(object):
     >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
     '{"a": 42, "b": [1, 2, 3]}'
 
-    Bound objects are attempted to be serialize using a ``__structlog__`
+    Bound objects are attempted to be serialize using a ``__structlog__``
     method.  If none is defined, ``repr()`` is used:
 
     >>> class C1(object):

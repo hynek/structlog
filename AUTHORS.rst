@@ -1,7 +1,7 @@
 Authors
 -------
 
-structlog is written and maintained by `Hynek Schlawack <http://hynek.me/>`_.
+structlog is written and maintained by `Hynek Schlawack <https://hynek.me/>`_.
 It’s inspired by previous work done by `Jean-Paul Calderone <http://as.ynchrono.us>`_ and `David Reid <http://dreid.org>`_.
 
 The development is kindly supported by `Variomedia AG <https://www.variomedia.de/>`_.
@@ -31,15 +31,8 @@ Some of them disapprove of the addition of thread local context data. :)
 Third Party Code
 ^^^^^^^^^^^^^^^^
 
-The compatibility code that makes this software run on both Python 2 and 3 is heavily inspired and partly copy and pasted from the `MIT <http://choosealicense.com/licenses/mit/>`_-licensed `six <https://bitbucket.org/gutworth/six/>`_ by Benjamin Peterson.
+The compatibility code that makes this software run on both Python 2 and 3 is heavily inspired and partly copy and pasted from the MIT_-licensed six_ by Benjamin Peterson.
 The only reason why it’s not used as a dependency is to avoid any runtime dependency in the first place.
 
-The Sphinx (documentation) theme is an adapted version of the `Write The Docs`_ theme which in turn is an adapted version of the requests_ docs theme_ by `Kenneth Reitz`_ which in turn is an adapted version of the Flask_ docs theme by `Armin Ronacher`_.
-
-
-.. _`Write The Docs`: http://write-the-docs.readthedocs.org/
-.. _requests: http://www.python-requests.org/
-.. _theme: https://github.com/kennethreitz/requests/tree/master/docs/_themes
-.. _`Kenneth Reitz`: https://github.com/kennethreitz/
-.. _Flask: https://github.com/mitsuhiko/flask
-.. _`Armin Ronacher`: https://github.com/mitsuhiko/
+.. _MIT: http://choosealicense.com/licenses/mit/
+.. _six: https://bitbucket.org/gutworth/six/

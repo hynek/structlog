@@ -1,3 +1,4 @@
 -e git+https://github.com/bitprophet/releases.git#egg=releases
 sphinx
+sphinx_rtd_theme
 twisted
