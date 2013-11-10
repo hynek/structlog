@@ -88,7 +88,10 @@ Suggested Configuration
    import structlog
 
    structlog.configure(
-      processors=[structlog.twisted.JSONRenderer()],
+      processors=[
+          structlog.processors.StackRenderer(),
+          structlog.twisted.JSONRenderer()
+      ],
       context_class=dict,
       logger_factory=structlog.twisted.LoggerFactory(),
       wrapper_class=structlog.twisted.BoundLogger,

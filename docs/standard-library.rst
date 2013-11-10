@@ -32,9 +32,12 @@ Suggested Configuration
    import structlog
 
    structlog.configure(
-      processors=[structlog.stdlib.filter_by_level,
-                  structlog.processors.format_exc_info,
-                  structlog.processors.JSONRenderer()],
+      processors=[
+          structlog.stdlib.filter_by_level,
+          structlog.processors.StackRenderer(),
+          structlog.processors.format_exc_info,
+          structlog.processors.JSONRenderer()
+      ],
       context_class=dict,
       logger_factory=structlog.stdlib.LoggerFactory(),
       wrapper_class=structlog.stdlib.BoundLogger,
