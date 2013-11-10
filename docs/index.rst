@@ -23,9 +23,9 @@ structlog makes structured logging with *incremental context building* and *arbi
 
 For…
 
-- … arguments why structured logging and structlog are the way to go, have a look at :doc:`why`.
-- … more realistic examples, peek into  :doc:`examples`.
-- … getting started right away, just straight into :doc:`getting-started`.
+- …reasons why structured logging in general and structlog in particular are the way to go, consult :doc:`why`.
+- …more realistic examples, peek into  :doc:`examples`.
+- …getting started right away, jumpt straight into :doc:`getting-started`.
 
 Since structlog avoids monkey-patching and events are fully free-form, you can start using it **today**!
 
