@@ -42,7 +42,6 @@ class KeyValueRenderer(object):
         order.  Missing keys will be rendered as `None`, extra keys depending
         on *sort_keys* and the dict class.
 
-        .. versionadded:: 0.2.0
 
     >>> from structlog.processors import KeyValueRenderer
     >>> KeyValueRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
@@ -50,6 +49,9 @@ class KeyValueRenderer(object):
     >>> KeyValueRenderer(key_order=['b', 'a'])(None, None,
     ...                                       {'a': 42, 'b': [1, 2, 3]})
     'b=[1, 2, 3] a=42'
+
+    .. versionadded:: 0.2.0
+        `key_order`
     """
     def __init__(self, sort_keys=False, key_order=None):
         # Use an optimized version for each case.
@@ -206,6 +208,10 @@ def format_exc_info(logger, name, event_dict):
 class TimeStamper(object):
     """
     Add a timestamp to `event_dict`.
+
+    .. note::
+        You probably want to let OS tools take care of timestamping.  See also
+        :doc:`logging-best-practices`.
 
     :param str format: strftime format string, or ``"iso"`` for `ISO 8601
         <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX

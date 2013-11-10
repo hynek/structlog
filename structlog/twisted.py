@@ -76,9 +76,12 @@ class LoggerFactory(object):
     """
     def __call__(self, *args):
         """
-        Positional arguments are ignored.
+        Positional arguments are silently ignored.
 
         :rvalue: A new Twisted logger.
+
+        .. versionchanged:: 0.4.0
+            Added support for optional positional arguments.
         """
         return log
 

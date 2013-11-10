@@ -121,9 +121,16 @@ class LoggerFactory(object):
         Deduce the caller's module name and create a stdlib logger.
 
         If an optional argument is passed, it will be used as the logger name
-        instead of guesswork.
+        instead of guesswork.  This optional argument would be passed from the
+        :func:`structlog.get_logger` call.  For example
+        ``struclog.get_logger('foo')`` would cause this method to be called
+        with ``'foo'`` as its first positional argument.
 
         :rtype: `logging.Logger`
+
+        .. versionchanged:: 0.4.0
+            Added support for optional positional arguments.  Using the first
+            one for naming the constructed logger.
         """
         if args:
             return logging.getLogger(args[0])

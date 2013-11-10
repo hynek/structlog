@@ -91,6 +91,7 @@ structlog Package
    :members: bind, unbind, new, msg, err
 
 .. autoclass:: LoggerFactory
+   :members: __call__
 
 .. autoclass:: EventAdapter
 

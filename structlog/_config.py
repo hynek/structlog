@@ -71,9 +71,6 @@ def get_logger(*args, **initial_values):
     :param args: *Optional* positional arguments that are passed unmodified to
         the logger factory.  Therefore it depends on the factory what they
         mean.
-
-        .. versionadded:: 0.4.0
-
     :param initial_values: Values that are used to pre-populate your contexts.
 
     :rtype: A proxy that creates a correctly configured bound logger when
@@ -83,6 +80,9 @@ def get_logger(*args, **initial_values):
 
     If you prefer CamelCase, there's an alias for your reading pleasure:
     :func:`structlog.getLogger`.
+
+    .. versionadded:: 0.4.0
+        `args`
     """
     return wrap_logger(None, logger_factory_args=args, **initial_values)
 
@@ -115,12 +115,13 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     :param tuple logger_factory_args: Values that are passed unmodified as
         ``*logger_factory_args`` to the logger factory if not `None`.
 
-        .. versionadded:: 0.4.0
-
     :rtype: A proxy that creates a correctly configured bound logger when
         necessary.
 
     See :func:`configure` for the meaning of the rest of the arguments.
+
+    .. versionadded:: 0.4.0
+        `logger_factory_args`
     """
     return BoundLoggerLazyProxy(
         logger,
@@ -148,21 +149,18 @@ def configure(processors=None, wrapper_class=None, context_class=None,
 
     :param list processors: List of processors.
     :param type wrapper_class: Class to use for wrapping loggers instead of
-        :class:`structlog.BoundLogger`.
-
-        See :doc:`standard-library`, :doc:`twisted`, and
-        :doc:`custom-wrappers`.
+        :class:`structlog.BoundLogger`.  See :doc:`standard-library`,
+        :doc:`twisted`, and :doc:`custom-wrappers`.
     :param type context_class: Class to be used for internal context keeping.
     :param callable logger_factory: Factory to be called to create a new
         logger that shall be wrapped.
     :param bool cache_logger_on_first_use: `wrap_logger` doesn't return an
         actual wrapped logger but a proxy that assembles one when it's first
         used.  If this option is set to `True`, this assembled logger is
-        cached.
+        cached.  See :doc:`performance`.
 
-        See :doc:`performance`.
-
-        .. versionadded:: 0.3.0
+    .. versionadded:: 0.3.0
+        `cache_logger_on_first_use`
     """
     _CONFIG.is_configured = True
     if processors is not None:
@@ -200,10 +198,10 @@ def reset_defaults():
     :func:`~structlog.processors.format_exc_info`,
     :class:`~structlog.processors.KeyValueRenderer`] for *processors*,
     :class:`~structlog.BoundLogger` for *wrapper_class*, ``OrderedDict`` for
-    *context_class*, :class:`~structlog.PrintLogger` for *logger_factory*, and
-    `False` for *cache_logger_on_first_use*.
+    *context_class*, :class:`~structlog.PrintLoggerFactory` for
+    *logger_factory*, and `False` for *cache_logger_on_first_use*.
 
-    Also sets the global class attribute :attr:`is_configured` to `True`.
+    Also sets the global class attribute :attr:`is_configured` to `False`.
     """
     _CONFIG.is_configured = False
     _CONFIG.default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
