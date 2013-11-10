@@ -38,11 +38,11 @@ def find_version(*file_paths):
 setup(
     name='structlog',
     version=find_version('structlog', '__init__.py'),
-    description='Painless structured logging.',
+    description='Structured logging for Python.',
     long_description=read('README.rst'),
     url='http://www.structlog.org/',
     license='Apache License, Version 2.0',
-    author= 'Hynek Schlawack',
+    author='Hynek Schlawack',
     author_email='hs@ox.cx',
     packages=find_packages(exclude=['tests*']),
     classifiers=[

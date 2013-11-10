@@ -1,5 +1,5 @@
-structlog: Structured Python Logging
-====================================
+structlog: Structured Logging for Python
+========================================
 
 .. image:: https://travis-ci.org/hynek/structlog.png?branch=master
    :target: https://travis-ci.org/hynek/structlog

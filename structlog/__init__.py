@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Painless structured logging.
+Structured logging for Python.
 """
 
 from __future__ import absolute_import, division, print_function
