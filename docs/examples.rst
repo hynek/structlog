@@ -25,6 +25,7 @@ While wrapped loggers are *immutable* by default, this example demonstrates how 
 
 Please note that :class:`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger() <http://docs.python.org/2/library/logging.html#logging.getLogger>`_. with it.
 It's used by :func:`structlog.get_logger` to rid you of logging boilerplate in application code.
+If you prefer to name your standard library loggers explicitly, a positional argument to :func:`~structlog.get_logger` gets passed to the factory and used as the name.
 
 
 .. _twisted-example:
