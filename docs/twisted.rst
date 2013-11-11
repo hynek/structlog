@@ -89,7 +89,7 @@ Suggested Configuration
 
    structlog.configure(
       processors=[
-          structlog.processors.StackRenderer(),
+          structlog.processors.StackInfoRenderer(),
           structlog.twisted.JSONRenderer()
       ],
       context_class=dict,
