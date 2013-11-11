@@ -34,7 +34,7 @@ Suggested Configuration
    structlog.configure(
       processors=[
           structlog.stdlib.filter_by_level,
-          structlog.processors.StackRenderer(),
+          structlog.processors.StackInfoRenderer(),
           structlog.processors.format_exc_info,
           structlog.processors.JSONRenderer()
       ],
