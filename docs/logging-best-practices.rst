@@ -89,11 +89,11 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. [*] This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
 
 .. _AMQP: http://support.torch.sh/help/kb/graylog2-server/using-the-amqp-input
-.. _Graylog: http://graylog2.org/
+.. _Graylog: http://graylog2.org
 .. _Logstash: http://logstash.net
 .. _Lumberjack: https://github.com/jordansissel/lumberjack
 .. _RabbitMQ: http://www.rabbitmq.com
-.. _`Graylog's Extended Log Format`: http://graylog2.org/about/gelf
+.. _`Graylog's Extended Log Format`: http://graylog2.org/gelf
 .. _`daemon showdown`: https://web.archive.org/web/20130907200323/http://tech.cueup.com/blog/2013/03/08/running-daemons/
 .. _`log shippers`: http://cookbook.logstash.net/recipes/log-shippers/
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
