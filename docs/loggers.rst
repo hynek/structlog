@@ -9,10 +9,10 @@ The center of structlog is the immutable log wrapper :class:`~structlog.BoundLog
 
 All it does is:
 
-- Keeping a *context dictionary* and a *logger* that it's wrapping,
-- recreating itself with (optional) *additional* context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
-- recreating itself with *less* data (:func:`~structlog.BoundLogger.unbind`),
-- and finally relaying *all* other method calls to the wrapped logger\ [*]_ after processing the log entry with the configured chain of :ref:`processors <processors>`.
+- Keep a *context dictionary* and a *logger* that it's wrapping,
+- recreate itself with (optional) *additional* context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
+- recreate itself with *less* data (:func:`~structlog.BoundLogger.unbind`),
+- and finally relay *all* other method calls to the wrapped logger\ [*]_ after processing the log entry with the configured chain of :ref:`processors <processors>`.
 
 You won't be instantiating it yourself though.
 For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in a minute):
@@ -46,7 +46,7 @@ For that there is the :func:`structlog.wrap_logger` function (or the convenience
 As you can see, it accepts one mandatory and a few optional arguments:
 
 **logger**
-   The one an only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
+   The one and only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
    If you wish to use a :ref:`configured logger factory <logger-factories>`, set it to `None`.
 
 **processors**
@@ -66,7 +66,7 @@ Additionally, the following arguments are allowed too:
    A class to use instead of :class:`~structlog.BoundLogger` for wrapping.
    This is useful if you want to sub-class BoundLogger and add custom logging methods.
    BoundLogger's bind/new methods are sub-classing friendly so you won't have to re-implement them.
-   Please refer to the :ref:`related example <wrapper_class-example>` how this may look like.
+   Please refer to the :ref:`related example <wrapper_class-example>` for how this may look.
 
 **initial_values**
    The values that new wrapped loggers are automatically constructed with.
