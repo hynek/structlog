@@ -327,6 +327,10 @@ epub_copyright = u'2013, Author'
 linkcheck_ignore = [
     # fake links
     r'https://github.com/hynek/structlog/issues/0',
+    # 404s for unknown reasons
+    r'http://graylog2.org.*',
+    # Times out way too often
+    r'http://www.rabbitmq.com',
     # throws a 406 for unknown reasons
     r'http://www.elasticsearch.org',
 ]

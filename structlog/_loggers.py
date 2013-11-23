@@ -54,7 +54,7 @@ class PrintLogger(object):
 
     Useful if you just capture your stdout with tools like `runit
     <http://smarden.org/runit/>`_ or if you `forward your stderr to syslog
-    <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+    <https://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
     Also very useful for testing and examples since logging is sometimes
     finicky in doctests.

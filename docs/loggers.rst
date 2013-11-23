@@ -92,7 +92,7 @@ To save you the hassle of using standard library logging for simple standard out
    >>> PrintLogger().info('hello world!')
    hello world!
 
-It's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <http://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+It's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <https://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
 Additionally -- mostly for unit testing -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
