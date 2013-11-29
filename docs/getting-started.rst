@@ -91,6 +91,8 @@ For structlog, a log entry is just a dictionary called *event dict[ionary]*:
   If you're okay with giving up immutable local state for convenience, you can also use :ref:`thread/greenlet local storage <threadlocal>` for the context.
 
 
+.. _standard-library-lite:
+
 structlog and Standard Library's logging
 ----------------------------------------
 
