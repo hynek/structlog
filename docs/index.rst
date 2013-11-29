@@ -21,7 +21,7 @@ structlog makes structured logging with *incremental context building* and *arbi
    some_key=23 user='hynek' another_key=42 happy=True event='user.logged_in'
 
 Please note that this example does *not* use standard library logging (but could so :ref:`easily <standard-library-lite>`).
-The logger that's returned by ``structlog.get_logger()`` is *freely* :doc:`configurable <configuration>` and uses a simple :class:`~structlog.PrintLogger` by default.
+The logger that's returned by :func:`~structlog.get_logger()` is *freely* :doc:`configurable <configuration>` and uses a simple :class:`~structlog.PrintLogger` by default.
 
 
 
