@@ -18,7 +18,7 @@ The goal is to reduce your per-file logging boilerplate to::
 while still giving you the full power via configuration.
 
 To achieve that you'll have to call :func:`structlog.configure` on app initialization (of course, only if you're not content with the defaults).
-The previous example could thus have been written as following:
+The :ref:`example <proc>` from the previous chapter could thus have been written as following:
 
 .. testcleanup:: *
 
@@ -35,6 +35,9 @@ The previous example could thus have been written as following:
 
 .. doctest:: config_wrap_logger
 
+   >>> def proc(logger, method_name, event_dict):
+   ...    print 'I got called with', event_dict
+   ...    return repr(event_dict)
    >>> configure(processors=[proc], context_class=dict)
    >>> log = wrap_logger(PrintLogger())
    >>> log.msg('hello world')

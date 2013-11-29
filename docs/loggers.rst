@@ -17,6 +17,8 @@ All it does is:
 You won't be instantiating it yourself though.
 For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in a minute):
 
+.. _proc:
+
 .. doctest::
 
    >>> from structlog import wrap_logger
