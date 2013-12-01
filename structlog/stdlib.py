@@ -54,37 +54,48 @@ class BoundLogger(BoundLoggerBase):
         )
 
     """
-    def debug(self, event=None, **kw):
+    def __getattr__(self, item):
+        return getattr(self._logger, item)
+
+    def debug(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.debug()`` with the result.
         """
-        return self._proxy_to_logger('debug', event, **kw)
+        return self._proxy_to_logger('debug', event, *args, **kw)
 
-    def info(self, event=None, **kw):
+    def info(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.info()`` with the result.
         """
-        return self._proxy_to_logger('info', event, **kw)
+        return self._proxy_to_logger('info', event, *args, **kw)
 
-    def warning(self, event=None, **kw):
+    def warning(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.warning()`` with the result.
         """
-        return self._proxy_to_logger('warning', event, **kw)
+        return self._proxy_to_logger('warning', event, *args, **kw)
 
     warn = warning
 
-    def error(self, event=None, **kw):
+    def error(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.error()`` with the result.
         """
-        return self._proxy_to_logger('error', event, **kw)
+        return self._proxy_to_logger('error', event, *args, **kw)
 
-    def critical(self, event=None, **kw):
+    def critical(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.critical()`` with the result.
         """
-        return self._proxy_to_logger('critical', event, **kw)
+        return self._proxy_to_logger('critical', event, *args, **kw)
+
+    def _proxy_to_logger(self, method_name, event=None, *event_args,
+                         **event_kw):
+        if event_args:
+            event_kw['positional_args'] = event_args
+        return super(BoundLogger, self)._proxy_to_logger(method_name, event,
+                                                         *event_args,
+                                                         **event_kw)
 
     def exception(self, event=None, **kw):
         """
