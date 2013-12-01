@@ -94,6 +94,12 @@ class BoundLogger(BoundLoggerBase):
         """
         return self._proxy_to_logger('critical', event, **kw)
 
+    def exception(self, event=None, *args, **kw):
+        """
+        Process event and call ``Logger.error()`` with the result, after setting exc_info to True.
+        """
+        kw['exc_info'] = True
+        return self.error(event, *args, **kw)
 
 class LoggerFactory(object):
     """

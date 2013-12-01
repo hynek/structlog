@@ -1,6 +1,6 @@
 Changelog
 =========
-
+- :bug:`20` :class:`structlog.ReturnLogger` now has an exception function.
 - :bug:`-` Various doc fixes.
 - :release:`0.4.0 <2013-11-10>`
 - :feature:`6` Add :class:`structlog.processors.StackInfoRenderer` for adding stack information to log entries without involving exceptions.
