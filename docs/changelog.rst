@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.4.1 <2013-12-19>`
 - :bug:`-` Don't cache proxied methods in :class:`structlog.threadlocal._ThreadLocalDictWrapper`.
   This doesn't affect regular users.
 - :bug:`-` Various doc fixes.
