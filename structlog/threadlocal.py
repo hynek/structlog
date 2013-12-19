@@ -165,5 +165,4 @@ class _ThreadLocalDictWrapper(object):
 
     def __getattr__(self, name):
         method = getattr(self._dict, name)
-        setattr(self, name, method)
         return method
