@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :bug:`-` Don't cache proxied methods in :class:`structlog.threadlocal._ThreadLocalDictWrapper`.
+  This doesn't affect regular users.
 - :bug:`-` Various doc fixes.
 - :release:`0.4.0 <2013-11-10>`
 - :feature:`6` Add :class:`structlog.processors.StackInfoRenderer` for adding stack information to log entries without involving exceptions.
