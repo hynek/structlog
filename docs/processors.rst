@@ -36,9 +36,9 @@ If you set up your logger like:
 
 .. code:: python
 
-   from structlog import BoundLogger, PrintLogger
+   from structlog import PrintLogger, wrap_logger
    wrapped_logger = PrintLogger()
-   logger = BoundLogger.wrap(wrapped_logger, processors=[f1, f2, f3, f4])
+   logger = wrap_logger(wrapped_logger, processors=[f1, f2, f3, f4])
    log = logger.new(x=42)
 
 and call ``log.msg('some_event', y=23)``, it results in the following call chain:
