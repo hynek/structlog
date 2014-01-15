@@ -18,7 +18,7 @@ Painless structured logging.
 
 from __future__ import absolute_import, division, print_function
 
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
 
 from structlog import (
