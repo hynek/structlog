@@ -103,13 +103,53 @@ class TestProcessing(object):
         with pytest.raises(ValueError):
             b._process_event('', 'boom', {})
 
-    def test_processor_can_return_both_str_and_tuple(self):
+    def test_last_processor_returns_string(self):
+        """
+        If the final processor returns a string, ``(the_string,), {}`` is
+        returned.
+        """
         logger = stub(msg=lambda *args, **kw: (args, kw))
-        b1 = build_bl(logger, processors=[lambda *_: 'foo'])
-        b2 = build_bl(logger, processors=[lambda *_: (('foo',), {})])
+        b = build_bl(logger, processors=[lambda *_: 'foo'])
         assert (
-            b1._process_event('', 'foo', {})
-            == b2._process_event('', 'foo', {})
+            (('foo',), {})
+            == b._process_event('', 'foo', {})
+        )
+
+    def test_last_processor_returns_tuple(self):
+        """
+        If the final processor returns a tuple, it is just passed through.
+        """
+        logger = stub(msg=lambda *args, **kw: (args, kw))
+        b = build_bl(logger, processors=[lambda *_: (('foo',),
+                                                     {'key': 'value'})])
+        assert (
+            (('foo',), {'key': 'value'})
+            == b._process_event('', 'foo', {})
+        )
+
+    def test_last_processor_returns_dict(self):
+        """
+        If the final processor returns a dict, ``(), the_dict`` is returnend.
+        """
+        logger = stub(msg=lambda *args, **kw: (args, kw))
+        b = build_bl(logger, processors=[lambda *_: {'event': 'foo'}])
+        assert (
+            ((), {'event': 'foo'})
+            == b._process_event('', 'foo', {})
+        )
+
+    def test_last_processor_returns_unknown_value(self):
+        """
+        If the final processor returns something unexpected, raise ValueError
+        with a helpful error message.
+        """
+        logger = stub(msg=lambda *args, **kw: (args, kw))
+        b = build_bl(logger, processors=[lambda *_: object()])
+        with pytest.raises(ValueError) as exc:
+            b._process_event('', 'foo', {})
+
+        assert (
+            exc.value.args[0].startswith("Last processor didn't return")
         )
 
 

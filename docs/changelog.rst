@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :feature:`26` Allow final processor to return a dictionary.
+  See :ref:`adapting`.
 - :bug:`-` ``from structlog import *`` works now (but you still shouldn't use it).
 - :release:`0.4.1 <2013-12-19>`
 - :bug:`-` Don't cache proxied methods in :class:`structlog.threadlocal._ThreadLocalDictWrapper`.

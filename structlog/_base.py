@@ -124,6 +124,8 @@ class BoundLoggerBase(object):
             calls ``log.msg('foo', bar=42)``, *event* would to be ``'foo'``
             and *event_kw* ``{'bar': 42}``.
         :raises: :class:`structlog.DropEvent` if log entry should be dropped.
+        :raises: :class:`ValueError` if the final processor doesn't return a
+            string, tuple, or a dict.
         :rtype: `tuple` of `(*args, **kw)`
 
         .. note::
@@ -131,6 +133,9 @@ class BoundLoggerBase(object):
             Despite underscore available to custom wrapper classes.
 
             See also :doc:`custom-wrappers`.
+
+        .. versionchanged:: 0.5.0
+            Allow final processor to return a `dict`.
         """
         event_dict = self._context.copy()
         event_dict.update(**event_kw)
@@ -140,8 +145,18 @@ class BoundLoggerBase(object):
             event_dict = proc(self._logger, method_name, event_dict)
         if isinstance(event_dict, string_types):
             return (event_dict,), {}
-        else:
+        elif isinstance(event_dict, tuple):
+            # In this case we assume that the last processor returned a tuple
+            # of ``(args, kwargs)`` and pass it right through.
             return event_dict
+        elif isinstance(event_dict, dict):
+            return (), event_dict
+        else:
+            raise ValueError(
+                "Last processor didn't return an approriate value.  Allowed "
+                "return values are a dict, a tuple of (args, kwargs), or a "
+                "string."
+            )
 
     def _proxy_to_logger(self, method_name, event=None, **event_kw):
         """

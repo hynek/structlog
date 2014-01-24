@@ -95,10 +95,18 @@ Adapting and Rendering
 An important role is played by the *last* processor because its duty is to adapt the ``event_dict`` into something the underlying logging method understands.
 With that, it's also the *only* processor that needs to know anything about the underlying system.
 
-For that, it can either return a string that is passed as the first (and only) positional argument to the underlying logger or a tuple of ``(args, kwargs)`` that are passed as ``log_method(*args, **kwargs)``.
+It can return one of three types:
+
+- A string that is passed as the first (and only) positional argument to the underlying logger.
+- A tuple of ``(args, kwargs)`` that are passed as ``log_method(*args, **kwargs)``.
+- A dictionary which is passed as ``log_method(**kwargs)``.
+
 Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the example in :ref:`chains` assumes this shortcut has been taken).
 
 This should give you enough power to use structlog with any logging system while writing agnostic processors that operate on dictionaries.
+
+.. versionchanged:: 0.5.0
+   Allow final processor to return a `dict`.
 
 
 Examples
