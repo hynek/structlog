@@ -16,7 +16,7 @@ It behaves exactly like the generic :class:`structlog.BoundLogger` except:
 - has an explicit API (:func:`~structlog.twisted.BoundLogger.msg` and :func:`~structlog.twisted.BoundLogger.err`),
 - hence causing less cryptic error messages if you get method names wrong.
 
-In order to structlog not disturbing your CamelCase harmony, it comes with an alias for :func:`structlog.get_logger` calls :func:`structlog.getLogger`.
+In order to avoid that structlog disturbs your CamelCase harmony, it comes with an alias for :func:`structlog.get_logger` called :func:`structlog.getLogger`.
 
 
 Processors
