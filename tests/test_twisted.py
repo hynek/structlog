@@ -17,7 +17,9 @@ from __future__ import absolute_import, division, print_function
 import pytest
 pytest.importorskip('twisted')
 
-from pretend import call_recorder, call
+import json
+
+from pretend import call_recorder
 from twisted.python.failure import Failure, NoCurrentExceptionError
 from twisted.python.log import ILogObserver
 
@@ -281,10 +283,8 @@ class TestJSONObserverWrapper(object):
         """
         o = call_recorder(lambda *a, **kw: None)
         JSONLogObserverWrapper(o)({'message': ('hello',), 'system': '-'})
-        assert [
-            call({'message': ('{"event": "hello", "system": "-"}',),
-                  '_structlog': True, 'system': '-'})
-        ] == o.calls
+        msg = json.loads(o.calls[0].args[0]['message'][0])
+        assert msg == {'event': 'hello', 'system': '-'}
 
     def test_leavesStructLogAlone(self):
         """
