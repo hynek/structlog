@@ -14,7 +14,7 @@ install:
     - pip install tox coveralls
 
 script:
-    - tox -e $TOX_ENV
+    - tox --hashseed 0 -e $TOX_ENV
 
 after_success:
     - coveralls
