@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`-` Officially support Python 3.4.
 - :feature:`26` Allow final processor to return a dictionary.
   See :ref:`adapting`.
 - :bug:`-` ``from structlog import *`` works now (but you still shouldn't use it).
