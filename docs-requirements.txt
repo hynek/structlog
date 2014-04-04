@@ -1,4 +1,4 @@
-releases==0.3.0
+releases==0.6.0
 sphinx
 sphinx_rtd_theme
 twisted
