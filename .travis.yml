@@ -7,6 +7,8 @@ env:
     - TOX_ENV=py32
     - TOX_ENV=py33
     - TOX_ENV=py33-green
+    - TOX_ENV=py34
+    - TOX_ENV=py34-green
     - TOX_ENV=docs
     - TOX_ENV=flake8
 
