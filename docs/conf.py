@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import codecs
+import datetime
 import os
 import re
 
@@ -74,7 +75,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'structlog'
-copyright = u'2013, Hynek Schlawack'
+copyright = u'2013-{0}, Hynek Schlawack'.format(datetime.date.today().year)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
