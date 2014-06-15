@@ -18,7 +18,7 @@ Structured logging for Python.
 
 from __future__ import absolute_import, division, print_function
 
-__version__ = '0.5.0dev'
+__version__ = '14.0.0dev'
 
 
 from structlog import (
