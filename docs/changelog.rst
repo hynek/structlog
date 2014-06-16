@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :bug:`19` Pass positional arguments to stdlib wrapped loggers that use string formatting.
 - :feature:`-` Officially support Python 3.4.
 - :feature:`26` Allow final processor to return a dictionary.
   See :ref:`adapting`.
