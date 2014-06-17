@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import, division, print_function
+
 import threading
 
 import pytest
@@ -33,6 +35,9 @@ def D():
 
 @pytest.fixture
 def log():
+    """
+    Returns a ReturnLogger with a freshly wrapped OrderedDict.
+    """
     return wrap_logger(logger(), context_class=wrap_dict(OrderedDict))
 
 
@@ -46,24 +51,23 @@ def logger():
 
 
 class TestTmpBind(object):
-    def test_yields_a_new_bound_loggger_if_called_on_lazy_proxy(self, log):
-        with tmp_bind(log, x=42) as tmp_log:
-            assert "x=42 event='bar'" == tmp_log.msg('bar')
-        assert "event='bar'" == log.msg('bar')
-
     def test_bind(self, log):
+        """
+        tmp_bind does not modify the thread-local state.
+        """
         log = log.bind(y=23)
         with tmp_bind(log, x=42, y='foo') as tmp_log:
-            assert (
-                {'y': 'foo', 'x': 42}
-                == tmp_log._context._dict == log._context._dict
-            )
+            assert {
+                'y': 'foo', 'x': 42
+            } == tmp_log._context._dict == log._context._dict
         assert {'y': 23} == log._context._dict
-        assert "y=23 event='foo'" == log.msg('foo')
 
 
 class TestAsImmutable(object):
     def test_does_not_affect_global(self, log):
+        """
+        A logger from as_mutable is independent from thread local state.
+        """
         log = log.new(x=42)
         il = as_immutable(log)
         assert isinstance(il._context, dict)
@@ -72,18 +76,28 @@ class TestAsImmutable(object):
         assert {'x': 42} == log._context._dict
 
     def test_converts_proxy(self, log):
+        """
+        as_immutable converts a BoundLoggerLazyProxy into a concrete bound
+        logger.
+        """
         il = as_immutable(log)
         assert isinstance(il._context, dict)
         assert isinstance(il, BoundLoggerBase)
 
-    def test_works_with_immutable(self, log):
+    def test_idempotency(self, log):
+        """
+        as_immutable on an as_immutable logger works.
+        """
         il = as_immutable(log)
-        assert isinstance(il._context, dict)
         assert isinstance(as_immutable(il), BoundLoggerBase)
 
 
 class TestThreadLocalDict(object):
     def test_wrap_returns_distinct_classes(self):
+        """
+        Each call to wrap_dict returns a distinct new class whose context is
+        independent from others..
+        """
         D1 = wrap_dict(dict)
         D2 = wrap_dict(dict)
         assert D1 != D2
@@ -93,6 +107,9 @@ class TestThreadLocalDict(object):
         assert D1.x != D2.x
 
     def test_is_thread_local(self, D):
+        """
+        The context is *not* shared between threads.
+        """
         class TestThread(threading.Thread):
             def __init__(self, d):
                 self._d = d
@@ -109,6 +126,9 @@ class TestThreadLocalDict(object):
         assert 42 == d._dict['x']
 
     def test_context_is_global_to_thread(self, D):
+        """
+        The context is shared between all instances of a wrapped class.
+        """
         d1 = D({'a': 42})
         d2 = D({'b': 23})
         d3 = D()
@@ -119,25 +139,40 @@ class TestThreadLocalDict(object):
         assert d1 != d_
 
     def test_init_with_itself_works(self, D):
+        """
+        Initializing with an instance of the wrapped class will use its values.
+        """
         d = D({'a': 42})
         assert {'a': 42, 'b': 23} == D(d, b=23)._dict
 
     def test_iter_works(self, D):
+        """
+        ___iter__ is proxied to the wrapped class.
+        """
         d = D({'a': 42})
         assert ['a'] == list(iter(d))
 
     def test_non_dunder_proxy_works(self, D):
+        """
+        Calls to a non-dunder method get proxied to the wrapped class.
+        """
         d = D({'a': 42})
         assert 1 == len(d)
         d.clear()
         assert 0 == len(d)
 
     def test_repr(self, D):
+        """
+        ___repr__ takes the repr of the wrapped class into account.
+        """
         r = repr(D({'a': 42}))
         assert r.startswith('<WrappedDict-')
         assert r.endswith("({'a': 42})>")
 
     def test_is_greenlet_local(self, D):
+        """
+        Context is shared between greenlets.
+        """
         greenlet = pytest.importorskip("greenlet")
         d = wrap_dict(dict)()
         d['x'] = 42
@@ -150,12 +185,18 @@ class TestThreadLocalDict(object):
         assert 42 == d._dict["x"]
 
     def test_delattr(self, D):
+        """
+        ___delattr__ is proxied to the wrapped class.
+        """
         d = D()
         d['x'] = 42
         assert 42 == d._dict["x"]
         del d.__class__._tl.dict_
 
     def test_del(self, D):
+        """
+        ___del__ is proxied to the wrapped class.
+        """
         d = D()
         d['x'] = 13
         del d['x']

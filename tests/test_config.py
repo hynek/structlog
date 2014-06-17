@@ -222,6 +222,21 @@ class TestBoundLoggerLazyProxy(object):
         proxy.bind()
         assert bind != proxy.bind
 
+    def test_emphemeral(self):
+        """
+        Calling an unknown method proxy creates a new wrapped bound logger
+        first.
+        """
+        class Foo(BoundLoggerBase):
+            def foo(self):
+                return 42
+        proxy = BoundLoggerLazyProxy(
+            None,
+            wrapper_class=Foo,
+            cache_logger_on_first_use=False,
+        )
+        assert 42 == proxy.foo()
+
 
 class TestFunctions(object):
     def teardown_method(self, method):
