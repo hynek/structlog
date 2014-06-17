@@ -1,15 +1,16 @@
+=============================
 Structured Logging for Python
 =============================
 
 Release v\ |version| (:doc:`What's new? <changelog>`).
 
-.. include:: intro.rst
-   :start-after: :orphan:
+.. include:: ../README.rst
+   :start-after: begin
 
 The Pitch
----------
+=========
 
-structlog makes structured logging with *incremental context building* and *arbitrary formatting* as easy as:
+``structlog`` makes structured logging with *incremental context building* and *arbitrary formatting* as easy as:
 
 .. doctest::
 
@@ -27,17 +28,17 @@ The logger that's returned by :func:`~structlog.get_logger()` is *freely* :doc:`
 
 For…
 
-- …reasons why structured logging in general and structlog in particular are the way to go, consult :doc:`why`.
+- …reasons why structured logging in general and ``structlog`` in particular are the way to go, consult :doc:`why`.
 - …more realistic examples, peek into  :doc:`examples`.
 - …getting started right away, jump straight into :doc:`getting-started`.
 
-Since structlog avoids monkey-patching and events are fully free-form, you can start using it **today**!
+Since ``structlog`` avoids monkey-patching and events are fully free-form, you can start using it **today**!
 
 User's Guide
-------------
+============
 
 Basics
-^^^^^^
+------
 
 .. toctree::
    :maxdepth: 1
@@ -52,9 +53,9 @@ Basics
 
 
 Integration with Existing Systems
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
-structlog can be used immediately with any existing logger.
+``structlog`` can be used immediately with any existing logger.
 However it comes with special wrappers for the Python standard library and Twisted that are optimized for their respective underlying loggers and contain less magic.
 
 .. toctree::
@@ -66,7 +67,7 @@ However it comes with special wrappers for the Python standard library and Twist
 
 
 Advanced Topics
-^^^^^^^^^^^^^^^
+---------------
 
 .. toctree::
    :maxdepth: 1
@@ -76,7 +77,7 @@ Advanced Topics
 
 
 Project Information
--------------------
+===================
 
 .. toctree::
    :maxdepth: 1
@@ -87,7 +88,7 @@ Project Information
 
 
 API Reference
--------------
+=============
 
 .. toctree::
    :maxdepth: 4

@@ -1,3 +1,4 @@
+========================================
 structlog: Structured Logging for Python
 ========================================
 
@@ -7,8 +8,7 @@ structlog: Structured Logging for Python
 .. image:: https://coveralls.io/repos/hynek/structlog/badge.png?branch=master
     :target: https://coveralls.io/r/hynek/structlog?branch=master
 
-
-
+.. begin
 
 ``structlog`` makes structured logging in Python easy by *augmenting* your *existing* logger.
 It allows you to split your log entries up into key/value pairs and build them incrementally without annoying boilerplate code.
