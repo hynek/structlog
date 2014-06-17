@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- :feature:`-` Drop support for Python 3.2.
+  There is no justification to add complexity for a Python version that nobody uses.
+  If you are one of the `0.350% <http://alexgaynor.net/2014/jan/03/pypi-download-statistics/>`_ that use Python 3.2, please stick to the 0.4 branch; critical bugs will still be fixed.
 - :feature:`-` Officially support Python 3.4.
 - :feature:`26` Allow final processor to return a dictionary.
   See :ref:`adapting`.
