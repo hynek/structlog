@@ -24,6 +24,11 @@ from structlog._compat import OrderedDict
 from structlog._loggers import ReturnLogger
 from structlog.threadlocal import as_immutable, wrap_dict, tmp_bind
 
+try:
+    import greenlet
+except ImportError:
+    greenlet = None
+
 
 @pytest.fixture
 def D():
@@ -96,7 +101,7 @@ class TestThreadLocalDict(object):
     def test_wrap_returns_distinct_classes(self):
         """
         Each call to wrap_dict returns a distinct new class whose context is
-        independent from others..
+        independent from others.
         """
         D1 = wrap_dict(dict)
         D2 = wrap_dict(dict)
@@ -106,6 +111,8 @@ class TestThreadLocalDict(object):
         D2.x = 23
         assert D1.x != D2.x
 
+    @pytest.mark.skipif(greenlet is not None,
+                        reason="Don't mix threads and greenlets.")
     def test_is_thread_local(self, D):
         """
         The context is *not* shared between threads.
@@ -116,14 +123,14 @@ class TestThreadLocalDict(object):
                 threading.Thread.__init__(self)
 
             def run(self):
-                assert 'x' not in self._d._dict
-                self._d['x'] = 23
+                assert 'tl' not in self._d._dict
+                self._d['tl'] = 23
         d = wrap_dict(dict)()
-        d['x'] = 42
+        d['tl'] = 42
         t = TestThread(d)
         t.start()
         t.join()
-        assert 42 == d._dict['x']
+        assert 42 == d._dict['tl']
 
     def test_context_is_global_to_thread(self, D):
         """
@@ -157,7 +164,6 @@ class TestThreadLocalDict(object):
         Calls to a non-dunder method get proxied to the wrapped class.
         """
         d = D({'a': 42})
-        assert 1 == len(d)
         d.clear()
         assert 0 == len(d)
 
@@ -169,28 +175,28 @@ class TestThreadLocalDict(object):
         assert r.startswith('<WrappedDict-')
         assert r.endswith("({'a': 42})>")
 
+    @pytest.mark.skipif(greenlet is None, reason="Needs greenlet.")
     def test_is_greenlet_local(self, D):
         """
         Context is shared between greenlets.
         """
-        greenlet = pytest.importorskip("greenlet")
         d = wrap_dict(dict)()
-        d['x'] = 42
+        d['switch'] = 42
 
         def run():
             assert 'x' not in d._dict
-            d['x'] = 23
+            d['switch'] = 23
 
         greenlet.greenlet(run).switch()
-        assert 42 == d._dict["x"]
+        assert 42 == d._dict["switch"]
 
     def test_delattr(self, D):
         """
         ___delattr__ is proxied to the wrapped class.
         """
         d = D()
-        d['x'] = 42
-        assert 42 == d._dict["x"]
+        d['delattr'] = 42
+        assert 42 == d._dict["delattr"]
         del d.__class__._tl.dict_
 
     def test_del(self, D):
@@ -198,6 +204,12 @@ class TestThreadLocalDict(object):
         ___del__ is proxied to the wrapped class.
         """
         d = D()
-        d['x'] = 13
-        del d['x']
-        assert 'x' not in d._dict
+        d['del'] = 13
+        del d['del']
+        assert 'del' not in d._dict
+
+    def test_new_class(self, D):
+        """
+        The context of a new wrapped class is empty.
+        """
+        assert 0 == len(D())
