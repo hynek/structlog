@@ -19,6 +19,7 @@ Logger wrapper and helper class.
 from __future__ import absolute_import, division, print_function
 
 import sys
+import threading
 
 from structlog._utils import until_not_interrupted
 
@@ -42,6 +43,9 @@ class PrintLoggerFactory(object):
         return PrintLogger(self._file)
 
 
+WRITE_LOCKS = {}
+
+
 class PrintLogger(object):
     """
     Prints events into a file.
@@ -56,13 +60,19 @@ class PrintLogger(object):
     <http://smarden.org/runit/>`_ or if you `forward your stderr to syslog
     <https://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
-    Also very useful for testing and examples since logging is sometimes
-    finicky in doctests.
+    Also very useful for testing and examples since logging is finicky in
+    doctests.
     """
     def __init__(self, file=None):
         self._file = file or sys.stdout
         self._write = self._file.write
         self._flush = self._file.flush
+
+        lock = WRITE_LOCKS.get(self._file)
+        if lock is None:
+            lock = threading.Lock()
+            WRITE_LOCKS[self._file] = lock
+        self._lock = lock
 
     def __repr__(self):
         return '<PrintLogger(file={0!r})>'.format(self._file)
@@ -71,8 +81,9 @@ class PrintLogger(object):
         """
         Print *message*.
         """
-        until_not_interrupted(self._write, message + '\n')
-        until_not_interrupted(self._flush)
+        with self._lock:
+            until_not_interrupted(self._write, message + '\n')
+            until_not_interrupted(self._flush)
 
     err = debug = info = warning = error = critical = log = msg
 

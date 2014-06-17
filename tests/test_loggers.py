@@ -16,11 +16,13 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
+from structlog._compat import StringIO
 from structlog._loggers import (
     PrintLogger,
     PrintLoggerFactory,
     ReturnLogger,
     ReturnLoggerFactory,
+    WRITE_LOCKS,
 )
 
 
@@ -31,12 +33,19 @@ def test_return_logger():
 
 class TestPrintLogger(object):
     def test_prints_to_stdout_by_default(self, capsys):
+        """
+        Instantiating without arguments gives conveniently a logger to standard
+        out.
+        """
         PrintLogger().msg('hello')
         out, err = capsys.readouterr()
         assert 'hello\n' == out
         assert '' == err
 
     def test_prints_to_correct_file(self, tmpdir, capsys):
+        """
+        Supplied files are respected.
+        """
         f = tmpdir.join('test.log')
         fo = f.open('w')
         PrintLogger(fo).msg('hello')
@@ -46,9 +55,21 @@ class TestPrintLogger(object):
         assert 'hello\n' == f.read()
 
     def test_repr(self):
+        """
+        __repr__ makes sense.
+        """
         assert repr(PrintLogger()).startswith(
             "<PrintLogger(file="
         )
+
+    def test_lock(self):
+        """
+        Creating a logger adds a lock to WRITE_LOCKS.
+        """
+        sio = StringIO()
+        assert sio not in WRITE_LOCKS
+        PrintLogger(sio)
+        assert sio in WRITE_LOCKS
 
 
 class TestPrintLoggerFactory(object):

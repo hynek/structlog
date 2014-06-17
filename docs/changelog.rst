@@ -1,6 +1,8 @@
+=========
 Changelog
 =========
 
+- :feature:`-` :class:`structlog.PrintLogger` now is thread-safe.
 - :feature:`-` Test Twisted-related code on Python 3 (with some caveats).
 - :feature:`-` Drop support for Python 3.2.
   There is no justification to add complexity for a Python version that nobody uses.
