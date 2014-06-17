@@ -116,7 +116,7 @@ class TestExtractStuffAndWhy(object):
             == _extractStuffAndWhy({'event': 'foo'})
         )
 
-    @pytest.mark.skipif(PY3, reason="Py3 does not allow for cleaning exc_info")
+    @pytest.mark.xfail(PY3, reason="Py3 does not allow for cleaning exc_info")
     def test_recognizesErrorsAndCleansThem(self):
         """
         If no error is supplied, the environment is checked for one.  If one is
