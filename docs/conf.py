@@ -54,6 +54,7 @@ extensions = [
     'releases',
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
 ]
 
@@ -208,24 +209,25 @@ html_static_path = ['_static']
 htmlhelp_basename = 'structlogdoc'
 
 
-# -- Options for LaTeX output --------------------------------------------------
+# -- Options for LaTeX output -------------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, documentclass [howto/manual]).
+# (source start file, target name, title, author, documentclass
+# [howto/manual]).
 latex_documents = [
-  ('index', 'structlog.tex', u'structlog Documentation',
-   u'Author', 'manual'),
+    ('index', 'structlog.tex', u'structlog Documentation',
+     u'Author', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -249,7 +251,7 @@ latex_documents = [
 #latex_domain_indices = True
 
 
-# -- Options for manual page output --------------------------------------------
+# -- Options for manual page output -------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
@@ -262,15 +264,15 @@ man_pages = [
 #man_show_urls = False
 
 
-# -- Options for Texinfo output ------------------------------------------------
+# -- Options for Texinfo output -----------------------------------------------
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'structlog', u'structlog Documentation',
-   u'Author', 'structlog', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'structlog', u'structlog Documentation',
+     u'Author', 'structlog', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -283,13 +285,13 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 
-# -- Options for Epub output ---------------------------------------------------
+# -- Options for Epub output --------------------------------------------------
 
 # Bibliographic Dublin Core info.
 epub_title = u'structlog'
-epub_author = u'Author'
-epub_publisher = u'Author'
-epub_copyright = u'2013, Author'
+epub_author = u'Hynek Schlawack'
+epub_publisher = u'Hynek Schlawack'
+epub_copyright = copyright
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
@@ -326,8 +328,6 @@ epub_copyright = u'2013, Author'
 #epub_tocdup = True
 
 linkcheck_ignore = [
-    # fake links
-    r'https://github.com/hynek/structlog/issues/0',
     # 404s for unknown reasons
     r'http://graylog2.org.*',
     # Times out way too often
@@ -338,3 +338,7 @@ linkcheck_ignore = [
 
 # Twisted's trac tends to be slow
 linkcheck_timeout = 300
+
+intersphinx_mapping = {
+    'http://docs.python.org/': None,
+}

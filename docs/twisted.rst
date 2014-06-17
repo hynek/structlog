@@ -2,8 +2,8 @@ Twisted
 =======
 
 .. warning::
-   Currently, the Twisted-specific code is *not* tested against Python 3.3.
-   This is caused by this_ Twisted bug and will remedied once that bug is fixed.
+
+   Since :func:`sys.exc_clear` has been dropped in Python 3, there is currently no way to avoid multiple tracebacks in your log files if using ``structlog`` together with Twisted on Python 3.
 
 
 Concrete Bound Logger
@@ -101,5 +101,4 @@ Suggested Configuration
 See also :doc:`logging-best-practices`.
 
 
-.. _this: http://twistedmatrix.com/trac/ticket/6540
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29

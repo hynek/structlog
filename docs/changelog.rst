@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`-` Test Twisted-related code on Python 3 (with some caveats).
 - :feature:`-` Drop support for Python 3.2.
   There is no justification to add complexity for a Python version that nobody uses.
   If you are one of the `0.350% <http://alexgaynor.net/2014/jan/03/pypi-download-statistics/>`_ that use Python 3.2, please stick to the 0.4 branch; critical bugs will still be fixed.

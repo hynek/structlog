@@ -24,7 +24,7 @@ from twisted.python.failure import Failure, NoCurrentExceptionError
 from twisted.python.log import ILogObserver
 
 from structlog._config import _CONFIG
-from structlog._compat import OrderedDict, StringIO
+from structlog._compat import OrderedDict, StringIO, PY3
 from structlog._loggers import ReturnLogger
 from structlog.twisted import (
     BoundLogger,
@@ -84,8 +84,8 @@ class TestBoundLogger(object):
 class TestExtractStuffAndWhy(object):
     def test_extractFailsOnTwoFailures(self):
         with pytest.raises(ValueError) as e:
-            _extractStuffAndWhy({'_stuff': Failure(ValueError),
-                                 'event': Failure(TypeError)})
+            _extractStuffAndWhy({'_stuff': Failure(ValueError()),
+                                 'event': Failure(TypeError())})
         assert (
             'Both _stuff and event contain an Exception/Failure.'
             == e.value.args[0]
@@ -116,6 +116,7 @@ class TestExtractStuffAndWhy(object):
             == _extractStuffAndWhy({'event': 'foo'})
         )
 
+    @pytest.mark.skipif(PY3, reason="Py3 does not allow for cleaning exc_info")
     def test_recognizesErrorsAndCleansThem(self):
         """
         If no error is supplied, the environment is checked for one.  If one is
@@ -242,7 +243,9 @@ class TestJSONRenderer(object):
 
     def test_handlesFailure(self, jr):
         rv = jr(None, 'err', {'event': Failure(ValueError())})[0][0]
-        assert 'Failure: exceptions.ValueError' in rv
+        assert 'Failure: {0}.ValueError'.format("builtins"
+                                                if PY3
+                                                else "exceptions") in rv
         assert '"event": "error"' in rv
 
     def test_setsStructLogField(self, jr):
