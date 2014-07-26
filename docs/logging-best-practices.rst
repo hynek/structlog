@@ -67,15 +67,15 @@ Have a look at `this post`_ by Revolution Systems on the how.
 Since syslog is such a widespread solution, there are also ways to use it with basically any centralized product.
 
 
-Logstash with Lumberjack
-^^^^^^^^^^^^^^^^^^^^^^^^
+Logstash with logstash-forwarder
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Logstash_ is a great way to parse, save, and search your logs.
 
-The general modus operandi is that you have `log shippers`_ that parse your log files and forward the log entries to your Logstash server and store is in elasticsearch_.
+The general modus operandi is that you have log shippers that parse your log files and forward the log entries to your Logstash server and store is in elasticsearch_.
 If your log entries consist -- as suggested -- of a tai64n_ timestamp and a JSON dictionary, this is pretty easy and efficient.
 
-If you can't decide on a log shipper, Lumberjack_ works really well.
+If you can't decide on a log shipper, logstash-forwarder_ (formerly known as Lumberjack) works really well.
 
 
 Graylog2
@@ -91,11 +91,10 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _AMQP: http://support.torch.sh/help/kb/graylog2-server/using-the-amqp-input
 .. _Graylog: http://graylog2.org
 .. _Logstash: http://logstash.net
-.. _Lumberjack: https://github.com/jordansissel/lumberjack
+.. _logstash-forwarder: https://github.com/elasticsearch/logstash-forwarder
 .. _RabbitMQ: http://www.rabbitmq.com
 .. _`Graylog's Extended Log Format`: http://graylog2.org/gelf
 .. _`daemon showdown`: https://web.archive.org/web/20130907200323/http://tech.cueup.com/blog/2013/03/08/running-daemons/
-.. _`log shippers`: http://cookbook.logstash.net/recipes/log-shippers/
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _`they can be switched off`: http://blog.abhijeetr.com/2013/01/disable-rate-limiting-in-rsyslog-v5.html
 .. _`this post`: http://www.revsys.com/blog/2010/aug/26/centralized-logging-fun-and-profit/
