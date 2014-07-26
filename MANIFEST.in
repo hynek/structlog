@@ -1,9 +1,7 @@
-include LICENSE .coveragerc .coveragerc.py3
-include *.in
+include LICENSE .coveragerc
 include *.rst
 include *.txt
 include .travis.yml
-include Makefile
 include tox.ini
 recursive-include docs *.bat
 recursive-include docs *.keep
@@ -12,3 +10,4 @@ recursive-include docs *.rst
 recursive-include docs *.txt
 recursive-include docs Makefile
 recursive-include tests *.py
+prune docs/_build

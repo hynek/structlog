@@ -12,6 +12,7 @@ env:
     - TOX_ENV=pypy-green
     - TOX_ENV=docs
     - TOX_ENV=flake8
+    - TOX_ENV=manifest
 
 install:
     - pip install tox coveralls
