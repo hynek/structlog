@@ -2,6 +2,10 @@
 structlog: Structured Logging for Python
 ========================================
 
+.. image:: https://pypip.in/version/structlog/badge.svg
+   :target: https://pypi.python.org/pypi/structlog/
+   :alt: Latest Version
+
 .. image:: https://travis-ci.org/hynek/structlog.png?branch=master
    :target: https://travis-ci.org/hynek/structlog
 
