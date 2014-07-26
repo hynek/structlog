@@ -2,6 +2,8 @@
 Changelog
 =========
 
+- :bug:`-` Fixed a memory leak in greenlet code that emulates thread locals.
+  It shouldn't matter in practice unless you use multiple wrapped dicts within one program that is rather unlikely.
 - :feature:`-` :class:`structlog.PrintLogger` now is thread-safe.
 - :feature:`-` Test Twisted-related code on Python 3 (with some caveats).
 - :feature:`-` Drop support for Python 3.2.
