@@ -28,21 +28,32 @@ try:
 except ImportError:  # pragma: nocover
     from threading import local as ThreadLocal
 else:
+    from weakref import WeakKeyDictionary
+
     class ThreadLocal(object):  # pragma: nocover
         """
         threading.local() replacement for greenlets.
         """
         def __init__(self):
-            self.__dict__["_prefix"] = str(id(self))
+            self.__dict__["_weakdict"] = WeakKeyDictionary()
 
         def __getattr__(self, name):
-            return getattr(getcurrent(), self._prefix + name)
+            key = getcurrent()
+            try:
+                return self._weakdict[key][name]
+            except KeyError:
+                raise AttributeError(name)
 
         def __setattr__(self, name, val):
-            setattr(getcurrent(), self._prefix + name, val)
+            key = getcurrent()
+            self._weakdict.setdefault(key, {})[name] = val
 
         def __delattr__(self, name):
-            delattr(getcurrent(), self._prefix + name)
+            key = getcurrent()
+            try:
+                del self._weakdict[key][name]
+            except KeyError:
+                raise AttributeError(name)
 
 
 def wrap_dict(dict_class):

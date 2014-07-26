@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :bug:`-` Fixed a memory leak in greenlet code that emulates thread locals.
+  It shouldn't matter in practice unless you use multiple wrapped dicts within one program that is rather unlikely.
 - :bug:`-` ``from structlog import *`` works now (but you still shouldn't use it).
 - :release:`0.4.1 <2013-12-19>`
 - :bug:`-` Don't cache proxied methods in :class:`structlog.threadlocal._ThreadLocalDictWrapper`.
