@@ -1,17 +1,19 @@
 language: python
 python: 2.7
 env:
-    - TOX_ENV=py26
-    - TOX_ENV=py27
+    - TOX_ENV=py26-threads
+    - TOX_ENV=py27-threads
+    - TOX_ENV=py33-threads
+    - TOX_ENV=py34-threads
+    - TOX_ENV=pypy-threads
+    - TOX_ENV=py26-green
     - TOX_ENV=py27-green
-    - TOX_ENV=py33
     - TOX_ENV=py33-green
-    - TOX_ENV=py34
     - TOX_ENV=py34-green
-    - TOX_ENV=pypy
     - TOX_ENV=pypy-green
     - TOX_ENV=docs
-    - TOX_ENV=flake8
+    - TOX_ENV=flake8-py2
+    - TOX_ENV=flake8-py3
     - TOX_ENV=manifest
 
 install:
