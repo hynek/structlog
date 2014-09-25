@@ -6,11 +6,11 @@ env:
     - TOX_ENV=py33-threads
     - TOX_ENV=py34-threads
     - TOX_ENV=pypy-threads
-    - TOX_ENV=py26-green
-    - TOX_ENV=py27-green
-    - TOX_ENV=py33-green
-    - TOX_ENV=py34-green
-    - TOX_ENV=pypy-green
+    - TOX_ENV=py26-greenlets
+    - TOX_ENV=py27-greenlets
+    - TOX_ENV=py33-greenlets
+    - TOX_ENV=py34-greenlets
+    - TOX_ENV=pypy-greenlets
     - TOX_ENV=docs
     - TOX_ENV=flake8-py2
     - TOX_ENV=flake8-py3
