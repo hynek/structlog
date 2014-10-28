@@ -5,3 +5,4 @@ htmlcov
 dist
 docs/_build
 *.pyc
+.eggs

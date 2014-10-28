@@ -57,37 +57,38 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-setup(
-    name='structlog',
-    version=find_version('structlog', '__init__.py'),
-    description='Structured logging for Python.',
-    long_description=read('README.rst'),
-    url='http://www.structlog.org/',
-    license='Apache License, Version 2.0',
-    author='Hynek Schlawack',
-    author_email='hs@ox.cx',
-    packages=find_packages(exclude=['tests*']),
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
-        'License :: OSI Approved :: Apache Software License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ],
-    tests_require=[
-        "freezegun",
-        "pretend",
-        "pytest-cov",
-    ],
-    cmdclass={
-        "test": PyTest,
-    },
-)
+if __name__ == "__main__":
+    setup(
+        name='structlog',
+        version=find_version('structlog', '__init__.py'),
+        description='Structured logging for Python.',
+        long_description=read('README.rst'),
+        url='http://www.structlog.org/',
+        license='Apache License, Version 2.0',
+        author='Hynek Schlawack',
+        author_email='hs@ox.cx',
+        packages=find_packages(exclude=['tests*']),
+        classifiers=[
+            'Development Status :: 5 - Production/Stable',
+            'Intended Audience :: Developers',
+            'Natural Language :: English',
+            'License :: OSI Approved :: Apache Software License',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 2',
+            'Programming Language :: Python :: 2.6',
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
+            'Topic :: Software Development :: Libraries :: Python Modules',
+        ],
+        tests_require=[
+            "freezegun",
+            "pretend",
+            "pytest-cov",
+        ],
+        cmdclass={
+            "test": PyTest,
+        },
+    )
