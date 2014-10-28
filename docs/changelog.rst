@@ -2,7 +2,7 @@
 Changelog
 =========
 
-- :feature:`20` :class:`structlog.ReturnLogger` now has an exception function.
+- :feature:`22` :class:`structlog.stdlib.BoundLogger` now has an exception function.
 - :release:`0.4.2 <2014-07-26>`
 - :bug:`8` Fixed a memory leak in greenlet code that emulates thread locals.
   It shouldn't matter in practice unless you use multiple wrapped dicts within one program that is rather unlikely.

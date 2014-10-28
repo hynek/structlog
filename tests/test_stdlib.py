@@ -143,4 +143,3 @@ class TestBoundLogger(object):
             return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
-
