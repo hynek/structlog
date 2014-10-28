@@ -136,10 +136,22 @@ class TestFilterByLevel(object):
 
 class TestBoundLogger(object):
     @pytest.mark.parametrize(('method_name'), [
-        'debug', 'info', 'warning', 'error', 'critical', 'exception',
+        'debug', 'info', 'warning', 'error', 'critical',
     ])
     def test_proxies_to_correct_method(self, method_name):
+        """
+        The basic proxied methods are proxied to the correct counterparts.
+        """
         def return_method_name(_, method_name, __):
             return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
+
+    def test_exception(self):
+        """
+        BoundLogger.exception sets exc_info=True and cals Logger.error.
+        """
+        def return_method_name(_, method_name, event_dict):
+            return method_name, event_dict["exc_info"]
+        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
+        assert "error", True == getattr(bl, "exception")('event')
