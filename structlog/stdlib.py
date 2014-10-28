@@ -16,6 +16,8 @@
 Processors and helpers specific to the `logging module
 <http://docs.python.org/2/library/logging.html>`_ from the `Python standard
 library <http://docs.python.org/>`_.
+
+See also :doc:`structlog's standard library support <standard-library>`.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -93,6 +95,14 @@ class BoundLogger(BoundLoggerBase):
         Process event and call ``Logger.critical()`` with the result.
         """
         return self._proxy_to_logger('critical', event, **kw)
+
+    def exception(self, event=None, **kw):
+        """
+        Process event and call ``Logger.error()`` with the result, after
+        setting ``exc_info`` to `True`.
+        """
+        kw['exc_info'] = True
+        return self.error(event, **kw)
 
 
 class LoggerFactory(object):
