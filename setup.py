@@ -13,10 +13,12 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
 
 import codecs
 import os
 import re
+import sys
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -33,6 +35,26 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
+
+
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = None
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.pytest_args or [] +
+                            ["tests"])
+        sys.exit(errno)
 
 
 setup(
@@ -60,4 +82,12 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    tests_require=[
+        "freezegun",
+        "pretend",
+        "pytest-cov",
+    ],
+    cmdclass={
+        "test": PyTest,
+    },
 )
