@@ -102,7 +102,7 @@ class BoundLogger(BoundLoggerBase):
         setting ``exc_info`` to `True`.
         """
         kw['exc_info'] = True
-        return self.error(event, **kw)
+        return self.error(event=event, **kw)
 
 
 class LoggerFactory(object):

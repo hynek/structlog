@@ -147,11 +147,16 @@ class TestBoundLogger(object):
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
 
-    def test_exception(self):
+    def test_exception_exc_info(self):
         """
-        BoundLogger.exception sets exc_info=True and cals Logger.error.
+        BoundLogger.exception sets exc_info=True.
         """
-        def return_method_name(_, method_name, event_dict):
-            return method_name, event_dict["exc_info"]
+        bl = BoundLogger(ReturnLogger(), [], {})
+        assert ((),
+                {"exc_info": True, "event": "event"}) == bl.exception('event')
+
+    def test_exception_maps_to_error(self):
+        def return_method_name(_, method_name, __):
+            return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
-        assert "error", True == getattr(bl, "exception")('event')
+        assert "error" == bl.exception("event")
