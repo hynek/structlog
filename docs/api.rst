@@ -76,6 +76,7 @@ structlog Package
 .. automodule:: structlog.stdlib
 
 .. autoclass:: BoundLogger
+   :members: bind, unbind, new, debug, info, warning, warn, error, critical, exception
 
 .. autoclass:: LoggerFactory
    :members: __call__
