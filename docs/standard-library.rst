@@ -2,6 +2,18 @@ Python Standard Library
 =======================
 
 
+Ideally, structlog should be able to be used as a drop-in replacement for standard library's :mod:`logging` by wrapping it.
+In other words, you should be able to replace your call to :func:`logging.getLogger` by a call to :func:`structlog.get_logger` and things should keep working as before (if structlog is configured right, see :ref:`stdlib-config` below).
+
+Currently the following incompatibilities are known:
+
+- Positional arguments are not passed to the underlying logger.
+  See `issue 19 <https://github.com/hynek/structlog/issues/19>`_.
+
+If you run into incompatibilities, it is a *bug* so please take the time to `report it <https://github.com/hynek/structlog/issues>`_!
+If you're a heavy :mod:`logging` user, your help to ensure a better compatibility would be highly appreciated!
+
+
 Concrete Bound Logger
 ---------------------
 
@@ -9,7 +21,7 @@ To make structlog's behavior less magicy, it ships with a standard library-speci
 It behaves exactly like the generic :class:`structlog.BoundLogger` except:
 
 - it's slightly faster due to less overhead,
-- has an explicit API that mirrors the log methods of standard library's Logger_,
+- has an explicit API that mirrors the log methods of standard library's :class:`logging.Logger`,
 - hence causing less cryptic error messages if you get method names wrong.
 
 
@@ -23,6 +35,8 @@ structlog comes with one standard library-specific processor:
    Log entries below the threshold get silently dropped.
    Put it at the beginning of your processing chain to avoid expensive operations happen in the first place.
 
+
+.. _stdlib-config:
 
 Suggested Configuration
 -----------------------
@@ -45,6 +59,3 @@ Suggested Configuration
    )
 
 See also :doc:`logging-best-practices`.
-
-
-.. _Logger: http://docs.python.org/2/library/logging.html#logger-objects
