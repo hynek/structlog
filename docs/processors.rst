@@ -105,7 +105,7 @@ Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',),
 
 This should give you enough power to use structlog with any logging system while writing agnostic processors that operate on dictionaries.
 
-.. versionchanged:: 0.5.0
+.. versionchanged:: 14.0.0
    Allow final processor to return a `dict`.
 
 

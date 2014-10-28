@@ -134,7 +134,7 @@ class BoundLoggerBase(object):
 
             See also :doc:`custom-wrappers`.
 
-        .. versionchanged:: 0.5.0
+        .. versionchanged:: 14.0.0
             Allow final processor to return a `dict`.
         """
         event_dict = self._context.copy()
