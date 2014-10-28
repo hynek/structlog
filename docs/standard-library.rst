@@ -11,7 +11,7 @@ Currently the following incompatibilities are known:
   See `issue 19 <https://github.com/hynek/structlog/issues/19>`_.
 
 If you run into incompatibilities, it is a *bug* so please take the time to `report it <https://github.com/hynek/structlog/issues>`_!
-If you're a heavy :mod:`logging` user, your help to ensure a better compatibility would be highly appreciated!
+If you're a heavy :mod:`logging` user, your `help <https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib>`_ to ensure a better compatibility would be highly appreciated!
 
 
 Concrete Bound Logger
