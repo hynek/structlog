@@ -152,6 +152,31 @@ class LoggerFactory(object):
         return logging.getLogger(name)
 
 
+class StdlibFormatEventRenderer(object):
+    """
+    Applies stdlib-like string formatting to the `event` key with the arguments
+    in the `positional_args` key. This is populated by
+    `structlog.stdlib.BoundLogger` or can be manually set.
+
+    `positional_args` can be any iterable, but a dictionary as the single
+    element of the tuple is used instead of the tuple, to mantain compatibility
+    with the undocumented feature of stdlib logging.
+
+    """
+    def __init__(self, strip_positional_args=False):
+        self.strip_positional_args = strip_positional_args
+
+    def __call__(self, _, __, event_dict):
+        args = event_dict.get('positional_args')
+        if args:
+            args = tuple(args)
+            if len(args) == 1 and isinstance(args[0], dict) and args[0]:
+                args = args[0]
+            event_dict['event'] = event_dict['event'] % args
+            if self.strip_positional_args:
+                event_dict.pop('positional_args')
+        return event_dict
+
 # Adapted from the stdlib
 
 CRITICAL = 50

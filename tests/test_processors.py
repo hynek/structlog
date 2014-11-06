@@ -23,8 +23,7 @@ from structlog.processors import (
     TimeStamper,
     UnicodeEncoder,
     _JSONFallbackEncoder,
-    format_exc_info,
-    StdlibFormatEventRenderer)
+    format_exc_info)
 from structlog.threadlocal import wrap_dict
 
 
@@ -258,25 +257,3 @@ class TestStackInfoRenderer(object):
     def test_renders_correct_stack(self, sir):
         ed = sir(None, None, {'stack_info': True})
         assert "ed = sir(None, None, {'stack_info': True})" in ed['stack']
-
-
-class TestStringFormatting(object):
-    def test_formats_tuple(self):
-        renderer = StdlibFormatEventRenderer()
-        event_dict = renderer(None, None, {'event': '%d %d %s',
-                                           'positional_args': [1, 2, 'test']})
-        assert event_dict['event'] == '1 2 test'
-
-    def test_formats_dict(self):
-        renderer = StdlibFormatEventRenderer()
-        event_dict = renderer(None, None, {'event': '%(foo)s bar',
-                                           'positional_args': (
-                                               {'foo': 'bar'},)})
-        assert event_dict['event'] == 'bar bar'
-
-    def test_pops_positional_args(self):
-        renderer = StdlibFormatEventRenderer(strip_positional_args=True)
-        event_dict = renderer(None, None, {'event': '%d %d %s',
-                                           'positional_args': [1, 2, 'test']})
-        assert event_dict['event'] == '1 2 test'
-        assert 'positional_args' not in event_dict

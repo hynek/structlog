@@ -148,8 +148,7 @@ class BoundLoggerBase(object):
                 "string."
             )
 
-    def _proxy_to_logger(self, method_name, event=None, *event_args,
-                         **event_kw):
+    def _proxy_to_logger(self, method_name, event=None, **event_kw):
         """
         Run processor chain on event & call *method_name* on wrapped logger.
 
@@ -174,7 +173,6 @@ class BoundLoggerBase(object):
         """
         try:
             args, kw = self._process_event(method_name, event, event_kw)
-            args = args[:] + event_args
             return getattr(self._logger, method_name)(*args, **kw)
         except DropEvent:
             return
