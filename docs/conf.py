@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# structlog documentation build configuration file, created by
-# sphinx-quickstart on Sun Aug 18 13:21:52 2013.
-#
 # This file is execfile()d with the current directory set to its containing dir
 #
 # Note that not all possible configuration values are present in this
@@ -41,12 +38,12 @@ def find_version(*file_paths):
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath('.'))
 
 # -- General configuration ----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+# needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -76,7 +73,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'structlog'
-copyright = u'2013-{0}, Hynek Schlawack'.format(datetime.date.today().year)
+author = u"Hynek Schlawack"
+copyright = u'2013-{0}, {1}'.format(datetime.date.today().year, author)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -288,9 +286,9 @@ texinfo_documents = [
 # -- Options for Epub output --------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'structlog'
-epub_author = u'Hynek Schlawack'
-epub_publisher = u'Hynek Schlawack'
+epub_title = project
+epub_author = author
+epub_publisher = author
 epub_copyright = copyright
 
 # The language of the text. It defaults to the language option

@@ -1,4 +1,4 @@
-include LICENSE .coveragerc
+include LICENSE.apache2 LICENSE.mit .coveragerc
 include *.rst
 include *.txt
 include .travis.yml

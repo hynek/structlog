@@ -1,5 +1,3 @@
-# Copyright 2013 Hynek Schlawack
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -18,7 +16,17 @@ Structured logging for Python.
 
 from __future__ import absolute_import, division, print_function
 
-__version__ = '14.0.0dev'
+__version__ = "14.0.0dev"
+
+__title__ = "structlog"
+__description__ = "Structured Logging in Python"
+__uri__ = "http://www.structlog.org/"
+
+__author__ = "Hynek Schlawack"
+__email__ = "hs@ox.cx"
+
+__license__ = "MIT or Apache License, Version 2.0"
+__copyright__ = "Copyright (c) 2013-2014 {0}".format(__author__)
 
 
 from structlog import (
