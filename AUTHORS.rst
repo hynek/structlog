@@ -19,12 +19,12 @@ The following folks helped forming ``structlog`` into what it is now:
 - `Itamar Turner-Trauring <https://github.com/itamarst>`_
 - `Jack Pearkes <https://github.com/pearkes>`_
 - `Jean-Paul Calderone <http://as.ynchrono.us>`_
+- `Lakshmi Kannan <https://github.com/lakshmi-kannan>`_
 - `Lynn Root <https://github.com/econchick>`_
 - `Noah Kantrowitz <https://github.com/coderanger>`_
 - `Tarek Ziadé <https://github.com/tarekziade>`_
 - `Thomas Heinrichsdobler <https://github.com/dertyp>`_
 - `Tom Lazar <https://github.com/tomster>`_
-- `Lakshmi Kannan <https://github.com/lakshmi-kannan>`_
 
 Some of them disapprove of the addition of thread local context data. :)
 

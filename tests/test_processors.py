@@ -31,7 +31,8 @@ from structlog.processors import (
     TimeStamper,
     UnicodeEncoder,
     _JSONFallbackEncoder,
-    format_exc_info)
+    format_exc_info,
+)
 from structlog.threadlocal import wrap_dict
 
 
