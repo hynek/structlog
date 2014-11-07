@@ -54,9 +54,6 @@ class BoundLogger(BoundLoggerBase):
         )
 
     """
-    def __getattr__(self, item):
-        return getattr(self._logger, item)
-
     def debug(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.debug()`` with the result.
@@ -89,6 +86,11 @@ class BoundLogger(BoundLoggerBase):
         """
         return self._proxy_to_logger('critical', event, *args, **kw)
 
+    fatal = critical
+
+    def log(self, level, msg, *args, **kw):
+        self._proxy_to_logger(level, msg, *args, **kw)
+
     def _proxy_to_logger(self, method_name, event=None, *event_args,
                          **event_kw):
         if event_args:
@@ -104,6 +106,42 @@ class BoundLogger(BoundLoggerBase):
         """
         kw['exc_info'] = True
         return self.error(event=event, **kw)
+
+    ######################################
+    # stdlib logger pass through methods.#
+    ######################################
+
+    def setLevel(self, level):
+        self._logger.setLevel(level)
+
+    def findCaller(self):
+        return self._logger.findCaller()
+
+    def makeRecord(self, name, level, fn, lno, msg, args,
+                   exc_info, func=None, extra=None):
+        return self._logger.makeRecord(name, level, fn, lno, msg, args,
+                                       exc_info, func=func, extra=extra)
+
+    def handle(self, record):
+        self._logger.handle(record)
+
+    def addHandler(self, hdlr):
+        self._logger.addHandler(hdlr)
+
+    def removeHandler(self, hdlr):
+        self._logger.removeHandler(hdlr)
+
+    def callHandlers(self, hdlr):
+        self._logger.callHandlers(hdlr)
+
+    def getEffectiveLevel(self):
+        return self._logger.getEffectiveLevel()
+
+    def isEnabledFor(self, level):
+        return self._logger.isEnabledFor(level)
+
+    def getChild(self, suffix):
+        return self._logger.getChild(suffix)
 
 
 class LoggerFactory(object):
