@@ -114,8 +114,8 @@ class BoundLogger(BoundLoggerBase):
     def setLevel(self, level):
         self._logger.setLevel(level)
 
-    def findCaller(self):
-        return self._logger.findCaller()
+    def findCaller(self, stack_info=False):
+        return self._logger.findCaller(stack_info=stack_info)
 
     def makeRecord(self, name, level, fn, lno, msg, args,
                    exc_info, func=None, extra=None):
@@ -131,8 +131,11 @@ class BoundLogger(BoundLoggerBase):
     def removeHandler(self, hdlr):
         self._logger.removeHandler(hdlr)
 
-    def callHandlers(self, hdlr):
-        self._logger.callHandlers(hdlr)
+    def hasHandlers(self):
+        return self._logger.hasHandlers()
+
+    def callHandlers(self, record):
+        self._logger.callHandlers(record)
 
     def getEffectiveLevel(self):
         return self._logger.getEffectiveLevel()

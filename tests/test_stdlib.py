@@ -138,6 +138,41 @@ class TestBoundLogger(object):
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
 
+    @pytest.mark.parametrize('method_name,method_args', [
+        ('addHandler', [None]),
+        ('removeHandler', [None]),
+        ('hasHandlers', None),
+        ('callHandlers', [None]),
+        ('handle', [None]),
+        ('setLevel', [None]),
+        ('getEffectiveLevel', None),
+        ('isEnabledFor', [None]),
+        ('findCaller', None),
+        ('makeRecord', ['name', 'debug', 'test_func', '1', 'test msg', ['foo'], False]),
+        ('getChild', [None]),
+        ])
+    def test_stdlib_passthrough_methods(self, method_name, method_args):
+        """
+        stdlib logger methods are also available in stdlib BoundLogger.
+        """
+        called_stdlib_method = [False]
+
+        def validate(*args, **kw):
+            called_stdlib_method[0] = True
+
+        stdlib_logger = logging.getLogger('Test')
+        stdlib_logger_method = getattr(stdlib_logger, method_name, None)
+        if stdlib_logger_method:
+            setattr(stdlib_logger, method_name, validate)
+            bl = BoundLogger(stdlib_logger, [], {})
+            bound_logger_method = getattr(bl, method_name)
+            assert bound_logger_method is not None
+            if method_args:
+                bound_logger_method(*method_args)
+            else:
+                bound_logger_method()
+            assert called_stdlib_method[0] is True
+
     def test_exception_exc_info(self):
         """
         BoundLogger.exception sets exc_info=True.
