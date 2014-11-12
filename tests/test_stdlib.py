@@ -138,6 +138,16 @@ class TestBoundLogger(object):
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
 
+    def test_positional_args_proxied(self):
+        """
+        Positional arguments supplied must be proxied as kwarg.
+        """
+        bl = BoundLogger(ReturnLogger(), [], {})
+        args, kwargs = bl.debug('event', 'foo', bar='baz')
+        assert kwargs.get('event') == 'event'
+        assert kwargs.get('bar') == 'baz'
+        assert 'foo' in kwargs.get('positional_args')
+
     @pytest.mark.parametrize('method_name,method_args', [
         ('addHandler', [None]),
         ('removeHandler', [None]),
@@ -148,7 +158,8 @@ class TestBoundLogger(object):
         ('getEffectiveLevel', None),
         ('isEnabledFor', [None]),
         ('findCaller', None),
-        ('makeRecord', ['name', 'debug', 'test_func', '1', 'test msg', ['foo'], False]),
+        ('makeRecord', ['name', 'debug', 'test_func', '1',
+                        'test msg', ['foo'], False]),
         ('getChild', [None]),
         ])
     def test_stdlib_passthrough_methods(self, method_name, method_args):

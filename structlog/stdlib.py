@@ -88,15 +88,11 @@ class BoundLogger(BoundLoggerBase):
 
     fatal = critical
 
-    def log(self, level, msg, *args, **kw):
-        self._proxy_to_logger(level, msg, *args, **kw)
-
-    def _proxy_to_logger(self, method_name, event=None, *event_args,
+    def _proxy_to_logger(self, method_name, event, *event_args,
                          **event_kw):
         if event_args:
             event_kw['positional_args'] = event_args
-        return super(BoundLogger, self)._proxy_to_logger(method_name, event,
-                                                         *event_args,
+        return super(BoundLogger, self)._proxy_to_logger(method_name, event=event,
                                                          **event_kw)
 
     def exception(self, event=None, **kw):
