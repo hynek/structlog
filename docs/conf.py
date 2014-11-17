@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-#
+
+# This file is dual licensed under the terms of the Apache License, Version
+# 2.0, and the MIT License.  See the LICENSE file in the root of this
+# repository for complete details.
+
+
 # This file is execfile()d with the current directory set to its containing dir
 #
 # Note that not all possible configuration values are present in this
