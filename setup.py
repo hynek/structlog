@@ -79,6 +79,7 @@ if __name__ == "__main__":
             "freezegun",
             "pretend",
             "pytest-cov",
+            "twisted",
         ],
         cmdclass={
             "test": PyTest,
