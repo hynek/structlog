@@ -145,7 +145,7 @@ class TestBoundLogger(object):
         bl = BoundLogger(ReturnLogger(), [], {})
         args, kwargs = bl.debug('event', 'foo', bar='baz')
         assert kwargs.get('bar') == 'baz'
-        assert 'foo' in kwargs.get('positional_args')
+        assert ('foo',) == kwargs.get('positional_args')
 
     @pytest.mark.parametrize('method_name,method_args', [
         ('addHandler', [None]),
