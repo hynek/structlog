@@ -206,7 +206,7 @@ class TestStringFormatting(object):
         """
         formatter = PositionalArgumentsFormatter()
         event_dict = formatter(None, None, {'event': '%d %d %s',
-                                            'positional_args': [1, 2, 'test']})
+                                            'positional_args': (1, 2, 'test')})
         assert event_dict['event'] == '1 2 test'
 
     def test_formats_dict(self):
@@ -226,6 +226,6 @@ class TestStringFormatting(object):
         """
         formatter = PositionalArgumentsFormatter(strip_positional_args=True)
         event_dict = formatter(None, None, {'event': '%d %d %s',
-                                            'positional_args': [1, 2, 'test']})
+                                            'positional_args': (1, 2, 'test')})
         assert event_dict['event'] == '1 2 test'
         assert 'positional_args' not in event_dict

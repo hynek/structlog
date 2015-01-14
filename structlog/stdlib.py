@@ -248,7 +248,6 @@ class PositionalArgumentsFormatter(object):
     def __call__(self, _, __, event_dict):
         args = event_dict.get('positional_args')
         if args:
-            args = tuple(args)
             if len(args) == 1 and isinstance(args[0], dict) and args[0]:
                 args = args[0]
             event_dict['event'] = event_dict['event'] % args
