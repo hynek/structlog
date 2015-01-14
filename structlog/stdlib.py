@@ -90,6 +90,13 @@ class BoundLogger(BoundLoggerBase):
 
     def _proxy_to_logger(self, method_name, event, *event_args,
                          **event_kw):
+        """
+        Propagate a method call to the wrapped logger.
+
+        This is the same as the superclass implementation, except that
+        it also preserves positional arguments in the `event_dict` so
+        that the stdblib's support for format strings can be used.
+        """
         if event_args:
             event_kw['positional_args'] = event_args
         return super(BoundLogger, self)._proxy_to_logger(method_name,
