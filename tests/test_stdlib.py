@@ -144,7 +144,6 @@ class TestBoundLogger(object):
         """
         bl = BoundLogger(ReturnLogger(), [], {})
         args, kwargs = bl.debug('event', 'foo', bar='baz')
-        assert kwargs.get('event') == 'event'
         assert kwargs.get('bar') == 'baz'
         assert 'foo' in kwargs.get('positional_args')
 
