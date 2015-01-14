@@ -257,7 +257,7 @@ class PositionalArgumentsFormatter(object):
                 args = args[0]
             event_dict['event'] = event_dict['event'] % args
             if self.strip_positional_args:
-                event_dict.pop('positional_args')
+                del event_dict['positional_args']
         return event_dict
 
 # Adapted from the stdlib
