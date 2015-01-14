@@ -247,6 +247,11 @@ class PositionalArgumentsFormatter(object):
 
     def __call__(self, _, __, event_dict):
         args = event_dict.get('positional_args')
+
+        # Mimick the formatting behaviour of the stdlib's logging
+        # module, which accepts both positional arguments and a single
+        # dict argument. The "single dict" check is the same one as the
+        # stdlib's logging module performs in LogRecord.__init__().
         if args:
             if len(args) == 1 and isinstance(args[0], dict) and args[0]:
                 args = args[0]
