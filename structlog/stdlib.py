@@ -231,7 +231,7 @@ class LoggerFactory(object):
         return logging.getLogger(name)
 
 
-class StdlibFormatEventRenderer(object):
+class PositionalArgumentsFormatter(object):
     """
     Applies stdlib-like string formatting to the `event` key with the arguments
     in the `positional_args` key. This is populated by

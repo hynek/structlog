@@ -17,7 +17,7 @@ from structlog.stdlib import (
     BoundLogger,
     CRITICAL,
     LoggerFactory,
-    StdlibFormatEventRenderer,
+    PositionalArgumentsFormatter,
     WARN,
     filter_by_level,
     _FixedFindCallerLogger,
@@ -204,19 +204,19 @@ class TestStringFormatting(object):
         """
         Positional arguments as simple types should be rendered.
         """
-        renderer = StdlibFormatEventRenderer()
-        event_dict = renderer(None, None, {'event': '%d %d %s',
-                                           'positional_args': [1, 2, 'test']})
+        formatter = PositionalArgumentsFormatter()
+        event_dict = formatter(None, None, {'event': '%d %d %s',
+                                            'positional_args': [1, 2, 'test']})
         assert event_dict['event'] == '1 2 test'
 
     def test_formats_dict(self):
         """
         Positional arguments as dict should be rendered.
         """
-        renderer = StdlibFormatEventRenderer()
-        event_dict = renderer(None, None, {'event': '%(foo)s bar',
-                                           'positional_args': (
-                                               {'foo': 'bar'},)})
+        formatter = PositionalArgumentsFormatter()
+        event_dict = formatter(None, None, {'event': '%(foo)s bar',
+                                            'positional_args': (
+                                                {'foo': 'bar'},)})
         assert event_dict['event'] == 'bar bar'
 
     def test_pops_positional_args(self):
@@ -224,8 +224,8 @@ class TestStringFormatting(object):
         Positional arguments should be stripped out if
         strip_positional_args argument is set to True.
         """
-        renderer = StdlibFormatEventRenderer(strip_positional_args=True)
-        event_dict = renderer(None, None, {'event': '%d %d %s',
-                                           'positional_args': [1, 2, 'test']})
+        formatter = PositionalArgumentsFormatter(strip_positional_args=True)
+        event_dict = formatter(None, None, {'event': '%d %d %s',
+                                            'positional_args': [1, 2, 'test']})
         assert event_dict['event'] == '1 2 test'
         assert 'positional_args' not in event_dict
