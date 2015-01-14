@@ -111,9 +111,9 @@ class BoundLogger(BoundLoggerBase):
         kw['exc_info'] = True
         return self.error(event=event, **kw)
 
-    ######################################
-    # stdlib logger pass through methods.#
-    ######################################
+    #
+    # Pass-through methods to mimick the stdlib's logger interface.
+    #
 
     def setLevel(self, level):
         self._logger.setLevel(level)
