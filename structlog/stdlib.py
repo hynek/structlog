@@ -116,38 +116,72 @@ class BoundLogger(BoundLoggerBase):
     #
 
     def setLevel(self, level):
+        """
+        Calls :func:`logging.Logger.setLevel()` with unmodified arguments.
+        """
         self._logger.setLevel(level)
 
     def findCaller(self, stack_info=False):
+        """
+        Calls :func:`logging.Logger.findCaller()` with unmodified arguments.
+        """
         return self._logger.findCaller(stack_info=stack_info)
 
     def makeRecord(self, name, level, fn, lno, msg, args,
                    exc_info, func=None, extra=None):
+        """
+        Calls :func:`logging.Logger.makeRecord()` with unmodified arguments.
+        """
         return self._logger.makeRecord(name, level, fn, lno, msg, args,
                                        exc_info, func=func, extra=extra)
 
     def handle(self, record):
+        """
+        Calls :func:`logging.Logger.handle()` with unmodified arguments.
+        """
         self._logger.handle(record)
 
     def addHandler(self, hdlr):
+        """
+        Calls :func:`logging.Logger.addHandler()` with unmodified arguments.
+        """
         self._logger.addHandler(hdlr)
 
     def removeHandler(self, hdlr):
+        """
+        Calls :func:`logging.Logger.removeHandler()` with unmodified arguments.
+        """
         self._logger.removeHandler(hdlr)
 
     def hasHandlers(self):
+        """
+        Calls :func:`logging.Logger.hasHandlers()` with unmodified arguments.
+        """
         return self._logger.hasHandlers()
 
     def callHandlers(self, record):
+        """
+        Calls :func:`logging.Logger.callHandlers()` with unmodified arguments.
+        """
         self._logger.callHandlers(record)
 
     def getEffectiveLevel(self):
+        """
+        Calls :func:`logging.Logger.getEffectiveLevel()` with unmodified
+        arguments.
+        """
         return self._logger.getEffectiveLevel()
 
     def isEnabledFor(self, level):
+        """
+        Calls :func:`logging.Logger.isEnabledFor()` with unmodified arguments.
+        """
         return self._logger.isEnabledFor(level)
 
     def getChild(self, suffix):
+        """
+        Calls :func:`logging.Logger.getChild()` with unmodified arguments.
+        """
         return self._logger.getChild(suffix)
 
 
