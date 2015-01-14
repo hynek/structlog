@@ -201,7 +201,7 @@ class TestBoundLogger(object):
 class TestStringFormatting(object):
     def test_formats_tuple(self):
         """
-        Positional arguments as simple types should be rendered.
+        Positional arguments as simple types are rendered.
         """
         formatter = PositionalArgumentsFormatter()
         event_dict = formatter(None, None, {'event': '%d %d %s',
@@ -210,7 +210,7 @@ class TestStringFormatting(object):
 
     def test_formats_dict(self):
         """
-        Positional arguments as dict should be rendered.
+        Positional arguments as dict are rendered.
         """
         formatter = PositionalArgumentsFormatter()
         event_dict = formatter(None, None, {'event': '%(foo)s bar',
@@ -220,8 +220,8 @@ class TestStringFormatting(object):
 
     def test_pops_positional_args(self):
         """
-        Positional arguments should be stripped out if
-        strip_positional_args argument is set to True.
+        Positional arguments are stripped out if strip_positional_args
+        argument is set to True.
         """
         formatter = PositionalArgumentsFormatter(strip_positional_args=True)
         event_dict = formatter(None, None, {'event': '%d %d %s',
