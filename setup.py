@@ -76,7 +76,7 @@ if __name__ == "__main__":
             'Topic :: Software Development :: Libraries :: Python Modules',
         ],
         tests_require=[
-            "freezegun",
+            "freezegun>=0.2.8",
             "pretend",
             "pytest-cov",
             "twisted",
