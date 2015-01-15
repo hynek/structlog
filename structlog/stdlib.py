@@ -245,9 +245,13 @@ class PositionalArgumentsFormatter(object):
 
     `positional_args` is populated by `structlog.stdlib.BoundLogger` or
     can be set manually.
+
+    The `remove_positional_args` flag can be set to `False` to keep the
+    `positional_args` key in the event dict; by default it will be
+    removed from the event dict after formatting a message.
     """
-    def __init__(self, strip_positional_args=False):
-        self.strip_positional_args = strip_positional_args
+    def __init__(self, remove_positional_args=True):
+        self.remove_positional_args = remove_positional_args
 
     def __call__(self, _, __, event_dict):
         args = event_dict.get('positional_args')
@@ -260,7 +264,7 @@ class PositionalArgumentsFormatter(object):
             if len(args) == 1 and isinstance(args[0], dict) and args[0]:
                 args = args[0]
             event_dict['event'] = event_dict['event'] % args
-            if self.strip_positional_args:
+            if self.remove_positional_args:
                 del event_dict['positional_args']
         return event_dict
 

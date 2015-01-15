@@ -207,6 +207,7 @@ class TestStringFormatting(object):
         event_dict = formatter(None, None, {'event': '%d %d %s',
                                             'positional_args': (1, 2, 'test')})
         assert '1 2 test' == event_dict['event']
+        assert 'positional_args' not in event_dict
 
     def test_formats_dict(self):
         """
@@ -217,13 +218,17 @@ class TestStringFormatting(object):
                                             'positional_args': (
                                                 {'foo': 'bar'},)})
         assert 'bar bar' == event_dict['event']
-
-    def test_pops_positional_args(self):
-        """
-        Positional arguments are stripped out if strip_positional_args
-        argument is set to True.
-        """
-        formatter = PositionalArgumentsFormatter(strip_positional_args=True)
-        event_dict = formatter(None, None, {'event': '%d %d %s',
-                                            'positional_args': (1, 2, 'test')})
         assert 'positional_args' not in event_dict
+
+    def test_positional_args_retained(self):
+        """
+        Positional arguments are retained if remove_positional_args
+        argument is set to False.
+        """
+        formatter = PositionalArgumentsFormatter(remove_positional_args=False)
+        positional_args = (1, 2, 'test')
+        event_dict = formatter(
+            None, None,
+            {'event': '%d %d %s', 'positional_args': positional_args})
+        assert 'positional_args' in event_dict
+        assert positional_args == event_dict['positional_args']
