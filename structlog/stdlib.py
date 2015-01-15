@@ -233,14 +233,18 @@ class LoggerFactory(object):
 
 class PositionalArgumentsFormatter(object):
     """
-    Applies stdlib-like string formatting to the `event` key with the arguments
-    in the `positional_args` key. This is populated by
-    `structlog.stdlib.BoundLogger` or can be manually set.
+    Apply stdlib-like string formatting to the `event` key.
 
-    `positional_args` can be any iterable, but a dictionary as the single
-    element of the tuple is used instead of the tuple, to mantain compatibility
-    with the undocumented feature of stdlib logging.
+    If the `positional_args` key in the event dict is set, it must
+    contain a tuple that is used for formatting (using the `%s` string
+    formatting operator) of the value from the `event` key. This works
+    in the same way as the stdlib handles arguments to the various log
+    methods: if the tuple contains only a single `dict` argument it is
+    used for keyword placeholders in the `event` string, otherwise it
+    will be used for positional placeholders.
 
+    The `positional_args` is populated by `structlog.stdlib.BoundLogger`
+    or can be set manually.
     """
     def __init__(self, strip_positional_args=False):
         self.strip_positional_args = strip_positional_args
