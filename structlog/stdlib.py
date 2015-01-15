@@ -86,6 +86,14 @@ class BoundLogger(BoundLoggerBase):
         """
         return self._proxy_to_logger('critical', event, *args, **kw)
 
+    def exception(self, event=None, *args, **kw):
+        """
+        Process event and call ``Logger.error()`` with the result, after
+        setting ``exc_info`` to `True`.
+        """
+        kw['exc_info'] = True
+        return self.error(event, *args, **kw)
+
     fatal = critical
 
     def _proxy_to_logger(self, method_name, event, *event_args,
@@ -102,14 +110,6 @@ class BoundLogger(BoundLoggerBase):
         return super(BoundLogger, self)._proxy_to_logger(method_name,
                                                          event=event,
                                                          **event_kw)
-
-    def exception(self, event=None, **kw):
-        """
-        Process event and call ``Logger.error()`` with the result, after
-        setting ``exc_info`` to `True`.
-        """
-        kw['exc_info'] = True
-        return self.error(event=event, **kw)
 
     #
     # Pass-through methods to mimick the stdlib's logger interface.
