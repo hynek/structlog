@@ -140,7 +140,7 @@ class TestBoundLogger(object):
 
     def test_positional_args_proxied(self):
         """
-        Positional arguments supplied must be proxied as kwarg.
+        Positional arguments supplied are proxied as kwarg.
         """
         bl = BoundLogger(ReturnLogger(), [], {})
         args, kwargs = bl.debug('event', 'foo', bar='baz')
