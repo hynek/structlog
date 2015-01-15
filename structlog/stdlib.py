@@ -54,37 +54,54 @@ class BoundLogger(BoundLoggerBase):
         )
 
     """
-    def debug(self, event=None, **kw):
+    def debug(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.debug()`` with the result.
         """
-        return self._proxy_to_logger('debug', event, **kw)
+        return self._proxy_to_logger('debug', event, *args, **kw)
 
-    def info(self, event=None, **kw):
+    def info(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.info()`` with the result.
         """
-        return self._proxy_to_logger('info', event, **kw)
+        return self._proxy_to_logger('info', event, *args, **kw)
 
-    def warning(self, event=None, **kw):
+    def warning(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.warning()`` with the result.
         """
-        return self._proxy_to_logger('warning', event, **kw)
+        return self._proxy_to_logger('warning', event, *args, **kw)
 
     warn = warning
 
-    def error(self, event=None, **kw):
+    def error(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.error()`` with the result.
         """
-        return self._proxy_to_logger('error', event, **kw)
+        return self._proxy_to_logger('error', event, *args, **kw)
 
-    def critical(self, event=None, **kw):
+    def critical(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.critical()`` with the result.
         """
-        return self._proxy_to_logger('critical', event, **kw)
+        return self._proxy_to_logger('critical', event, *args, **kw)
+
+    fatal = critical
+
+    def _proxy_to_logger(self, method_name, event, *event_args,
+                         **event_kw):
+        """
+        Propagate a method call to the wrapped logger.
+
+        This is the same as the superclass implementation, except that
+        it also preserves positional arguments in the `event_dict` so
+        that the stdblib's support for format strings can be used.
+        """
+        if event_args:
+            event_kw['positional_args'] = event_args
+        return super(BoundLogger, self)._proxy_to_logger(method_name,
+                                                         event=event,
+                                                         **event_kw)
 
     def exception(self, event=None, **kw):
         """
@@ -93,6 +110,79 @@ class BoundLogger(BoundLoggerBase):
         """
         kw['exc_info'] = True
         return self.error(event=event, **kw)
+
+    #
+    # Pass-through methods to mimick the stdlib's logger interface.
+    #
+
+    def setLevel(self, level):
+        """
+        Calls :func:`logging.Logger.setLevel()` with unmodified arguments.
+        """
+        self._logger.setLevel(level)
+
+    def findCaller(self, stack_info=False):
+        """
+        Calls :func:`logging.Logger.findCaller()` with unmodified arguments.
+        """
+        return self._logger.findCaller(stack_info=stack_info)
+
+    def makeRecord(self, name, level, fn, lno, msg, args,
+                   exc_info, func=None, extra=None):
+        """
+        Calls :func:`logging.Logger.makeRecord()` with unmodified arguments.
+        """
+        return self._logger.makeRecord(name, level, fn, lno, msg, args,
+                                       exc_info, func=func, extra=extra)
+
+    def handle(self, record):
+        """
+        Calls :func:`logging.Logger.handle()` with unmodified arguments.
+        """
+        self._logger.handle(record)
+
+    def addHandler(self, hdlr):
+        """
+        Calls :func:`logging.Logger.addHandler()` with unmodified arguments.
+        """
+        self._logger.addHandler(hdlr)
+
+    def removeHandler(self, hdlr):
+        """
+        Calls :func:`logging.Logger.removeHandler()` with unmodified arguments.
+        """
+        self._logger.removeHandler(hdlr)
+
+    def hasHandlers(self):
+        """
+        Calls :func:`logging.Logger.hasHandlers()` with unmodified arguments.
+        """
+        return self._logger.hasHandlers()
+
+    def callHandlers(self, record):
+        """
+        Calls :func:`logging.Logger.callHandlers()` with unmodified arguments.
+        """
+        self._logger.callHandlers(record)
+
+    def getEffectiveLevel(self):
+        """
+        Calls :func:`logging.Logger.getEffectiveLevel()` with unmodified
+        arguments.
+        """
+        return self._logger.getEffectiveLevel()
+
+    def isEnabledFor(self, level):
+        """
+        Calls :func:`logging.Logger.isEnabledFor()` with unmodified arguments.
+        """
+        return self._logger.isEnabledFor(level)
+
+    def getChild(self, suffix):
+        """
+        Calls :func:`logging.Logger.getChild()` with unmodified arguments.
+        """
+        return self._logger.getChild(suffix)
 
 
 class LoggerFactory(object):
@@ -140,6 +230,43 @@ class LoggerFactory(object):
         _, name = _find_first_app_frame_and_name(self._ignore)
         return logging.getLogger(name)
 
+
+class PositionalArgumentsFormatter(object):
+    """
+    Apply stdlib-like string formatting to the `event` key.
+
+    If the `positional_args` key in the event dict is set, it must
+    contain a tuple that is used for formatting (using the `%s` string
+    formatting operator) of the value from the `event` key. This works
+    in the same way as the stdlib handles arguments to the various log
+    methods: if the tuple contains only a single `dict` argument it is
+    used for keyword placeholders in the `event` string, otherwise it
+    will be used for positional placeholders.
+
+    `positional_args` is populated by `structlog.stdlib.BoundLogger` or
+    can be set manually.
+
+    The `remove_positional_args` flag can be set to `False` to keep the
+    `positional_args` key in the event dict; by default it will be
+    removed from the event dict after formatting a message.
+    """
+    def __init__(self, remove_positional_args=True):
+        self.remove_positional_args = remove_positional_args
+
+    def __call__(self, _, __, event_dict):
+        args = event_dict.get('positional_args')
+
+        # Mimick the formatting behaviour of the stdlib's logging
+        # module, which accepts both positional arguments and a single
+        # dict argument. The "single dict" check is the same one as the
+        # stdlib's logging module performs in LogRecord.__init__().
+        if args:
+            if len(args) == 1 and isinstance(args[0], dict) and args[0]:
+                args = args[0]
+            event_dict['event'] = event_dict['event'] % args
+            if self.remove_positional_args:
+                del event_dict['positional_args']
+        return event_dict
 
 # Adapted from the stdlib
 
