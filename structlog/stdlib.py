@@ -54,37 +54,47 @@ class BoundLogger(BoundLoggerBase):
         )
 
     """
-    def debug(self, event=None, **kw):
+    def debug(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.debug()`` with the result.
         """
-        return self._proxy_to_logger('debug', event, **kw)
+        return self._proxy_to_logger('debug', event, *args, **kw)
 
-    def info(self, event=None, **kw):
+    def info(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.info()`` with the result.
         """
-        return self._proxy_to_logger('info', event, **kw)
+        return self._proxy_to_logger('info', event, *args, **kw)
 
-    def warning(self, event=None, **kw):
+    def warning(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.warning()`` with the result.
         """
-        return self._proxy_to_logger('warning', event, **kw)
+        return self._proxy_to_logger('warning', event, *args, **kw)
 
     warn = warning
 
-    def error(self, event=None, **kw):
+    def error(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.error()`` with the result.
         """
-        return self._proxy_to_logger('error', event, **kw)
+        return self._proxy_to_logger('error', event, *args, **kw)
 
-    def critical(self, event=None, **kw):
+    def critical(self, event=None, *args, **kw):
         """
         Process event and call ``Logger.critical()`` with the result.
         """
-        return self._proxy_to_logger('critical', event, **kw)
+        return self._proxy_to_logger('critical', event, *args, **kw)
+
+    fatal = critical
+
+    def _proxy_to_logger(self, method_name, event, *event_args,
+                         **event_kw):
+        if event_args:
+            event_kw['positional_args'] = event_args
+        return super(BoundLogger, self)._proxy_to_logger(method_name,
+                                                         event=event,
+                                                         **event_kw)
 
     def exception(self, event=None, **kw):
         """
@@ -93,6 +103,45 @@ class BoundLogger(BoundLoggerBase):
         """
         kw['exc_info'] = True
         return self.error(event=event, **kw)
+
+    ######################################
+    # stdlib logger pass through methods.#
+    ######################################
+
+    def setLevel(self, level):
+        self._logger.setLevel(level)
+
+    def findCaller(self, stack_info=False):
+        return self._logger.findCaller(stack_info=stack_info)
+
+    def makeRecord(self, name, level, fn, lno, msg, args,
+                   exc_info, func=None, extra=None):
+        return self._logger.makeRecord(name, level, fn, lno, msg, args,
+                                       exc_info, func=func, extra=extra)
+
+    def handle(self, record):
+        self._logger.handle(record)
+
+    def addHandler(self, hdlr):
+        self._logger.addHandler(hdlr)
+
+    def removeHandler(self, hdlr):
+        self._logger.removeHandler(hdlr)
+
+    def hasHandlers(self):
+        return self._logger.hasHandlers()
+
+    def callHandlers(self, record):
+        self._logger.callHandlers(record)
+
+    def getEffectiveLevel(self):
+        return self._logger.getEffectiveLevel()
+
+    def isEnabledFor(self, level):
+        return self._logger.isEnabledFor(level)
+
+    def getChild(self, suffix):
+        return self._logger.getChild(suffix)
 
 
 class LoggerFactory(object):
@@ -140,6 +189,31 @@ class LoggerFactory(object):
         _, name = _find_first_app_frame_and_name(self._ignore)
         return logging.getLogger(name)
 
+
+class StdlibFormatEventRenderer(object):
+    """
+    Applies stdlib-like string formatting to the `event` key with the arguments
+    in the `positional_args` key. This is populated by
+    `structlog.stdlib.BoundLogger` or can be manually set.
+
+    `positional_args` can be any iterable, but a dictionary as the single
+    element of the tuple is used instead of the tuple, to mantain compatibility
+    with the undocumented feature of stdlib logging.
+
+    """
+    def __init__(self, strip_positional_args=False):
+        self.strip_positional_args = strip_positional_args
+
+    def __call__(self, _, __, event_dict):
+        args = event_dict.get('positional_args')
+        if args:
+            args = tuple(args)
+            if len(args) == 1 and isinstance(args[0], dict) and args[0]:
+                args = args[0]
+            event_dict['event'] = event_dict['event'] % args
+            if self.strip_positional_args:
+                event_dict.pop('positional_args')
+        return event_dict
 
 # Adapted from the stdlib
 

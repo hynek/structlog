@@ -17,6 +17,7 @@ from structlog.stdlib import (
     BoundLogger,
     CRITICAL,
     LoggerFactory,
+    StdlibFormatEventRenderer,
     WARN,
     filter_by_level,
     _FixedFindCallerLogger,
@@ -137,6 +138,52 @@ class TestBoundLogger(object):
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
 
+    def test_positional_args_proxied(self):
+        """
+        Positional arguments supplied must be proxied as kwarg.
+        """
+        bl = BoundLogger(ReturnLogger(), [], {})
+        args, kwargs = bl.debug('event', 'foo', bar='baz')
+        assert kwargs.get('event') == 'event'
+        assert kwargs.get('bar') == 'baz'
+        assert 'foo' in kwargs.get('positional_args')
+
+    @pytest.mark.parametrize('method_name,method_args', [
+        ('addHandler', [None]),
+        ('removeHandler', [None]),
+        ('hasHandlers', None),
+        ('callHandlers', [None]),
+        ('handle', [None]),
+        ('setLevel', [None]),
+        ('getEffectiveLevel', None),
+        ('isEnabledFor', [None]),
+        ('findCaller', None),
+        ('makeRecord', ['name', 'debug', 'test_func', '1',
+                        'test msg', ['foo'], False]),
+        ('getChild', [None]),
+        ])
+    def test_stdlib_passthrough_methods(self, method_name, method_args):
+        """
+        stdlib logger methods are also available in stdlib BoundLogger.
+        """
+        called_stdlib_method = [False]
+
+        def validate(*args, **kw):
+            called_stdlib_method[0] = True
+
+        stdlib_logger = logging.getLogger('Test')
+        stdlib_logger_method = getattr(stdlib_logger, method_name, None)
+        if stdlib_logger_method:
+            setattr(stdlib_logger, method_name, validate)
+            bl = BoundLogger(stdlib_logger, [], {})
+            bound_logger_method = getattr(bl, method_name)
+            assert bound_logger_method is not None
+            if method_args:
+                bound_logger_method(*method_args)
+            else:
+                bound_logger_method()
+            assert called_stdlib_method[0] is True
+
     def test_exception_exc_info(self):
         """
         BoundLogger.exception sets exc_info=True.
@@ -150,3 +197,35 @@ class TestBoundLogger(object):
             return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert "error" == bl.exception("event")
+
+
+class TestStringFormatting(object):
+    def test_formats_tuple(self):
+        """
+        Positional arguments as simple types should be rendered.
+        """
+        renderer = StdlibFormatEventRenderer()
+        event_dict = renderer(None, None, {'event': '%d %d %s',
+                                           'positional_args': [1, 2, 'test']})
+        assert event_dict['event'] == '1 2 test'
+
+    def test_formats_dict(self):
+        """
+        Positional arguments as dict should be rendered.
+        """
+        renderer = StdlibFormatEventRenderer()
+        event_dict = renderer(None, None, {'event': '%(foo)s bar',
+                                           'positional_args': (
+                                               {'foo': 'bar'},)})
+        assert event_dict['event'] == 'bar bar'
+
+    def test_pops_positional_args(self):
+        """
+        Positional arguments should be stripped out if
+        strip_positional_args argument is set to True.
+        """
+        renderer = StdlibFormatEventRenderer(strip_positional_args=True)
+        event_dict = renderer(None, None, {'event': '%d %d %s',
+                                           'positional_args': [1, 2, 'test']})
+        assert event_dict['event'] == '1 2 test'
+        assert 'positional_args' not in event_dict
