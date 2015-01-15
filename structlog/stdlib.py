@@ -243,8 +243,8 @@ class PositionalArgumentsFormatter(object):
     used for keyword placeholders in the `event` string, otherwise it
     will be used for positional placeholders.
 
-    The `positional_args` is populated by `structlog.stdlib.BoundLogger`
-    or can be set manually.
+    `positional_args` is populated by `structlog.stdlib.BoundLogger` or
+    can be set manually.
     """
     def __init__(self, strip_positional_args=False):
         self.strip_positional_args = strip_positional_args
