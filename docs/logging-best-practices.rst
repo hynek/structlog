@@ -72,50 +72,12 @@ Logstash with logstash-forwarder
 
 Logstash_ is a great way to parse, save, and search your logs.
 
-The general modus operandi is that you have log shippers that parse your log
-files and forward the log entries to your Logstash server and store is in
-elasticsearch_. If your log entries consist -- as suggested -- of a tai64n_
-timestamp and a JSON dictionary, this is pretty easy and efficient.
+The general modus operandi is that you have log shippers that parse your log files and forward the log entries to your Logstash server and store is in elasticsearch_.
+If your log entries consist -- as suggested -- of a tai64n_ timestamp and a JSON dictionary, this is pretty easy and efficient.
 
-If you can't decide on a log shipper, logstash-forwarder_ (formerly known as
-Lumberjack) works really well. This configuration for ``structlog`` works quite
-well (when Logstash's ``lumberjack`` input is configured to use ``codec =>
-"json"``), and makes your program behave like a proper `12 factor app`_::
-
-    import logging
-    import sys
-
-    import structlog
-
-    def add_log_level(logger, method_name, event_dict):
-        if method_name == 'warn':  # stdlib alias
-            method_name == 'warning'
-        event_dict['level'] = method_name
-        return event_dict
-
-    def add_logger_name(logger, method_name, event_dict):
-        event_dict['logger'] = logger.name
-        return event_dict
-
-    structlog.configure(
-        processors=[
-            add_log_level,
-            add_logger_name,
-            structlog.processors.TimeStamper(fmt='iso'),
-            structlog.stdlib.filter_by_level,
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.processors.JSONRenderer(),
-        ],
-        context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
-    )
-
-    handler = logging.StreamHandler(sys.stdout)
-    root_logger = logging.getLogger()
-    root_logger.addHandler(handler)
+If you can't decide on a log shipper, logstash-forwarder_ (formerly known as Lumberjack) works really well.
+When Logstash's ``lumberjack`` input is configured to use ``codec => "json"``, having ``structlog`` output JSON is all you need.
+See the documentation on the :doc:`standard-library` for an example configuration.
 
 
 Graylog2
@@ -146,4 +108,3 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _syslogd: http://en.wikipedia.org/wiki/Syslogd
 .. _tai64n: http://cr.yp.to/daemontools/tai64n.html
 .. _elasticsearch: http://www.elasticsearch.org
-.. _`12 factor app`: http://12factor.net/logs
