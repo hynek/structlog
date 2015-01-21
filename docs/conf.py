@@ -343,5 +343,5 @@ linkcheck_ignore = [
 linkcheck_timeout = 300
 
 intersphinx_mapping = {
-    'http://docs.python.org/': None,
+    'http://docs.python.org/2': None,
 }

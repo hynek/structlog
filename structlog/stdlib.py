@@ -56,19 +56,19 @@ class BoundLogger(BoundLoggerBase):
     """
     def debug(self, event=None, *args, **kw):
         """
-        Process event and call ``Logger.debug()`` with the result.
+        Process event and call :meth:`logging.Logger.debug` with the result.
         """
         return self._proxy_to_logger('debug', event, *args, **kw)
 
     def info(self, event=None, *args, **kw):
         """
-        Process event and call ``Logger.info()`` with the result.
+        Process event and call :meth:`logging.Logger.info` with the result.
         """
         return self._proxy_to_logger('info', event, *args, **kw)
 
     def warning(self, event=None, *args, **kw):
         """
-        Process event and call ``Logger.warning()`` with the result.
+        Process event and call :meth:`logging.Logger.warning` with the result.
         """
         return self._proxy_to_logger('warning', event, *args, **kw)
 
@@ -76,20 +76,20 @@ class BoundLogger(BoundLoggerBase):
 
     def error(self, event=None, *args, **kw):
         """
-        Process event and call ``Logger.error()`` with the result.
+        Process event and call :meth:`logging.Logger.error` with the result.
         """
         return self._proxy_to_logger('error', event, *args, **kw)
 
     def critical(self, event=None, *args, **kw):
         """
-        Process event and call ``Logger.critical()`` with the result.
+        Process event and call :meth:`logging.Logger.critical` with the result.
         """
         return self._proxy_to_logger('critical', event, *args, **kw)
 
     def exception(self, event=None, *args, **kw):
         """
-        Process event and call ``Logger.error()`` with the result, after
-        setting ``exc_info`` to `True`.
+        Process event and call :meth:`logging.Logger.error` with the result,
+        after setting ``exc_info`` to `True`.
         """
         kw['exc_info'] = True
         return self.error(event, *args, **kw)
@@ -117,45 +117,45 @@ class BoundLogger(BoundLoggerBase):
 
     def setLevel(self, level):
         """
-        Calls :func:`logging.Logger.setLevel()` with unmodified arguments.
+        Calls :meth:`logging.Logger.setLevel` with unmodified arguments.
         """
         self._logger.setLevel(level)
 
     def findCaller(self, stack_info=False):
         """
-        Calls :func:`logging.Logger.findCaller()` with unmodified arguments.
+        Calls :meth:`logging.Logger.findCaller` with unmodified arguments.
         """
         return self._logger.findCaller(stack_info=stack_info)
 
     def makeRecord(self, name, level, fn, lno, msg, args,
                    exc_info, func=None, extra=None):
         """
-        Calls :func:`logging.Logger.makeRecord()` with unmodified arguments.
+        Calls :meth:`logging.Logger.makeRecord` with unmodified arguments.
         """
         return self._logger.makeRecord(name, level, fn, lno, msg, args,
                                        exc_info, func=func, extra=extra)
 
     def handle(self, record):
         """
-        Calls :func:`logging.Logger.handle()` with unmodified arguments.
+        Calls :meth:`logging.Logger.handle` with unmodified arguments.
         """
         self._logger.handle(record)
 
     def addHandler(self, hdlr):
         """
-        Calls :func:`logging.Logger.addHandler()` with unmodified arguments.
+        Calls :meth:`logging.Logger.addHandler` with unmodified arguments.
         """
         self._logger.addHandler(hdlr)
 
     def removeHandler(self, hdlr):
         """
-        Calls :func:`logging.Logger.removeHandler()` with unmodified arguments.
+        Calls :meth:`logging.Logger.removeHandler` with unmodified arguments.
         """
         self._logger.removeHandler(hdlr)
 
     def hasHandlers(self):
         """
-        Calls :func:`logging.Logger.hasHandlers()` with unmodified arguments.
+        Calls :meth:`logging.Logger.hasHandlers` with unmodified arguments.
 
         Exists only in Python 3.
         """
@@ -163,26 +163,26 @@ class BoundLogger(BoundLoggerBase):
 
     def callHandlers(self, record):
         """
-        Calls :func:`logging.Logger.callHandlers()` with unmodified arguments.
+        Calls :meth:`logging.Logger.callHandlers` with unmodified arguments.
         """
         self._logger.callHandlers(record)
 
     def getEffectiveLevel(self):
         """
-        Calls :func:`logging.Logger.getEffectiveLevel()` with unmodified
+        Calls :meth:`logging.Logger.getEffectiveLevel` with unmodified
         arguments.
         """
         return self._logger.getEffectiveLevel()
 
     def isEnabledFor(self, level):
         """
-        Calls :func:`logging.Logger.isEnabledFor()` with unmodified arguments.
+        Calls :meth:`logging.Logger.isEnabledFor` with unmodified arguments.
         """
         return self._logger.isEnabledFor(level)
 
     def getChild(self, suffix):
         """
-        Calls :func:`logging.Logger.getChild()` with unmodified arguments.
+        Calls :meth:`logging.Logger.getChild` with unmodified arguments.
         """
         return self._logger.getChild(suffix)
 
@@ -191,7 +191,7 @@ class LoggerFactory(object):
     """
     Build a standard library logger when an *instance* is called.
 
-    Sets a custom logger using `logging.setLogggerClass` so variables in
+    Sets a custom logger using :func:`logging.setLoggerClass` so variables in
     log format are expanded properly.
 
     >>> from structlog import configure
