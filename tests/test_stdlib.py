@@ -138,6 +138,15 @@ class TestBoundLogger(object):
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
 
+    def test_proxies_exception(self):
+        """
+        BoundLogger.exception is proxied to Logger.error.
+        """
+        def return_method_name(_, method_name, __):
+            return method_name
+        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
+        assert "error" == bl.exception("event")
+
     def test_positional_args_proxied(self):
         """
         Positional arguments supplied are proxied as kwarg.
