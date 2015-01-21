@@ -37,20 +37,20 @@ Suggested Configuration
 
 A basic configuration to output structured logs in JSON format looks like this::
 
-   import structlog
+    import structlog
 
-   structlog.configure(
-      processors=[
-          structlog.stdlib.filter_by_level,
-          structlog.processors.StackInfoRenderer(),
-          structlog.processors.format_exc_info,
-          structlog.processors.JSONRenderer()
-      ],
-      context_class=dict,
-      logger_factory=structlog.stdlib.LoggerFactory(),
-      wrapper_class=structlog.stdlib.BoundLogger,
-      cache_logger_on_first_use=True,
-   )
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.JSONRenderer()
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
 
 If you plan to hook up the logging output to `logstash`, as suggested in :doc:`logging-best-practices`, you can simply output JSON, and have ``logstash-forwarder`` pick that up.
 To do so, you need to configure your process supervisor (such ``runit`` or ``supervisord``) to store the output in a file that is subsequently monitored by ``logstash-forwarder``, or alternatively you could pipe the output directly into ``logstash-forwarder``.
