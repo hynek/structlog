@@ -1,14 +1,8 @@
 Python Standard Library
 =======================
 
-
 Ideally, structlog should be able to be used as a drop-in replacement for standard library's :mod:`logging` by wrapping it.
 In other words, you should be able to replace your call to :func:`logging.getLogger` by a call to :func:`structlog.get_logger` and things should keep working as before (if structlog is configured right, see :ref:`stdlib-config` below).
-
-Currently the following incompatibilities are known:
-
-- Positional arguments are not passed to the underlying logger.
-  See `issue 19 <https://github.com/hynek/structlog/issues/19>`_.
 
 If you run into incompatibilities, it is a *bug* so please take the time to `report it <https://github.com/hynek/structlog/issues>`_!
 If you're a heavy :mod:`logging` user, your `help <https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib>`_ to ensure a better compatibility would be highly appreciated!
