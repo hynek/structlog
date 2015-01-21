@@ -156,8 +156,10 @@ class BoundLogger(BoundLoggerBase):
     def hasHandlers(self):
         """
         Calls :func:`logging.Logger.hasHandlers()` with unmodified arguments.
+
+        Exists only in Python 3.
         """
-        return self._logger.hasHandlers()
+        return self._logger.hasHandlers()  # pragma: noqa
 
     def callHandlers(self, record):
         """

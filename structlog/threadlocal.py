@@ -17,10 +17,10 @@ try:
     from greenlet import getcurrent
 except ImportError:  # pragma: nocover
     from threading import local as ThreadLocal
-else:
+else:  # pragma: nocover
     from weakref import WeakKeyDictionary
 
-    class ThreadLocal(object):  # pragma: nocover
+    class ThreadLocal(object):
         """
         threading.local() replacement for greenlets.
         """
