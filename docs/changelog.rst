@@ -2,10 +2,11 @@
 Changelog
 =========
 
+- :feature:`-` Add :func:`structlog.stdlib.BoundLogger.log`.
 - :feature:`19` Pass positional arguments to stdlib wrapped loggers that use string formatting.
 - :feature:`28` structlog is now dually licensed under the `Apache License, Version 2 <http://choosealicense.com/licenses/apache-2.0/>`_ and the `MIT <http://choosealicense.com/licenses/mit/>`_ license.
   Therefore it is now legal to use structlog with `GPLv2 <http://choosealicense.com/licenses/gpl-2.0/>`_-licensed projects.
-- :feature:`22` :class:`structlog.stdlib.BoundLogger` now has an exception function.
+- :feature:`22` Add :func:`structlog.stdlib.BoundLogger.exception`.
 - :release:`0.4.2 <2014-07-26>`
 - :bug:`8` Fixed a memory leak in greenlet code that emulates thread locals.
   It shouldn't matter in practice unless you use multiple wrapped dicts within one program that is rather unlikely.

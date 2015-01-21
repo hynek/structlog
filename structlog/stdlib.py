@@ -49,7 +49,7 @@ class BoundLogger(BoundLoggerBase):
 
     Use it like::
 
-        configure(
+        structlog.configure(
             wrapper_class=structlog.stdlib.BoundLogger,
         )
 
@@ -93,6 +93,13 @@ class BoundLogger(BoundLoggerBase):
         """
         kw['exc_info'] = True
         return self.error(event, *args, **kw)
+
+    def log(self, level, event, *args, **kw):
+        """
+        Process event and call the appropriate logging method depending on
+        `level`.
+        """
+        return self._proxy_to_logger(_LEVEL_TO_NAME[level], event, *args, **kw)
 
     fatal = critical
 
@@ -281,7 +288,7 @@ INFO = 20
 DEBUG = 10
 NOTSET = 0
 
-_nameToLevel = {
+_NAME_TO_LEVEL = {
     'critical': CRITICAL,
     'error': ERROR,
     'warn': WARNING,
@@ -290,6 +297,11 @@ _nameToLevel = {
     'debug': DEBUG,
     'notset': NOTSET,
 }
+
+_LEVEL_TO_NAME = dict(
+    (v, k) for k, v in _NAME_TO_LEVEL.items()
+    if k not in ("warn", "notset")
+)
 
 
 def filter_by_level(logger, name, event_dict):
@@ -311,7 +323,7 @@ def filter_by_level(logger, name, event_dict):
     ...
     DropEvent
     """
-    if logger.isEnabledFor(_nameToLevel[name]):
+    if logger.isEnabledFor(_NAME_TO_LEVEL[name]):
         return event_dict
     else:
         raise DropEvent

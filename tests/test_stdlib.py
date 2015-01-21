@@ -38,6 +38,13 @@ def build_bl(logger=None, processors=None, context=None):
     )
 
 
+def return_method_name(_, method_name, __):
+    """
+    A final renderer that returns the name of the logging method.
+    """
+    return method_name
+
+
 class TestLoggerFactory(object):
     def setup_method(self, method):
         """
@@ -133,8 +140,6 @@ class TestBoundLogger(object):
         """
         The basic proxied methods are proxied to the correct counterparts.
         """
-        def return_method_name(_, method_name, __):
-            return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert method_name == getattr(bl, method_name)('event')
 
@@ -142,10 +147,16 @@ class TestBoundLogger(object):
         """
         BoundLogger.exception is proxied to Logger.error.
         """
-        def return_method_name(_, method_name, __):
-            return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert "error" == bl.exception("event")
+
+    def test_proxies_log(self):
+        """
+        BoundLogger.exception.log() is proxied to the apropriate method.
+        """
+        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
+        assert "critical" == bl.log(50, "event")
+        assert "debug" == bl.log(10, "event")
 
     def test_positional_args_proxied(self):
         """
@@ -201,8 +212,6 @@ class TestBoundLogger(object):
                 {"exc_info": True, "event": "event"}) == bl.exception('event')
 
     def test_exception_maps_to_error(self):
-        def return_method_name(_, method_name, __):
-            return method_name
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
         assert "error" == bl.exception("event")
 
