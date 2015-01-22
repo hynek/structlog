@@ -256,6 +256,9 @@ class TestStringFormatting(object):
 
 class TestAddLogLevel(object):
     def test_log_level_added(self):
+        """
+        The log level is added to the event dict.
+        """
         event_dict = {}
         add_log_level(None, 'warn', event_dict)
         assert 'level' in event_dict
@@ -264,6 +267,9 @@ class TestAddLogLevel(object):
 
 class TestAddLoggerName(object):
     def test_logger_name_added(self):
+        """
+        The logger name is added to the event dict.
+        """
         name = 'sample-name'
         logger = logging.getLogger(name)
         event_dict = {}
