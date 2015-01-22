@@ -260,7 +260,6 @@ class TestAddLogLevel(object):
         The log level is added to the event dict.
         """
         event_dict = add_log_level(None, 'error', {})
-        assert 'level' in event_dict
         assert 'error' == event_dict['level']
 
     def test_log_level_alias_normalized(self):
@@ -268,7 +267,6 @@ class TestAddLogLevel(object):
         The normalized name of the log level is added to the event dict.
         """
         event_dict = add_log_level(None, 'warn', {})
-        assert 'level' in event_dict
         assert 'warning' == event_dict['level']
 
 
@@ -280,5 +278,4 @@ class TestAddLoggerName(object):
         name = 'sample-name'
         logger = logging.getLogger(name)
         event_dict = add_logger_name(logger, None, {})
-        assert 'logger' in event_dict
         assert name == event_dict['logger']
