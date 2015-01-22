@@ -83,6 +83,10 @@ structlog Package
 
 .. autofunction:: filter_by_level
 
+.. autofunction:: add_log_level
+
+.. autofunction:: add_logger_name
+
 .. autoclass:: PositionalArgumentsFormatter
 
 :mod:`twisted` Module
