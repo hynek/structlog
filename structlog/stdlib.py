@@ -327,3 +327,23 @@ def filter_by_level(logger, name, event_dict):
         return event_dict
     else:
         raise DropEvent
+
+
+def add_log_level(logger, method_name, event_dict):
+    """
+    Add the log level to the event dict.
+    """
+    if method_name == 'warn':
+        # The stdlib has an alias
+        method_name = 'warning'
+
+    event_dict['level'] = method_name
+    return event_dict
+
+
+def add_logger_name(logger, method_name, event_dict):
+    """
+    Add the logger name to the event dict.
+    """
+    event_dict['logger'] = logger.name
+    return event_dict

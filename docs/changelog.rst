@@ -2,6 +2,7 @@
 Changelog
 =========
 
+- :feature:`44` Add :func:`structlog.stdlib.add_log_level` and :func:`structlog.stdlib.add_logger_name` processors.
 - :feature:`42` Add :func:`structlog.stdlib.BoundLogger.log`.
 - :feature:`19` Pass positional arguments to stdlib wrapped loggers that use string formatting.
 - :feature:`28` structlog is now dually licensed under the `Apache License, Version 2 <http://choosealicense.com/licenses/apache-2.0/>`_ and the `MIT <http://choosealicense.com/licenses/mit/>`_ license.
