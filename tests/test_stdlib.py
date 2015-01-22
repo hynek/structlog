@@ -20,6 +20,7 @@ from structlog.stdlib import (
     PositionalArgumentsFormatter,
     WARN,
     filter_by_level,
+    add_log_level,
     _FixedFindCallerLogger,
 )
 from structlog._compat import PY2
@@ -250,3 +251,11 @@ class TestStringFormatting(object):
             {'event': '%d %d %s', 'positional_args': positional_args})
         assert 'positional_args' in event_dict
         assert positional_args == event_dict['positional_args']
+
+
+class TestAddLogLevel(object):
+    def test_log_level_added(self):
+        event_dict = {}
+        add_log_level(None, 'warn', event_dict)
+        assert 'level' in event_dict
+        assert 'warning' == event_dict['level']
