@@ -339,3 +339,11 @@ def add_log_level(logger, method_name, event_dict):
 
     event_dict['level'] = method_name
     return event_dict
+
+
+def add_logger_name(logger, method_name, event_dict):
+    """
+    Add the logger name to the event dict.
+    """
+    event_dict['logger'] = logger.name
+    return event_dict

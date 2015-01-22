@@ -21,6 +21,7 @@ from structlog.stdlib import (
     WARN,
     filter_by_level,
     add_log_level,
+    add_logger_name,
     _FixedFindCallerLogger,
 )
 from structlog._compat import PY2
@@ -259,3 +260,13 @@ class TestAddLogLevel(object):
         add_log_level(None, 'warn', event_dict)
         assert 'level' in event_dict
         assert 'warning' == event_dict['level']
+
+
+class TestAddLoggerName(object):
+    def test_logger_name_added(self):
+        name = 'sample-name'
+        logger = logging.getLogger(name)
+        event_dict = {}
+        add_logger_name(logger, None, event_dict)
+        assert 'logger' in event_dict
+        assert name == event_dict['logger']
