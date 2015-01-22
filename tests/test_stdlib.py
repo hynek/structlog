@@ -259,8 +259,7 @@ class TestAddLogLevel(object):
         """
         The log level is added to the event dict.
         """
-        event_dict = {}
-        add_log_level(None, 'warn', event_dict)
+        event_dict = add_log_level(None, 'warn', {})
         assert 'level' in event_dict
         assert 'warning' == event_dict['level']
 
@@ -272,7 +271,6 @@ class TestAddLoggerName(object):
         """
         name = 'sample-name'
         logger = logging.getLogger(name)
-        event_dict = {}
-        add_logger_name(logger, None, event_dict)
+        event_dict = add_logger_name(logger, None, {})
         assert 'logger' in event_dict
         assert name == event_dict['logger']
