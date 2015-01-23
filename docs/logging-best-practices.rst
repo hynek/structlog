@@ -73,7 +73,7 @@ Logstash with logstash-forwarder
 Logstash_ is a great way to parse, save, and search your logs.
 
 The general modus operandi is that you have log shippers that parse your log files and forward the log entries to your Logstash server and store is in elasticsearch_.
-If your log entries consist -- as suggested -- of a tai64n_ timestamp and a JSON dictionary, this is pretty easy and efficient.
+If your log entries consist of a JSON dictionary (and perhaps a tai64n_ timestamp), this is pretty easy and efficient.
 
 If you can't decide on a log shipper, logstash-forwarder_ (formerly known as Lumberjack) works really well.
 When Logstash's ``lumberjack`` input is configured to use ``codec => "json"``, having ``structlog`` output JSON is all you need.
