@@ -36,9 +36,7 @@ structlog comes with a few standard library-specific processors:
    Adds the log level to the event dictionary under the key ``level``.
 
 :class:`~structlog.stdlib.PositionalArgumentsFormatter`:
-   This processes and formats positional arguments (if any) passed to log
-   methods in the same way the ``logging`` module would do, e.g.
-   ``logger.info("Hello, %s", name)``.
+   This processes and formats positional arguments (if any) passed to log methods in the same way the ``logging`` module would do, e.g. ``logger.info("Hello, %s", name)``.
 
 
 .. _stdlib-config:
