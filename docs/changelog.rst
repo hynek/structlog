@@ -2,6 +2,7 @@
 Changelog
 =========
 
+- :release:`15.0.0 <2015-01-23>`
 - :feature:`44` Add :func:`structlog.stdlib.add_log_level` and :func:`structlog.stdlib.add_logger_name` processors.
 - :feature:`42` Add :func:`structlog.stdlib.BoundLogger.log`.
 - :feature:`19` Pass positional arguments to stdlib wrapped loggers that use string formatting.
