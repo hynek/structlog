@@ -22,12 +22,23 @@ It behaves exactly like the generic :class:`structlog.BoundLogger` except:
 Processors
 ----------
 
-structlog comes with one standard library-specific processor:
+structlog comes with a few standard library-specific processors:
 
 :func:`~structlog.stdlib.filter_by_level`:
    Checks the log entries's log level against the configuration of standard library's logging.
    Log entries below the threshold get silently dropped.
    Put it at the beginning of your processing chain to avoid expensive operations happen in the first place.
+
+:func:`~structlog.stdlib.add_logger_name`:
+   Adds the name of the logger to the output under the key ``logger``.
+
+:func:`~structlog.stdlib.add_log_level`:
+   Adds the log level to the output under the key ``level``.
+
+:class:`~structlog.stdlib.PositionalArgumentsFormatter`:
+   This processes and formats positional arguments (if any) passed to log
+   methods in the same way the ``logging`` module would do, e.g.
+   ``logger.info("Hello, %s", name)``.
 
 
 .. _stdlib-config:
