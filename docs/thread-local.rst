@@ -77,7 +77,7 @@ Then use an instance of the generated class as the context class::
    WrappedDict-e0fc330e-e5eb-42ee-bcec-ffd7bd09ad09
 
 
-In order to be able to bind values temporarily to a logger, :mod:`structlog.threadlocal` comes with a `context manager <http://docs.python.org/2/library/stdtypes.html#context-manager-types>`_: :func:`~structlog.threadlocal.tmp_bind`\ :
+In order to be able to bind values temporarily to a logger, :mod:`structlog.threadlocal` comes with a `context manager <https://docs.python.org/2/library/stdtypes.html#context-manager-types>`_: :func:`~structlog.threadlocal.tmp_bind`\ :
 
 .. testsetup:: ctx
 

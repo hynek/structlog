@@ -90,7 +90,7 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 
 .. [*] This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
 
-.. _AMQP: http://support.torch.sh/help/kb/graylog2-server/using-the-amqp-input
+.. _AMQP: https://www.graylog2.org/resources/documentation
 .. _Graylog: http://graylog2.org
 .. _Logstash: http://logstash.net
 .. _logstash-forwarder: https://github.com/elasticsearch/logstash-forwarder
@@ -100,7 +100,7 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _`they can be switched off`: http://blog.abhijeetr.com/2013/01/disable-rate-limiting-in-rsyslog-v5.html
 .. _`this post`: http://www.revsys.com/blog/2010/aug/26/centralized-logging-fun-and-profit/
-.. _`this tutorial`: http://rubyists.github.io/2011/05/02/runit-for-ruby-and-everything-else.html
+.. _`this tutorial`: https://rubyists.github.io/2011/05/02/runit-for-ruby-and-everything-else.html
 .. _logrotate: http://manpages.ubuntu.com/manpages/raring/man8/logrotate.8.html
 .. _rsyslog: http://www.rsyslog.com
 .. _runit: http://smarden.org/runit/

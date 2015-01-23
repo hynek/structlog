@@ -19,7 +19,6 @@ Here are a few hints and rules to get you started:
 - Obey `PEP 8`_ and `PEP 257`_.
   Twisted-specific modules use CamelCase.
 - Write `good commit messages`_.
-- Ideally, squash_ your commits, i.e. make your pull requests just one commit.
 
 .. note::
    If you have something great but aren’t sure whether it adheres -- or even can adhere -- to the rules above: **please submit a pull request anyway**!
@@ -31,12 +30,11 @@ Thank you for considering to contribute to structlog!
 If you have any question or concerns, feel free to reach out to me -- there is also a ``#structlog`` channel on freenode_.
 
 
-.. _squash: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
-.. _`PEP 8`: http://www.python.org/dev/peps/pep-0008/
-.. _`PEP 257`: http://www.python.org/dev/peps/pep-0257/
+.. _`PEP 8`: https://www.python.org/dev/peps/pep-0008/
+.. _`PEP 257`: https://www.python.org/dev/peps/pep-0257/
 .. _`good commit messages`: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-.. _`Code of Conduct`: http://www.python.org/psf/codeofconduct/
+.. _`Code of Conduct`: https://www.python.org/psf/codeofconduct/
 .. _changelog: https://github.com/hynek/structlog/blob/master/docs/changelog.rst
 .. _AUTHORS.rst: https://github.com/hynek/structlog/blob/master/AUTHORS.rst
-.. _procedures: http://twistedmatrix.com/trac/wiki/CompatibilityPolicy
-.. _`freenode`: http://freenode.net
+.. _procedures: https://twistedmatrix.com/trac/wiki/CompatibilityPolicy
+.. _`freenode`: https://freenode.net

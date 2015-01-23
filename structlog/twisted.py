@@ -3,7 +3,7 @@
 # repository for complete details.
 
 """
-Processors and tools specific to the `Twisted <http://twistedmatrix.com/>`_
+Processors and tools specific to the `Twisted <https://twistedmatrix.com/>`_
 networking engine.
 
 See also :doc:`structlog's Twisted support <twisted>`.
@@ -125,7 +125,7 @@ class JSONRenderer(GenericJSONRenderer):
         and *not* `err()` which renders failures in separate lines.
 
         Therefore it will break your tests that contain assertions using
-        `flushLoggedErrors <http://twistedmatrix.com/documents/
+        `flushLoggedErrors <https://twistedmatrix.com/documents/
         current/api/twisted.trial.unittest.SynchronousTestCase.html
         #flushLoggedErrors>`_.
 
@@ -177,7 +177,7 @@ class JSONLogObserverWrapper(object):
 
     :param ILogObserver observer: Twisted log observer to wrap.  For example
         :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
-        <http://twistedmatrix.com/documents/current/api/twisted.python.log.
+        <https://twistedmatrix.com/documents/current/api/twisted.python.log.
         FileLogObserver.html>`_
 
     .. versionadded:: 0.2.0
@@ -225,7 +225,7 @@ class EventAdapter(object):
     Adapt an ``event_dict`` to Twisted logging system.
 
     Particularly, make a wrapped `twisted.python.log.err
-    <http://twistedmatrix.com/documents/current/
+    <https://twistedmatrix.com/documents/current/
     api/twisted.python.log.html#err>`_ behave as expected.
 
     :param callable dictRenderer: Renderer that is used for the actual

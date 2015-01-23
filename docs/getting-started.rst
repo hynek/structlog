@@ -86,7 +86,7 @@ For structlog, a log entry is just a dictionary called *event dict[ionary]*:
 - You can pre-build a part of the dictionary step by step.
   These pre-saved values are called the *context*.
 - As soon as an *event* happens -- which is a dictionary too -- it is merged together with the *context* to an *event dict* and logged out.
-- To keep as much order of the keys as possible, an OrderedDict_ is used for the context by default.
+- To keep as much order of the keys as possible, an :class:`collections.OrderedDict` is used for the context by default.
 - The recommended way of binding values is the one in these examples: creating new loggers with a new context.
   If you're okay with giving up immutable local state for convenience, you can also use :ref:`thread/greenlet local storage <threadlocal>` for the context.
 
@@ -128,7 +128,6 @@ If you want to see more code, make sure to check out the :ref:`examples`!
 .. [*] In production, you're more likely to use :class:`~structlog.processors.JSONRenderer` that can also be customized using a ``__structlog__`` method so you don't have to change your repr methods to something they weren't originally intended for.
 
 
-.. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
-.. _`repr()`: http://docs.python.org/2/reference/datamodel.html#object.__repr__
-.. _recipe: http://docs.python.org/2/howto/logging-cookbook.html
-.. _OrderedDict: http://docs.python.org/2/library/collections.html#collections.OrderedDict
+.. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
+.. _`repr()`: https://docs.python.org/2/reference/datamodel.html#object.__repr__
+.. _recipe: https://docs.python.org/2/howto/logging-cookbook.html

@@ -16,7 +16,7 @@ Each processors receives three positional arguments:
 
 **logger**
    Your wrapped logger object.
-   For example `logging.Logger <http://docs.python.org/2/library/logging.html#logging.Logger>`_.
+   For example :class:`logging.Logger`.
 
 **method_name**
    The name of the wrapped method.

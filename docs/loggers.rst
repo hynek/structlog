@@ -60,7 +60,7 @@ As you can see, it accepts one mandatory and a few optional arguments:
    The class to save your context in.
    Particularly useful for :ref:`thread local context storage <threadlocal>`.
 
-   Default is OrderedDict_.
+   Default is :class:`collections.OrderedDict`.
 
 Additionally, the following arguments are allowed too:
 
@@ -109,7 +109,5 @@ Additionally -- mostly for unit testing -- structlog also ships with a logger th
    >>> ReturnLogger().msg('hello', when='again')
    (('hello',), {'when': 'again'})
 
-
-.. _OrderedDict: http://docs.python.org/2/library/collections.html#collections.OrderedDict
 
 .. [*] Since this is slightly magicy, structlog comes with concrete loggers for the :doc:`standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.

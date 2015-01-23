@@ -51,14 +51,14 @@ In fact, it could even be written like
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
 
-because :class:`~structlog.processors.PrintLogger` is the default LoggerFactory used (see :ref:`logger-factories`).
+because :class:`~structlog.processors.PrintLogger` is the default ``LoggerFactory`` used (see :ref:`logger-factories`).
 
-structlog tries to behave in the least surprising way when it comes to handling defaults and configuration:
+``structlog`` tries to behave in the least surprising way when it comes to handling defaults and configuration:
 
 #. Arguments passed to :func:`structlog.wrap_logger` *always* take the highest precedence over configuration.
    That means that you can overwrite whatever you've configured for each logger respectively.
 #. If you leave them on `None`, structlog will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
-#. If you haven't configured or passed anything at all, the default fallback values are used which means OrderedDict_ for context and ``[``:class:`~structlog.processors.StackInfoRenderer`, :func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain, and `False` for `cache_logger_on_first_use`.
+#. If you haven't configured or passed anything at all, the default fallback values are used which means :class:`collections.OrderedDict` for context and ``[``:class:`~structlog.processors.StackInfoRenderer`, :func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain, and `False` for `cache_logger_on_first_use`.
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
@@ -140,9 +140,7 @@ If you use standard library's logging, it makes sense to configure them next to 
    `Application constructor <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
 
 **Twisted**
-   The `plugin definition <http://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
-   If your app is not a plugin, put it into your `tac file <http://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
+   The `plugin definition <https://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
+   If your app is not a plugin, put it into your `tac file <https://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
 
 If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your :func:`structlog.configure` gets called more than once, structlog offers :func:`structlog.configure_once` that raises a warning if structlog has been configured before (no matter whether using :func:`structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.
-
-.. _OrderedDict: http://docs.python.org/2/library/collections.html#collections.OrderedDict

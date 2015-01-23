@@ -3,9 +3,8 @@
 # repository for complete details.
 
 """
-Processors and helpers specific to the `logging module
-<http://docs.python.org/2/library/logging.html>`_ from the `Python standard
-library <http://docs.python.org/>`_.
+Processors and helpers specific to the :mod:`logging` module from the `Python
+standard library <https://docs.python.org/>`_.
 
 See also :doc:`structlog's standard library support <standard-library>`.
 """

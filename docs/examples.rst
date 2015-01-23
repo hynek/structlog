@@ -23,7 +23,7 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using `new()` for re-initializing the logger).
 
-Please note that :class:`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger() <http://docs.python.org/2/library/logging.html#logging.getLogger>`_. with it.
+Please note that :class:`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a :func:`logging.getLogger` with it.
 It's used by :func:`structlog.get_logger` to rid you of logging boilerplate in application code.
 If you prefer to name your standard library loggers explicitly, a positional argument to :func:`~structlog.get_logger` gets passed to the factory and used as the name.
 
