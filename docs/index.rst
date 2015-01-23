@@ -5,25 +5,12 @@ Structured Logging for Python
 Release v\ |version| (:doc:`What's new? <changelog>`).
 
 .. include:: ../README.rst
-   :start-after: begin
+   :start-after: begin-intro
+   :end-before: end-intro
 
-The Pitch
-=========
-
-``structlog`` makes structured logging with *incremental context building* and *arbitrary formatting* as easy as:
-
-.. doctest::
-
-   >>> from structlog import get_logger
-   >>> log = get_logger()
-   >>> log = log.bind(user='anonymous', some_key=23)
-   >>> log = log.bind(user='hynek', another_key=42)
-   >>> log.info('user.logged_in', happy=True)
-   some_key=23 user='hynek' another_key=42 happy=True event='user.logged_in'
 
 Please note that this example does *not* use standard library logging (but could so :ref:`easily <standard-library-lite>`).
 The logger that's returned by :func:`~structlog.get_logger()` is *freely* :doc:`configurable <configuration>` and uses a simple :class:`~structlog.PrintLogger` by default.
-
 
 
 For…

@@ -12,7 +12,7 @@ structlog: Structured Logging for Python
 .. image:: https://coveralls.io/repos/hynek/structlog/badge.png?branch=master
     :target: https://coveralls.io/r/hynek/structlog?branch=master
 
-.. begin
+.. begin-intro
 
 ``structlog`` makes structured logging in Python easy by *augmenting* your *existing* logger.
 It allows you to split your log entries up into key/value pairs and build them incrementally without annoying boilerplate code.
@@ -22,3 +22,22 @@ It's dual-licensed under `Apache License, version 2 <http://choosealicense.com/l
 ``structlog`` targets Python 2.6, 2.7, 3.3, 3.4, and PyPy with no additional dependencies for core functionality.
 
 If you need any help, visit us on ``#structlog`` on `Freenode <http://freenode.net>`_!
+
+
+The Pitch
+=========
+
+``structlog`` makes structured logging with *incremental context building* and *arbitrary formatting* as easy as:
+
+.. pycon::
+
+   >>> from structlog import get_logger
+   >>> log = get_logger()
+   >>> log = log.bind(user='anonymous', some_key=23)
+   >>> log = log.bind(user='hynek', another_key=42)
+   >>> log.info('user.logged_in', happy=True)
+   some_key=23 user='hynek' another_key=42 happy=True event='user.logged_in'
+
+.. end-intro
+
+It does *not* rely on any specific logging library and comes with direct support for standard library’s ``logging`` module and Twisted.
