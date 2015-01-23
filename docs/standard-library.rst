@@ -22,12 +22,21 @@ It behaves exactly like the generic :class:`structlog.BoundLogger` except:
 Processors
 ----------
 
-structlog comes with one standard library-specific processor:
+structlog comes with a few standard library-specific processors:
 
 :func:`~structlog.stdlib.filter_by_level`:
-   Checks the log entries's log level against the configuration of standard library's logging.
+   Checks the log entry's log level against the configuration of standard library's logging.
    Log entries below the threshold get silently dropped.
    Put it at the beginning of your processing chain to avoid expensive operations happen in the first place.
+
+:func:`~structlog.stdlib.add_logger_name`:
+   Adds the name of the logger to the event dictionary under the key ``logger``.
+
+:func:`~structlog.stdlib.add_log_level`:
+   Adds the log level to the event dictionary under the key ``level``.
+
+:class:`~structlog.stdlib.PositionalArgumentsFormatter`:
+   This processes and formats positional arguments (if any) passed to log methods in the same way the ``logging`` module would do, e.g. ``logger.info("Hello, %s", name)``.
 
 
 .. _stdlib-config:
@@ -35,21 +44,39 @@ structlog comes with one standard library-specific processor:
 Suggested Configuration
 -----------------------
 
-::
+A basic configuration to output structured logs in JSON format looks like this::
 
-   import structlog
+    import structlog
 
-   structlog.configure(
-      processors=[
-          structlog.stdlib.filter_by_level,
-          structlog.processors.StackInfoRenderer(),
-          structlog.processors.format_exc_info,
-          structlog.processors.JSONRenderer()
-      ],
-      context_class=dict,
-      logger_factory=structlog.stdlib.LoggerFactory(),
-      wrapper_class=structlog.stdlib.BoundLogger,
-      cache_logger_on_first_use=True,
-   )
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.TimeStamper(fmt='iso'),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.JSONRenderer()
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
 
-See also :doc:`logging-best-practices`.
+
+To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the ``logging`` module like this::
+
+    import logging
+    import sys
+
+    handler = logging.StreamHandler(sys.stdout)
+    root_logger = logging.getLogger()
+    root_logger.addHandler(handler)
+
+If you plan to hook up the logging output to `logstash`, as suggested in :doc:`logging-best-practices`, the simplest approach is to configure ``logstash-forwarder`` to pick up the output from your application.
+To achieve this, configure your process supervisor (such as ``runit`` or ``supervisord``) to store the output in a file, and have ``logstash-forwarder`` monitor that file to ship it to the central log collection server.
+This approach also applies to other centralized logging solutions.
+
+.. _`12 factor app`: http://12factor.net/logs
