@@ -25,7 +25,7 @@ Processors
 structlog comes with a few standard library-specific processors:
 
 :func:`~structlog.stdlib.filter_by_level`:
-   Checks the log entries's log level against the configuration of standard library's logging.
+   Checks the log entry's log level against the configuration of standard library's logging.
    Log entries below the threshold get silently dropped.
    Put it at the beginning of your processing chain to avoid expensive operations happen in the first place.
 
