@@ -8,7 +8,7 @@ Structured logging for Python.
 
 from __future__ import absolute_import, division, print_function
 
-__version__ = "15.0.0"
+__version__ = "15.1.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging in Python"
