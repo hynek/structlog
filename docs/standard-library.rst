@@ -67,7 +67,7 @@ To make your program behave like a proper `12 factor app`_ that outputs only JSO
     root_logger.addHandler(handler)
 
 If you plan to hook up the logging output to `logstash`, as suggested in :doc:`logging-best-practices`, the simplest approach is to configure ``logstash-forwarder`` to pick up the output from your application.
-To achieve this, configure your process supervisor (such ``runit`` or ``supervisord``) to store the output in a file, and have ``logstash-forwarder`` monitor that file to ship it to the central log collection server.
+To achieve this, configure your process supervisor (such as ``runit`` or ``supervisord``) to store the output in a file, and have ``logstash-forwarder`` monitor that file to ship it to the central log collection server.
 This approach also applies to other centralized logging solutions.
 
 .. _`12 factor app`: http://12factor.net/logs
