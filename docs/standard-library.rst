@@ -30,10 +30,10 @@ structlog comes with a few standard library-specific processors:
    Put it at the beginning of your processing chain to avoid expensive operations happen in the first place.
 
 :func:`~structlog.stdlib.add_logger_name`:
-   Adds the name of the logger to the output under the key ``logger``.
+   Adds the name of the logger to the event dictionary under the key ``logger``.
 
 :func:`~structlog.stdlib.add_log_level`:
-   Adds the log level to the output under the key ``level``.
+   Adds the log level to the event dictionary under the key ``level``.
 
 :class:`~structlog.stdlib.PositionalArgumentsFormatter`:
    This processes and formats positional arguments (if any) passed to log
