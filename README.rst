@@ -29,7 +29,7 @@ The Pitch
 
 ``structlog`` makes structured logging with *incremental context building* and *arbitrary formatting* as easy as:
 
-.. pycon::
+.. code-block:: pycon
 
    >>> from structlog import get_logger
    >>> log = get_logger()
