@@ -5,7 +5,7 @@
 from __future__ import absolute_import, division, print_function
 
 import pytest
-pytest.importorskip('twisted')
+pytest.importorskip('twisted')  # noqa
 
 import json
 
