@@ -165,7 +165,7 @@ class BoundLogger(BoundLoggerBase):
 
         Exists only in Python 3.
         """
-        return self._logger.hasHandlers()  # pragma: noqa
+        return self._logger.hasHandlers()  # pragma: nocover
 
     def callHandlers(self, record):
         """

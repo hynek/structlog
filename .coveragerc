@@ -1,3 +1,4 @@
 [report]
+branch = True
 omit =
     structlog/_compat.py
