@@ -221,7 +221,7 @@ class LoggerFactory(object):
         If an optional argument is passed, it will be used as the logger name
         instead of guesswork.  This optional argument would be passed from the
         :func:`structlog.get_logger` call.  For example
-        ``struclog.get_logger('foo')`` would cause this method to be called
+        ``structlog.get_logger('foo')`` would cause this method to be called
         with ``'foo'`` as its first positional argument.
 
         :rtype: `logging.Logger`
