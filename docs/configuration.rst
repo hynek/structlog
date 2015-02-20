@@ -12,7 +12,7 @@ Let me start at the end and introduce you to the ultimate convenience function t
 
 The goal is to reduce your per-file logging boilerplate to::
 
-   from structlog.stdlib import get_logger
+   from structlog import get_logger
    logger = get_logger()
 
 while still giving you the full power via configuration.
