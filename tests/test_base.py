@@ -101,8 +101,8 @@ class TestProcessing(object):
         logger = stub(msg=lambda *args, **kw: (args, kw))
         b = build_bl(logger, processors=[lambda *_: 'foo'])
         assert (
-            (('foo',), {})
-            == b._process_event('', 'foo', {})
+            (('foo',), {}) ==
+            b._process_event('', 'foo', {})
         )
 
     def test_last_processor_returns_tuple(self):
@@ -113,8 +113,8 @@ class TestProcessing(object):
         b = build_bl(logger, processors=[lambda *_: (('foo',),
                                                      {'key': 'value'})])
         assert (
-            (('foo',), {'key': 'value'})
-            == b._process_event('', 'foo', {})
+            (('foo',), {'key': 'value'}) ==
+            b._process_event('', 'foo', {})
         )
 
     def test_last_processor_returns_dict(self):
@@ -124,8 +124,8 @@ class TestProcessing(object):
         logger = stub(msg=lambda *args, **kw: (args, kw))
         b = build_bl(logger, processors=[lambda *_: {'event': 'foo'}])
         assert (
-            ((), {'event': 'foo'})
-            == b._process_event('', 'foo', {})
+            ((), {'event': 'foo'}) ==
+            b._process_event('', 'foo', {})
         )
 
     def test_last_processor_returns_unknown_value(self):

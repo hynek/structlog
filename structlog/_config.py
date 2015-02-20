@@ -265,8 +265,8 @@ class BoundLoggerLazyProxy(object):
 
         if (
             self._cache_logger_on_first_use is True or
-            (self._cache_logger_on_first_use is None
-             and _CONFIG.cache_logger_on_first_use is True)
+            (self._cache_logger_on_first_use is None and
+             _CONFIG.cache_logger_on_first_use is True)
         ):
             self.bind = finalized_bind
         return finalized_bind(**new_values)

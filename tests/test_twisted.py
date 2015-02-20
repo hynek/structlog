@@ -66,44 +66,56 @@ class TestBoundLogger(object):
             # deep-compares of Failures.
             assert (
                 str(((), {'_stuff': Failure(ValueError()),
-                          '_why': "foo=42 event='event'"}))
-                == str(bl.err('event', foo=42))
+                          '_why': "foo=42 event='event'"})) ==
+                str(bl.err('event', foo=42))
             )
 
 
 class TestExtractStuffAndWhy(object):
     def test_extractFailsOnTwoFailures(self):
+        """
+        Raise ValueError if both _stuff and event contain exceptions.
+        """
         with pytest.raises(ValueError) as e:
             _extractStuffAndWhy({'_stuff': Failure(ValueError()),
                                  'event': Failure(TypeError())})
         assert (
-            'Both _stuff and event contain an Exception/Failure.'
-            == e.value.args[0]
+            "Both _stuff and event contain an Exception/Failure." ==
+            e.value.args[0]
         )
 
     def test_failsOnConflictingEventAnd_why(self):
+        """
+        Raise ValueError if both _why and event are in the event_dict.
+        """
         with pytest.raises(ValueError) as e:
             _extractStuffAndWhy({'_why': 'foo', 'event': 'bar'})
         assert (
-            'Both `_why` and `event` supplied.'
-            == e.value.args[0]
+            "Both `_why` and `event` supplied." ==
+            e.value.args[0]
         )
 
     def test_handlesFailures(self):
+        """
+        Extracts failures and events.
+        """
         assert (
-            Failure(ValueError()), 'foo', {}
-            == _extractStuffAndWhy({'_why': 'foo',
-                                    '_stuff': Failure(ValueError())})
+            Failure(ValueError()), "foo", {} ==
+            _extractStuffAndWhy({"_why": "foo",
+                                 "_stuff": Failure(ValueError())})
         )
         assert (
-            Failure(ValueError()), 'error', {}
-            == _extractStuffAndWhy({'_stuff': Failure(ValueError())})
+            Failure(ValueError()), "error", {} ==
+            _extractStuffAndWhy({"_stuff": Failure(ValueError())})
         )
 
     def test_handlesMissingFailure(self):
+        """
+        Missing failures extract a None.
+        """
         assert (
-            (None, 'foo', {})
-            == _extractStuffAndWhy({'event': 'foo'})
+            (None, "foo", {}) ==
+            _extractStuffAndWhy({"event": "foo"})
         )
 
     @pytest.mark.xfail(PY3, reason="Py3 does not allow for cleaning exc_info")

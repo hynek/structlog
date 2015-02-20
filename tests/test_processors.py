@@ -88,8 +88,8 @@ class TestJSONRenderer(object):
     def test_renders_json(self, event_dict):
         assert (
             r'{"a": "<A(\\o/)>", "b": [3, 4], "x": 7, "y": "test", "z": '
-            r'[1, 2]}'
-            == JSONRenderer(sort_keys=True)(None, None, event_dict)
+            r'[1, 2]}' ==
+            JSONRenderer(sort_keys=True)(None, None, event_dict)
         )
 
     def test_FallbackEncoder_handles_ThreadLocalDictWrapped_dicts(self):
