@@ -43,6 +43,16 @@ class TestFindFirstAppFrameAndName(object):
         monkeypatch.undo()
         assert ((f1, 'test') == f, n)
 
+    def test_tolerates_missing_name(self, monkeypatch):
+        """
+        Use ``?`` if `f_globals` lacks a `__name__` key
+        """
+        f1 = stub(f_globals={}, f_back=None)
+        f, n = _find_first_app_frame_and_name()
+        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
+        monkeypatch.undo()
+        assert ((f1, "?") == f, n)
+
 
 @pytest.fixture
 def exc_info():

@@ -35,12 +35,12 @@ def _find_first_app_frame_and_name(additional_ignores=None):
 
     :rtype: tuple of (frame, name)
     """
-    ignores = ['structlog'] + (additional_ignores or [])
+    ignores = ["structlog"] + (additional_ignores or [])
     f = sys._getframe()
-    name = f.f_globals['__name__']
+    name = f.f_globals.get("__name__", "?")
     while any(name.startswith(i) for i in ignores):
         f = f.f_back
-        name = f.f_globals['__name__']
+        name = f.f_globals.get("__name__", "?")
     return f, name
 
 
