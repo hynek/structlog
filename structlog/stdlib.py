@@ -289,6 +289,7 @@ NOTSET = 0
 
 _NAME_TO_LEVEL = {
     'critical': CRITICAL,
+    'exception': ERROR,
     'error': ERROR,
     'warn': WARNING,
     'warning': WARNING,

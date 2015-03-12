@@ -21,6 +21,7 @@ The following folks helped forming ``structlog`` into what it is now:
 - `Jean-Paul Calderone <http://as.ynchrono.us>`_
 - `Lakshmi Kannan <https://github.com/lakshmi-kannan>`_
 - `Lynn Root <https://github.com/econchick>`_
+- `Mathieu Leplatre <https://github.com/leplatrem>`_
 - `Noah Kantrowitz <https://github.com/coderanger>`_
 - `Tarek Ziadé <https://github.com/tarekziade>`_
 - `Thomas Heinrichsdobler <https://github.com/dertyp>`_
