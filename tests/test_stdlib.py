@@ -132,6 +132,7 @@ class TestFilterByLevel(object):
         event_dict = {'event': 'test'}
         assert event_dict is filter_by_level(logger, 'warn', event_dict)
         assert event_dict is filter_by_level(logger, 'error', event_dict)
+        assert event_dict is filter_by_level(logger, 'exception', event_dict)
 
 
 class TestBoundLogger(object):
