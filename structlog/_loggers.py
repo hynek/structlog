@@ -75,7 +75,7 @@ class PrintLogger(object):
             until_not_interrupted(self._write, message + '\n')
             until_not_interrupted(self._flush)
 
-    err = debug = info = warning = error = critical = log = msg
+    err = debug = info = warning = error = critical = exception = log = msg
 
 
 class ReturnLoggerFactory(object):

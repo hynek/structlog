@@ -61,6 +61,16 @@ class TestPrintLogger(object):
         PrintLogger(sio)
         assert sio in WRITE_LOCKS
 
+    def test_stdlib_methods_support(self):
+        stdlib_methods = (
+            'debug', 'info', 'log', 'warning', 'error',
+            'critical', 'exception'
+        )
+        for method in stdlib_methods:
+            sio = StringIO()
+            getattr(PrintLogger(sio), method)('hello')
+            assert 'hello' in sio.getvalue()
+
 
 class TestPrintLoggerFactory(object):
     def test_does_not_cache(self):
