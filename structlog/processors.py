@@ -207,36 +207,37 @@ class TimeStamper(object):
         <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
+    :param str key: Property name stored in `event_dict`.
 
     >>> from structlog.processors import TimeStamper
     >>> TimeStamper()(None, None, {})  # doctest: +SKIP
     {'timestamp': 1378994017}
     >>> TimeStamper(fmt='iso')(None, None, {})  # doctest: +SKIP
     {'timestamp': '2013-09-12T13:54:26.996778Z'}
-    >>> TimeStamper(fmt='%Y')(None, None, {})  # doctest: +SKIP
-    {'timestamp': '2013'}
+    >>> TimeStamper(fmt='%Y', key='year')(None, None, {})  # doctest: +SKIP
+    {'year': '2013'}
     """
-    def __new__(cls, fmt=None, utc=True):
+    def __new__(cls, fmt=None, utc=True, key='timestamp'):
         if fmt is None and not utc:
             raise ValueError('UNIX timestamps are always UTC.')
 
         now_method = getattr(datetime.datetime, 'utcnow' if utc else 'now')
         if fmt is None:
             def stamper(self, _, __, event_dict):
-                event_dict['timestamp'] = calendar.timegm(time.gmtime())
+                event_dict[key] = calendar.timegm(time.gmtime())
                 return event_dict
         elif fmt.upper() == 'ISO':
             if utc:
                 def stamper(self, _, __, event_dict):
-                    event_dict['timestamp'] = now_method().isoformat() + 'Z'
+                    event_dict[key] = now_method().isoformat() + 'Z'
                     return event_dict
             else:
                 def stamper(self, _, __, event_dict):
-                    event_dict['timestamp'] = now_method().isoformat()
+                    event_dict[key] = now_method().isoformat()
                     return event_dict
         else:
             def stamper(self, _, __, event_dict):
-                event_dict['timestamp'] = now_method().strftime(fmt)
+                event_dict[key] = now_method().strftime(fmt)
                 return event_dict
 
         return type('TimeStamper', (object,), {'__call__': stamper})()
