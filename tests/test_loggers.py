@@ -95,6 +95,17 @@ class TestPrintLoggerFactory(object):
         PrintLoggerFactory()(1, 2, 3)
 
 
+class ReturnLoggerTest(object):
+    def test_stdlib_methods_support(self):
+        stdlib_methods = (
+            'debug', 'info', 'log', 'warning', 'error',
+            'critical', 'exception'
+        )
+        for method in stdlib_methods:
+            v = getattr(ReturnLogger(), method)('hello')
+            assert 'hello' == v
+
+
 class TestReturnLoggerFactory(object):
     def test_builds_returnloggers(self):
         f = ReturnLoggerFactory()

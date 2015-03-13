@@ -120,4 +120,4 @@ class ReturnLogger(object):
         else:
             return args, kw
 
-    err = debug = info = warning = error = critical = log = msg
+    err = debug = info = warning = error = critical = exception = log = msg
