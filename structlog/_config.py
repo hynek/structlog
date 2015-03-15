@@ -91,7 +91,7 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
                 context_class=None, cache_logger_on_first_use=None,
                 logger_factory_args=None, **initial_values):
     """
-    Create a new bound logger for an arbitrary `logger`.
+    Create a new bound logger for an arbitrary *logger*.
 
     Default values for *processors*, *wrapper_class*, and *context_class* can
     be set using :func:`configure`.

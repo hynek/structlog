@@ -1,4 +1,6 @@
-[report]
+[run]
 branch = True
+
+[report]
 omit =
     structlog/_compat.py
