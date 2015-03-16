@@ -207,7 +207,7 @@ class TimeStamper(object):
         <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
-    :param str key: Property name stored in `event_dict`.
+    :param str key: Target key in `event_dict` for added timestamps.
 
     >>> from structlog.processors import TimeStamper
     >>> TimeStamper()(None, None, {})  # doctest: +SKIP
