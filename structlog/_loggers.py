@@ -75,7 +75,8 @@ class PrintLogger(object):
             until_not_interrupted(self._write, message + '\n')
             until_not_interrupted(self._flush)
 
-    err = debug = info = warning = error = critical = log = msg
+    log = debug = info = warn = warning = msg
+    err = error = critical = exception = msg
 
 
 class ReturnLoggerFactory(object):
@@ -120,4 +121,5 @@ class ReturnLogger(object):
         else:
             return args, kw
 
-    err = debug = info = warning = error = critical = log = msg
+    log = debug = info = warn = warning = msg
+    err = error = critical = exception = msg

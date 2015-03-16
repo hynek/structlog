@@ -3,6 +3,7 @@ Changelog
 =========
 
 - :release:`15.2.0 <unreleased>`
+- :feature:`52` Better support of `logging.exception()` within structlog.
 - :feature:`51` Add option to specify target key in :class:`structlog.processor.TimeStamper` processor.
 - :release:`15.1.0 <2015-02-24>`
 - :bug:`- major` Tolerate frames without a ``__name__``.
