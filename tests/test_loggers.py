@@ -6,6 +6,8 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
+import pytest
+
 from structlog._compat import StringIO
 from structlog._loggers import (
     PrintLogger,
@@ -14,11 +16,15 @@ from structlog._loggers import (
     ReturnLoggerFactory,
     WRITE_LOCKS,
 )
+from structlog.stdlib import _NAME_TO_LEVEL
 
 
 def test_return_logger():
     obj = ['hello']
     assert obj is ReturnLogger().msg(obj)
+
+
+STDLIB_MSG_METHODS = [m for m in _NAME_TO_LEVEL if m != 'notset']
 
 
 class TestPrintLogger(object):
@@ -61,15 +67,14 @@ class TestPrintLogger(object):
         PrintLogger(sio)
         assert sio in WRITE_LOCKS
 
-    def test_stdlib_methods_support(self):
-        stdlib_methods = (
-            'debug', 'info', 'log', 'warning', 'error',
-            'critical', 'exception'
-        )
-        for method in stdlib_methods:
-            sio = StringIO()
-            getattr(PrintLogger(sio), method)('hello')
-            assert 'hello' in sio.getvalue()
+    @pytest.mark.parametrize("method", STDLIB_MSG_METHODS)
+    def test_stdlib_methods_support(self, method):
+        """
+        PrintLogger implements methods of stdlib loggers.
+        """
+        sio = StringIO()
+        getattr(PrintLogger(sio), method)('hello')
+        assert 'hello' in sio.getvalue()
 
 
 class TestPrintLoggerFactory(object):
@@ -96,14 +101,13 @@ class TestPrintLoggerFactory(object):
 
 
 class ReturnLoggerTest(object):
-    def test_stdlib_methods_support(self):
-        stdlib_methods = (
-            'debug', 'info', 'log', 'warning', 'error',
-            'critical', 'exception'
-        )
-        for method in stdlib_methods:
-            v = getattr(ReturnLogger(), method)('hello')
-            assert 'hello' == v
+    @pytest.mark.parametrize("method", STDLIB_MSG_METHODS)
+    def test_stdlib_methods_support(self, method):
+        """
+        ReturnLogger implements methods of stdlib loggers.
+        """
+        v = getattr(ReturnLogger(), method)('hello')
+        assert 'hello' == v
 
 
 class TestReturnLoggerFactory(object):
