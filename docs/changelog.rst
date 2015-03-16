@@ -2,6 +2,8 @@
 Changelog
 =========
 
+- :release:`15.2.0 <unreleased>`
+- :feature:`51` Add option to specify target key in :class:`structlog.processor.TimeStamper` processor.
 - :release:`15.1.0 <2015-02-24>`
 - :bug:`- major` Tolerate frames without a ``__name__``.
 - :release:`15.0.0 <2015-01-23>`

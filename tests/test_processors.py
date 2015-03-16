@@ -134,6 +134,15 @@ class TestTimeStamper(object):
         d = ts(None, None, {})
         assert '1980-03-25T16:00:00Z' == d['timestamp']
 
+    @freeze_time('1980-03-25 16:00:00')
+    def test_key_can_be_specified(self):
+        """
+        Timestamp is stored with the specified key.
+        """
+        ts = TimeStamper(fmt='%m', key='month')
+        d = ts(None, None, {})
+        assert '03' == d['month']
+
 
 class TestFormatExcInfo(object):
     def test_formats_tuple(self, monkeypatch):
