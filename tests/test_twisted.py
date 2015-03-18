@@ -19,10 +19,11 @@ from structlog._loggers import ReturnLogger
 from structlog.twisted import (
     BoundLogger,
     EventAdapter,
-    JSONRenderer,
     JSONLogObserverWrapper,
+    JSONRenderer,
     LoggerFactory,
     PlainFileLogObserver,
+    ReprWrapper,
     _extractStuffAndWhy,
     plainJSONStdOutLogger,
 )
@@ -237,14 +238,27 @@ class TestJSONRenderer(object):
         assert jr_sorted(None, 'err', d) != jr(None, 'err', d)
 
     def test_handlesMissingFailure(self, jr):
-        assert '{"event": "foo"}' == jr(None, 'err', {'event': 'foo'})[0][0]
-        assert '{"event": "foo"}' == jr(None, 'err', {'_why': 'foo'})[0][0]
+        """
+        Calling err without an actual failure works and returns the event as
+        a string wrapped in ReprWrapper.
+        """
+        assert ReprWrapper(
+            '{"event": "foo"}'
+        ) == jr(None, "err", {"event": "foo"})[0][0]
+        assert ReprWrapper(
+            '{"event": "foo"}'
+        ) == jr(None, "err", {"_why": "foo"})[0][0]
 
     def test_msgWorksToo(self, jr):
-        assert '{"event": "foo"}' == jr(None, 'msg', {'_why': 'foo'})[0][0]
+        """
+        msg renders the event as a string and wraps it using ReprWrapper.
+        """
+        assert ReprWrapper(
+            '{"event": "foo"}'
+        ) == jr(None, 'msg', {'_why': 'foo'})[0][0]
 
     def test_handlesFailure(self, jr):
-        rv = jr(None, 'err', {'event': Failure(ValueError())})[0][0]
+        rv = jr(None, 'err', {'event': Failure(ValueError())})[0][0].string
         assert 'Failure: {0}.ValueError'.format("builtins"
                                                 if PY3
                                                 else "exceptions") in rv

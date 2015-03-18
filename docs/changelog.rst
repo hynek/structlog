@@ -3,8 +3,9 @@ Changelog
 =========
 
 - :release:`15.2.0 <unreleased>`
-- :feature:`52` Better support of `logging.exception()` within structlog.
-- :feature:`51` Add option to specify target key in :class:`structlog.processor.TimeStamper` processor.
+- :bug:`- major` Prevent Twisted's ``log.err`` from quoting strings rendered by :class:`structlog.twisted.JSONRenderer`.
+- :feature:`52` Better support of :meth:`logging.Logger.exception` within ``structlog``.
+- :feature:`51` Add option to specify target key in :class:`structlog.processors.TimeStamper` processor.
 - :release:`15.1.0 <2015-02-24>`
 - :bug:`- major` Tolerate frames without a ``__name__``.
 - :release:`15.0.0 <2015-01-23>`

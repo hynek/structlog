@@ -114,6 +114,33 @@ def _extractStuffAndWhy(eventDict):
     return _stuff, _why, eventDict
 
 
+class ReprWrapper(object):
+    """
+    Wrap a string and return it as the __repr__.
+
+    This is needed for log.err() that calls repr() on _stuff:
+
+    >>> repr("foo")
+    "'foo'"
+    >>> repr(ReprWrapper("foo"))
+    'foo'
+
+    Note the extra quotes in the unwrapped example.
+    """
+    def __init__(self, string):
+        self.string = string
+
+    def __eq__(self, other):
+        """
+        Check for equality, actually just for tests.
+        """
+        return isinstance(other, self.__class__) \
+            and self.string == other.string
+
+    def __repr__(self):
+        return self.string
+
+
 class JSONRenderer(GenericJSONRenderer):
     """
     Behaves like :class:`structlog.processors.JSONRenderer` except that it
@@ -144,8 +171,9 @@ class JSONRenderer(GenericJSONRenderer):
                 _stuff.cleanFailure()
         else:
             eventDict['event'] = _why
-        return ((GenericJSONRenderer.__call__(self, logger, name, eventDict),),
-                {'_structlog': True})
+        return ((ReprWrapper(
+            GenericJSONRenderer.__call__(self, logger, name, eventDict)
+        ),), {'_structlog': True})
 
 
 @implementer(ILogObserver)
