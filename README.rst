@@ -6,10 +6,10 @@ structlog: Structured Logging for Python
    :target: https://pypi.python.org/pypi/structlog/
    :alt: Latest Version
 
-.. image:: https://travis-ci.org/hynek/structlog.png?branch=master
+.. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
    :target: https://travis-ci.org/hynek/structlog
 
-.. image:: https://coveralls.io/repos/hynek/structlog/badge.png?branch=master
+.. image:: https://coveralls.io/repos/hynek/structlog/badge.svg?branch=master
     :target: https://coveralls.io/r/hynek/structlog?branch=master
 
 ``structlog`` makes structured logging in Python easy by *augmenting* your *existing* logger.
