@@ -239,6 +239,15 @@ class TestFunctions(object):
         assert [1, 2, 3] == p._processors
         assert dict is p._context_class
 
+    def test_empty_processors(self):
+        """
+        An empty list is a valid value for processors so it must be preserved.
+        """
+        # We need to do a bind such that we get an actual logger and not just
+        # a lazy proxy.
+        l = wrap_logger(object(), processors=[]).new()
+        assert [] == l._processors
+
     def test_wrap_returns_proxy(self):
         assert isinstance(wrap_logger(None), BoundLoggerLazyProxy)
 

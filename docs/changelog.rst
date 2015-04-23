@@ -3,6 +3,9 @@ Changelog
 =========
 
 - :release:`15.2.0 <unreleased>`
+- :bug:`- major` Allow empty lists of processors.
+  This is a valid use case since `#26 <https://github.com/hynek/structlog/issues/26>`_ has been merged.
+  Before, supplying an empty list resulted in the defaults being used.
 - :bug:`- major` Prevent Twisted's ``log.err`` from quoting strings rendered by :class:`structlog.twisted.JSONRenderer`.
 - :feature:`52` Better support of :meth:`logging.Logger.exception` within ``structlog``.
 - :feature:`51` Add option to specify target key in :class:`structlog.processors.TimeStamper` processor.
