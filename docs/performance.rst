@@ -1,10 +1,10 @@
 Performance
 ===========
 
-structlog's default configuration tries to be as unsurprising and not confusing to new developers as possible.
+``structlog``'s default configuration tries to be as unsurprising and not confusing to new developers as possible.
 Some of the choices made come with an avoidable performance price tag -- although its impact is debatable.
 
-Here are a few hints how to get most out of structlog in production:
+Here are a few hints how to get most out of ``structlog`` in production:
 
 #. Use plain `dict`\ s as context classes.
    Python is full of them and they are highly optimized::
@@ -13,7 +13,7 @@ Here are a few hints how to get most out of structlog in production:
 
    If you don't use automated parsing (you should!) and need predicable order of your keys for some reason, use the `key_order` argument of :class:`~structlog.processors.KeyValueRenderer`.
 #. Use a specific wrapper class instead of the generic one.
-   structlog comes with ones for the :doc:`standard-library` and for :doc:`twisted`::
+   ``structlog`` comes with ones for the :doc:`standard-library` and for :doc:`twisted`::
 
       configure(wrapper_class=structlog.stdlib.BoundLogger)
 
