@@ -78,7 +78,7 @@ if __name__ == "__main__":
         tests_require=[
             "freezegun>=0.2.8",
             "pretend",
-            "pytest-cov",
+            "pytest",
             "twisted",
         ],
         cmdclass={
