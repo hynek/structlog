@@ -67,19 +67,55 @@ def exc_info():
 
 class TestFormatException(object):
     def test_returns_str(self, exc_info):
+        """
+        Always returns a native string.
+        """
         assert isinstance(_format_exception(exc_info), str)
 
     def test_formats(self, exc_info):
+        """
+        The passed exc_info is formatted.
+        """
         assert _format_exception(exc_info).startswith(
-            'Traceback (most recent call last):\n'
+            "Traceback (most recent call last):\n"
         )
+
+    def test_no_trailing_nl(self, exc_info, monkeypatch):
+        """
+        Trailing newlines are snipped off but if the string does not contain
+        one nothing is removed.
+        """
+        from structlog._frames import traceback
+        monkeypatch.setattr(
+            traceback, "print_exception",
+            lambda *a: a[-1].write("foo")
+        )
+        assert "foo" == _format_exception(exc_info)
 
 
 class TestFormatStack(object):
     def test_returns_str(self):
+        """
+        Always returns a native string.
+        """
         assert isinstance(_format_stack(sys._getframe()), str)
 
     def test_formats(self):
+        """
+        The passed stack is formatted.
+        """
         assert _format_stack(sys._getframe()).startswith(
-            'Stack (most recent call last):\n'
+            "Stack (most recent call last):\n"
         )
+
+    def test_no_trailing_nl(self, monkeypatch):
+        """
+        Trailing newlines are snipped off but if the string does not contain
+        one nothing is removed.
+        """
+        from structlog._frames import traceback
+        monkeypatch.setattr(
+            traceback, "print_stack",
+            lambda frame, file: file.write("foo")
+        )
+        assert _format_stack(sys._getframe()).endswith("foo")
