@@ -272,6 +272,14 @@ class TestJSONRenderer(object):
         assert {'_structlog': True} == jr(None, 'msg', {'_why': 'foo'})[1]
 
 
+class TestReprWrapper(object):
+    def test_repr(self):
+        """
+        The repr of the wrapped string is the vanilla string without quotes.
+        """
+        assert "foo" == repr(ReprWrapper("foo"))
+
+
 class TestPlainFileLogObserver(object):
     def test_isLogObserver(self):
         assert ILogObserver.providedBy(PlainFileLogObserver(StringIO()))
