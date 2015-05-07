@@ -165,12 +165,25 @@ class TestFormatExcInfo(object):
 
 class TestUnicodeEncoder(object):
     def test_encodes(self):
+        """
+        Unicode strings get encoded (as UTF-8 by default).
+        """
         ue = UnicodeEncoder()
-        assert {'foo': b'b\xc3\xa4r'} == ue(None, None, {'foo': u('b\xe4r')})
+        assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": u"b\xe4r"})
 
     def test_passes_arguments(self):
-        ue = UnicodeEncoder('latin1', 'xmlcharrefreplace')
-        assert {'foo': b'&#8211;'} == ue(None, None, {'foo': u('\u2013')})
+        """
+        Encoding options are passed into the encoding call.
+        """
+        ue = UnicodeEncoder("latin1", "xmlcharrefreplace")
+        assert {"foo": b"&#8211;"} == ue(None, None, {"foo": u"\u2013"})
+
+    def test_bytes_nop(self):
+        """
+        If the string is already bytes, don't do anything.
+        """
+        ue = UnicodeEncoder()
+        assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": b"b\xc3\xa4r"})
 
 
 class TestExceptionPrettyPrinter(object):
