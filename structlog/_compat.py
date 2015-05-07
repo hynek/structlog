@@ -45,7 +45,6 @@ if PY3:
     text_type = str
     binary_type = bytes
     unicode_type = str
-    u = lambda s: s
 else:
     string_types = basestring,
     integer_types = (int, long)
@@ -53,7 +52,6 @@ else:
     text_type = unicode
     binary_type = str
     unicode_type = unicode
-    u = lambda s: unicode(s, "unicode_escape")
 
 def with_metaclass(meta, *bases):
     """
