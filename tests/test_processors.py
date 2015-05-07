@@ -14,7 +14,7 @@ from freezegun import freeze_time
 
 import structlog
 
-from structlog._compat import u, StringIO
+from structlog._compat import StringIO
 from structlog.processors import (
     ExceptionPrettyPrinter,
     JSONRenderer,
@@ -255,6 +255,19 @@ class TestExceptionPrettyPrinter(object):
         epp = ExceptionPrettyPrinter(sio)
         epp(None, None, {})
         assert '' == sio.getvalue()
+
+    def test_own_exc_info(self, sio):
+        """
+        If exc_info is a tuple, use it.
+        """
+        epp = ExceptionPrettyPrinter(sio)
+        try:
+            raise ValueError("XXX")
+        except ValueError:
+            ei = sys.exc_info()
+
+        epp(None, None, {"exc_info": ei})
+        assert "XXX" in sio.getvalue()
 
 
 @pytest.fixture
