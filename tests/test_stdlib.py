@@ -219,7 +219,7 @@ class TestBoundLogger(object):
         assert "error" == bl.exception("event")
 
 
-class TestStringFormatting(object):
+class TestPositionalArgumentsFormatter(object):
     def test_formats_tuple(self):
         """
         Positional arguments as simple types are rendered.
@@ -253,6 +253,13 @@ class TestStringFormatting(object):
             {'event': '%d %d %s', 'positional_args': positional_args})
         assert 'positional_args' in event_dict
         assert positional_args == event_dict['positional_args']
+
+    def test_nop_no_args(self):
+        """
+        If no positional args are passed, nothing happens.
+        """
+        formatter = PositionalArgumentsFormatter()
+        assert {} == formatter(None, None, {})
 
 
 class TestAddLogLevel(object):
