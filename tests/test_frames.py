@@ -28,7 +28,6 @@ class TestFindFirstAppFrameAndName(object):
         f2 = stub(f_globals={'__name__': 'structlog.blubb'}, f_back=f1)
         monkeypatch.setattr(structlog._frames.sys, '_getframe', lambda: f2)
         f, n = _find_first_app_frame_and_name()
-        monkeypatch.undo()
         assert ((f1, 'test') == f, n)
 
     def test_ignoring_of_additional_frame_names_works(self, monkeypatch):
@@ -40,7 +39,6 @@ class TestFindFirstAppFrameAndName(object):
         f3 = stub(f_globals={'__name__': 'structlog.blubb'}, f_back=f2)
         monkeypatch.setattr(structlog._frames.sys, '_getframe', lambda: f3)
         f, n = _find_first_app_frame_and_name()
-        monkeypatch.undo()
         assert ((f1, 'test') == f, n)
 
     def test_tolerates_missing_name(self, monkeypatch):
@@ -50,7 +48,6 @@ class TestFindFirstAppFrameAndName(object):
         f1 = stub(f_globals={}, f_back=None)
         f, n = _find_first_app_frame_and_name()
         monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
-        monkeypatch.undo()
         assert ((f1, "?") == f, n)
 
 
