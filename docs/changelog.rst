@@ -2,7 +2,7 @@
 Changelog
 =========
 
-- :release:`15.2.0 <unreleased>`
+- :release:`15.2.0 <2015-06-10>`
 - :bug:`- major` Allow empty lists of processors.
   This is a valid use case since `#26 <https://github.com/hynek/structlog/issues/26>`_ has been merged.
   Before, supplying an empty list resulted in the defaults being used.
