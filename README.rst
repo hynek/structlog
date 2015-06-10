@@ -30,4 +30,4 @@ It's dual-licensed under `Apache License, version 2 <http://choosealicense.com/l
 
 ``structlog`` targets Python 2.6, 2.7, 3.3, 3.4, and PyPy with no additional dependencies for core functionality.
 
-If you need any help, visit us on ``#structlog`` on `Freenode <http://freenode.net>`_!
+If you need any help, visit us on ``#structlog`` on `Freenode <https://freenode.net>`_!

@@ -84,18 +84,17 @@ Graylog2
 ^^^^^^^^
 
 Graylog_ goes one step further.
-It not only supports everything those above do (and then some); you can also log directly JSON entries towards it -- optionally even through an AMQP_ server (like RabbitMQ_) for better reliability.
+It not only supports everything those above do (and then some); you can also log directly JSON entries towards it -- optionally even through an AMQP server (like RabbitMQ_) for better reliability.
 Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data which makes it an obvious choice to use together with structlog.
 
 
 .. [*] This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
 
-.. _AMQP: https://www.graylog2.org/resources/documentation
 .. _Graylog: http://graylog2.org
-.. _Logstash: http://logstash.net
-.. _logstash-forwarder: https://github.com/elasticsearch/logstash-forwarder
+.. _Logstash: https://www.elastic.co/products/logstash
+.. _logstash-forwarder: https://github.com/elastic/logstash-forwarder
 .. _RabbitMQ: http://www.rabbitmq.com
-.. _`Graylog's Extended Log Format`: http://graylog2.org/gelf
+.. _`Graylog's Extended Log Format`: https://www.graylog.org/resources/gelf-2/
 .. _`daemon showdown`: https://web.archive.org/web/20130907200323/http://tech.cueup.com/blog/2013/03/08/running-daemons/
 .. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _`they can be switched off`: http://blog.abhijeetr.com/2013/01/disable-rate-limiting-in-rsyslog-v5.html
@@ -107,4 +106,4 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _svlogd: http://smarden.org/runit/svlogd.8.html
 .. _syslogd: http://en.wikipedia.org/wiki/Syslogd
 .. _tai64n: http://cr.yp.to/daemontools/tai64n.html
-.. _elasticsearch: http://www.elasticsearch.org
+.. _elasticsearch: https://www.elastic.co/products/elasticsearch

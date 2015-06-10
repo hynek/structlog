@@ -67,7 +67,8 @@ def as_immutable(logger):
     """
     Extract the context from a thread local logger into an immutable logger.
 
-    :param BoundLogger logger: A logger with *possibly* thread local state.
+    :param structlog.BoundLogger logger: A logger with *possibly* thread local
+        state.
     :rtype: :class:`~structlog.BoundLogger` with an immutable context.
     """
     if isinstance(logger, BoundLoggerLazyProxy):
