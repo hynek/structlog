@@ -19,7 +19,7 @@ class BoundLogger(BoundLoggerBase):
 
     Every unknown method will be passed to the wrapped logger.  If that's too
     much magic for you, try :class:`structlog.twisted.BoundLogger` or
-    `:class:`structlog.twisted.BoundLogger` which also take advantage of
+    :class:`structlog.twisted.BoundLogger` which also take advantage of
     knowing the wrapped class which generally results in better performance.
 
     Not intended to be instantiated by yourself.  See
