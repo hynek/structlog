@@ -24,12 +24,12 @@ structlog Package
    :members: new, bind, unbind
 
 .. autoclass:: PrintLogger
-   :members: msg, err, debug, info, warning, error, critical, log
+   :members: msg, err, debug, info, warning, error, critical, log, failure
 
 .. autoclass:: PrintLoggerFactory
 
 .. autoclass:: ReturnLogger
-   :members: msg, err, debug, info, warning, error, critical, log
+   :members: msg, err, debug, info, warning, error, critical, log, failure
 
 .. autoclass:: ReturnLoggerFactory
 

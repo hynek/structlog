@@ -16,7 +16,7 @@ from structlog._utils import until_not_interrupted
 
 class PrintLoggerFactory(object):
     """
-    Produces :class:`PrintLogger`\ s.
+    Produce :class:`PrintLogger`\ s.
 
     To be used with :func:`structlog.configure`\ 's `logger_factory`.
 
@@ -38,7 +38,7 @@ WRITE_LOCKS = {}
 
 class PrintLogger(object):
     """
-    Prints events into a file.
+    Print events into a file.
 
     :param file file: File to print to. (default: stdout)
 
@@ -76,12 +76,12 @@ class PrintLogger(object):
             until_not_interrupted(self._flush)
 
     log = debug = info = warn = warning = msg
-    err = error = critical = exception = msg
+    failure = err = error = critical = exception = msg
 
 
 class ReturnLoggerFactory(object):
     """
-    Produces and caches :class:`ReturnLogger`\ s.
+    Produce and cache :class:`ReturnLogger`\ s.
 
     To be used with :func:`structlog.configure`\ 's `logger_factory`.
 
@@ -98,7 +98,7 @@ class ReturnLoggerFactory(object):
 
 class ReturnLogger(object):
     """
-    Returns the string that it's called with.
+    Return the arguments that it's called with.
 
     >>> from structlog import ReturnLogger
     >>> ReturnLogger().msg('hello')
@@ -122,4 +122,4 @@ class ReturnLogger(object):
             return args, kw
 
     log = debug = info = warn = warning = msg
-    err = error = critical = exception = msg
+    failure = err = error = critical = exception = msg
