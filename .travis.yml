@@ -2,26 +2,29 @@ language: python
 sudo: false
 python: 2.7
 env:
-    - TOX_ENV=py26-threads
-    - TOX_ENV=py27-threads
-    - TOX_ENV=py33-threads
-    - TOX_ENV=py34-threads
-    - TOX_ENV=pypy-threads
-    - TOX_ENV=py26-greenlets
-    - TOX_ENV=py27-greenlets
-    - TOX_ENV=py33-greenlets
-    - TOX_ENV=py34-greenlets
-    - TOX_ENV=pypy-greenlets
-    - TOX_ENV=docs
-    - TOX_ENV=flake8-py2
-    - TOX_ENV=flake8-py3
-    - TOX_ENV=manifest
+  - TOX_ENV=py26-threads
+  - TOX_ENV=py27-threads
+  - TOX_ENV=py33-threads
+  - TOX_ENV=py34-threads
+  - TOX_ENV=pypy-threads
+  - TOX_ENV=py26-greenlets
+  - TOX_ENV=py27-greenlets
+  - TOX_ENV=py33-greenlets
+  - TOX_ENV=py34-greenlets
+  - TOX_ENV=pypy-greenlets
+  - TOX_ENV=docs
+  - TOX_ENV=flake8-py2
+  - TOX_ENV=flake8-py3
+  - TOX_ENV=manifest
 
 install:
-    - pip install tox coveralls
+  - pip install tox
 
 script:
-    - tox -e $TOX_ENV
+  - tox -e $TOX_ENV
+
+before_install:
+  - pip install codecov
 
 after_success:
-    - coveralls
+  - codecov

@@ -2,15 +2,15 @@
 structlog: Structured Logging for Python
 ========================================
 
-.. image:: https://pypip.in/version/structlog/badge.svg
+.. image:: https://img.shields.io/pypi/v/structlog.svg
    :target: https://pypi.python.org/pypi/structlog/
    :alt: Latest Version
 
 .. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
    :target: https://travis-ci.org/hynek/structlog
 
-.. image:: https://coveralls.io/repos/hynek/structlog/badge.svg?branch=master
-    :target: https://coveralls.io/r/hynek/structlog?branch=master
+.. image:: https://codecov.io/github/hynek/structlog/coverage.svg?branch=master
+    :target: https://codecov.io/github/hynek/structlog?branch=master
 
 ``structlog`` makes structured logging in Python easy by *augmenting* your *existing* logger.
 It allows you to split your log entries up into key/value pairs and build them incrementally without annoying boilerplate code.
