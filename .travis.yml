@@ -1,5 +1,9 @@
-language: python
 sudo: false
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+language: python
 python: 2.7
 env:
   - TOX_ENV=py26-threads
