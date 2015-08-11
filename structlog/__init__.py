@@ -47,7 +47,7 @@ except ImportError:  # pragma: nocover
 __version__ = "15.3.0.dev0"
 
 __title__ = "structlog"
-__description__ = "Structured Logging in Python"
+__description__ = "Structured Logging for Python"
 __uri__ = "http://www.structlog.org/"
 
 __author__ = "Hynek Schlawack"
