@@ -28,26 +28,6 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-class PyTest(TestCommand):
-    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = None
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.pytest_args or [] +
-                            ["tests"])
-        sys.exit(errno)
-
-
 if __name__ == "__main__":
     setup(
         name='structlog',
@@ -75,13 +55,4 @@ if __name__ == "__main__":
             'Programming Language :: Python',
             'Topic :: Software Development :: Libraries :: Python Modules',
         ],
-        tests_require=[
-            "freezegun>=0.2.8",
-            "pretend",
-            "pytest",
-            "twisted",
-        ],
-        cmdclass={
-            "test": PyTest,
-        },
     )
