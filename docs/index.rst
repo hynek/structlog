@@ -10,7 +10,7 @@ Release v\ |version| (:doc:`What's new? <changelog>`).
 The Pitch
 =========
 
-``structlog`` makes structured logging with *incremental context building* and *arbitrary formatting* as easy as:
+``structlog`` makes structured logging with *key-value logging*, *incremental context building* and *arbitrary formatting* as easy as:
 
 .. doctest::
 

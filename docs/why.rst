@@ -21,7 +21,7 @@ Structured logging means that you don't write hard-to-parse and hard-to-keep-con
 
 Because it's easy and you don't have to replace your underlying logger -- you just add structure to your log entries and format them to strings before they hit your real loggers.
 
-structlog supports you with building your context as you go (e.g. if a user logs in, you bind their user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
+``structlog`` supports you with building your context as you go (e.g. if a user logs in, you bind their user name to your current logger) and log events when they happen (i.e. the user does something log-worthy):
 
 .. doctest::
 
