@@ -224,7 +224,7 @@ class LoggerFactory(object):
         ``structlog.get_logger('foo')`` would cause this method to be called
         with ``'foo'`` as its first positional argument.
 
-        :rtype: `logging.Logger`
+        :rtype: logging.Logger
 
         .. versionchanged:: 0.4.0
             Added support for optional positional arguments.  Using the first
