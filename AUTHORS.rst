@@ -13,6 +13,7 @@ The following folks helped forming ``structlog`` into what it is now:
 - `Daniel Lindsley <https://github.com/toastdriven>`_
 - `David Reid <https://dreid.org>`_
 - `Donald Stufft <https://github.com/dstufft>`_
+- `Fran Fitzpatrick <https://github.com/fxfitz>`_
 - `George-Cristian Bîrzan <https://github.com/gcbirzan>`_
 - `Glyph <https://github.com/glyph>`_
 - `Holger Krekel <https://github.com/hpk42>`_
