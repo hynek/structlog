@@ -2,6 +2,7 @@
 Changelog
 =========
 
+- :bug:`- major` Tolerate frames without a ``__name__``, better.
 - :feature:`-` Add :func:`structlog.ReturnLogger.failure` and :func:`structlog.PrintLogger.failure` as preparation for the new Twisted logging system.
 - :release:`15.2.0 <2015-06-10>`
 - :bug:`- major` Allow empty lists of processors.

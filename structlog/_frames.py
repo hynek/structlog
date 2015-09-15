@@ -40,7 +40,7 @@ def _find_first_app_frame_and_name(additional_ignores=None):
     name = f.f_globals.get("__name__", "?")
     while any(name.startswith(i) for i in ignores):
         f = f.f_back
-        name = f.f_globals.get("__name__", "?")
+        name = f.f_globals.get("__name__") or "?"
     return f, name
 
 
