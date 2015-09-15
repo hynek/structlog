@@ -101,12 +101,12 @@ class TestExtractStuffAndWhy(object):
         Extracts failures and events.
         """
         assert (
-            Failure(ValueError()), "foo", {} ==
+            (Failure(ValueError()), "foo", {}) ==
             _extractStuffAndWhy({"_why": "foo",
                                  "_stuff": Failure(ValueError())})
         )
         assert (
-            Failure(ValueError()), "error", {} ==
+            (Failure(ValueError()), "error", {}) ==
             _extractStuffAndWhy({"_stuff": Failure(ValueError())})
         )
 
