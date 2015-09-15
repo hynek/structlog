@@ -50,7 +50,7 @@ class TestFindFirstAppFrameAndName(object):
         f, n = _find_first_app_frame_and_name()
         assert ((f1, "?") == (f, n))
 
-    def test_tolerates_missing_names_explicitly_None_oneframe(self, monkeypatch):
+    def test_tolerates_name_explicitly_None_oneframe(self, monkeypatch):
         """
         Use ``?`` if `f_globals` has a `None` valued `__name__` key
         """
@@ -59,7 +59,7 @@ class TestFindFirstAppFrameAndName(object):
         f, n = _find_first_app_frame_and_name()
         assert ((f1, "?") == (f, n))
 
-    def test_tolerates_missing_names_explicitly_None_manyframe(self, monkeypatch):
+    def test_tolerates_name_explicitly_None_manyframe(self, monkeypatch):
         """
         Use ``?`` if `f_globals` has a `None` valued `__name__` key, multiple frames up.
         """
