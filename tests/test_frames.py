@@ -61,7 +61,8 @@ class TestFindFirstAppFrameAndName(object):
 
     def test_tolerates_name_explicitly_None_manyframe(self, monkeypatch):
         """
-        Use ``?`` if `f_globals` has a `None` valued `__name__` key, multiple frames up.
+        Use ``?`` if `f_globals` has a `None` valued `__name__` key,
+        multiple frames up.
         """
         f1 = stub(f_globals={'__name__': None}, f_back=None)
         f2 = stub(f_globals={'__name__': 'structlog.blubb'}, f_back=f1)
