@@ -20,6 +20,7 @@ The following folks helped forming ``structlog`` into what it is now:
 - `Itamar Turner-Trauring <https://github.com/itamarst>`_
 - `Jack Pearkes <https://github.com/pearkes>`_
 - `Jean-Paul Calderone <http://as.ynchrono.us>`_
+- `Justin Wood (Callek) <https://github.com/Callek>`_
 - `Lakshmi Kannan <https://github.com/lakshmi-kannan>`_
 - `Lynn Root <https://github.com/econchick>`_
 - `Mathieu Leplatre <https://github.com/leplatrem>`_

@@ -37,7 +37,7 @@ def _find_first_app_frame_and_name(additional_ignores=None):
     """
     ignores = ["structlog"] + (additional_ignores or [])
     f = sys._getframe()
-    name = f.f_globals.get("__name__", "?")
+    name = f.f_globals.get("__name__") or "?"
     while any(name.startswith(i) for i in ignores):
         f = f.f_back
         name = f.f_globals.get("__name__") or "?"
