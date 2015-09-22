@@ -2,6 +2,7 @@
 Changelog
 =========
 
+- :feature:`-` Officially support Python 3.5.
 - :feature:`-` Add :func:`structlog.ReturnLogger.failure` and :func:`structlog.PrintLogger.failure` as preparation for the new Twisted logging system.
 - :release:`15.2.0 <2015-06-10>`
 - :bug:`- major` Allow empty lists of processors.

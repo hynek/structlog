@@ -4,28 +4,51 @@ cache:
     - $HOME/.cache/pip
 
 language: python
-python: 2.7
-env:
-  - TOX_ENV=py26-threads
-  - TOX_ENV=py27-threads
-  - TOX_ENV=py33-threads
-  - TOX_ENV=py34-threads
-  - TOX_ENV=pypy-threads
-  - TOX_ENV=py26-greenlets
-  - TOX_ENV=py27-greenlets
-  - TOX_ENV=py33-greenlets
-  - TOX_ENV=py34-greenlets
-  - TOX_ENV=pypy-greenlets
-  - TOX_ENV=docs
-  - TOX_ENV=flake8-py2
-  - TOX_ENV=flake8-py3
-  - TOX_ENV=manifest
+
+
+matrix:
+  include:
+    - python: "2.6"  # these are just to make travis's UI a bit prettier
+      env: TOXENV=py26-threads
+    - python: "2.6"
+      env: TOXENV=py26-greenlets
+    - python: "2.7"
+      env: TOXENV=py27-threads
+    - python: "2.7"
+      env: TOXENV=py27-greenlets
+    - python: "3.3"
+      env: TOXENV=py33-threads
+    - python: "3.3"
+      env: TOXENV=py33-greenlets
+    - python: "3.4"
+      env: TOXENV=py34-threads
+    - python: "3.4"
+      env: TOXENV=py34-greenlets
+    - python: "3.5"
+      env: TOXENV=py35-threads
+    - python: "3.5"
+      env: TOXENV=py35-greenlets
+    - python: "pypy"
+      env: TOXENV=pypy-threads
+    - python: "pypy"
+      env: TOXENV=pypy-greenlets
+
+
+    # Meta
+    - python: "2.7"
+      env: TOXENV=flake8-py2
+    - python: "3.5"
+      env: TOXENV=flake8-py3
+    - python: "2.7"
+      env: TOXENV=manifest
+    - python: "2.7"
+      env: TOXENV=docs
 
 install:
   - pip install tox
 
 script:
-  - tox -e $TOX_ENV
+  - tox
 
 before_install:
   - pip install codecov
