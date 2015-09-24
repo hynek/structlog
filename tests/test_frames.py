@@ -28,7 +28,7 @@ class TestFindFirstAppFrameAndName(object):
         f2 = stub(f_globals={'__name__': 'structlog.blubb'}, f_back=f1)
         monkeypatch.setattr(structlog._frames.sys, '_getframe', lambda: f2)
         f, n = _find_first_app_frame_and_name()
-        assert ((f1, 'test') == f, n)
+        assert ((f1, 'test') == (f, n))
 
     def test_ignoring_of_additional_frame_names_works(self, monkeypatch):
         """
@@ -38,17 +38,37 @@ class TestFindFirstAppFrameAndName(object):
         f2 = stub(f_globals={'__name__': 'ignored.bar'}, f_back=f1)
         f3 = stub(f_globals={'__name__': 'structlog.blubb'}, f_back=f2)
         monkeypatch.setattr(structlog._frames.sys, '_getframe', lambda: f3)
-        f, n = _find_first_app_frame_and_name()
-        assert ((f1, 'test') == f, n)
+        f, n = _find_first_app_frame_and_name(additional_ignores=['ignored'])
+        assert ((f1, 'test') == (f, n))
 
     def test_tolerates_missing_name(self, monkeypatch):
         """
         Use ``?`` if `f_globals` lacks a `__name__` key
         """
         f1 = stub(f_globals={}, f_back=None)
-        f, n = _find_first_app_frame_and_name()
         monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
-        assert ((f1, "?") == f, n)
+        f, n = _find_first_app_frame_and_name()
+        assert ((f1, "?") == (f, n))
+
+    def test_tolerates_name_explicitly_None_oneframe(self, monkeypatch):
+        """
+        Use ``?`` if `f_globals` has a `None` valued `__name__` key
+        """
+        f1 = stub(f_globals={'__name__': None}, f_back=None)
+        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
+        f, n = _find_first_app_frame_and_name()
+        assert ((f1, "?") == (f, n))
+
+    def test_tolerates_name_explicitly_None_manyframe(self, monkeypatch):
+        """
+        Use ``?`` if `f_globals` has a `None` valued `__name__` key,
+        multiple frames up.
+        """
+        f1 = stub(f_globals={'__name__': None}, f_back=None)
+        f2 = stub(f_globals={'__name__': 'structlog.blubb'}, f_back=f1)
+        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f2)
+        f, n = _find_first_app_frame_and_name()
+        assert ((f1, "?") == (f, n))
 
 
 @pytest.fixture
