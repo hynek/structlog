@@ -2,6 +2,7 @@
 Changelog
 =========
 
+- :release:`15.3.0 <2015-09-25>`
 - :bug:`- major` Tolerate frames without a ``__name__``, better.
 - :feature:`-` Officially support Python 3.5.
 - :feature:`-` Add :func:`structlog.ReturnLogger.failure` and :func:`structlog.PrintLogger.failure` as preparation for the new Twisted logging system.
