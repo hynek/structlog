@@ -9,8 +9,30 @@ import os
 import re
 
 
+###############################################################################
+
 NAME = "structlog"
+PACKAGES = find_packages(exclude=['tests*'])
 META_PATH = os.path.join("structlog", "__init__.py")
+KEYWORDS = ["logging", "structured", "structure", "log"]
+CLASSIFIERS = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.6",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+INSTALL_REQUIRES = []
 
 ###############################################################################
 
@@ -53,25 +75,10 @@ if __name__ == "__main__":
         author_email=find_meta("email"),
         maintainer=find_meta("author"),
         maintainer_email=find_meta("email"),
-        long_description=read('README.rst'),
-        packages=find_packages(exclude=['tests*']),
+        long_description=read("README.rst"),
+        keywords=KEYWORDS,
+        packages=PACKAGES,
+        classifiers=CLASSIFIERS,
+        install_requires=INSTALL_REQUIRES,
         zip_safe=False,
-        keywords=["logging", "structured", "structure", "log"],
-        classifiers=[
-            "Development Status :: 5 - Production/Stable",
-            "Intended Audience :: Developers",
-            "License :: OSI Approved :: Apache Software License",
-            "License :: OSI Approved :: MIT License",
-            "Natural Language :: English",
-            "Operating System :: OS Independent",
-            "Programming Language :: Python :: 2",
-            "Programming Language :: Python :: 2.6",
-            "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.3",
-            "Programming Language :: Python :: 3.4",
-            "Programming Language :: Python :: 3.5",
-            "Programming Language :: Python",
-            "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
     )
