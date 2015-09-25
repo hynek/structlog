@@ -44,4 +44,4 @@ You can observe the following:
 These two methods and one attribute is all you need to write own wrapper classes.
 
 
-.. _DRY: http://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+.. _DRY: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself

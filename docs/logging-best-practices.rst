@@ -94,9 +94,9 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _Logstash: https://www.elastic.co/products/logstash
 .. _logstash-forwarder: https://github.com/elastic/logstash-forwarder
 .. _RabbitMQ: http://www.rabbitmq.com
-.. _`Graylog's Extended Log Format`: https://www.graylog.org/resources/gelf-2/
+.. _`Graylog's Extended Log Format`: https://www.graylog.org/resources/gelf/
 .. _`daemon showdown`: https://web.archive.org/web/20130907200323/http://tech.cueup.com/blog/2013/03/08/running-daemons/
-.. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
+.. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _`they can be switched off`: http://blog.abhijeetr.com/2013/01/disable-rate-limiting-in-rsyslog-v5.html
 .. _`this post`: http://www.revsys.com/blog/2010/aug/26/centralized-logging-fun-and-profit/
 .. _`this tutorial`: https://rubyists.github.io/2011/05/02/runit-for-ruby-and-everything-else.html
@@ -104,6 +104,6 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _rsyslog: http://www.rsyslog.com
 .. _runit: http://smarden.org/runit/
 .. _svlogd: http://smarden.org/runit/svlogd.8.html
-.. _syslogd: http://en.wikipedia.org/wiki/Syslogd
+.. _syslogd: https://en.wikipedia.org/wiki/Syslogd
 .. _tai64n: http://cr.yp.to/daemontools/tai64n.html
 .. _elasticsearch: https://www.elastic.co/products/elasticsearch

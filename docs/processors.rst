@@ -58,7 +58,7 @@ and call ``log.msg('some_event', y=23)``, it results in the following call chain
 In this case, ``f4`` has to make sure it returns something ``wrapped_logger.msg`` can handle (see :ref:`adapting`).
 
 The simplest modification a processor can make is adding new values to the ``event_dict``.
-Parsing human-readable timestamps is tedious, not so `UNIX timestamps <http://en.wikipedia.org/wiki/UNIX_time>`_ -- let's add one to each log entry!
+Parsing human-readable timestamps is tedious, not so `UNIX timestamps <https://en.wikipedia.org/wiki/UNIX_time>`_ -- let's add one to each log entry!
 
 .. literalinclude:: code_examples/processors/timestamper.py
    :language: python

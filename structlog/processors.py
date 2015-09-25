@@ -204,8 +204,8 @@ class TimeStamper(object):
         :doc:`logging-best-practices`.
 
     :param str format: strftime format string, or ``"iso"`` for `ISO 8601
-        <http://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
-        timestamp <http://en.wikipedia.org/wiki/Unix_time>`_.
+        <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
+        timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
     :param str key: Target key in `event_dict` for added timestamps.
 

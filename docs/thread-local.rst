@@ -19,7 +19,7 @@ Immutability
 The behavior of copying itself, adding new values, and returning the result is useful for applications that keep somehow their own context using classes or closures.
 Twisted is a :ref:`fine example <twisted-example>` for that.
 Another possible approach is passing wrapped loggers around or log only within your view where you gather errors and events using return codes and exceptions.
-If you are willing to do that, you should stick to it because `immutable state <http://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
+If you are willing to do that, you should stick to it because `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
 Sooner or later, global state and mutable data lead to unpleasant surprises.
 
 However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.

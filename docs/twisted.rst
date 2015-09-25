@@ -101,4 +101,4 @@ Suggested Configuration
 See also :doc:`logging-best-practices`.
 
 
-.. _`standard out`: http://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
+.. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
