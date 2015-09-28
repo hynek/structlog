@@ -4,10 +4,9 @@
 
 from __future__ import absolute_import, division, print_function
 
-import pytest
-pytest.importorskip('twisted')  # noqa
-
 import json
+
+import pytest
 
 from pretend import call_recorder
 from twisted.python.failure import Failure, NoCurrentExceptionError
@@ -100,14 +99,15 @@ class TestExtractStuffAndWhy(object):
         """
         Extracts failures and events.
         """
+        f = Failure(ValueError())
         assert (
-            Failure(ValueError()), "foo", {} ==
+            (f, "foo", {}) ==
             _extractStuffAndWhy({"_why": "foo",
-                                 "_stuff": Failure(ValueError())})
+                                 "_stuff": f})
         )
         assert (
-            Failure(ValueError()), "error", {} ==
-            _extractStuffAndWhy({"_stuff": Failure(ValueError())})
+            (f, None, {}) ==
+            _extractStuffAndWhy({"_stuff": f})
         )
 
     def test_handlesMissingFailure(self):
