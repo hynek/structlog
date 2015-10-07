@@ -5,8 +5,10 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-
+import sys
 import logging
+
+from testfixtures import OutputCapture
 
 import pytest
 from pretend import call_recorder
@@ -23,6 +25,7 @@ from structlog.stdlib import (
     add_log_level,
     add_logger_name,
     _FixedFindCallerLogger,
+    StdlibJSONFormatter,
 )
 from structlog._compat import PY2
 
@@ -287,3 +290,33 @@ class TestAddLoggerName(object):
         logger = logging.getLogger(name)
         event_dict = add_logger_name(logger, None, {})
         assert name == event_dict['logger']
+
+
+class TestStdlibJSONFormatter(object):
+    def setup_logger(self):
+        self.stdlib_logger = logging.getLogger("Test JSON")
+        self.stdlib_logger.setLevel(logging.DEBUG)
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(StdlibJSONFormatter())
+        self.stdlib_logger.addHandler(handler)
+
+    def test_json_formatter_makes_json(self):
+        with OutputCapture() as output:
+            self.setup_logger()
+            message = "Third party library log message"
+            self.stdlib_logger.warn(message)
+
+            # NOTE(fxfitz): Should we rename 'message' to 'event' to
+            # match structlog?
+            output.compare("{\"message\": \"%s\"}" % message)
+
+    def test_json_formatter_ignores_json(self):
+        """
+        This tests makes sure that StdlibJSONFormatter won't re-jsonify
+        messages if they're already JSON.
+        """
+        with OutputCapture() as output:
+            self.setup_logger()
+            message = "{\"event\": \"#winning\"}"
+            self.stdlib_logger.warn(message)
+            output.compare(message)
