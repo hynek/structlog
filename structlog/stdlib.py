@@ -285,10 +285,10 @@ class StdlibJSONFormatter(jsonlogger.JsonFormatter):
     Used to JSON-ify stdlib log messages in the event that you cannot
     control whether `logging.getLogger()` or `structlog.get_logger()`
     is called (like when including third party libraries).
-    """
 
-    def __init__(self, *args, **kwargs):
-        super(StdlibJSONFormatter, self).__init__(*args, **kwargs)
+    To use this, simply add this formatter to a stdlib logging's
+    handler or logger.
+    """
 
     def format(self, record):
         """
@@ -303,7 +303,7 @@ class StdlibJSONFormatter(jsonlogger.JsonFormatter):
         except ValueError:
             # If the record text is not already JSON, let the
             # JSONFormatter format it correctly.
-            return super(StdlibJSONFormatter, self).format(record)
+            return jsonlogger.JsonFormatter().format(record)
 
 # Adapted from the stdlib
 
