@@ -11,7 +11,10 @@ See also :doc:`structlog's standard library support <standard-library>`.
 
 from __future__ import absolute_import, division, print_function
 
+import json
 import logging
+
+from pythonjsonlogger import jsonlogger
 
 from structlog._base import BoundLoggerBase
 from structlog._compat import PY3
@@ -275,6 +278,32 @@ class PositionalArgumentsFormatter(object):
             if self.remove_positional_args:
                 del event_dict['positional_args']
         return event_dict
+
+
+class StdlibJSONFormatter(jsonlogger.JsonFormatter):
+    """
+    Used to JSON-ify stdlib log messages in the event that you cannot
+    control whether `logging.getLogger()` or `structlog.get_logger()`
+    is called (like when including third party libraries).
+
+    To use this, simply add this formatter to a stdlib logging's
+    handler or logger.
+    """
+
+    def format(self, record):
+        """
+        Checks to see if the log message is already JSON formatted;
+        if it is, we won't touch the message. If it isn't JSON, we'll
+        let the JsonFormatter format for us.
+        """
+        try:
+            # If the record text is already a JSON message, return it.
+            json.loads(record.msg)
+            return record.msg
+        except ValueError:
+            # If the record text is not already JSON, let the
+            # JSONFormatter format it correctly.
+            return jsonlogger.JsonFormatter().format(record)
 
 # Adapted from the stdlib
 
