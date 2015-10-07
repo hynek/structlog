@@ -71,7 +71,10 @@ To make your program behave like a proper `12 factor app`_ that outputs only JSO
     import logging
     import sys
 
+    import structlog
+
     handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(structlog.StdlibJSONFormatter())
     root_logger = logging.getLogger()
     root_logger.addHandler(handler)
 
