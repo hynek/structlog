@@ -12,8 +12,8 @@ import re
 ###############################################################################
 
 NAME = "structlog"
-PACKAGES = find_packages(exclude=['tests*'])
-META_PATH = os.path.join("structlog", "__init__.py")
+PACKAGES = find_packages(where="src", exclude=['tests*'])
+META_PATH = os.path.join("src", "structlog", "__init__.py")
 KEYWORDS = ["logging", "structured", "structure", "log"]
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
@@ -78,6 +78,7 @@ if __name__ == "__main__":
         long_description=read("README.rst"),
         keywords=KEYWORDS,
         packages=PACKAGES,
+        package_dir={"": "src"},
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
         zip_safe=False,

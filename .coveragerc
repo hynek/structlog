@@ -2,7 +2,11 @@
 branch = True
 source = structlog
 
+[paths]
+source =
+   src/structlog
+   .tox/*/lib/python*/site-packages/structlog
+   .tox/pypy*/site-packages/structlog
+
 [report]
 show_missing = True
-omit =
-    structlog/_compat.py

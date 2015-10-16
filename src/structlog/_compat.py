@@ -27,7 +27,7 @@ except ImportError:
 if sys.version_info[:2] == (2, 6):
     try:
         from ordereddict import OrderedDict
-    except ImportError:
+    except ImportError:  # pragma: nocover
         class OrderedDict(object):
             def __init__(self, *args, **kw):
                 raise NotImplementedError(
@@ -52,9 +52,3 @@ else:
     text_type = unicode
     binary_type = str
     unicode_type = unicode
-
-def with_metaclass(meta, *bases):
-    """
-    Create a base class with a metaclass.
-    """
-    return meta("NewBase", bases, {})

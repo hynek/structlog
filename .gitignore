@@ -1,4 +1,4 @@
-.coverage
+.coverage*
 .tox
 structlog.egg-info
 htmlcov
