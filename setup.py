@@ -12,7 +12,7 @@ import re
 ###############################################################################
 
 NAME = "structlog"
-PACKAGES = find_packages(where="src", exclude=['tests*'])
+PACKAGES = find_packages(where="src")
 META_PATH = os.path.join("src", "structlog", "__init__.py")
 KEYWORDS = ["logging", "structured", "structure", "log"]
 CLASSIFIERS = [

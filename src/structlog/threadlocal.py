@@ -15,9 +15,9 @@ from structlog._config import BoundLoggerLazyProxy
 
 try:
     from greenlet import getcurrent
-except ImportError:  # pragma: nocover
+except ImportError:
     from threading import local as ThreadLocal
-else:  # pragma: nocover
+else:
     from weakref import WeakKeyDictionary
 
     class ThreadLocal(object):

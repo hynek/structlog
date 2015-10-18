@@ -189,14 +189,24 @@ class TestThreadLocalDict(object):
         assert 42 == d._dict["delattr"]
         del d.__class__._tl.dict_
 
+    def test_delattr_missing(self, D):
+        """
+        __delattr__ on an inexisting attribute raises AttributeError.
+        """
+        d = D()
+        with pytest.raises(AttributeError) as e:
+            d._tl.__delattr__("does_not_exist")
+        assert "does_not_exist" == e.value.args[0]
+
     def test_del(self, D):
         """
         ___del__ is proxied to the wrapped class.
         """
         d = D()
-        d['del'] = 13
-        del d['del']
-        assert 'del' not in d._dict
+        d["del"] = 13
+        assert 13 == d._dict["del"]
+        del d["del"]
+        assert "del" not in d._dict
 
     def test_new_class(self, D):
         """

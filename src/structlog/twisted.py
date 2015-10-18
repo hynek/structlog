@@ -109,7 +109,7 @@ def _extractStuffAndWhy(eventDict):
     # formatting.  Avoid log.err() to dump another traceback into the log.
     if isinstance(_stuff, BaseException):
         _stuff = Failure(_stuff)
-    if PY2:  # pragma: nocover  we don't care about the implicit else
+    if PY2:
         sys.exc_clear()
     return _stuff, _why, eventDict
 

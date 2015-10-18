@@ -30,7 +30,7 @@ class _FixedFindCallerLogger(logging.Logger):
         This logger gets set as the default one when using LoggerFactory.
         """
         f, name = _find_first_app_frame_and_name(['logging'])
-        if PY3:  # pragma: nocover
+        if PY3:
             if stack_info:
                 sinfo = _format_stack(f)
             else:
@@ -165,7 +165,7 @@ class BoundLogger(BoundLoggerBase):
 
         Exists only in Python 3.
         """
-        return self._logger.hasHandlers()  # pragma: nocover
+        return self._logger.hasHandlers()
 
     def callHandlers(self, record):
         """
