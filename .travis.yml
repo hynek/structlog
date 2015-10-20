@@ -54,4 +54,5 @@ before_install:
   - pip install codecov
 
 after_success:
+  - tox -e coverage-report
   - codecov
