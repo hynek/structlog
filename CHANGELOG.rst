@@ -1,0 +1,198 @@
+Changelog
+=========
+
+Versions are year-based with a strict :doc:`backward-compatibility` policy.
+The third digit is only for regressions.
+
+
+15.4.0 (UNRELEASED)
+-------------------
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+*none*
+
+
+15.3.0 (2015-09-25)
+-------------------
+
+Changes:
+^^^^^^^^
+
+- Tolerate frames without a ``__name__``, better.
+  [`58 <https://github.com/hynek/structlog/pull/58>`_]
+- Officially support Python 3.5.
+- Add :func:`structlog.ReturnLogger.failure` and :func:`structlog.PrintLogger.failure` as preparation for the new Twisted logging system.
+
+
+15.2.0 (2015-06-10)
+-------------------
+
+Changes:
+^^^^^^^^
+
+- Allow empty lists of processors.
+  This is a valid use case since `#26 <https://github.com/hynek/structlog/issues/26>`_ has been merged.
+  Before, supplying an empty list resulted in the defaults being used.
+- Prevent Twisted's ``log.err`` from quoting strings rendered by :class:`structlog.twisted.JSONRenderer`.
+- Better support of :meth:`logging.Logger.exception` within ``structlog``.
+  [`52 <https://github.com/hynek/structlog/pull/52>`_]
+- Add option to specify target key in :class:`structlog.processors.TimeStamper` processor.
+  [`51 <https://github.com/hynek/structlog/pull/51>`_]
+
+
+15.1.0 (2015-02-24)
+-------------------
+
+Changes:
+^^^^^^^^
+
+- Tolerate frames without a ``__name__``.
+
+
+15.0.0 (2015-01-23)
+-------------------
+
+Changes:
+^^^^^^^^
+
+- Add :func:`structlog.stdlib.add_log_level` and :func:`structlog.stdlib.add_logger_name` processors.
+  [`44 <https://github.com/hynek/structlog/pull/44>`_]
+- Add :func:`structlog.stdlib.BoundLogger.log`.
+  [`42 <https://github.com/hynek/structlog/pull/42>`_]
+- Pass positional arguments to stdlib wrapped loggers that use string formatting.
+  [`19 <https://github.com/hynek/structlog/pull/19>`_]
+- ``structlog`` is now dually licensed under the `Apache License, Version 2 <http://choosealicense.com/licenses/apache-2.0/>`_ and the `MIT <http://choosealicense.com/licenses/mit/>`_ license.
+  Therefore it is now legal to use structlog with `GPLv2 <http://choosealicense.com/licenses/gpl-2.0/>`_-licensed projects.
+  [`28 <https://github.com/hynek/structlog/pull/28>`_]
+- Add :func:`structlog.stdlib.BoundLogger.exception`.
+  [`22 <https://github.com/hynek/structlog/pull/22>`_]
+
+
+0.4.2 (2014-07-26)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Fixed a memory leak in greenlet code that emulates thread locals.
+  It shouldn't matter in practice unless you use multiple wrapped dicts within one program that is rather unlikely.
+  [`8 <https://github.com/hynek/structlog/pull/8>`_]
+- :class:`structlog.PrintLogger` now is thread-safe.
+- Test Twisted-related code on Python 3 (with some caveats).
+- Drop support for Python 3.2.
+  There is no justification to add complexity for a Python version that nobody uses.
+  If you are one of the `0.350% <https://alexgaynor.net/2014/jan/03/pypi-download-statistics/>`_ that use Python 3.2, please stick to the 0.4 branch; critical bugs will still be fixed.
+- Officially support Python 3.4.
+- Allow final processor to return a dictionary.
+  See :ref:`adapting`.
+  [`26 <https://github.com/hynek/structlog/pull/26>`_]
+- ``from structlog import *`` works now (but you still shouldn't use it).
+
+
+0.4.1 (2013-12-19)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Don't cache proxied methods in :class:`structlog.threadlocal._ThreadLocalDictWrapper`.
+  This doesn't affect regular users.
+- Various doc fixes.
+
+
+0.4.0 (2013-11-10)
+------------------
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Changes:
+^^^^^^^^
+
+- Add :class:`structlog.processors.StackInfoRenderer` for adding stack information to log entries without involving exceptions.
+  Also added it to default processor chain.
+  [`6 <https://github.com/hynek/structlog/pull/6>`_]
+- Allow optional positional arguments for :func:`structlog.get_logger` that are passed to logger factories.
+  The standard library factory uses this for explicit logger naming.
+  [`12 <https://github.com/hynek/structlog/pull/12>`_]
+- Add :class:`structlog.processors.ExceptionPrettyPrinter` for development and testing when multiline log entries aren't just acceptable but even helpful.
+- Allow the standard library name guesser to ignore certain frame names.
+  This is useful together with frameworks.
+- Add meta data (e.g. function names, line numbers) extraction for wrapped stdlib loggers.
+  [`5 <https://github.com/hynek/structlog/pull/5>`_]
+
+
+0.3.2 (2013-09-27)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Fix stdlib's name guessing.
+
+
+0.3.1 (2013-09-26)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Add forgotten :class:`structlog.processors.TimeStamper` to API documentation.
+
+
+0.3.0 (2013-09-23)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Greatly enhanced and polished the documentation and added a new theme based on Write The Docs, requests, and Flask.
+- Add Python Standard Library-specific BoundLogger that has an explicit API instead of intercepting unknown method calls.
+  See :class:`structlog.stdlib.BoundLogger`.
+- :class:`structlog.ReturnLogger` now allows arbitrary positional and keyword arguments.
+- Add Twisted-specific BoundLogger that has an explicit API instead of intercepting unknown method calls.
+  See :class:`structlog.twisted.BoundLogger`.
+- Allow logger proxies that are returned by :func:`structlog.get_logger` and :func:`structlog.wrap_logger` to cache the BoundLogger they assemble according to configuration on first use.
+  See :doc:`performance` and the `cache_logger_on_first_use` of :func:`structlog.configure` and :func:`structlog.wrap_logger`.
+- Extract a common base class for loggers that does nothing except keeping the context state.
+  This makes writing custom loggers much easier and more straight-forward.
+  See :class:`structlog.BoundLoggerBase`.
+
+
+0.2.0 (2013-09-17)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Promote to stable, thus henceforth a strict backward compatibility policy is put into effect.
+  See :ref:`contributing`.
+- Add `key_order` option to :class:`structlog.processors.KeyValueRenderer` for more predictable log entries with any `dict` class.
+- :class:`structlog.PrintLogger` now uses proper I/O routines and is thus viable not only for examples but also for production.
+- :doc:`Enhance Twisted support <twisted>` by offering JSONification of non-structlog log entries.
+- Allow for custom serialization in :class:`structlog.twisted.JSONRenderer` without abusing ``__repr__``.
+
+
+0.1.0 (2013-09-16)
+------------------
+
+Changes:
+^^^^^^^^
+
+- Initial release.

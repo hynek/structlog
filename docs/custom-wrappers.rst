@@ -1,13 +1,13 @@
 Custom Wrappers
 ===============
 
-structlog comes with a generic bound logger called :class:`structlog.BoundLogger` that can be used to wrap any logger class you fancy.
+``structlog`` comes with a generic bound logger called :class:`structlog.BoundLogger` that can be used to wrap any logger class you fancy.
 It does so by intercepting unknown method names and proxying them to the wrapped logger.
 
 This works fine, except that it has a performance penalty and the API of :class:`~structlog.BoundLogger` isn't clear from reading the documentation because large parts depend on the wrapped logger.
 An additional reason is that you may want to have semantically meaningful log method names that add meta data to log entries as it is fit (see example below).
 
-To solve that, structlog offers you to use an own wrapper class which you can configure using :func:`structlog.configure`.
+To solve that, ``structlog`` offers you to use an own wrapper class which you can configure using :func:`structlog.configure`.
 And to make it easier for you, it comes with the class :class:`structlog.BoundLoggerBase` which takes care of all data binding duties so you just add your log methods if you choose to sub-class it.
 
 

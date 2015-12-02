@@ -82,6 +82,7 @@ Project Information
 .. toctree::
    :maxdepth: 1
 
+   backward-compatibility
    contributing
    license
    changelog

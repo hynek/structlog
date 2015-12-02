@@ -53,16 +53,11 @@ def find_version(*file_paths):
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'releases',
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
 ]
-
-# 'releases' (changelog) settings
-releases_issue_uri = "https://github.com/hynek/structlog/issues/%s"
-releases_release_uri = "https://github.com/hynek/structlog/tree/%s"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

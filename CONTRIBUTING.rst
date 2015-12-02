@@ -1,40 +1,39 @@
 How To Contribute
 =================
 
-Every open source project lives from the generous help by contributors that sacrifice their time and structlog is no different.
+Every open source project lives from the generous help by contributors that sacrifice their time and ``structlog`` is no different.
 
-To make participation as pleasant as possible, this project adheres to the `Code of Conduct`_ by the Python Software Foundation.
+Here are a few guidelines to get you started:
 
-Here are a few hints and rules to get you started:
-
-- Add yourself to the AUTHORS.rst_ file in an alphabetical fashion.
-  Every contribution is valuable and shall be credited.
+- To run the test suite, all you need is a recent tox_.
+  It will ensure the test suite runs with all dependencies against all Python versions just as it will on `Travis CI`_.
+  If you lack some Python version, you can can always limit the environments like ``tox -e py27,py35`` (in that case you may want to look into pyenv_ that makes it very easy to install many different Python versions in parallel).
+- Make sure your changes pass our CI.
+  You won't get any feedback until it's green unless you ask for it.
 - If your change is noteworthy, add an entry to the changelog_.
 - No contribution is too small; please submit as many fixes for typos and grammar bloopers as you can!
-- Don’t *ever* break backward compatibility.
-  ``structlog`` is an infrastructure library people rely on; therefore highest care must be put into avoiding breakage on updates.
-  If it ever *has* to happen for higher reasons, structlog will follow the proven procedures_ of the Twisted project.
+- Don’t break `backward compatibility`_.
 - *Always* add tests and docs for your code.
-  This is a hard rule; patches with missing tests or documentation won’t be merged – if a feature is not tested or documented, it doesn’t exist.
+  This is a hard rule; patches with missing tests or documentation won’t be merged.
+- Write `good test docstrings`_.
 - Obey `PEP 8`_ and `PEP 257`_.
-  Twisted-specific modules use CamelCase.
-- Write `good commit messages`_.
+- If you address review feedback, make sure to bump the pull request.
+  Maintainers don’t receive notifications if you push new commits.
 
-.. note::
-   If you have something great but aren’t sure whether it adheres -- or even can adhere -- to the rules above: **please submit a pull request anyway**!
+Please note that this project is released with a Contributor `Code of Conduct`_.
+By participating in this project you agree to abide by its terms.
+Please report any harm to `Hynek Schlawack <me>`_ in any way you find appropriate.
 
-   In the best case, we can mold it into something, in the worst case the pull request gets politely closed.
-   There’s absolutely nothing to fear.
-
-Thank you for considering to contribute to structlog!
-If you have any question or concerns, feel free to reach out to me -- there is also a ``#structlog`` channel on freenode_.
+Thank you for considering to contribute to ``structlog``!
 
 
+.. _me: https://hynek.me/about/
 .. _`PEP 8`: https://www.python.org/dev/peps/pep-0008/
 .. _`PEP 257`: https://www.python.org/dev/peps/pep-0257/
-.. _`good commit messages`: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-.. _`Code of Conduct`: https://www.python.org/psf/codeofconduct/
-.. _changelog: https://github.com/hynek/structlog/blob/master/docs/changelog.rst
-.. _AUTHORS.rst: https://github.com/hynek/structlog/blob/master/AUTHORS.rst
-.. _procedures: https://twistedmatrix.com/trac/wiki/CompatibilityPolicy
-.. _`freenode`: https://freenode.net
+.. _`good test docstrings`: https://jml.io/pages/test-docstrings.html
+.. _`Code of Conduct`: https://github.com/hynek/structlog/blob/master/CODE_OF_CONDUCT.rst
+.. _changelog: https://github.com/hynek/structlog/blob/master/CHANGELOG.rst
+.. _`backward compatibility`: https://structlog.readthedocs.org/en/latest/backward-compatibility.html
+.. _`tox`: https://testrun.org/tox/
+.. _`Travis CI`: https://travis-ci.org/
+.. _pyenv: https://github.com/yyuu/pyenv

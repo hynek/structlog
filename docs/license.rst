@@ -8,8 +8,8 @@ For more legal details, see `this issue <https://github.com/pyca/cryptography/is
 
 The full license texts can be also found in the source code repository:
 
-- `Apache <https://github.com/hynek/structlog/blob/master/LICENSE.apache2>`_.
-- `MIT <https://github.com/hynek/structlog/blob/master/LICENSE.mit>`_.
+- `Apache License 2.0 <https://github.com/hynek/structlog/blob/master/LICENSE.apache2>`_
+- `MIT <https://github.com/hynek/structlog/blob/master/LICENSE.mit>`_
 
 .. _authors:
 
