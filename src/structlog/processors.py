@@ -78,21 +78,12 @@ class UnicodeEncoder(object):
     """
     Encode unicode values in `event_dict`.
 
-    :param str encoding: Encoding to encode to (default: ``'utf-8'``.
+    :param str encoding: Encoding to encode to (default: ``'utf-8'``).
     :param str errors: How to cope with encoding errors (default
         ``'backslashreplace'``).
 
-    Useful for :class:`KeyValueRenderer` if you don't want to see u-prefixes:
-
-    >>> from structlog.processors import KeyValueRenderer, UnicodeEncoder
-    >>> KeyValueRenderer()(None, None, {'foo': u'bar'})
-    "foo=u'bar'"
-    >>> KeyValueRenderer()(None, None,
-    ...                    UnicodeEncoder()(None, None, {'foo': u'bar'}))
-    "foo='bar'"
-
-    or :class:`JSONRenderer` and :class:`structlog.twisted.JSONRenderer` to
-    make sure user-supplied strings don't break the renderer.
+    Useful if you're running Python 2 as otherwise ``u"abc"`` will be rendered
+    as ``'u"abc"'``.
 
     Just put it in the processor chain before the renderer.
     """
@@ -104,6 +95,32 @@ class UnicodeEncoder(object):
         for key, value in event_dict.items():
             if isinstance(value, unicode_type):
                 event_dict[key] = value.encode(self._encoding, self._errors)
+        return event_dict
+
+
+class UnicodeDecoder(object):
+    """
+    Decode byte string values in `event_dict`.
+
+    :param str encoding: Encoding to decode from (default: ``'utf-8'``).
+    :param str errors: How to cope with encoding errors (default:
+        ``'replace'``).
+
+    Useful if you're running Python 3 as otherwise ``b"abc"`` will be rendered
+    as ``'b"abc"'``.
+
+    Just put it in the processor chain before the renderer.
+
+    .. versionadded:: 15.4.0
+    """
+    def __init__(self, encoding='utf-8', errors='replace'):
+        self._encoding = encoding
+        self._errors = errors
+
+    def __call__(self, logger, name, event_dict):
+        for key, value in event_dict.items():
+            if isinstance(value, bytes):
+                event_dict[key] = value.decode(self._encoding, self._errors)
         return event_dict
 
 
@@ -141,8 +158,11 @@ class JSONRenderer(object):
     the standard library JSON module knows about -- like in this example
     a list.
 
-    .. versionchanged:: 0.2.0
-        Added support for ``__structlog__`` serialization method.
+    .. versionadded:: 0.2.0
+        Support for ``__structlog__`` serialization method.
+
+    .. versionadded:: 15.4.0
+        ``serializer`` parameter.
     """
     def __init__(self, serializer=json.dumps, **dumps_kw):
         self._dumps_kw = dumps_kw

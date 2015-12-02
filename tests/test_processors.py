@@ -27,6 +27,7 @@ from structlog.processors import (
     KeyValueRenderer,
     StackInfoRenderer,
     TimeStamper,
+    UnicodeDecoder,
     UnicodeEncoder,
     _json_fallback_handler,
     format_exc_info,
@@ -238,6 +239,29 @@ class TestUnicodeEncoder(object):
         """
         ue = UnicodeEncoder()
         assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": b"b\xc3\xa4r"})
+
+
+class TestUnicodeDecoder(object):
+    def test_decodes(self):
+        """
+        Byte strings get decoded (as UTF-8 by default).
+        """
+        ud = UnicodeDecoder()
+        assert {"foo": u"b\xe4r"} == ud(None, None, {"foo": b"b\xc3\xa4r"})
+
+    def test_passes_arguments(self):
+        """
+        Encoding options are passed into the encoding call.
+        """
+        ud = UnicodeDecoder("utf-8", "ignore")
+        assert {"foo": u""} == ud(None, None, {"foo": b"\xa1\xa4"})
+
+    def test_bytes_nop(self):
+        """
+        If the value is already unicode, don't do anything.
+        """
+        ud = UnicodeDecoder()
+        assert {"foo": u"b\u2013r"} == ud(None, None, {"foo": u"b\u2013r"})
 
 
 class TestExceptionPrettyPrinter(object):

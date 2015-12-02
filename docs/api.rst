@@ -60,6 +60,8 @@ structlog Package
 
 .. autoclass:: KeyValueRenderer
 
+.. autoclass:: UnicodeDecoder
+
 .. autoclass:: UnicodeEncoder
 
 .. autofunction:: format_exc_info
