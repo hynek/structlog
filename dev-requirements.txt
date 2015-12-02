@@ -1,8 +1,6 @@
--r docs-requirements.txt
-check-manifest
-freezegun
+-e .
+coverage
+freezegun>=0.2.8
 pretend
-pytest-cov
 pytest
-twine
-wheel
+simplejson

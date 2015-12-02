@@ -24,7 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Add ``serializer`` parameter to :func:`structlog.processors.JSONRenderer` which allows for using different (possibly faster) JSON encoders than the standard library.
 
 
 15.3.0 (2015-09-25)

@@ -9,6 +9,12 @@ import json
 import sys
 
 import pytest
+import simplejson
+
+try:
+    import rapidjson
+except ImportError:
+    rapidjson = None
 
 from freezegun import freeze_time
 
@@ -22,7 +28,7 @@ from structlog.processors import (
     StackInfoRenderer,
     TimeStamper,
     UnicodeEncoder,
-    _JSONFallbackEncoder,
+    _json_fallback_handler,
     format_exc_info,
 )
 from structlog.threadlocal import wrap_dict
@@ -44,12 +50,18 @@ def event_dict():
 
 class TestKeyValueRenderer(object):
     def test_sort_keys(self, event_dict):
+        """
+        Keys are sorted if sort_keys is set.
+        """
         assert (
             r"a=<A(\o/)> b=[3, 4] x=7 y='test' z=(1, 2)" ==
             KeyValueRenderer(sort_keys=True)(None, None, event_dict)
         )
 
     def test_order_complete(self, event_dict):
+        """
+        Orders keys according to key_order.
+        """
         assert (
             r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
             KeyValueRenderer(key_order=['y', 'b', 'a', 'z', 'x'])
@@ -80,12 +92,18 @@ class TestKeyValueRenderer(object):
         )
 
     def test_random_order(self, event_dict):
+        """
+        No special ordering doesn't blow up.
+        """
         rv = KeyValueRenderer()(None, None, event_dict)
         assert isinstance(rv, str)
 
 
 class TestJSONRenderer(object):
     def test_renders_json(self, event_dict):
+        """
+        Renders a predictable JSON string.
+        """
         assert (
             r'{"a": "<A(\\o/)>", "b": [3, 4], "x": 7, "y": "test", "z": '
             r'[1, 2]}' ==
@@ -93,15 +111,51 @@ class TestJSONRenderer(object):
         )
 
     def test_FallbackEncoder_handles_ThreadLocalDictWrapped_dicts(self):
+        """
+        Our fallback handling handles properly ThreadLocalDictWrapper values.
+        """
         s = json.dumps(wrap_dict(dict)({'a': 42}),
-                       cls=_JSONFallbackEncoder)
+                       default=_json_fallback_handler)
         assert '{"a": 42}' == s
 
     def test_FallbackEncoder_falls_back(self):
+        """
+        The fallback handler uses repr if it doesn't know the type.
+        """
         s = json.dumps({'date': datetime.date(1980, 3, 25)},
-                       cls=_JSONFallbackEncoder,)
+                       default=_json_fallback_handler)
 
         assert '{"date": "datetime.date(1980, 3, 25)"}' == s
+
+    def test_serializer(self):
+        """
+        A custom serializer is used if specified.
+        """
+        jr = JSONRenderer(serializer=lambda obj, **kw: {"a": 42})
+        obj = object()
+
+        assert {"a": 42} == jr(None, None, obj)
+
+    def test_simplejson(self, event_dict):
+        """
+        Integration test with simplejson.
+        """
+        jr = JSONRenderer(serializer=simplejson.dumps)
+
+        assert {
+            'a': '<A(\\o/)>', 'b': [3, 4], 'x': 7, 'y': 'test', 'z': [1, 2]
+        } == json.loads(jr(None, None, event_dict))
+
+    @pytest.mark.skipif(rapidjson is None, reason="rapidjson is missing.")
+    def test_rapidjson(self, event_dict):
+        """
+        Integration test with python-rapidjson.
+        """
+        jr = JSONRenderer(serializer=rapidjson.dumps)
+
+        assert {
+            'a': '<A(\\o/)>', 'b': [3, 4], 'x': 7, 'y': 'test', 'z': [1, 2]
+        } == json.loads(jr(None, None, event_dict))
 
 
 class TestTimeStamper(object):

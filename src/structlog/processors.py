@@ -112,6 +112,11 @@ class JSONRenderer(object):
     Render the `event_dict` using `json.dumps(event_dict, **json_kw)`.
 
     :param json_kw: Are passed unmodified to `json.dumps()`.
+    :param callable serializer: A :meth:`json.dumps`-compatible callable that
+        will be used to format the string.  This can be used to use alternative
+        JSON encoders like `simplejson
+        <https://pypi.python.org/pypi/simplejson/>`_ or `RapidJSON
+        <https://pypi.python.org/pypi/python-rapidjson/>`_.
 
     >>> from structlog.processors import JSONRenderer
     >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
@@ -139,31 +144,28 @@ class JSONRenderer(object):
     .. versionchanged:: 0.2.0
         Added support for ``__structlog__`` serialization method.
     """
-    def __init__(self, **dumps_kw):
+    def __init__(self, serializer=json.dumps, **dumps_kw):
         self._dumps_kw = dumps_kw
+        self._dumps = serializer
 
     def __call__(self, logger, name, event_dict):
-        return json.dumps(event_dict, cls=_JSONFallbackEncoder,
-                          **self._dumps_kw)
+        return self._dumps(event_dict, default=_json_fallback_handler,
+                           **self._dumps_kw)
 
 
-class _JSONFallbackEncoder(json.JSONEncoder):
+def _json_fallback_handler(obj):
     """
     Serialize custom datatypes and pass the rest to __structlog__ & repr().
     """
-    def default(self, obj):
-        """
-        Serialize obj with repr(obj) as fallback.
-        """
-        # circular imports :(
-        from structlog.threadlocal import _ThreadLocalDictWrapper
-        if isinstance(obj, _ThreadLocalDictWrapper):
-            return obj._dict
-        else:
-            try:
-                return obj.__structlog__()
-            except AttributeError:
-                return repr(obj)
+    # circular imports :(
+    from structlog.threadlocal import _ThreadLocalDictWrapper
+    if isinstance(obj, _ThreadLocalDictWrapper):
+        return obj._dict
+    else:
+        try:
+            return obj.__structlog__()
+        except AttributeError:
+            return repr(obj)
 
 
 def format_exc_info(logger, name, event_dict):

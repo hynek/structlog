@@ -1,5 +1,4 @@
 -e .
-releases
 sphinx
 sphinx_rtd_theme
 twisted
