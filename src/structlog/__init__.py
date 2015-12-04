@@ -24,7 +24,7 @@ from structlog._config import (
     reset_defaults,
     wrap_logger,
 )
-from structlog._exc import (
+from structlog.exceptions import (
     DropEvent,
 )
 from structlog._generic import (

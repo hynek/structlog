@@ -15,8 +15,8 @@ import logging
 
 from structlog._base import BoundLoggerBase
 from structlog._compat import PY3
-from structlog._exc import DropEvent
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
+from structlog.exceptions import DropEvent
 
 
 class _FixedFindCallerLogger(logging.Logger):

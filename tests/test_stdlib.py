@@ -11,8 +11,8 @@ import logging
 import pytest
 from pretend import call_recorder
 
-from structlog._exc import DropEvent
 from structlog._loggers import ReturnLogger
+from structlog.exceptions import DropEvent
 from structlog.stdlib import (
     BoundLogger,
     CRITICAL,
