@@ -24,6 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- Use `six <https://pythonhosted.org/six/>`_ for compatibility.
 - Add :class:`structlog.processors.UnicodeDecoder` that will decode all byte string values in an event dictionary to Unicode.
 - Add ``serializer`` parameter to :func:`structlog.processors.JSONRenderer` which allows for using different (possibly faster) JSON encoders than the standard library.
 

@@ -15,7 +15,7 @@ import operator
 import sys
 import time
 
-from structlog._compat import unicode_type
+from structlog._compat import text_type
 from structlog._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
@@ -93,7 +93,7 @@ class UnicodeEncoder(object):
 
     def __call__(self, logger, name, event_dict):
         for key, value in event_dict.items():
-            if isinstance(value, unicode_type):
+            if isinstance(value, text_type):
                 event_dict[key] = value.encode(self._encoding, self._errors)
         return event_dict
 

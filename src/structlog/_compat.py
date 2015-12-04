@@ -3,10 +3,7 @@
 # repository for complete details.
 
 """
-Python 2 + 3 compatibility utilities.
-
-Derived from MIT-licensed https://bitbucket.org/gutworth/six/ which is
-Copyright 2010-2013 by Benjamin Peterson.
+Compatibility utilities.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -15,8 +12,9 @@ import abc
 import sys
 import types
 
-PY2 = sys.version_info[0] == 2
-PY3 = sys.version_info[0] == 3
+from six import (
+    PY2, PY3, string_types, integer_types, class_types, text_type
+)
 
 
 try:
@@ -37,18 +35,3 @@ if sys.version_info[:2] == (2, 6):
                 )
 else:
     from collections import OrderedDict
-
-if PY3:
-    string_types = str,
-    integer_types = int,
-    class_types = type,
-    text_type = str
-    binary_type = bytes
-    unicode_type = str
-else:
-    string_types = basestring,
-    integer_types = (int, long)
-    class_types = (type, types.ClassType)
-    text_type = unicode
-    binary_type = str
-    unicode_type = unicode
