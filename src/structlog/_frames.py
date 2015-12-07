@@ -39,6 +39,9 @@ def _find_first_app_frame_and_name(additional_ignores=None):
     f = sys._getframe()
     name = f.f_globals.get("__name__") or "?"
     while any(name.startswith(i) for i in ignores):
+        if f.f_back is None:
+            name = "?"
+            break
         f = f.f_back
         name = f.f_globals.get("__name__") or "?"
     return f, name
