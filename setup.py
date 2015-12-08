@@ -77,7 +77,7 @@ if __name__ == "__main__":
         author_email=find_meta("email"),
         maintainer=find_meta("author"),
         maintainer_email=find_meta("email"),
-        long_description=read("README.rst"),
+        long_description=read("README.rst") + "\n\n" + read("CHANGELOG.rst"),
         keywords=KEYWORDS,
         packages=PACKAGES,
         package_dir={"": "src"},
