@@ -12,8 +12,6 @@ import re
 ###############################################################################
 
 NAME = "structlog"
-PACKAGES = find_packages(where="src")
-META_PATH = os.path.join("src", "structlog", "__init__.py")
 KEYWORDS = ["logging", "structured", "structure", "log"]
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
@@ -49,8 +47,17 @@ def read(*parts):
     with codecs.open(os.path.join(HERE, *parts), "rb", "utf-8") as f:
         return f.read()
 
+try:
+    PACKAGES
+except NameError:
+    PACKAGES = find_packages(where="src")
 
-META_FILE = read(META_PATH)
+try:
+    META_PATH
+except NameError:
+    META_PATH = os.path.join(HERE, "src", NAME, "__init__.py")
+finally:
+    META_FILE = read(META_PATH)
 
 
 def find_meta(meta):
@@ -77,7 +84,11 @@ if __name__ == "__main__":
         author_email=find_meta("email"),
         maintainer=find_meta("author"),
         maintainer_email=find_meta("email"),
-        long_description=read("README.rst") + "\n\n" + read("CHANGELOG.rst"),
+        long_description=(
+            read("README.rst") + "\n\n" +
+            read("AUTHORS.rst") + "\n\n" +
+            read("CHANGELOG.rst")
+        ),
         keywords=KEYWORDS,
         packages=PACKAGES,
         package_dir={"": "src"},
