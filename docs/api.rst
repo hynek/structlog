@@ -1,7 +1,7 @@
 .. _api:
 
-structlog Package
-=================
+API Reference
+=============
 
 .. module:: structlog
 

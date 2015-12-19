@@ -55,7 +55,7 @@ Basics
 Integration with Existing Systems
 ---------------------------------
 
-``structlog`` can be used immediately with any existing logger.
+``structlog`` can be used immediately with *any* existing logger.
 However it comes with special wrappers for the Python standard library and Twisted that are optimized for their respective underlying loggers and contain less magic.
 
 .. toctree::

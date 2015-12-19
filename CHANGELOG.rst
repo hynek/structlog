@@ -78,7 +78,7 @@ Changes:
   [`42 <https://github.com/hynek/structlog/pull/42>`_]
 - Pass positional arguments to stdlib wrapped loggers that use string formatting.
   [`19 <https://github.com/hynek/structlog/pull/19>`_]
-- ``structlog`` is now dually licensed under the `Apache License, Version 2 <http://choosealicense.com/licenses/apache-2.0/>`_ and the `MIT <http://choosealicense.com/licenses/mit/>`_ license.
+- ``structlog`` is now dually licensed under the `Apache License, Version 2 <http://choosealicense.com/licenses/apache/>`_ and the `MIT <http://choosealicense.com/licenses/mit/>`_ license.
   Therefore it is now legal to use structlog with `GPLv2 <http://choosealicense.com/licenses/gpl-2.0/>`_-licensed projects.
   [`28 <https://github.com/hynek/structlog/pull/28>`_]
 - Add ``structlog.stdlib.BoundLogger.exception``.

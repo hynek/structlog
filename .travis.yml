@@ -41,6 +41,8 @@ matrix:
       env: TOXENV=manifest
     - python: "2.7"
       env: TOXENV=docs
+    - python: "3.5"
+      env: TOXENV=readme
 
 install:
   - pip install tox
