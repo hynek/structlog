@@ -24,7 +24,7 @@ from structlog.processors import (
 _BUILTIN_DEFAULT_PROCESSORS = [
     StackInfoRenderer(),
     format_exc_info,
-    KeyValueRenderer()
+    KeyValueRenderer(),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = OrderedDict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger

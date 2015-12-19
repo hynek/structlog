@@ -33,6 +33,9 @@ CLASSIFIERS = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 INSTALL_REQUIRES = ["six"]
+EXTRAS_REQUIRE = {
+    "dev": ["colorama"],
+}
 
 ###############################################################################
 
@@ -94,5 +97,6 @@ if __name__ == "__main__":
         package_dir={"": "src"},
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
+        extras_require=EXTRAS_REQUIRE,
         zip_safe=False,
     )

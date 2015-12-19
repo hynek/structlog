@@ -44,7 +44,9 @@ structlog comes with a few standard library-specific processors:
 Suggested Configuration
 -----------------------
 
-A basic configuration to output structured logs in JSON format looks like this::
+A basic configuration to output structured logs in JSON format looks like this:
+
+.. code-block:: python
 
     import structlog
 
@@ -54,7 +56,7 @@ A basic configuration to output structured logs in JSON format looks like this::
             structlog.stdlib.add_logger_name,
             structlog.stdlib.add_log_level,
             structlog.stdlib.PositionalArgumentsFormatter(),
-            structlog.processors.TimeStamper(fmt='iso'),
+            structlog.processors.TimeStamper(fmt="iso"),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
             structlog.processors.JSONRenderer()

@@ -11,6 +11,6 @@ If there will ever be need to break compatibility, it will be announced in the :
 
 .. warning::
 
-   You cannot however rely on the default settings.
+   You cannot however rely on the default settings and the :mod:`structlog.dev` module.
    They may be adjusted in the future to provide a better experience when starting to use ``structlog``.
    So please make sure to **always** properly configure your applications.

@@ -38,6 +38,15 @@ API Reference
 .. autoclass:: BoundLoggerBase
    :members: new, bind, unbind, _logger, _process_event, _proxy_to_logger
 
+
+:mod:`dev` Module
+-----------------
+
+.. automodule:: structlog.dev
+
+.. autoclass:: ConsoleRenderer
+
+
 :mod:`threadlocal` Module
 -------------------------
 
@@ -48,6 +57,7 @@ API Reference
 .. autofunction:: tmp_bind(logger, **tmp_values)
 
 .. autofunction:: as_immutable
+
 
 .. _procs:
 
@@ -72,6 +82,7 @@ API Reference
 
 .. autoclass:: TimeStamper(fmt=None, utc=True)
 
+
 :mod:`stdlib` Module
 --------------------
 
@@ -90,6 +101,7 @@ API Reference
 .. autofunction:: add_logger_name
 
 .. autoclass:: PositionalArgumentsFormatter
+
 
 :mod:`twisted` Module
 ---------------------

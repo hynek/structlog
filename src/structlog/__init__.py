@@ -9,6 +9,7 @@ Structured logging for Python.
 from __future__ import absolute_import, division, print_function
 
 from structlog import (
+    dev,
     processors,
     stdlib,
     threadlocal,
@@ -69,6 +70,7 @@ __all__ = [
     "configure_once",
     "getLogger",
     "get_logger",
+    "dev",
     "processors",
     "reset_defaults",
     "stdlib",

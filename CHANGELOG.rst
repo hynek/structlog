@@ -24,6 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- Add ``structlog.dev.ConsoleRenderer`` that renders the event dictionary aligned and with colors.
 - Use `six <https://pythonhosted.org/six/>`_ for compatibility.
 - Add ``structlog.processors.UnicodeDecoder`` that will decode all byte string values in an event dictionary to Unicode.
 - Add ``serializer`` parameter to ``structlog.processors.JSONRenderer`` which allows for using different (possibly faster) JSON encoders than the standard library.

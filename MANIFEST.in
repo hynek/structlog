@@ -3,11 +3,7 @@ include *.rst
 include *.txt
 include .travis.yml
 include tox.ini
-recursive-include docs *.bat
-recursive-include docs *.keep
-recursive-include docs *.py
-recursive-include docs *.rst
-recursive-include docs *.txt
-recursive-include docs Makefile
-recursive-include tests *.py
+graft tests
+recursive-exclude tests *.pyc
+graft docs
 prune docs/_build
