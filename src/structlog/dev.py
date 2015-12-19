@@ -81,6 +81,8 @@ class ConsoleRenderer(object):
             "debug": GREEN,
             "notset": colorama.Back.RED,
         }
+        for key in self._level_to_color.keys():
+            self._level_to_color[key] += BRIGHT
         self._longest_level = len(max(
             self._level_to_color.keys(),
             key=lambda e: len(e)

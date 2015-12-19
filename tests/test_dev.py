@@ -82,7 +82,7 @@ class TestConsoleRenderer(object):
         rv = cr(None, None, {"event": "test", "level": "critical"})
 
         assert (
-            "[" + dev.RED +
+            "[" + dev.RED + dev.BRIGHT +
             dev._pad("critical", cr._longest_level) +
             dev.RESET_ALL + "] " +
             PADDED_TEST
@@ -179,7 +179,7 @@ class TestConsoleRenderer(object):
 
         assert (
             dev.DIM + "13:13" + dev.RESET_ALL +
-            " [" + dev.RED +
+            " [" + dev.RED + dev.BRIGHT +
             dev._pad("error", cr._longest_level) +
             dev.RESET_ALL + "] " +
             PADDED_TEST +
