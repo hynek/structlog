@@ -25,7 +25,7 @@ _MISSING = (
     "If you want to use the helpers from structlog.dev, it is strongly "
     "recommended to install structlog using `pip install structlog[dev]`."
 )
-_EVENT_WIDTH = 25  # pad the event name to so many characters
+_EVENT_WIDTH = 30  # pad the event name to so many characters
 
 
 def _pad(s, l):
