@@ -45,7 +45,7 @@ except ImportError:  # pragma: nocover
     twisted = None
 
 
-__version__ = "15.4.0.dev0"
+__version__ = "16.0.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging for Python"
@@ -55,7 +55,7 @@ __author__ = "Hynek Schlawack"
 __email__ = "hs@ox.cx"
 
 __license__ = "MIT or Apache License, Version 2.0"
-__copyright__ = "Copyright (c) 2013-2015 {0}".format(__author__)
+__copyright__ = "Copyright (c) 2013 {0}".format(__author__)
 
 
 __all__ = [
