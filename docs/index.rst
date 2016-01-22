@@ -51,6 +51,7 @@ Basics
    processors
    examples
    development
+   faq
 
 
 Integration with Existing Systems
