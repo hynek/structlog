@@ -123,8 +123,8 @@ class ConsoleRenderer(object):
         exc = event_dict.pop("exception", None)
         sio.write(
             " ".join(
-                CYAN + key + RESET_ALL
-                + "=" +
+                CYAN + key + RESET_ALL +
+                "=" +
                 MAGENTA + repr(event_dict[key]) +
                 RESET_ALL
                 for key in sorted(event_dict.keys())
