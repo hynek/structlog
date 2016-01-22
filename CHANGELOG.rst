@@ -24,6 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- Be more more lenient about missing ``__name__``\ s.
+  [`62 <https://github.com/hynek/structlog/pull/62>`_]
 - Add ``structlog.dev.ConsoleRenderer`` that renders the event dictionary aligned and with colors.
 - Use `six <https://pythonhosted.org/six/>`_ for compatibility.
 - Add ``structlog.processors.UnicodeDecoder`` that will decode all byte string values in an event dictionary to Unicode.
