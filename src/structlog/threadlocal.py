@@ -103,9 +103,11 @@ def tmp_bind(logger, **tmp_values):
     event='event'
     """
     saved = as_immutable(logger)._context
-    yield logger.bind(**tmp_values)
-    logger._context.clear()
-    logger._context.update(saved)
+    try:
+        yield logger.bind(**tmp_values)
+    finally:
+        logger._context.clear()
+        logger._context.update(saved)
 
 
 class _ThreadLocalDictWrapper(object):
