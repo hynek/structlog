@@ -70,6 +70,15 @@ class TestFindFirstAppFrameAndName(object):
         f, n = _find_first_app_frame_and_name()
         assert ((f1, "?") == (f, n))
 
+    def test_tolerates_f_back_is_None(self, monkeypatch):
+        """
+        Use ``?`` if all frames are in ignored frames.
+        """
+        f1 = stub(f_globals={'__name__': 'structlog'}, f_back=None)
+        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
+        f, n = _find_first_app_frame_and_name()
+        assert ((f1, "?") == (f, n))
+
 
 @pytest.fixture
 def exc_info():
