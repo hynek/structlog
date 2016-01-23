@@ -30,6 +30,8 @@ Changes:
 - Use `six <https://pythonhosted.org/six/>`_ for compatibility.
 - Add ``structlog.processors.UnicodeDecoder`` that will decode all byte string values in an event dictionary to Unicode.
 - Add ``serializer`` parameter to ``structlog.processors.JSONRenderer`` which allows for using different (possibly faster) JSON encoders than the standard library.
+- Clean up the context when exiting ``structlog.threadlocal.tmp_bind`` in case of exceptions.
+  [`64 <https://github.com/hynek/structlog/issues/64>`_]
 
 
 15.3.0 (2015-09-25)

@@ -57,6 +57,19 @@ class TestTmpBind(object):
             } == tmp_log._context._dict == log._context._dict
         assert {'y': 23} == log._context._dict
 
+    def test_bind_exc(self, log):
+        """
+        tmp_bind cleans up properly on exceptions.
+        """
+        log = log.bind(y=23)
+        with pytest.raises(ValueError):
+            with tmp_bind(log, x=42, y='foo') as tmp_log:
+                assert {
+                           'y': 'foo', 'x': 42
+                       } == tmp_log._context._dict == log._context._dict
+                raise ValueError
+        assert {'y': 23} == log._context._dict
+
 
 class TestAsImmutable(object):
     def test_does_not_affect_global(self, log):
