@@ -33,14 +33,6 @@ class KeyValueRenderer(object):
         order.  Missing keys will be rendered as `None`, extra keys depending
         on *sort_keys* and the dict class.
 
-
-    >>> from structlog.processors import KeyValueRenderer
-    >>> KeyValueRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
-    'a=42 b=[1, 2, 3]'
-    >>> KeyValueRenderer(key_order=['b', 'a'])(None, None,
-    ...                                       {'a': 42, 'b': [1, 2, 3]})
-    'b=[1, 2, 3] a=42'
-
     .. versionadded:: 0.2.0
         `key_order`
     """
@@ -129,35 +121,13 @@ class JSONRenderer(object):
     """
     Render the `event_dict` using `json.dumps(event_dict, **json_kw)`.
 
-    :param json_kw: Are passed unmodified to `json.dumps()`.
+    :param dict json_kw: Are passed unmodified to `json.dumps()`.
     :param callable serializer: A :meth:`json.dumps`-compatible callable that
         will be used to format the string.  This can be used to use alternative
         JSON encoders like `simplejson
         <https://pypi.python.org/pypi/simplejson/>`_ or `RapidJSON
-        <https://pypi.python.org/pypi/python-rapidjson/>`_.
-
-    >>> from structlog.processors import JSONRenderer
-    >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
-    '{"a": 42, "b": [1, 2, 3]}'
-
-    Bound objects are attempted to be serialize using a ``__structlog__``
-    method.  If none is defined, ``repr()`` is used:
-
-    >>> class C1(object):
-    ...     def __structlog__(self):
-    ...         return ['C1!']
-    ...     def __repr__(self):
-    ...         return '__structlog__ took precedence'
-    >>> class C2(object):
-    ...     def __repr__(self):
-    ...         return 'No __structlog__, so this is used.'
-    >>> from structlog.processors import JSONRenderer
-    >>> JSONRenderer(sort_keys=True)(None, None, {'c1': C1(), 'c2': C2()})
-    '{"c1": ["C1!"], "c2": "No __structlog__, so this is used."}'
-
-    Please note that additionally to strings, you can also return any type
-    the standard library JSON module knows about -- like in this example
-    a list.
+        <https://pypi.python.org/pypi/python-rapidjson/>`_ (faster but Python
+        3-only).
 
     .. versionadded:: 0.2.0
         Support for ``__structlog__`` serialization method.
@@ -218,7 +188,8 @@ class TimeStamper(object):
     Add a timestamp to `event_dict`.
 
     .. note::
-        You probably want to let OS tools take care of timestamping.  See also
+
+        You should let OS tools take care of timestamping.  See also
         :doc:`logging-best-practices`.
 
     :param str format: strftime format string, or ``"iso"`` for `ISO 8601
@@ -226,14 +197,6 @@ class TimeStamper(object):
         timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
     :param str key: Target key in `event_dict` for added timestamps.
-
-    >>> from structlog.processors import TimeStamper
-    >>> TimeStamper()(None, None, {})  # doctest: +SKIP
-    {'timestamp': 1378994017}
-    >>> TimeStamper(fmt='iso')(None, None, {})  # doctest: +SKIP
-    {'timestamp': '2013-09-12T13:54:26.996778Z'}
-    >>> TimeStamper(fmt='%Y', key='year')(None, None, {})  # doctest: +SKIP
-    {'year': '2013'}
     """
     def __new__(cls, fmt=None, utc=True, key='timestamp'):
         if fmt is None and not utc:
@@ -295,6 +258,7 @@ class ExceptionPrettyPrinter(object):
     `exception` as well as `exc_info` keys.
 
     .. versionadded:: 0.4.0
+
     .. versionchanged:: 16.0.0
        Added support for passing exceptions as ``exc_info`` on Python 3.
     """

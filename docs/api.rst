@@ -70,24 +70,46 @@ API Reference
 
 .. autoclass:: KeyValueRenderer
 
+   .. doctest::
+
+      >>> from structlog.processors import KeyValueRenderer
+      >>> KeyValueRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
+      'a=42 b=[1, 2, 3]'
+      >>> KeyValueRenderer(key_order=['b', 'a'])(None, None,
+      ...                                       {'a': 42, 'b': [1, 2, 3]})
+      'b=[1, 2, 3] a=42'
+
+
 .. autoclass:: UnicodeDecoder
 
 .. autoclass:: UnicodeEncoder
 
 .. autofunction:: format_exc_info
 
-   >>> from structlog.processors import format_exc_info
-   >>> try:
-   ...     raise ValueError
-   ... except ValueError:
-   ...     format_exc_info(None, None, {'exc_info': True})# doctest: +ELLIPSIS
-   {'exception': 'Traceback (most recent call last):...
+   .. doctest::
+
+      >>> from structlog.processors import format_exc_info
+      >>> try:
+      ...     raise ValueError
+      ... except ValueError:
+      ...     format_exc_info(None, None, {'exc_info': True})# doctest: +ELLIPSIS
+      {'exception': 'Traceback (most recent call last):...
 
 .. autoclass:: StackInfoRenderer
 
 .. autoclass:: ExceptionPrettyPrinter
 
 .. autoclass:: TimeStamper(fmt=None, utc=True)
+
+   .. doctest::
+
+      >>> from structlog.processors import TimeStamper
+      >>> TimeStamper()(None, None, {})  # doctest: +SKIP
+      {'timestamp': 1378994017}
+      >>> TimeStamper(fmt='iso')(None, None, {})  # doctest: +SKIP
+      {'timestamp': '2013-09-12T13:54:26.996778Z'}
+      >>> TimeStamper(fmt='%Y', key='year')(None, None, {})  # doctest: +SKIP
+      {'year': '2013'}
 
 
 :mod:`stdlib` Module
@@ -124,6 +146,31 @@ API Reference
 .. autoclass:: EventAdapter
 
 .. autoclass:: JSONRenderer
+
+   .. doctest::
+
+      >>> from structlog.processors import JSONRenderer
+      >>> JSONRenderer(sort_keys=True)(None, None, {'a': 42, 'b': [1, 2, 3]})
+      '{"a": 42, "b": [1, 2, 3]}'
+
+   Bound objects are attempted to be serialize using a ``__structlog__`` method.
+   If none is defined, ``repr()`` is used:
+
+   .. doctest::
+
+      >>> class C1(object):
+      ...     def __structlog__(self):
+      ...         return ['C1!']
+      ...     def __repr__(self):
+      ...         return '__structlog__ took precedence'
+      >>> class C2(object):
+      ...     def __repr__(self):
+      ...         return 'No __structlog__, so this is used.'
+      >>> from structlog.processors import JSONRenderer
+      >>> JSONRenderer(sort_keys=True)(None, None, {'c1': C1(), 'c2': C2()})
+      '{"c1": ["C1!"], "c2": "No __structlog__, so this is used."}'
+
+   Please note that additionally to strings, you can also return any type the standard library JSON module knows about -- like in this example a list.
 
 .. autofunction:: plainJSONStdOutLogger
 
