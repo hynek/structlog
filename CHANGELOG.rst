@@ -24,6 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- ``structlog.processors.ExceptionPrettyPrinter`` and ``structlog.processors.format_exc_info`` now support passing of Exceptions on Python 3.
 - Be more more lenient about missing ``__name__``\ s.
   [`62 <https://github.com/hynek/structlog/pull/62>`_]
 - Add ``structlog.dev.ConsoleRenderer`` that renders the event dictionary aligned and with colors.

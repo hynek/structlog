@@ -29,10 +29,13 @@ from structlog.processors import (
     TimeStamper,
     UnicodeDecoder,
     UnicodeEncoder,
+    _figure_out_exc_info,
     _json_fallback_handler,
     format_exc_info,
 )
 from structlog.threadlocal import wrap_dict
+
+from .utils import py3_only
 
 
 @pytest.fixture
@@ -201,21 +204,43 @@ class TestTimeStamper(object):
 
 class TestFormatExcInfo(object):
     def test_formats_tuple(self, monkeypatch):
+        """
+        If exc_info is a tuple, it is used.
+        """
         monkeypatch.setattr(structlog.processors,
-                            '_format_exception',
+                            "_format_exception",
                             lambda exc_info: exc_info)
-        d = format_exc_info(None, None, {'exc_info': (None, None, 42)})
-        assert {'exception': (None, None, 42)} == d
+        d = format_exc_info(None, None, {"exc_info": (None, None, 42)})
+        assert {"exception": (None, None, 42)} == d
 
     def test_gets_exc_info_on_bool(self):
+        """
+        If exc_info is True, it is obtained using sys.exc_info().
+        """
         # monkeypatching sys.exc_info makes currently py.test return 1 on
         # success.
         try:
             raise ValueError('test')
         except ValueError:
-            d = format_exc_info(None, None, {'exc_info': True})
-        assert 'exc_info' not in d
-        assert 'raise ValueError(\'test\')\nValueError: test' in d['exception']
+            d = format_exc_info(None, None, {"exc_info": True})
+        assert "exc_info" not in d
+        assert "raise ValueError('test')\nValueError: test" in d["exception"]
+
+    @py3_only
+    def test_exception_on_py3(self, monkeypatch):
+        """
+        Passing excetions as exc_info is valid on Python 3.
+        """
+        monkeypatch.setattr(structlog.processors,
+                            "_format_exception",
+                            lambda exc_info: exc_info)
+        try:
+            raise ValueError("test")
+        except ValueError as e:
+            d = format_exc_info(None, None, {"exc_info": e})
+            assert {"exception": (ValueError, e, e.__traceback__)} == d
+        else:
+            pytest.fail("Exception not raised.")
 
 
 class TestUnicodeEncoder(object):
@@ -347,6 +372,18 @@ class TestExceptionPrettyPrinter(object):
         epp(None, None, {"exc_info": ei})
         assert "XXX" in sio.getvalue()
 
+    @py3_only
+    def test_exception_on_py3(self, sio):
+        """
+        On Python 3, it's also legal to pass an Exception.
+        """
+        epp = ExceptionPrettyPrinter(sio)
+        try:
+            raise ValueError("XXX")
+        except ValueError as e:
+            epp(None, None, {"exc_info": e})
+        assert "XXX" in sio.getvalue()
+
 
 @pytest.fixture
 def sir():
@@ -371,3 +408,24 @@ class TestStackInfoRenderer(object):
     def test_renders_correct_stack(self, sir):
         ed = sir(None, None, {'stack_info': True})
         assert "ed = sir(None, None, {'stack_info': True})" in ed['stack']
+
+
+class TestFigureOutExcInfo(object):
+    def test_obtains_exc_info_on_True(self):
+        """
+        If True is passed, obtain exc_info ourselves.
+        """
+        try:
+            0/0
+        except Exception:
+            assert sys.exc_info() == _figure_out_exc_info(True)
+        else:
+            pytest.fail("Exception not raised.")
+
+    def test_py3_exception_no_traceback(self):
+        """
+        Not sure how likely this is but the ``raise`` docs are a bit vague.
+        If an exception without a traceback is passed it's passed back.
+        """
+        e = ValueError()
+        assert e is _figure_out_exc_info(e)

@@ -14,13 +14,13 @@ from __future__ import absolute_import, division, print_function
 import json
 import sys
 
+from six import PY2, string_types
 from twisted.python import log
 from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver, textFromEventDict
 from zope.interface import implementer
 
 from structlog._base import BoundLoggerBase
-from structlog._compat import PY2, string_types
 from structlog._utils import until_not_interrupted
 from structlog.processors import (
     # can't import processors module without risking circular imports

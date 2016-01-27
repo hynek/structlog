@@ -8,8 +8,9 @@ Logger wrapper and helper class.
 
 from __future__ import absolute_import, division, print_function
 
-from structlog._compat import string_types
 from structlog.exceptions import DropEvent
+
+from six import string_types
 
 
 class BoundLoggerBase(object):

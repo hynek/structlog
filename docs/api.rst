@@ -76,6 +76,13 @@ API Reference
 
 .. autofunction:: format_exc_info
 
+   >>> from structlog.processors import format_exc_info
+   >>> try:
+   ...     raise ValueError
+   ... except ValueError:
+   ...     format_exc_info(None, None, {'exc_info': True})# doctest: +ELLIPSIS
+   {'exception': 'Traceback (most recent call last):...
+
 .. autoclass:: StackInfoRenderer
 
 .. autoclass:: ExceptionPrettyPrinter

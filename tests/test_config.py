@@ -9,9 +9,9 @@ import warnings
 import pytest
 
 from pretend import call_recorder, call, stub
+from six import PY3
 
 from structlog._base import BoundLoggerBase
-from structlog._compat import PY3
 from structlog._config import (
     BoundLoggerLazyProxy,
     _CONFIG,

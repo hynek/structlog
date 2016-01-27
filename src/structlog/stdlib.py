@@ -14,9 +14,10 @@ from __future__ import absolute_import, division, print_function
 import logging
 
 from structlog._base import BoundLoggerBase
-from structlog._compat import PY3
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
+
+from six import PY3
 
 
 class _FixedFindCallerLogger(logging.Logger):

@@ -24,9 +24,9 @@ from structlog.stdlib import (
     add_logger_name,
     _FixedFindCallerLogger,
 )
-from structlog._compat import PY2
 
 from .additional_frame import additional_frame
+from .utils import py3_only
 
 
 def build_bl(logger=None, processors=None, context=None):
@@ -83,13 +83,13 @@ class TestLoggerFactory(object):
         assert file_name == os.path.realpath(__file__)
         assert func_name == 'test_deduces_correct_caller'
 
-    @pytest.mark.skipif(PY2, reason="Py3-only")
+    @py3_only
     def test_stack_info(self):
         logger = _FixedFindCallerLogger('test')
         testing, is_, fun, stack_info = logger.findCaller(stack_info=True)
         assert 'testing, is_, fun' in stack_info
 
-    @pytest.mark.skipif(PY2, reason="Py3-only")
+    @py3_only
     def test_no_stack_info_by_default(self):
         logger = _FixedFindCallerLogger('test')
         testing, is_, fun, stack_info = logger.findCaller()

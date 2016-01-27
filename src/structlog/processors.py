@@ -15,7 +15,8 @@ import operator
 import sys
 import time
 
-from structlog._compat import text_type
+import six
+
 from structlog._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
@@ -93,7 +94,7 @@ class UnicodeEncoder(object):
 
     def __call__(self, logger, name, event_dict):
         for key, value in event_dict.items():
-            if isinstance(value, text_type):
+            if isinstance(value, six.text_type):
                 event_dict[key] = value.encode(self._encoding, self._errors)
         return event_dict
 
@@ -196,24 +197,19 @@ def format_exc_info(logger, name, event_dict):
     behaviors:
 
     - If the value is a tuple, render it into the key ``exception``.
+    - If the value is an Exception *and* you're running Python 3, render it
+      into the key ``exception``.
     - If the value true but no tuple, obtain exc_info ourselves and render
       that.
 
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
-
-    >>> from structlog.processors import format_exc_info
-    >>> try:
-    ...     raise ValueError
-    ... except ValueError:
-    ...     format_exc_info(None, None, {'exc_info': True})# doctest: +ELLIPSIS
-    {'exception': 'Traceback (most recent call last):...
     """
     exc_info = event_dict.pop('exc_info', None)
     if exc_info:
-        if not isinstance(exc_info, tuple):
-            exc_info = sys.exc_info()
-        event_dict['exception'] = _format_exception(exc_info)
+        event_dict['exception'] = _format_exception(
+            _figure_out_exc_info(exc_info)
+        )
     return event_dict
 
 
@@ -265,11 +261,28 @@ class TimeStamper(object):
         return type('TimeStamper', (object,), {'__call__': stamper})()
 
 
+def _figure_out_exc_info(v):
+    """
+    Depending on the Python version will try to do the smartest thing possible
+    to transform *v* into an ``exc_info`` tuple.
+
+    :rtype: tuple
+    """
+    if v is True:
+        return sys.exc_info()
+    elif six.PY3 and isinstance(v, BaseException):
+        tb = getattr(v, "__traceback__")
+        if tb is not None:
+            return (v.__class__, v, tb)
+
+    return v
+
+
 class ExceptionPrettyPrinter(object):
     """
     Pretty print exceptions and remove them from the `event_dict`.
 
-    :param file file: Target file for output (default: `sys.stdout`).
+    :param file file: Target file for output (default: ``sys.stdout``).
 
     This processor is mostly for development and testing so you can read
     exceptions properly formatted.
@@ -282,6 +295,8 @@ class ExceptionPrettyPrinter(object):
     `exception` as well as `exc_info` keys.
 
     .. versionadded:: 0.4.0
+    .. versionchanged:: 16.0.0
+       Added support for passing exceptions as ``exc_info`` on Python 3.
     """
     def __init__(self, file=None):
         if file is not None:
@@ -290,12 +305,10 @@ class ExceptionPrettyPrinter(object):
             self._file = sys.stdout
 
     def __call__(self, logger, name, event_dict):
-        exc = event_dict.pop('exception', None)
+        exc = event_dict.pop("exception", None)
         if exc is None:
-            exc_info = event_dict.pop('exc_info', None)
+            exc_info = _figure_out_exc_info(event_dict.pop("exc_info", None))
             if exc_info:
-                if not isinstance(exc_info, tuple):
-                    exc_info = sys.exc_info()
                 exc = _format_exception(exc_info)
         if exc:
             print(exc, file=self._file)
