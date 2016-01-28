@@ -83,7 +83,7 @@ LONG = (
     re.search("(\d{2}.\d.\d \(.*?\)\n.*?)\n\n\n",
               read("CHANGELOG.rst"), re.S).group(1) +
     "\n\n`Full changelog " +
-    "<http://structlog.readthedocs.org/en/stable/changelog.html>`_.\n\n" +
+    "<http://www.structlog.org/en/stable/changelog.html>`_.\n\n" +
     read("AUTHORS.rst")
 )
 
