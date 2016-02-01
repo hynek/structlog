@@ -234,9 +234,7 @@ def _figure_out_exc_info(v):
     if v is True:
         return sys.exc_info()
     elif six.PY3 and isinstance(v, BaseException):
-        tb = getattr(v, "__traceback__")
-        if tb is not None:
-            return (v.__class__, v, tb)
+        return (v.__class__, v, getattr(v, "__traceback__"))
 
     return v
 

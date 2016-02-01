@@ -11,7 +11,7 @@ The third digit is only for regressions.
 Changes:
 ^^^^^^^^
 
-*none*
+- Exceptions without a ``__traceback__`` are now also rendered on Python 3.
 
 
 16.0.0 (2016-01-28)

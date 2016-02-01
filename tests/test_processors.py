@@ -242,6 +242,16 @@ class TestFormatExcInfo(object):
         else:
             pytest.fail("Exception not raised.")
 
+    @py3_only
+    def test_exception_without_traceback(self):
+        """
+        If an Exception is missing a traceback, render it anyway.
+        """
+        rv = format_exc_info(None, None, {
+            "exc_info": Exception("no traceback!")
+        })
+        assert {"exception": "Exception: no traceback!"} == rv
+
 
 class TestUnicodeEncoder(object):
     def test_encodes(self):
@@ -422,10 +432,11 @@ class TestFigureOutExcInfo(object):
         else:
             pytest.fail("Exception not raised.")
 
+    @py3_only
     def test_py3_exception_no_traceback(self):
         """
-        Not sure how likely this is but the ``raise`` docs are a bit vague.
-        If an exception without a traceback is passed it's passed back.
+        Exceptions without tracebacks are simply returned with None for
+        traceback.
         """
         e = ValueError()
-        assert e is _figure_out_exc_info(e)
+        assert (e.__class__, e, None) == _figure_out_exc_info(e)
