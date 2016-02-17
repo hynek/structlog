@@ -12,7 +12,7 @@ Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Python 3.3 and 2.6 aren't supported anymore.
-  They may work by chance but any support to them has been ceased.
+  They may work by chance but any effort to keep them working has ceased.
 
   The last Python 2.6 release was on October 29, 2013 and isn't supported by the CPython core team anymore.
   Major Python packages like Django and Twisted dropped Python 2.6 a while ago already.
