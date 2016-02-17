@@ -6,15 +6,17 @@ from __future__ import absolute_import, division, print_function
 
 import json
 
+from collections import OrderedDict
+
 import pytest
 
 from pretend import call_recorder
 from six import PY3
+from six.moves import cStringIO as StringIO
 from twisted.python.failure import Failure, NoCurrentExceptionError
 from twisted.python.log import ILogObserver
 
 from structlog._config import _CONFIG
-from structlog._compat import OrderedDict, StringIO
 from structlog._loggers import ReturnLogger
 from structlog.twisted import (
     BoundLogger,

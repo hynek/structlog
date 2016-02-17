@@ -8,7 +8,7 @@ import sys
 
 import pytest
 
-from structlog._compat import StringIO
+from six.moves import cStringIO as StringIO
 from structlog._loggers import (
     PrintLogger,
     PrintLoggerFactory,

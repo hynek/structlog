@@ -24,9 +24,9 @@ For that there is the :func:`structlog.wrap_logger` function (or the convenience
    >>> from structlog import wrap_logger
    >>> class PrintLogger(object):
    ...     def msg(self, message):
-   ...         print message
+   ...         print(message)
    >>> def proc(logger, method_name, event_dict):
-   ...     print 'I got called with', event_dict
+   ...     print('I got called with', event_dict)
    ...     return repr(event_dict)
    >>> log = wrap_logger(PrintLogger(), processors=[proc], context_class=dict)
    >>> log2 = log.bind(x=42)

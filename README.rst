@@ -29,6 +29,6 @@ It allows you to split your log entries up into key/value pairs and build them i
 
 It's dual-licensed under `Apache License, version 2 <http://choosealicense.com/licenses/apache/>`_ and `MIT <http://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.python.org/pypi/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at http://www.structlog.org/.
 
-``structlog`` targets Python 2.6, 2.7, 3.3 and newer, and PyPy.
+``structlog`` targets Python 2.7, 3.4 and newer, and PyPy.
 
 If you need any help, visit us on ``#structlog`` on `Freenode <https://freenode.net>`_!

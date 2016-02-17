@@ -6,11 +6,12 @@ from __future__ import absolute_import, division, print_function
 
 import threading
 
+from collections import OrderedDict
+
 import pytest
 
 from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
-from structlog._compat import OrderedDict
 from structlog._loggers import ReturnLogger
 from structlog.threadlocal import as_immutable, wrap_dict, tmp_bind
 

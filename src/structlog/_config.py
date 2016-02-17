@@ -10,7 +10,8 @@ from __future__ import absolute_import, division, print_function
 
 import warnings
 
-from structlog._compat import OrderedDict
+from collections import OrderedDict
+
 from structlog._generic import BoundLogger
 from structlog._loggers import (
     PrintLoggerFactory,

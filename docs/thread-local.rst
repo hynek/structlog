@@ -51,7 +51,7 @@ Within one thread, every instance of the returned class will have a *common* ins
    >>> d1 == d2 == d3 == WrappedDictClass()
    True
    >>> d3  # doctest: +ELLIPSIS
-   <WrappedDict-...({'a': 1, 'c': 3, 'b': 2})>
+   <WrappedDict-...({'a': 1, 'b': 2, 'c': 3})>
 
 
 Then use an instance of the generated class as the context class::

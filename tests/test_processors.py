@@ -17,10 +17,10 @@ except ImportError:
     rapidjson = None
 
 from freezegun import freeze_time
+from six.moves import cStringIO as StringIO
 
 import structlog
 
-from structlog._compat import StringIO
 from structlog.processors import (
     ExceptionPrettyPrinter,
     JSONRenderer,

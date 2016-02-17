@@ -30,7 +30,7 @@ The :ref:`example <proc>` from the previous chapter could thus have been written
    from structlog import PrintLogger, configure, reset_defaults, wrap_logger, get_logger
    from structlog.threadlocal import wrap_dict
    def proc(logger, method_name, event_dict):
-      print 'I got called with', event_dict
+      print('I got called with', event_dict)
       return repr(event_dict)
 
 .. doctest:: config_wrap_logger

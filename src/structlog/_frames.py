@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function
 import sys
 import traceback
 
-from structlog._compat import StringIO
+from six.moves import cStringIO as StringIO
 
 
 def _format_exception(exc_info):
