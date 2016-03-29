@@ -26,6 +26,9 @@ Changes:
 - Exceptions without a ``__traceback__`` are now also rendered on Python 3.
 
 
+----
+
+
 16.0.0 (2016-01-28)
 -------------------
 
@@ -43,6 +46,9 @@ Changes:
 - Add ``serializer`` parameter to ``structlog.processors.JSONRenderer`` which allows for using different (possibly faster) JSON encoders than the standard library.
 
 
+----
+
+
 15.3.0 (2015-09-25)
 -------------------
 
@@ -53,6 +59,9 @@ Changes:
   [`58 <https://github.com/hynek/structlog/pull/58>`_]
 - Officially support Python 3.5.
 - Add ``structlog.ReturnLogger.failure`` and ``structlog.PrintLogger.failure`` as preparation for the new Twisted logging system.
+
+
+----
 
 
 15.2.0 (2015-06-10)
@@ -71,6 +80,9 @@ Changes:
   [`51 <https://github.com/hynek/structlog/pull/51>`_]
 
 
+----
+
+
 15.1.0 (2015-02-24)
 -------------------
 
@@ -78,6 +90,9 @@ Changes:
 ^^^^^^^^
 
 - Tolerate frames without a ``__name__``.
+
+
+----
 
 
 15.0.0 (2015-01-23)
@@ -97,6 +112,9 @@ Changes:
   [`28 <https://github.com/hynek/structlog/pull/28>`_]
 - Add ``structlog.stdlib.BoundLogger.exception``.
   [`22 <https://github.com/hynek/structlog/pull/22>`_]
+
+
+----
 
 
 0.4.2 (2014-07-26)
@@ -120,6 +138,9 @@ Changes:
 - ``from structlog import *`` works now (but you still shouldn't use it).
 
 
+----
+
+
 0.4.1 (2013-12-19)
 ------------------
 
@@ -129,6 +150,9 @@ Changes:
 - Don't cache proxied methods in ``structlog.threadlocal._ThreadLocalDictWrapper``.
   This doesn't affect regular users.
 - Various doc fixes.
+
+
+----
 
 
 0.4.0 (2013-11-10)
@@ -154,6 +178,9 @@ Changes:
   [`5 <https://github.com/hynek/structlog/pull/5>`_]
 
 
+----
+
+
 0.3.2 (2013-09-27)
 ------------------
 
@@ -163,6 +190,9 @@ Changes:
 - Fix stdlib's name guessing.
 
 
+----
+
+
 0.3.1 (2013-09-26)
 ------------------
 
@@ -170,6 +200,9 @@ Changes:
 ^^^^^^^^
 
 - Add forgotten ``structlog.processors.TimeStamper`` to API documentation.
+
+
+----
 
 
 0.3.0 (2013-09-23)
@@ -191,6 +224,9 @@ Changes:
   See ``structlog.BoundLoggerBase``.
 
 
+----
+
+
 0.2.0 (2013-09-17)
 ------------------
 
@@ -202,6 +238,9 @@ Changes:
 - ``structlog.PrintLogger`` now uses proper I/O routines and is thus viable not only for examples but also for production.
 - Enhance Twisted support by offering JSONification of non-structlog log entries.
 - Allow for custom serialization in ``structlog.twisted.JSONRenderer`` without abusing ``__repr__``.
+
+
+----
 
 
 0.1.0 (2013-09-16)
