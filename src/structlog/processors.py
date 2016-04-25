@@ -32,8 +32,8 @@ class KeyValueRenderer(object):
     :param list key_order: List of keys that should be rendered in this exact
         order.  Missing keys will be rendered as `None`, extra keys depending
         on *sort_keys* and the dict class unless drop_missing is True.
-    :param bool drop_missing: When True, extra keys in key_order will be dropped rather
-        than rendered as None
+    :param bool drop_missing: When True, extra keys in key_order will be
+        dropped rather than rendered as None
 
     .. versionadded:: 0.2.0
         `key_order`

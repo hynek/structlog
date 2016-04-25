@@ -88,7 +88,8 @@ class TestKeyValueRenderer(object):
         """
         assert (
             r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
-            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'], drop_missing=True)
+            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
+                             drop_missing=True)
             (None, None, event_dict)
         )
 
