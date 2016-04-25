@@ -82,6 +82,16 @@ class TestKeyValueRenderer(object):
             (None, None, event_dict)
         )
 
+    def test_order_missing_dropped(self, event_dict):
+        """
+        Missing keys get dropped
+        """
+        assert (
+            r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
+            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'], drop_missing=True)
+            (None, None, event_dict)
+        )
+
     def test_order_extra(self, event_dict):
         """
         Extra keys get sorted if sort_keys=True.
@@ -92,6 +102,19 @@ class TestKeyValueRenderer(object):
             r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'" ==
             KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
                              sort_keys=True)
+            (None, None, event_dict)
+        )
+
+    def test_order_sorted_missing_dropped(self, event_dict):
+        """
+        Keys get sorted if sort_keys=True and extras get dropped.
+        """
+        event_dict['B'] = 'B'
+        event_dict['A'] = 'A'
+        assert (
+            r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'" ==
+            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
+                             sort_keys=True, drop_missing=True)
             (None, None, event_dict)
         )
 
