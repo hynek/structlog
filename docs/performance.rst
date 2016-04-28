@@ -41,6 +41,6 @@ Here are a few hints how to get most out of ``structlog`` in production:
       structlog.processors.JSONRenderer(serializer=rapidjson.dumps)
 
 
-.. _simplejson: https://simplejson.readthedocs.org/
+.. _simplejson: https://simplejson.readthedocs.io/
 .. _UltraJSON: https://github.com/esnme/ultrajson/
 .. _RapidJSON: https://pypi.python.org/pypi/python-rapidjson/
