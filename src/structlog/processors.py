@@ -45,7 +45,7 @@ class KeyValueRenderer(object):
                 items = []
                 for key in key_order:
                     value = event_dict.pop(key, None)
-                    if value or not drop_missing:
+                    if value is not None or not drop_missing:
                         items.append((key, value))
                 items += sorted(event_dict.items())
                 return items
@@ -54,7 +54,7 @@ class KeyValueRenderer(object):
                 items = []
                 for key in key_order:
                     value = event_dict.pop(key, None)
-                    if value or not drop_missing:
+                    if value is not None or not drop_missing:
                         items.append((key, value))
                 items += event_dict.items()
                 return items
