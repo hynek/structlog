@@ -23,6 +23,9 @@ Backward-incompatible changes:
 Changes:
 ^^^^^^^^
 
+- Add a ``drop_missing`` argument to ``KeyValueRenderer``.
+  If ``key_order`` is used and a key is missing a value, it's not rendered at all instead of being rendered as ``None``.
+  `#67 <https://github.com/hynek/structlog/pull/67>`_
 - Exceptions without a ``__traceback__`` are now also rendered on Python 3.
 
 
