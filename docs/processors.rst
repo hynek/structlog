@@ -63,8 +63,7 @@ Parsing human-readable timestamps is tedious, not so `UNIX timestamps <https://e
 .. literalinclude:: code_examples/processors/timestamper.py
    :language: python
 
-Easy, isn't it?
-Please note, that structlog comes with such an processor built in: :class:`~structlog.processors.TimeStamper`.
+Please note, that ``structlog`` comes with such an processor built in: :class:`~structlog.processors.TimeStamper`.
 
 
 Filtering
@@ -103,7 +102,7 @@ It can return one of three types:
 
 Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the example in :ref:`chains` assumes this shortcut has been taken).
 
-This should give you enough power to use structlog with any logging system while writing agnostic processors that operate on dictionaries.
+This should give you enough power to use ``structlog`` with any logging system while writing agnostic processors that operate on dictionaries.
 
 .. versionchanged:: 14.0.0
    Allow final processor to return a `dict`.

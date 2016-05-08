@@ -3,7 +3,7 @@
 Examples
 ========
 
-This chapter is intended to give you a taste of realistic usage of structlog.
+This chapter is intended to give you a taste of realistic usage of ``structlog``.
 
 
 .. _flask-example:
@@ -49,7 +49,7 @@ gives you something like:
   ... peer='10.10.0.1' connection_id='85234511-...' count=1 data='cba\n' event='echoed data!'
   ... peer='127.0.0.1' connection_id='1c6c0cb5-...' count=4 data='bar\n' event='echoed data!'
 
-Since Twisted's logging system is a bit peculiar, structlog ships with an :class:`adapter <structlog.twisted.EventAdapter>` so it keeps behaving like you'd expect it to behave.
+Since Twisted's logging system is a bit peculiar, ``structlog`` ships with an :class:`adapter <structlog.twisted.EventAdapter>` so it keeps behaving like you'd expect it to behave.
 
 I'd also like to point out the Counter class that doesn't do anything spectacular but gets bound *once* per connection to the logger and since its repr is the number itself, it's logged out correctly for each event.
 This shows off the strength of keeping a dict of objects for context instead of passing around serialized strings.
@@ -60,7 +60,7 @@ This shows off the strength of keeping a dict of objects for context instead of 
 Processors
 ----------
 
-:ref:`Processors` are a both simple and powerful feature of structlog.
+:ref:`Processors` are a both simple and powerful feature of ``structlog``.
 
 So you want timestamps as part of the structure of the log entry, censor passwords, filter out log entries below your log level before they even get rendered, and get your output as JSON for convenient parsing?
 Here you go:
@@ -97,4 +97,4 @@ Here you go:
    "timestamp": "datetime.datetime(..., ..., ..., ..., ...)"
    }
 
-structlog comes with many handy processors build right in -- for a list of shipped processors, check out the :ref:`API documentation <procs>`.
+``structlog`` comes with many handy processors build right in -- for a list of shipped processors, check out the :ref:`API documentation <procs>`.

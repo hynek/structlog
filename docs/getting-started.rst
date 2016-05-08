@@ -8,7 +8,7 @@ Getting Started
 Installation
 ------------
 
-structlog can be easily installed using::
+``structlog`` can be easily installed using::
 
    $ pip install structlog
 
@@ -16,7 +16,7 @@ structlog can be easily installed using::
 Your First Log Entry
 --------------------
 
-A lot of effort went into making structlog accessible without reading pages of documentation.
+A lot of effort went into making ``structlog`` accessible without reading pages of documentation.
 And indeed, the simplest possible usage looks like this:
 
 .. doctest::
@@ -26,7 +26,7 @@ And indeed, the simplest possible usage looks like this:
    >>> log.msg('greeted', whom='world', more_than_a_string=[1, 2, 3])
    whom='world' more_than_a_string=[1, 2, 3] event='greeted'
 
-Here, structlog takes full advantage of its hopefully useful default settings:
+Here, ``structlog`` takes full advantage of its hopefully useful default settings:
 
 - Output is sent to `standard out`_ instead of exploding into the user's face.
   Yes, that seems a rather controversial attitude towards logging.
@@ -71,11 +71,13 @@ Let's have a look at a better approach:
 
 Suddenly your logger becomes your closure!
 
-For structlog, a log entry is just a dictionary called *event dict[ionary]*:
+For ``structlog``, a log entry is just a dictionary called *event dict[ionary]*:
 
 - You can pre-build a part of the dictionary step by step.
   These pre-saved values are called the *context*.
 - As soon as an *event* happens -- which is a dictionary too -- it is merged together with the *context* to an *event dict* and logged out.
+- If you don't like the concept of pre-building a context: just don't!
+  Convenient key-value-based logging is great to have on it's own.
 - To keep as much order of the keys as possible, an :class:`collections.OrderedDict` is used for the context by default.
 - The recommended way of binding values is the one in these examples: creating new loggers with a new context.
   If you're okay with giving up immutable local state for convenience, you can also use :ref:`thread/greenlet local storage <threadlocal>` for the context.
@@ -86,12 +88,12 @@ For structlog, a log entry is just a dictionary called *event dict[ionary]*:
 structlog and Standard Library's logging
 ----------------------------------------
 
-structlog's primary application isn't printing though.
+``structlog``'s primary application isn't printing though.
 Instead, it's intended to wrap your *existing* loggers and **add** *structure* and *incremental context building* to them.
-For that, structlog is *completely* agnostic of your underlying logger -- you can use it with any logger you like.
+For that, ``structlog`` is *completely* agnostic of your underlying logger -- you can use it with any logger you like.
 
 The most prominent example of such an 'existing logger' is without doubt the logging module in the standard library.
-To make this common case as simple as possible, structlog comes with some tools to help you:
+To make this common case as simple as possible, ``structlog`` comes with some tools to help you:
 
 .. doctest::
 
@@ -104,9 +106,9 @@ To make this common case as simple as possible, structlog comes with some tools 
    >>> log.warn('it works!', difficulty='easy')  # doctest: +SKIP
    WARNING:structlog...:difficulty='easy' event='it works!'
 
-In other words, you tell structlog that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.
+In other words, you tell ``structlog`` that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.
 
-Since structlog is mainly used together with standard library's logging, there's :doc:`more <standard-library>` goodness to make it as fast and convenient as possible.
+Since ``structlog`` is mainly used together with standard library's logging, there's :doc:`more <standard-library>` goodness to make it as fast and convenient as possible.
 
 
 Liked what you saw?

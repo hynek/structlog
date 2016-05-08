@@ -23,7 +23,7 @@ If you are willing to do that, you should stick to it because `immutable state <
 Sooner or later, global state and mutable data lead to unpleasant surprises.
 
 However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
-And since it's more important that people actually *use* structlog than to be pure and snobby, structlog contains a dirty but convenient trick: thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_:
+And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a dirty but convenient trick: thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_:
 
 Thread local storage makes your logger's context global but *only within the current thread*\ [*]_.
 In the case of web frameworks this usually means that your context becomes global to the current request.
@@ -34,7 +34,7 @@ The following explanations may sound a bit confusing at first but the :ref:`Flas
 Wrapped Dicts
 -------------
 
-In order to make your context thread local, structlog ships with a function that can wrap any dict-like class to make it usable for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
+In order to make your context thread local, ``structlog`` ships with a function that can wrap any dict-like class to make it usable for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
 
 Within one thread, every instance of the returned class will have a *common* instance of the wrapped dict-like class:
 
@@ -134,7 +134,7 @@ You can easily write deterministic tests using a call-capturing processor if you
 This big red box is also what separates immutable local from mutable global data.
 
 
-.. [*] In the spirit of Python's 'consenting adults', structlog doesn't enforce the immutability with technical means.
+.. [*] In the spirit of Python's 'consenting adults', ``structlog`` doesn't enforce the immutability with technical means.
    However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
 
 .. [*] Special care has been taken to detect and support greenlets properly.

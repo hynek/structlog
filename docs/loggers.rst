@@ -5,7 +5,7 @@ Loggers
 Bound Loggers
 -------------
 
-The center of structlog is the immutable log wrapper :class:`~structlog.BoundLogger`.
+The center of ``structlog`` is the immutable log wrapper :class:`~structlog.BoundLogger`.
 
 All it does is:
 
@@ -77,7 +77,7 @@ Additionally, the following arguments are allowed too:
 .. note::
 
    Free your mind from the preconception that log entries have to be serialized to strings eventually.
-   All structlog cares about is a *dictionary* of *keys* and *values*.
+   All ``structlog`` cares about is a *dictionary* of *keys* and *values*.
    What happens to it depends on the logger you wrap and your processors alone.
 
    This gives you the power to log directly to databases, log aggregation servers, web services, and whatnot.
@@ -86,7 +86,7 @@ Additionally, the following arguments are allowed too:
 Printing and Testing
 --------------------
 
-To save you the hassle of using standard library logging for simple standard out logging, structlog ships a :class:`~structlog.PrintLogger` that can log into arbitrary files -- including standard out (which is the default if no file is passed into the constructor):
+To save you the hassle of using standard library logging for simple standard out logging, ``structlog`` ships a :class:`~structlog.PrintLogger` that can log into arbitrary files -- including standard out (which is the default if no file is passed into the constructor):
 
 .. doctest::
 
@@ -96,7 +96,7 @@ To save you the hassle of using standard library logging for simple standard out
 
 It's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <https://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
-Additionally -- mostly for unit testing -- structlog also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
+Additionally -- mostly for unit testing -- ``structlog`` also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
 .. doctest::
 
@@ -110,4 +110,4 @@ Additionally -- mostly for unit testing -- structlog also ships with a logger th
    (('hello',), {'when': 'again'})
 
 
-.. [*] Since this is slightly magicy, structlog comes with concrete loggers for the :doc:`standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
+.. [*] Since this is slightly magicy, ``structlog`` comes with concrete loggers for the :doc:`standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.

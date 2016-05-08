@@ -1,8 +1,8 @@
 Python Standard Library
 =======================
 
-Ideally, structlog should be able to be used as a drop-in replacement for standard library's :mod:`logging` by wrapping it.
-In other words, you should be able to replace your call to :func:`logging.getLogger` by a call to :func:`structlog.get_logger` and things should keep working as before (if structlog is configured right, see :ref:`stdlib-config` below).
+Ideally, ``structlog`` should be able to be used as a drop-in replacement for standard library's :mod:`logging` by wrapping it.
+In other words, you should be able to replace your call to :func:`logging.getLogger` by a call to :func:`structlog.get_logger` and things should keep working as before (if ``structlog`` is configured right, see :ref:`stdlib-config` below).
 
 If you run into incompatibilities, it is a *bug* so please take the time to `report it <https://github.com/hynek/structlog/issues>`_!
 If you're a heavy :mod:`logging` user, your `help <https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib>`_ to ensure a better compatibility would be highly appreciated!
@@ -11,7 +11,7 @@ If you're a heavy :mod:`logging` user, your `help <https://github.com/hynek/stru
 Concrete Bound Logger
 ---------------------
 
-To make structlog's behavior less magicy, it ships with a standard library-specific wrapper class that has an explicit API instead of improvising: :class:`structlog.stdlib.BoundLogger`.
+To make ``structlog``'s behavior less magicy, it ships with a standard library-specific wrapper class that has an explicit API instead of improvising: :class:`structlog.stdlib.BoundLogger`.
 It behaves exactly like the generic :class:`structlog.BoundLogger` except:
 
 - it's slightly faster due to less overhead,
@@ -22,7 +22,7 @@ It behaves exactly like the generic :class:`structlog.BoundLogger` except:
 Processors
 ----------
 
-structlog comes with a few standard library-specific processors:
+``structlog`` comes with a few standard library-specific processors:
 
 :func:`~structlog.stdlib.filter_by_level`:
    Checks the log entry's log level against the configuration of standard library's logging.

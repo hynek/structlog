@@ -85,7 +85,7 @@ Graylog2
 
 Graylog_ goes one step further.
 It not only supports everything those above do (and then some); you can also log directly JSON entries towards it -- optionally even through an AMQP server (like RabbitMQ_) for better reliability.
-Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data which makes it an obvious choice to use together with structlog.
+Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data which makes it an obvious choice to use together with ``structlog``.
 
 
 .. [*] This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
