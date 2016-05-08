@@ -30,20 +30,25 @@ class KeyValueRenderer(object):
 
     :param bool sort_keys: Whether to sort keys when formatting.
     :param list key_order: List of keys that should be rendered in this exact
-        order.  Missing keys will be rendered as `None`, extra keys depending
+        order.  Missing keys will be rendered as ``None``, extra keys depending
         on *sort_keys* and the dict class.
+    :param bool drop_missing: When True, extra keys in *key_order* will be
+        dropped rather than rendered as ``None``.
 
     .. versionadded:: 0.2.0
-        `key_order`
+        *key_order*
+    .. versionadded:: 16.1.0
+        *drop_missing*
     """
-    def __init__(self, sort_keys=False, key_order=None):
+    def __init__(self, sort_keys=False, key_order=None, drop_missing=False):
         # Use an optimized version for each case.
         if key_order and sort_keys:
             def ordered_items(event_dict):
                 items = []
                 for key in key_order:
                     value = event_dict.pop(key, None)
-                    items.append((key, value))
+                    if value is not None or not drop_missing:
+                        items.append((key, value))
                 items += sorted(event_dict.items())
                 return items
         elif key_order:
@@ -51,7 +56,8 @@ class KeyValueRenderer(object):
                 items = []
                 for key in key_order:
                     value = event_dict.pop(key, None)
-                    items.append((key, value))
+                    if value is not None or not drop_missing:
+                        items.append((key, value))
                 items += event_dict.items()
                 return items
         elif sort_keys:
