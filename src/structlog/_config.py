@@ -247,15 +247,16 @@ class BoundLoggerLazyProxy(object):
         else:
             ctx = _CONFIG.default_context_class(self._initial_values)
         cls = self._wrapper_class or _CONFIG.default_wrapper_class
-        if not self._logger:
-            self._logger = _CONFIG.logger_factory(*self._logger_factory_args)
+        _logger = self._logger
+        if not _logger:
+            _logger = _CONFIG.logger_factory(*self._logger_factory_args)
 
         if self._processors is None:
             procs = _CONFIG.default_processors
         else:
             procs = self._processors
         logger = cls(
-            self._logger,
+            _logger,
             processors=procs,
             context=ctx,
         )

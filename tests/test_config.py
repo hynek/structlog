@@ -212,6 +212,22 @@ class TestBoundLoggerLazyProxy(object):
         proxy.bind()
         assert bind != proxy.bind
 
+    def test_bind_doesnt_cache_logger(self):
+        """
+        Calling configure() changes BoundLoggerLazyProxys immediately.
+        Previous uses of the BoundLoggerLazyProxy don't interfere.
+        """
+        class F(object):
+            "New logger factory with a new attribute"
+            def a(self, *args):
+                return 5
+
+        proxy = BoundLoggerLazyProxy(None)
+        proxy.bind()
+        configure(logger_factory=F)
+        new_b = proxy.bind()
+        assert new_b.a() == 5
+
     def test_emphemeral(self):
         """
         Calling an unknown method proxy creates a new wrapped bound logger
