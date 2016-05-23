@@ -223,7 +223,7 @@ class TestBoundLoggerLazyProxy(object):
                 return 5
 
         proxy = BoundLoggerLazyProxy(None)
-        old_b = proxy.bind()
+        proxy.bind()
         configure(logger_factory=F)
         new_b = proxy.bind()
         assert new_b.a() == 5
