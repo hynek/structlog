@@ -27,7 +27,9 @@ Changes:
   If ``key_order`` is used and a key is missing a value, it's not rendered at all instead of being rendered as ``None``.
   `#67 <https://github.com/hynek/structlog/pull/67>`_
 - Exceptions without a ``__traceback__`` are now also rendered on Python 3.
-
+- Don't cache loggers in lazy proxies returned from ``get_logger()``.
+  This lead to in-place mutation of them if used before configuration which in turn lead to the problem that configuration was applied only partially to them later.
+  `#72 <https://github.com/hynek/structlog/pull/72>`_
 
 ----
 
