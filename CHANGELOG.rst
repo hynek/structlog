@@ -19,7 +19,6 @@ Backward-incompatible changes:
 
   Python 3.3 never had a significant user base and wasn't part of any distribution's LTS release.
 
-
 Changes:
 ^^^^^^^^
 
@@ -30,6 +29,7 @@ Changes:
 - Don't cache loggers in lazy proxies returned from ``get_logger()``.
   This lead to in-place mutation of them if used before configuration which in turn lead to the problem that configuration was applied only partially to them later.
   `#72 <https://github.com/hynek/structlog/pull/72>`_
+
 
 ----
 
