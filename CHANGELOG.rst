@@ -42,9 +42,9 @@ Changes:
 
 - ``structlog.processors.ExceptionPrettyPrinter`` and ``structlog.processors.format_exc_info`` now support passing of Exceptions on Python 3.
 - Clean up the context when exiting ``structlog.threadlocal.tmp_bind`` in case of exceptions.
-  [`64 <https://github.com/hynek/structlog/issues/64>`_]
+  `#64 <https://github.com/hynek/structlog/issues/64>`_
 - Be more more lenient about missing ``__name__``\ s.
-  [`62 <https://github.com/hynek/structlog/pull/62>`_]
+  `#62 <https://github.com/hynek/structlog/pull/62>`_
 - Add ``structlog.dev.ConsoleRenderer`` that renders the event dictionary aligned and with colors.
 - Use `six <https://pythonhosted.org/six/>`_ for compatibility.
 - Add ``structlog.processors.UnicodeDecoder`` that will decode all byte string values in an event dictionary to Unicode.
@@ -61,7 +61,7 @@ Changes:
 ^^^^^^^^
 
 - Tolerate frames without a ``__name__``, better.
-  [`58 <https://github.com/hynek/structlog/pull/58>`_]
+  `#58 <https://github.com/hynek/structlog/pull/58>`_
 - Officially support Python 3.5.
 - Add ``structlog.ReturnLogger.failure`` and ``structlog.PrintLogger.failure`` as preparation for the new Twisted logging system.
 
@@ -80,9 +80,9 @@ Changes:
   Before, supplying an empty list resulted in the defaults being used.
 - Prevent Twisted's ``log.err`` from quoting strings rendered by ``structlog.twisted.JSONRenderer``.
 - Better support of ``logging.Logger.exception`` within ``structlog``.
-  [`52 <https://github.com/hynek/structlog/pull/52>`_]
+  `#52 <https://github.com/hynek/structlog/pull/52>`_
 - Add option to specify target key in ``structlog.processors.TimeStamper`` processor.
-  [`51 <https://github.com/hynek/structlog/pull/51>`_]
+  `#51 <https://github.com/hynek/structlog/pull/51>`_
 
 
 ----
@@ -107,16 +107,16 @@ Changes:
 ^^^^^^^^
 
 - Add ``structlog.stdlib.add_log_level`` and ``structlog.stdlib.add_logger_name`` processors.
-  [`44 <https://github.com/hynek/structlog/pull/44>`_]
+  `#44 <https://github.com/hynek/structlog/pull/44>`_
 - Add ``structlog.stdlib.BoundLogger.log``.
-  [`42 <https://github.com/hynek/structlog/pull/42>`_]
+  `#42 <https://github.com/hynek/structlog/pull/42>`_
 - Pass positional arguments to stdlib wrapped loggers that use string formatting.
-  [`19 <https://github.com/hynek/structlog/pull/19>`_]
+  `#19 <https://github.com/hynek/structlog/pull/19>`_
 - ``structlog`` is now dually licensed under the `Apache License, Version 2 <http://choosealicense.com/licenses/apache/>`_ and the `MIT <http://choosealicense.com/licenses/mit/>`_ license.
   Therefore it is now legal to use structlog with `GPLv2 <http://choosealicense.com/licenses/gpl-2.0/>`_-licensed projects.
-  [`28 <https://github.com/hynek/structlog/pull/28>`_]
+  `#28 <https://github.com/hynek/structlog/pull/28>`_
 - Add ``structlog.stdlib.BoundLogger.exception``.
-  [`22 <https://github.com/hynek/structlog/pull/22>`_]
+  `#22 <https://github.com/hynek/structlog/pull/22>`_
 
 
 ----
@@ -130,7 +130,7 @@ Changes:
 
 - Fixed a memory leak in greenlet code that emulates thread locals.
   It shouldn't matter in practice unless you use multiple wrapped dicts within one program that is rather unlikely.
-  [`8 <https://github.com/hynek/structlog/pull/8>`_]
+  `#8 <https://github.com/hynek/structlog/pull/8>`_
 - ``structlog.PrintLogger`` now is thread-safe.
 - Test Twisted-related code on Python 3 (with some caveats).
 - Drop support for Python 3.2.
@@ -139,7 +139,7 @@ Changes:
 - Officially support Python 3.4.
 - Allow final processor to return a dictionary.
   See the adapting chapter.
-  [`26 <https://github.com/hynek/structlog/pull/26>`_]
+  `#26`_
 - ``from structlog import *`` works now (but you still shouldn't use it).
 
 
@@ -172,15 +172,15 @@ Changes:
 
 - Add ``structlog.processors.StackInfoRenderer`` for adding stack information to log entries without involving exceptions.
   Also added it to default processor chain.
-  [`6 <https://github.com/hynek/structlog/pull/6>`_]
+  `#6 <https://github.com/hynek/structlog/pull/6>`_
 - Allow optional positional arguments for ``structlog.get_logger`` that are passed to logger factories.
   The standard library factory uses this for explicit logger naming.
-  [`12 <https://github.com/hynek/structlog/pull/12>`_]
+  `#12 <https://github.com/hynek/structlog/pull/12>`_
 - Add ``structlog.processors.ExceptionPrettyPrinter`` for development and testing when multiline log entries aren't just acceptable but even helpful.
 - Allow the standard library name guesser to ignore certain frame names.
   This is useful together with frameworks.
 - Add meta data (e.g. function names, line numbers) extraction for wrapped stdlib loggers.
-  [`5 <https://github.com/hynek/structlog/pull/5>`_]
+  `#5 <https://github.com/hynek/structlog/pull/5>`_
 
 
 ----
