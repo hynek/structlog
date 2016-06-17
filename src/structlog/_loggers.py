@@ -21,16 +21,18 @@ class PrintLoggerFactory(object):
     To be used with :func:`structlog.configure`\ 's `logger_factory`.
 
     :param file file: File to print to. (default: stdout)
+    :param bool nl: Automatically append a newline to every message. (default: True)
 
     Positional arguments are silently ignored.
 
     .. versionadded:: 0.4.0
     """
-    def __init__(self, file=None):
+    def __init__(self, file=None, nl=True):
         self._file = file
+        self._nl = nl
 
     def __call__(self, *args):
-        return PrintLogger(self._file)
+        return PrintLogger(self._file, self._nl)
 
 
 WRITE_LOCKS = {}
@@ -53,10 +55,11 @@ class PrintLogger(object):
     Also very useful for testing and examples since logging is finicky in
     doctests.
     """
-    def __init__(self, file=None):
+    def __init__(self, file=None, nl=True):
         self._file = file or sys.stdout
         self._write = self._file.write
         self._flush = self._file.flush
+        self._msg = self._msg_with_nl if nl else self._msg_without_nl
 
         lock = WRITE_LOCKS.get(self._file)
         if lock is None:
@@ -67,13 +70,24 @@ class PrintLogger(object):
     def __repr__(self):
         return '<PrintLogger(file={0!r})>'.format(self._file)
 
-    def msg(self, message):
+    def _msg_with_nl(self, message):
         """
-        Print *message*.
+        Print *message* with a trailing newline.
         """
         with self._lock:
             until_not_interrupted(self._write, message + '\n')
             until_not_interrupted(self._flush)
+
+    def _msg_without_nl(self, message):
+        """
+        Print *message*.
+        """
+        with self._lock:
+            until_not_interrupted(self._write, message)
+            until_not_interrupted(self._flush)
+
+    def msg(self, message):
+        self._msg(message)
 
     log = debug = info = warn = warning = msg
     failure = err = error = critical = exception = msg

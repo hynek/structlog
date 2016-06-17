@@ -67,6 +67,16 @@ class TestPrintLogger(object):
         PrintLogger(sio)
         assert sio in WRITE_LOCKS
 
+    def test_nl(self, capsys):
+        """
+        When passing nl=False, a newline character isn't appended to
+        output.
+        """
+        PrintLogger(nl=False).msg('hello')
+        out, err = capsys.readouterr()
+        assert 'hello' == out
+        assert '' == err
+
     @pytest.mark.parametrize("method", STDLIB_MSG_METHODS)
     def test_stdlib_methods_support(self, method):
         """
@@ -91,6 +101,13 @@ class TestPrintLoggerFactory(object):
         """
         l = PrintLoggerFactory(sys.stderr)()
         assert sys.stderr is l._file
+
+    def test_passes_nl(self):
+        """
+        If nl is passed to the factory, it gets passed onto the logger.
+        """
+        l = PrintLoggerFactory(nl=False)()
+        assert False is l._nl
 
     def test_ignores_args(self):
         """
