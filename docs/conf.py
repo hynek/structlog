@@ -25,6 +25,9 @@ except ImportError:
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+# We want an image in the README and include the README in the docs.
+suppress_warnings = ['image.nonlocal_uri']
+
 
 def read(*parts):
     return codecs.open(os.path.join(here, *parts), 'r').read()
