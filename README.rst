@@ -15,6 +15,11 @@ structlog: Structured Logging for Python
 
 ``structlog`` makes structured logging in Python easy by either *augmenting* your *existing* logger if you need interoperability or supplying you with a lightweight logging layer if you want *performance* and *simplicity*.
 
+Structured logging means that you don't log out hard-to-parse and hard-to-come-up-with prose.
+Instead think of log entries as events that happen in a context that is made up from key/value pairs.
+
+This approach has numerous advantages:
+
 
 Easier Logging
 ==============
