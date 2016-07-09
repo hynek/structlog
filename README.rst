@@ -5,9 +5,6 @@ structlog: Structured Logging for Python
 .. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
    :target: https://travis-ci.org/hynek/structlog
 
-.. image:: https://codecov.io/github/hynek/structlog/coverage.svg?branch=master
-   :target: https://codecov.io/github/hynek/structlog?branch=master
-
 .. image:: https://www.irccloud.com/invite-svg?channel=%23structlog&amp;hostname=irc.freenode.net&amp;port=6697&amp;ssl=1
    :target: https://www.irccloud.com/invite?channel=%23structlog&amp;hostname=irc.freenode.net&amp;port=6697&amp;ssl=1
 
