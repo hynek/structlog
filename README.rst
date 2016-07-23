@@ -13,6 +13,7 @@ structlog: Structured Logging for Python
 ``structlog`` makes logging in Python less painful and more powerful by adding structure to your log entries.
 
 It's up to you whether you want ``structlog`` to take care about the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's ``logging`` module.
+*No* `monkey patching <https://en.wikipedia.org/wiki/Monkey_patch>`_ involved.
 
 
 Easier Logging
@@ -90,8 +91,6 @@ Output
 - Don't format it to a string at all!
   ``structlog`` passes you a dictionary and you can do with it whatever you want.
   Reported uses cases are sending them out via network or saving them in a database.
-
-Since ``structlog`` avoids monkey-patching and events are fully free-form, you can start using it **today**!
 
 .. -end-
 
