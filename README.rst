@@ -10,18 +10,15 @@ structlog: Structured Logging for Python
 
 .. begin
 
-``structlog`` makes structured logging in Python easy by either *augmenting* your *existing* logger if you need interoperability or supplying you with a lightweight logging layer if you want *performance* and *simplicity*.
+``structlog`` makes logging in Python less painful and more powerful by adding structure to your log entries.
 
-Structured logging means that you don't log out hard-to-parse and hard-to-come-up-with prose.
-Instead think of log entries as events that happen in a context that is made up from key/value pairs.
-
-This approach has numerous advantages:
+It's up to you whether you want ``structlog`` to take care about the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's ``logging`` module.
 
 
 Easier Logging
 ==============
 
-You will immediately appreciate the convenience of key/value-based logging:
+You can stop writing prose and start thinking in terms of an event that happens in the context of key/value pairs:
 
 .. code-block:: pycon
 
@@ -30,13 +27,13 @@ You will immediately appreciate the convenience of key/value-based logging:
    >>> log.info("key_value_logging", out_of_the_box=True, effort=0)
    out_of_the_box=True effort=0 event='key_value_logging'
 
-Never ponder on how to phrase a log message again!
+Each log entry is a meaningful dictionary instead of an opaque string now!
 
 
 Data Binding
 ============
 
-If you wish to, you can also bind key/value-pairs to loggers that get added automatically to all following loging calls:
+Since log entries are dictionaries, you can start binding and re-binding key/value pairs to your loggers to ensure they are present in every following logging call:
 
 .. code-block:: pycon
 
@@ -45,16 +42,12 @@ If you wish to, you can also bind key/value-pairs to loggers that get added auto
    >>> log.info("user.logged_in", happy=True)
    some_key=23 user='hynek' another_key=42 happy=True event='user.logged_in'
 
-Stop repeating yourself and still never forget an important piece of unformation in a log entry again!
-
-Please note that those examples do *not* use standard library logging (but `could so <http://www.structlog.org/en/stable/standard-library.html>`_).
-The logger that's returned by ``structlog.get_logger()`` is *freely* `configurable <http://www.structlog.org/en/stable/configuration.html>`_ and uses a simple but effective `structlog.PrintLogger <http://www.structlog.org/en/stable/api.html#structlog.PrintLogger>`_ by default.
-
 
 Powerful Pipelines
 ==================
 
-Since the log entries are dictionaries now (instead of unstructured prose strings), they allow for simple yet powerful `processor pipelines <http://www.structlog.org/en/stable/processors.html>`_ of callables that receive a dictionary and return a new one:
+Each log entry goes through a `processor pipeline <http://www.structlog.org/en/stable/processors.html>`_ that is just a chain of functions that receive a dictionary and return a new dictionary that gets fed into the next function.
+That allows for simple but powerful data manipulation:
 
 .. code-block:: python
 
@@ -63,20 +56,40 @@ Since the log entries are dictionaries now (instead of unstructured prose string
        event_dict["timestamp"] = calendar.timegm(time.gmtime())
        return event_dict
 
-There are `plenty of processors <http://www.structlog.org/en/stable/api.html#module-structlog.processors>`_ for most common tasks coming with ``structlog``.
+There are `plenty of processors <http://www.structlog.org/en/stable/api.html#module-structlog.processors>`_ for most common tasks coming with ``structlog``:
+
+- Collectors of `call stack information <http://www.structlog.org/en/stable/api.html#structlog.processors.StackInfoRenderer>`_ ("How did this log entry happen?"),
+- …and `exceptions <http://www.structlog.org/en/stable/api.html#structlog.processors.format_exc_info>`_ ("What happened‽").
+- Unicode encoders/decoders.
+- Flexible `timestamping <http://www.structlog.org/en/stable/api.html#structlog.processors.TimeStamper>`_.
+
 
 
 Formatting
 ==========
 
-Finally, structured data is much easier to format into *any* other logging format.
-Be it `colorful console output in developement <http://www.structlog.org/en/stable/development.html>`_, imitating the nginx log format, or logging out JSON for parsing and centralized storage.
+``structlog`` is completely flexible about *how* the resulting log entry is emitted.
+Since each log entry is a dictionary, it can be formatted to **any** format:
 
-.. image:: http://www.structlog.org/en/stable/_images/console_renderer.png
+- A colorful key/value format for `local development <http://www.structlog.org/en/stable/development.html>`_,
+- `JSON <http://www.structlog.org/en/stable/api.html#structlog.processors.JSONRenderer>`_ for easy parsing,
+- or some standard format you have parsers for like nginx or Apache httpd.
 
-Internally, formatters are just processors whose return value is passed into wrapped loggers and ``structlog`` comes with multiple useful formatters out of-the-box.
+Internally, formatters are processors whose return value is passed into wrapped loggers and ``structlog`` comes with multiple useful formatters out of-the-box.
 
 
+Output
+======
+
+``structlog`` is also very flexible with the final output of your log entries:
+
+- A **built-in** lightweight printer like in the examples above.
+  Easy to configure and fast.
+- Use the **standard library**'s or **Twisted**'s logging modules for compatibility.
+  In this case ``structlog`` works like a wrapper that formats a string and passes them off into existing systems that won't ever know that ``structlog`` even exists.
+- Don't format it to a string at all!
+  ``structlog`` passes you a dictionary and you can do with it whatever you want.
+  Reported uses cases are sending them out via network or saving them in a database.
 
 Since ``structlog`` avoids monkey-patching and events are fully free-form, you can start using it **today**!
 
