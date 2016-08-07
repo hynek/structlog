@@ -80,7 +80,8 @@ Since each log entry is a dictionary, it can be formatted to **any** format:
 - `JSON <http://www.structlog.org/en/stable/api.html#structlog.processors.JSONRenderer>`_ for easy parsing,
 - or some standard format you have parsers for like nginx or Apache httpd.
 
-Internally, formatters are processors whose return value is passed into wrapped loggers and ``structlog`` comes with multiple useful formatters out of-the-box.
+Internally, formatters are processors whose return value (usually a string) is passed into loggers that are responsible for the output of your message.
+``structlog`` comes with multiple useful formatters out of-the-box.
 
 
 Output
@@ -89,7 +90,7 @@ Output
 ``structlog`` is also very flexible with the final output of your log entries:
 
 - A **built-in** lightweight printer like in the examples above.
-  Easy to configure and fast.
+  Easy to use and fast.
 - Use the **standard library**'s or **Twisted**'s logging modules for compatibility.
   In this case ``structlog`` works like a wrapper that formats a string and passes them off into existing systems that won't ever know that ``structlog`` even exists.
 - Don't format it to a string at all!

@@ -70,12 +70,13 @@ A basic configuration to output structured logs in JSON format looks like this:
 
 To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the ``logging`` module like this::
 
-    import logging
-    import sys
+  import logging
 
-    handler = logging.StreamHandler(sys.stdout)
-    root_logger = logging.getLogger()
-    root_logger.addHandler(handler)
+  logging.basicConfig(
+      format="%(message)s",
+      stream=sys.stdout,
+      level=logging.INFO,
+  )
 
 If you plan to hook up the logging output to `logstash`, as suggested in :doc:`logging-best-practices`, the simplest approach is to configure ``logstash-forwarder`` to pick up the output from your application.
 To achieve this, configure your process supervisor (such as ``runit`` or ``supervisord``) to store the output in a file, and have ``logstash-forwarder`` monitor that file to ship it to the central log collection server.
