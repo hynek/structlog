@@ -18,7 +18,7 @@ class BoundLogger(BoundLoggerBase):
     A generic BoundLogger that can wrap anything.
 
     Every unknown method will be passed to the wrapped logger.  If that's too
-    much magic for you, try :class:`structlog.twisted.BoundLogger` or
+    much magic for you, try :class:`structlog.stdlib.BoundLogger` or
     :class:`structlog.twisted.BoundLogger` which also take advantage of
     knowing the wrapped class which generally results in better performance.
 
