@@ -127,8 +127,8 @@ class JSONRenderer(object):
     """
     Render the `event_dict` using `json.dumps(event_dict, **json_kw)`.
 
-    :param dict json_kw: Are passed unmodified to `json.dumps()`.
-    :param callable serializer: A :meth:`json.dumps`-compatible callable that
+    :param dict json_kw: Are passed unmodified to :func:`json.dumps`.
+    :param callable serializer: A :func:`json.dumps`-compatible callable that
         will be used to format the string.  This can be used to use alternative
         JSON encoders like `simplejson
         <https://pypi.python.org/pypi/simplejson/>`_ or `RapidJSON
