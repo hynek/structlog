@@ -129,7 +129,8 @@ class ConsoleRenderer(object):
         exc = event_dict.pop("exception", None)
         sio.write(
             " ".join(
-                self._filter_color(CYAN) + key + self._filter_color(RESET_ALL) +
+                self._filter_color(CYAN) + key +
+                self._filter_color(RESET_ALL) +
                 "=" +
                 self._filter_color(MAGENTA) + repr(event_dict[key]) +
                 self._filter_color(RESET_ALL)

@@ -11,7 +11,11 @@ The third digit is only for regressions.
 Changes:
 ^^^^^^^^
 
-*none*
+- Add a ``colorize`` argument to ``ConsoleRenderer``.
+  When disabled, it outputs plain text without special coloring characters.
+  Useful for plain text file output.
+  Enabled by default for backward compatibility.
+  `#78 <https://github.com/hynek/structlog/pull/78>`_
 
 
 ----
