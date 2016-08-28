@@ -60,7 +60,7 @@ class ConsoleRenderer(object):
 
     .. versionadded:: 16.0.0
     """
-    def __init__(self, pad_event=_EVENT_WIDTH):
+    def __init__(self, pad_event=_EVENT_WIDTH, colorize=True):
         if colorama is None:
             raise SystemError(
                 _MISSING.format(
@@ -71,6 +71,7 @@ class ConsoleRenderer(object):
         colorama.init()
 
         self._pad_event = pad_event
+        self._colorize = colorize
         self._level_to_color = {
             "critical": RED,
             "exception": RED,
@@ -88,6 +89,9 @@ class ConsoleRenderer(object):
             key=lambda e: len(e)
         ))
 
+    def _filter_color(self, color):
+        return color if self._colorize else ''
+
     def __call__(self, _, __, event_dict):
         sio = StringIO()
 
@@ -95,27 +99,29 @@ class ConsoleRenderer(object):
         if ts is not None:
             sio.write(
                 # can be a number if timestamp is UNIXy
-                DIM + str(ts) + RESET_ALL + " "
+                self._filter_color(DIM) +
+                str(ts) +
+                self._filter_color(RESET_ALL) + " "
             )
         level = event_dict.pop("level",  None)
         if level is not None:
             sio.write(
-                "[" + self._level_to_color[level] +
+                "[" + self._filter_color(self._level_to_color[level]) +
                 _pad(level, self._longest_level) +
-                RESET_ALL + "] "
+                self._filter_color(RESET_ALL) + "] "
             )
 
         sio.write(
-            BRIGHT +
+            self._filter_color(BRIGHT) +
             _pad(event_dict.pop("event"), self._pad_event) +
-            RESET_ALL + " "
+            self._filter_color(RESET_ALL) + " "
         )
 
         logger_name = event_dict.pop("logger", None)
         if logger_name is not None:
             sio.write(
-                "[" + BLUE + BRIGHT +
-                logger_name + RESET_ALL +
+                "[" + self._filter_color(BLUE + BRIGHT) +
+                logger_name + self._filter_color(RESET_ALL) +
                 "] "
             )
 
@@ -123,10 +129,10 @@ class ConsoleRenderer(object):
         exc = event_dict.pop("exception", None)
         sio.write(
             " ".join(
-                CYAN + key + RESET_ALL +
+                self._filter_color(CYAN) + key + self._filter_color(RESET_ALL) +
                 "=" +
-                MAGENTA + repr(event_dict[key]) +
-                RESET_ALL
+                self._filter_color(MAGENTA) + repr(event_dict[key]) +
+                self._filter_color(RESET_ALL)
                 for key in sorted(event_dict.keys())
             )
         )
