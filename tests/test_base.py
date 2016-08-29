@@ -119,7 +119,7 @@ class TestProcessing(object):
 
     def test_last_processor_returns_dict(self):
         """
-        If the final processor returns a dict, ``(), the_dict`` is returnend.
+        If the final processor returns a dict, ``(), the_dict`` is returned.
         """
         logger = stub(msg=lambda *args, **kw: (args, kw))
         b = build_bl(logger, processors=[lambda *_: {'event': 'foo'}])
