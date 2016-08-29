@@ -8,6 +8,8 @@ Helpers that aim to make development with ``structlog`` more pleasant.
 
 from __future__ import absolute_import, division, print_function
 
+import warnings
+
 from six import StringIO
 
 try:
@@ -21,9 +23,10 @@ __all__ = [
 
 
 _MISSING = (
-    "{who} requires the {package} package installed.  "
-    "If you want to use the helpers from structlog.dev, it is strongly "
-    "recommended to install structlog using `pip install structlog[dev]`."
+    "{who} requires the {package} package installed to use colors.  "
+    "If you want to use the helpers from structlog.dev with colors, "
+    "it is strongly recommended to install structlog using "
+    "`pip install structlog[dev]`."
 )
 _EVENT_WIDTH = 30  # pad the event name to so many characters
 
@@ -36,16 +39,17 @@ def _pad(s, l):
     return s + " " * (missing if missing > 0 else 0)
 
 
-if colorama is not None:
-    RESET_ALL = colorama.Style.RESET_ALL
-    BRIGHT = colorama.Style.BRIGHT
-    DIM = colorama.Style.DIM
-    RED = colorama.Fore.RED
-    BLUE = colorama.Fore.BLUE
-    CYAN = colorama.Fore.CYAN
-    MAGENTA = colorama.Fore.MAGENTA
-    YELLOW = colorama.Fore.YELLOW
-    GREEN = colorama.Fore.GREEN
+NO_COLOR = ''
+RESET_ALL = colorama.Style.RESET_ALL if colorama else NO_COLOR
+BRIGHT = colorama.Style.BRIGHT if colorama else NO_COLOR
+DIM = colorama.Style.DIM if colorama else NO_COLOR
+RED = colorama.Fore.RED if colorama else NO_COLOR
+BLUE = colorama.Fore.BLUE if colorama else NO_COLOR
+CYAN = colorama.Fore.CYAN if colorama else NO_COLOR
+MAGENTA = colorama.Fore.MAGENTA if colorama else NO_COLOR
+YELLOW = colorama.Fore.YELLOW if colorama else NO_COLOR
+GREEN = colorama.Fore.GREEN if colorama else NO_COLOR
+NOT_SET = colorama.Back.RED if colorama else NO_COLOR
 
 
 class ConsoleRenderer(object):
@@ -53,25 +57,25 @@ class ConsoleRenderer(object):
     Render `event_dict` nicely aligned, in colors, and ordered.
 
     :param int pad_event: Pad the event to this many characters.
+    :param bool colors: Colorize output or not.
 
-    Requires the colorama_ package.
+    Requires the colorama_ package for setting colors=True.
 
     .. _colorama: https://pypi.python.org/pypi/colorama/
 
     .. versionadded:: 16.0.0
     """
-    def __init__(self, pad_event=_EVENT_WIDTH, colorize=True):
-        if colorama is None:
-            raise SystemError(
-                _MISSING.format(
-                    who=self.__class__.__name__,
-                    package="colorama"
-                )
-            )
-        colorama.init()
+    def __init__(self, pad_event=_EVENT_WIDTH, colors=True):
+        if colors:
+            if colorama is None:
+                warnings.warn(_MISSING.format(who=self.__class__.__name__,
+                                              package="colorama"),
+                              RuntimeWarning)
+            else:
+                colorama.init()
 
         self._pad_event = pad_event
-        self._colorize = colorize
+        self._colors = bool(colorama and colors)
         self._level_to_color = {
             "critical": RED,
             "exception": RED,
@@ -80,7 +84,7 @@ class ConsoleRenderer(object):
             "warning": YELLOW,
             "info": GREEN,
             "debug": GREEN,
-            "notset": colorama.Back.RED,
+            "notset": NOT_SET,
         }
         for key in self._level_to_color.keys():
             self._level_to_color[key] += BRIGHT
@@ -90,7 +94,7 @@ class ConsoleRenderer(object):
         ))
 
     def _filter_color(self, color):
-        return color if self._colorize else ''
+        return color if self._colors else ''
 
     def __call__(self, _, __, event_dict):
         sio = StringIO()

@@ -4,6 +4,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import warnings
+
 import pytest
 
 from structlog import dev
@@ -33,22 +35,24 @@ def test_missing_colorama():
     This is a function such that TestConsoleRenderer can be protected on class
     level.
     """
-    with pytest.raises(SystemError) as e:
+    with warnings.catch_warnings(record=True) as warns:
         dev.ConsoleRenderer()
-
+    assert 1 == len(warns)
+    assert RuntimeWarning == warns[0].category
     assert (
-        "ConsoleRenderer requires the colorama package installed."
-    ) in e.value.args[0]
+        "ConsoleRenderer requires the colorama package installed "
+        "to use colors."
+    ) in warns[0].message.args[0]
 
 
 @pytest.fixture
 def cr_c():
-    return dev.ConsoleRenderer(colorize=True)
+    return dev.ConsoleRenderer(colors=True)
 
 
 @pytest.fixture
 def cr_nc():
-    return dev.ConsoleRenderer(colorize=False)
+    return dev.ConsoleRenderer(colors=False)
 
 
 if dev.colorama is not None:
