@@ -27,12 +27,14 @@ class TestProcessorFormatter(object):
                                    extra={'_name': 'debug',
                                           '_logger': logger})
         expected_repr = 'Record representation'
-        ppr = processor_factory(expected_repr)
-        processor_formatter = ProcessorFormatter(ppr)
+        processor = processor_factory(expected_repr)
+        processor_formatter = ProcessorFormatter(processor)
 
         actual_repr = processor_formatter.format(record)
 
-        assert ppr.args == [record._logger, record._name, record.msg.copy()]
+        assert processor.args == [record._logger,
+                                  record._name,
+                                  record.msg.copy()]
         assert expected_repr == actual_repr
 
     def test_format__not_dict(self):
@@ -47,8 +49,8 @@ class TestProcessorFormatter(object):
                                    extra={'_name': 'debug',
                                           '_logger': logger})
         expected_repr = record.getMessage()
-        ppr = processor_factory(expected_repr)
-        processor_formatter = ProcessorFormatter(ppr)
+        processor = processor_factory(expected_repr)
+        processor_formatter = ProcessorFormatter(processor)
 
         actual_repr = processor_formatter.format(record)
 

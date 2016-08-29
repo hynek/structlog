@@ -19,9 +19,9 @@ class ProcessorFormatter(logging.Formatter):
 
     """
 
-    def __init__(self, processor, fmt=None, datefmt=None, style='%'):
+    def __init__(self, processor, *args, **kwargs):
         """Keep reference to the ``processor``."""
-        super().__init__(fmt=fmt, datefmt=datefmt, style=style)
+        super(ProcessorFormatter, self).__init__(*args, **kwargs)
         self.processor = processor
 
     def format(self, record):
