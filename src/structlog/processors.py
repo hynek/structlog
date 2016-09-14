@@ -237,10 +237,12 @@ def _figure_out_exc_info(v):
 
     :rtype: tuple
     """
-    if v is True:
-        return sys.exc_info()
-    elif six.PY3 and isinstance(v, BaseException):
+    if six.PY3 and isinstance(v, BaseException):
         return (v.__class__, v, getattr(v, "__traceback__"))
+    elif isinstance(v, tuple):
+        return v
+    elif v:
+        return sys.exc_info()
 
     return v
 
