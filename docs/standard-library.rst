@@ -59,6 +59,7 @@ A basic configuration to output structured logs in JSON format looks like this:
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
             structlog.processors.JSONRenderer()
         ],
         context_class=dict,
@@ -67,6 +68,7 @@ A basic configuration to output structured logs in JSON format looks like this:
         cache_logger_on_first_use=True,
     )
 
+(if you're still runnning Python 2, replace :class:`~structlog.processors.UnicodeDecoder` through :class:`~structlog.processors.UnicodeEncoder`)
 
 To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the ``logging`` module like this::
 
