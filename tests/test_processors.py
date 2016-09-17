@@ -445,14 +445,17 @@ class TestStackInfoRenderer(object):
 
 
 class TestFigureOutExcInfo(object):
-    def test_obtains_exc_info_on_True(self):
+    @pytest.mark.parametrize('true_value', [
+        True, 1, 1.1
+    ])
+    def test_obtains_exc_info_on_True(self, true_value):
         """
-        If True is passed, obtain exc_info ourselves.
+        If the passed argument evaluates to True obtain exc_info ourselves.
         """
         try:
             0/0
         except Exception:
-            assert sys.exc_info() == _figure_out_exc_info(True)
+            assert sys.exc_info() == _figure_out_exc_info(true_value)
         else:
             pytest.fail("Exception not raised.")
 
