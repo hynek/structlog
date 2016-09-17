@@ -447,25 +447,16 @@ class TestStackInfoRenderer(object):
 class TestFigureOutExcInfo(object):
     def test_obtains_exc_info_on_True(self):
         """
-        If True is passed, obtain exc_info ourselves.
-        """
-        try:
-            0/0
-        except Exception:
-            assert sys.exc_info() == _figure_out_exc_info(True)
-        else:
-            pytest.fail("Exception not raised.")
-
-    def test_obtains_exc_info_on_number(self):
-        """
         If the passed argument evaluates to True obtain exc_info ourselves.
         """
-        try:
-            0/0
-        except Exception:
-            assert sys.exc_info() == _figure_out_exc_info(1)
-        else:
-            pytest.fail("Exception not raised.")
+        true_values = [True, 1, 1.1]
+        for true_value in true_values:
+            try:
+                0/0
+            except Exception:
+                assert sys.exc_info() == _figure_out_exc_info(true_value)
+            else:
+                pytest.fail("Exception not raised.")
 
     @py3_only
     def test_py3_exception_no_traceback(self):
