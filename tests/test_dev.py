@@ -23,85 +23,94 @@ class TestPad(object):
         assert len("test") == len(dev._pad("test", 2))
 
 
-@pytest.mark.skipif(dev.colorama is not None,
-                    reason="Colorama must be missing.")
-def test_missing_colorama():
-    """
-    ConsoleRenderer() raises SystemError on initialization if colorama is
-    missing.
-
-    This is a function such that TestConsoleRenderer can be protected on class
-    level.
-    """
-    with pytest.raises(SystemError) as e:
-        dev.ConsoleRenderer()
-
-    assert (
-        "ConsoleRenderer requires the colorama package installed."
-    ) in e.value.args[0]
+@pytest.fixture
+def cr():
+    return dev.ConsoleRenderer(colors=dev._has_colorama)
 
 
 @pytest.fixture
-def cr():
-    return dev.ConsoleRenderer()
+def styles(cr):
+    return cr._styles
 
 
-if dev.colorama is not None:
-    PADDED_TEST = (
-        dev.BRIGHT +
+@pytest.fixture
+def padded(styles):
+    return (
+        styles.bright +
         dev._pad("test", dev._EVENT_WIDTH) +
-        dev.RESET_ALL + " "
+        styles.reset + " "
     )
 
 
-@pytest.mark.skipif(dev.colorama is None, reason="Requires colorama.")
+@pytest.fixture
+def unpadded(styles):
+    return styles.bright + "test" + styles.reset
+
+
 class TestConsoleRenderer(object):
-    def test_plain(self, cr):
+    @pytest.mark.skipif(dev._has_colorama, reason="Colorama must be missing.")
+    def test_missing_colorama(self):
+        """
+        ConsoleRenderer(colors=True) raises SystemError on initialization if
+        colorama is missing.
+        """
+        with pytest.raises(SystemError) as e:
+            dev.ConsoleRenderer()
+
+        assert (
+            "ConsoleRenderer with `colors=True` requires the colorama package "
+            "installed."
+        ) in e.value.args[0]
+
+    def test_plain(self, cr, styles, unpadded):
         """
         Works with a plain event_dict with only the event.
         """
         rv = cr(None, None, {"event": "test"})
 
-        assert PADDED_TEST == rv
+        assert unpadded == rv
 
-    def test_timestamp(self, cr):
+    def test_timestamp(self, cr, styles, unpadded):
         """
-        Timestamps get prepended dimmed..
+        Timestamps get prepended.
         """
         rv = cr(None, None, {"event": "test", "timestamp": 42})
 
         assert (
-            dev.DIM + "42" + dev.RESET_ALL +
-            " " + PADDED_TEST
+            styles.timestamp + "42" + styles.reset + " " + unpadded
         ) == rv
 
-    def test_level(self, cr):
+    def test_level(self, cr, styles, padded):
         """
         Levels are rendered aligned, in square brackets, and color coded.
         """
-        rv = cr(None, None, {"event": "test", "level": "critical"})
+        rv = cr(None, None, {
+            "event": "test", "level": "critical", "foo": "bar"
+        })
 
         assert (
-            "[" + dev.RED + dev.BRIGHT +
+            "[" + dev.RED + styles.bright +
             dev._pad("critical", cr._longest_level) +
-            dev.RESET_ALL + "] " +
-            PADDED_TEST
+            styles.reset + "] " +
+            padded +
+            styles.kv_key + "foo" + styles.reset + "=" +
+            styles.kv_value + "'bar'" + styles.reset
         ) == rv
 
-    def test_logger_name(self, cr):
+    def test_logger_name(self, cr, styles, padded):
         """
         Logger names are appended after the event.
         """
         rv = cr(None, None, {"event": "test", "logger": "some_module"})
 
         assert (
-            PADDED_TEST +
-            "[" + dev.BLUE + dev.BRIGHT +
+            padded +
+            "[" + dev.BLUE + styles.bright +
             "some_module" +
-            dev.RESET_ALL + "] "
+            styles.reset + "] "
         ) == rv
 
-    def test_key_values(self, cr):
+    def test_key_values(self, cr, styles, padded):
         """
         Key-value pairs go sorted alphabetically to the end.
         """
@@ -111,14 +120,16 @@ class TestConsoleRenderer(object):
             "foo": "bar",
         })
         assert (
-            PADDED_TEST +
-            dev.CYAN + "foo" + dev.RESET_ALL + "=" + dev.MAGENTA + "'bar'" +
-            dev.RESET_ALL + " " +
-            dev.CYAN + "key" + dev.RESET_ALL + "=" + dev.MAGENTA + "'value'" +
-            dev.RESET_ALL
+            padded +
+            styles.kv_key + "foo" + styles.reset + "=" +
+            styles.kv_value + "'bar'" +
+            styles.reset + " " +
+            styles.kv_key + "key" + styles.reset + "=" +
+            styles.kv_value + "'value'" +
+            styles.reset
         ) == rv
 
-    def test_exception(self, cr):
+    def test_exception(self, cr, padded):
         """
         Exceptions are rendered after a new line.
         """
@@ -130,10 +141,10 @@ class TestConsoleRenderer(object):
         })
 
         assert (
-            PADDED_TEST + "\n" + exc
+            padded + "\n" + exc
         ) == rv
 
-    def test_stack_info(self, cr):
+    def test_stack_info(self, cr, padded):
         """
         Stack traces are rendered after a new line.
         """
@@ -144,22 +155,27 @@ class TestConsoleRenderer(object):
         })
 
         assert (
-            PADDED_TEST + "\n" + stack
+            padded + "\n" + stack
         ) == rv
 
-    def test_pad_event_param(self):
+    def test_pad_event_param(self, styles):
         """
         `pad_event` parameter works.
         """
-        rv = dev.ConsoleRenderer(42)(None, None, {"event": "test"})
+        rv = dev.ConsoleRenderer(42, dev._has_colorama)(None, None, {
+            "event": "test",
+            "foo": "bar"
+        })
 
         assert (
-            dev.BRIGHT +
+            styles.bright +
             dev._pad("test", 42) +
-            dev.RESET_ALL + " "
+            styles.reset + " " +
+            styles.kv_key + "foo" + styles.reset + "=" +
+            styles.kv_value + "'bar'" + styles.reset
         ) == rv
 
-    def test_everything(self, cr):
+    def test_everything(self, cr, styles, padded):
         """
         Put all cases together.
         """
@@ -178,18 +194,33 @@ class TestConsoleRenderer(object):
         })
 
         assert (
-            dev.DIM + "13:13" + dev.RESET_ALL +
-            " [" + dev.RED + dev.BRIGHT +
+            styles.timestamp + "13:13" + styles.reset +
+            " [" + styles.level_error + styles.bright +
             dev._pad("error", cr._longest_level) +
-            dev.RESET_ALL + "] " +
-            PADDED_TEST +
-            "[" + dev.BLUE + dev.BRIGHT +
+            styles.reset + "] " +
+            padded +
+            "[" + dev.BLUE + styles.bright +
             "some_module" +
-            dev.RESET_ALL + "] " +
-            dev.CYAN + "foo" + dev.RESET_ALL + "=" + dev.MAGENTA + "'bar'" +
-            dev.RESET_ALL + " " +
-            dev.CYAN + "key" + dev.RESET_ALL + "=" + dev.MAGENTA + "'value'" +
-            dev.RESET_ALL +
+            styles.reset + "] " +
+            styles.kv_key + "foo" + styles.reset + "=" +
+            styles.kv_value + "'bar'" +
+            styles.reset + " " +
+            styles.kv_key + "key" + styles.reset + "=" +
+            styles.kv_value + "'value'" +
+            styles.reset +
             "\n" + stack + "\n\n" + "=" * 79 + "\n" +
             "\n" + exc
         ) == rv
+
+    def test_colorama_colors_false(self):
+        """
+        If colors is False, don't use colors or styles ever.
+        """
+        plain_cr = dev.ConsoleRenderer(colors=False)
+
+        rv = plain_cr(None, None, {
+            "event": "event", "level": "info", "foo": "bar"
+        })
+
+        assert dev._PlainStyles is plain_cr._styles
+        assert "[info     ] event                          foo='bar'" == rv

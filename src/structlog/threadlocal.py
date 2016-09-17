@@ -91,16 +91,6 @@ def as_immutable(logger):
 def tmp_bind(logger, **tmp_values):
     """
     Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
-
-    >>> from structlog import wrap_logger, PrintLogger
-    >>> from structlog.threadlocal import tmp_bind, wrap_dict
-    >>> logger = wrap_logger(PrintLogger(),  context_class=wrap_dict(dict))
-    >>> with tmp_bind(logger, x=5) as tmp_logger:
-    ...     logger = logger.bind(y=3)
-    ...     tmp_logger.msg('event')
-    y=3 x=5 event='event'
-    >>> logger.msg('event')
-    event='event'
     """
     saved = as_immutable(logger)._context
     try:

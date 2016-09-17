@@ -226,7 +226,8 @@ class TestBoundLoggerLazyProxy(object):
         proxy.bind()
         configure(logger_factory=F)
         new_b = proxy.bind()
-        assert new_b.a() == 5
+
+        assert new_b.a("test") == 5
 
     def test_emphemeral(self):
         """

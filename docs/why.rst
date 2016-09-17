@@ -29,8 +29,8 @@ Because it's easy and you don't have to replace your underlying logger (but you 
    >>> log = get_logger()
    >>> log = log.bind(user='anonymous', some_key=23)
    >>> log = log.bind(user='hynek', another_key=42)
-   >>> log.info('user.logged_in', happy=True)
-   some_key=23 user='hynek' another_key=42 happy=True event='user.logged_in'
+   >>> log.info('user.logged_in', happy=True)  # doctest: +SKIP
+   2016-04-20 16:20.13 user.logged_in                 another_key=42 happy=True some_key=23 user='hynek'
 
 This ability to bind key/values pairs to a logger frees you from using conditionals, closures, or boilerplate methods to log out all relevant data.
 

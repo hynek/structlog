@@ -1,6 +1,18 @@
 Frequently Asked Questions
 ==========================
 
+.. testsetup:: *
+
+   import structlog
+   structlog.configure(
+       processors=[structlog.processors.KeyValueRenderer()],
+   )
+
+.. testcleanup:: *
+
+   import structlog
+   structlog.reset_defaults()
+
 I try to bind key-value pairs but they don't appear in the log files?
   ``structlog``\ 's loggers are *immutable*.
   Meaning that you have to use the logger that is returned from ``bind()``:
@@ -9,7 +21,8 @@ I try to bind key-value pairs but they don't appear in the log files?
 
     >>> import structlog
     >>> log = structlog.get_logger()
-    >>> log.bind(x=42)  # doctest: +SKIP
+    >>> log.bind(x=42)    # doctest: +ELLIPSIS
+    <BoundLogger(context=OrderedDict([('x', 42)]), processors=[<structlog.processors.KeyValueRenderer object at ...>])>
     >>> log.msg("hello")
     event='hello'
     >>> new_log = log.bind(x=42)

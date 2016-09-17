@@ -3,6 +3,24 @@
 API Reference
 =============
 
+.. note::
+   The examples here use a very simplified configuration using the minimalistic :class:`structlog.processors.KeyValueRenderer` for brewity and to enable doctests.
+   The output is going to be different (nicer!) with default configuration.
+
+
+.. testsetup:: *
+
+   import structlog
+   structlog.configure(
+       processors=[structlog.processors.KeyValueRenderer()],
+   )
+
+.. testcleanup:: *
+
+   import structlog
+   structlog.reset_defaults()
+
+
 .. module:: structlog
 
 :mod:`structlog` Package
@@ -55,6 +73,17 @@ API Reference
 .. autofunction:: wrap_dict
 
 .. autofunction:: tmp_bind(logger, **tmp_values)
+
+   >>> from structlog import wrap_logger, PrintLogger
+   >>> from structlog.threadlocal import tmp_bind, wrap_dict
+   >>> logger = wrap_logger(PrintLogger(),  context_class=wrap_dict(dict))
+   >>> with tmp_bind(logger, x=5) as tmp_logger:
+   ...     logger = logger.bind(y=3)
+   ...     tmp_logger.msg("event")
+   y=3 x=5 event='event'
+   >>> logger.msg("event")
+   event='event'
+
 
 .. autofunction:: as_immutable
 

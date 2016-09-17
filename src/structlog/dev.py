@@ -3,7 +3,7 @@
 # repository for complete details.
 
 """
-Helpers that aim to make development with ``structlog`` more pleasant.
+Helpers that make development with ``structlog`` more pleasant.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -14,6 +14,7 @@ try:
     import colorama
 except ImportError:
     colorama = None
+
 
 __all__ = [
     "ConsoleRenderer",
@@ -37,6 +38,8 @@ def _pad(s, l):
 
 
 if colorama is not None:
+    _has_colorama = True
+
     RESET_ALL = colorama.Style.RESET_ALL
     BRIGHT = colorama.Style.BRIGHT
     DIM = colorama.Style.DIM
@@ -46,43 +49,94 @@ if colorama is not None:
     MAGENTA = colorama.Fore.MAGENTA
     YELLOW = colorama.Fore.YELLOW
     GREEN = colorama.Fore.GREEN
+    RED_BACK = colorama.Back.RED
+else:
+    _has_colorama = False
+
+    RESET_ALL = BRIGHT = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = \
+        RED_BACK = ""
+
+
+class _ColorfulStyles(object):
+    reset = RESET_ALL
+    bright = BRIGHT
+
+    level_critical = RED
+    level_exception = RED
+    level_error = RED
+    level_warn = YELLOW
+    level_info = GREEN
+    level_debug = GREEN
+    level_notset = RED_BACK
+
+    timestamp = DIM
+    logger_name = BLUE
+    kv_key = CYAN
+    kv_value = MAGENTA
+
+
+class _PlainStyles(object):
+    reset = ""
+    bright = ""
+
+    level_critical = ""
+    level_exception = ""
+    level_error = ""
+    level_warn = ""
+    level_info = ""
+    level_debug = ""
+    level_notset = ""
+
+    timestamp = ""
+    logger_name = ""
+    kv_key = ""
+    kv_value = ""
 
 
 class ConsoleRenderer(object):
     """
-    Render `event_dict` nicely aligned, in colors, and ordered.
+    Render `event_dict` nicely aligned, possibly in colors, and ordered.
 
     :param int pad_event: Pad the event to this many characters.
+    :param bool colors: Use colors for a nicer output.
 
-    Requires the colorama_ package.
+    Requires the colorama_ package if *colors* is ``True``.
 
-    .. _colorama: https://pypi.python.org/pypi/colorama/
+    .. _colorama: https://pypi.org/project/colorama/
 
-    .. versionadded:: 16.0.0
+    .. versionadded:: 16.0
+    .. versionadded:: 16.1 *colors* argument
     """
-    def __init__(self, pad_event=_EVENT_WIDTH):
-        if colorama is None:
-            raise SystemError(
-                _MISSING.format(
-                    who=self.__class__.__name__,
-                    package="colorama"
+    def __init__(self, pad_event=_EVENT_WIDTH, colors=True):
+        if colors is True:
+            if colorama is None:
+                raise SystemError(
+                    _MISSING.format(
+                        who=self.__class__.__name__ + " with `colors=True`",
+                        package="colorama"
+                    )
                 )
-            )
-        colorama.init()
 
+            colorama.init()
+            styles = _ColorfulStyles
+        else:
+            styles = _PlainStyles
+
+        self._styles = styles
         self._pad_event = pad_event
         self._level_to_color = {
-            "critical": RED,
-            "exception": RED,
-            "error": RED,
-            "warn": YELLOW,
-            "warning": YELLOW,
-            "info": GREEN,
-            "debug": GREEN,
-            "notset": colorama.Back.RED,
+            "critical": styles.level_critical,
+            "exception": styles.level_exception,
+            "error": styles.level_error,
+            "warn": styles.level_warn,
+            "warning": styles.level_warn,
+            "info": styles.level_info,
+            "debug": styles.level_debug,
+            "notset": styles.level_notset,
         }
+
         for key in self._level_to_color.keys():
-            self._level_to_color[key] += BRIGHT
+            self._level_to_color[key] += styles.bright
         self._longest_level = len(max(
             self._level_to_color.keys(),
             key=lambda e: len(e)
@@ -95,27 +149,28 @@ class ConsoleRenderer(object):
         if ts is not None:
             sio.write(
                 # can be a number if timestamp is UNIXy
-                DIM + str(ts) + RESET_ALL + " "
+                self._styles.timestamp + str(ts) + self._styles.reset + " "
             )
         level = event_dict.pop("level",  None)
         if level is not None:
             sio.write(
                 "[" + self._level_to_color[level] +
                 _pad(level, self._longest_level) +
-                RESET_ALL + "] "
+                self._styles.reset + "] "
             )
 
-        sio.write(
-            BRIGHT +
-            _pad(event_dict.pop("event"), self._pad_event) +
-            RESET_ALL + " "
-        )
+        event = event_dict.pop("event")
+        if event_dict:
+            event = _pad(event, self._pad_event) + self._styles.reset + " "
+        else:
+            event += self._styles.reset
+        sio.write(self._styles.bright + event)
 
         logger_name = event_dict.pop("logger", None)
         if logger_name is not None:
             sio.write(
-                "[" + BLUE + BRIGHT +
-                logger_name + RESET_ALL +
+                "[" + self._styles.logger_name + self._styles.bright +
+                logger_name + self._styles.reset +
                 "] "
             )
 
@@ -123,10 +178,10 @@ class ConsoleRenderer(object):
         exc = event_dict.pop("exception", None)
         sio.write(
             " ".join(
-                CYAN + key + RESET_ALL +
+                self._styles.kv_key + key + self._styles.reset +
                 "=" +
-                MAGENTA + repr(event_dict[key]) +
-                RESET_ALL
+                self._styles.kv_value + repr(event_dict[key]) +
+                self._styles.reset
                 for key in sorted(event_dict.keys())
             )
         )

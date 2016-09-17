@@ -3,6 +3,13 @@
 Thread Local Context
 ====================
 
+.. testsetup:: *
+
+   import structlog
+   structlog.configure(
+       processors=[structlog.processors.KeyValueRenderer()],
+   )
+
 .. testcleanup:: *
 
    import structlog
@@ -90,12 +97,12 @@ In order to be able to bind values temporarily to a logger, :mod:`structlog.thre
 
    >>> log.bind(x=42)  # doctest: +ELLIPSIS
    <BoundLogger(context=<WrappedDict-...({'x': 42})>, ...)>
-   >>> log.msg('event!')
+   >>> log.msg("event!")
    x=42 event='event!'
-   >>> with tmp_bind(log, x=23, y='foo') as tmp_log:
-   ...     tmp_log.msg('another event!')
+   >>> with tmp_bind(log, x=23, y="foo") as tmp_log:
+   ...     tmp_log.msg("another event!")
    y='foo' x=23 event='another event!'
-   >>> log.msg('one last event!')
+   >>> log.msg("one last event!")
    x=42 event='one last event!'
 
 The state before the ``with`` statement is saved and restored once it's left.

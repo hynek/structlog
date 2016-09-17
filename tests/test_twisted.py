@@ -17,7 +17,8 @@ from twisted.python.failure import Failure, NoCurrentExceptionError
 from twisted.python.log import ILogObserver
 
 from structlog._config import _CONFIG
-from structlog._loggers import ReturnLogger
+from structlog import ReturnLogger
+from structlog.processors import KeyValueRenderer
 from structlog.twisted import (
     BoundLogger,
     EventAdapter,
@@ -46,32 +47,42 @@ def build_bl(logger=None, processors=None, context=None):
     """
     return BoundLogger(
         logger or ReturnLogger(),
-        processors or _CONFIG.default_processors,
+        processors or [KeyValueRenderer()],
         context if context is not None else _CONFIG.default_context_class(),
     )
 
 
 class TestBoundLogger(object):
     def test_msg(self):
+        """
+        log.msg renders correctly.
+        """
         bl = build_bl()
-        assert "foo=42 event='event'" == bl.msg('event', foo=42)
+        assert "foo=42 event='event'" == bl.msg("event", foo=42)
 
     def test_errVanilla(self):
+        """
+        log.err renders correctly if no failure is attached.
+        """
         bl = build_bl()
-        assert "foo=42 event='event'" == bl.err('event', foo=42)
+        assert "foo=42 event='event'" == bl.err("event", foo=42)
 
     def test_errWithFailure(self):
-        bl = build_bl(processors=[EventAdapter()])
+        """
+        Failures are correctly injected into the log entries.
+        """
+        bl = build_bl(processors=[
+            EventAdapter(dictRenderer=KeyValueRenderer())
+        ])
         try:
             raise ValueError
         except ValueError:
             # Use str() for comparison to avoid tricky
             # deep-compares of Failures.
-            assert (
-                str(((), {'_stuff': Failure(ValueError()),
-                          '_why': "foo=42 event='event'"})) ==
-                str(bl.err('event', foo=42))
-            )
+            assert str(((), {
+                '_stuff': Failure(ValueError()),
+                '_why': "foo=42 event='event'",
+            })) == str(bl.err('event', foo=42))
 
 
 class TestExtractStuffAndWhy(object):

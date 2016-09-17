@@ -1,6 +1,19 @@
 Custom Wrappers
 ===============
 
+.. testsetup:: *
+
+   import structlog
+   structlog.configure(
+       processors=[structlog.processors.KeyValueRenderer()],
+   )
+
+.. testcleanup:: *
+
+   import structlog
+   structlog.reset_defaults()
+
+
 ``structlog`` comes with a generic bound logger called :class:`structlog.BoundLogger` that can be used to wrap any logger class you fancy.
 It does so by intercepting unknown method names and proxying them to the wrapped logger.
 

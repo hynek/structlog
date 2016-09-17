@@ -90,11 +90,11 @@ Here you go:
    ...     ]
    ... )
    >>> log.info('something.filtered')
-   >>> log.warning('something.not_filtered', password='secret') # doctest: +SKIP
+   >>> log.warning('something.not_filtered', password='secret') # doctest: +ELLIPSIS
    {
-   "event": "something.not_filtered",
-   "password": "*CENSORED*",
-   "timestamp": "datetime.datetime(..., ..., ..., ..., ...)"
+    "event": "something.not_filtered",
+    "password": "*CENSORED*",
+    "timestamp": "datetime.datetime(..., ..., ..., ..., ...)"
    }
 
 ``structlog`` comes with many handy processors build right in -- for a list of shipped processors, check out the :ref:`API documentation <procs>`.

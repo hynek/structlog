@@ -20,12 +20,12 @@ from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver, textFromEventDict
 from zope.interface import implementer
 
-from structlog._base import BoundLoggerBase
-from structlog._utils import until_not_interrupted
-from structlog.processors import (
+from ._base import BoundLoggerBase
+from ._config import _BUILTIN_DEFAULT_PROCESSORS
+from ._utils import until_not_interrupted
+from .processors import (
     # can't import processors module without risking circular imports
     JSONRenderer as GenericJSONRenderer,
-    KeyValueRenderer,
 )
 
 
@@ -47,13 +47,13 @@ class BoundLogger(BoundLoggerBase):
         """
         Process event and call ``log.msg()`` with the result.
         """
-        return self._proxy_to_logger('msg', event, **kw)
+        return self._proxy_to_logger("msg", event, **kw)
 
     def err(self, event=None, **kw):
         """
         Process event and call ``log.err()`` with the result.
         """
-        return self._proxy_to_logger('err', event, **kw)
+        return self._proxy_to_logger("err", event, **kw)
 
 
 class LoggerFactory(object):
@@ -268,7 +268,7 @@ class EventAdapter(object):
         """
         :param dictRenderer: A processor used to format the log message.
         """
-        self._dictRenderer = dictRenderer or KeyValueRenderer()
+        self._dictRenderer = dictRenderer or _BUILTIN_DEFAULT_PROCESSORS[-1]
 
     def __call__(self, logger, name, eventDict):
         if name == 'err':

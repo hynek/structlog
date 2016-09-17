@@ -20,12 +20,14 @@ matrix:
       env: TOXENV=py35-threads
     - python: "3.5"
       env: TOXENV=py35-greenlets
-    - python: "3.5"
-      env: TOXENV=py35-nocolorama
     - python: "pypy"
       env: TOXENV=pypy-threads
     - python: "pypy"
       env: TOXENV=pypy-greenlets
+    - python: "2.7"
+      env: TOXENV=py27-colorama
+    - python: "3.5"
+      env: TOXENV=py35-colorama
 
 
     # Meta

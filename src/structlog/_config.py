@@ -12,20 +12,22 @@ import warnings
 
 from collections import OrderedDict
 
-from structlog._generic import BoundLogger
-from structlog._loggers import (
+from ._generic import BoundLogger
+from ._loggers import (
     PrintLoggerFactory,
 )
-from structlog.processors import (
-    KeyValueRenderer,
+from .dev import ConsoleRenderer, _has_colorama
+from .processors import (
     StackInfoRenderer,
+    TimeStamper,
     format_exc_info,
 )
 
 _BUILTIN_DEFAULT_PROCESSORS = [
     StackInfoRenderer(),
     format_exc_info,
-    KeyValueRenderer(),
+    TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
+    ConsoleRenderer(colors=_has_colorama),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = OrderedDict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
@@ -57,7 +59,7 @@ def get_logger(*args, **initial_values):
 
     >>> from structlog import get_logger
     >>> log = get_logger(y=23)
-    >>> log.msg('hello', x=42)
+    >>> log.msg("hello", x=42)
     y=23 x=42 event='hello'
 
     :param args: *Optional* positional arguments that are passed unmodified to
@@ -188,7 +190,8 @@ def reset_defaults():
 
     That means [:class:`~structlog.processors.StackInfoRenderer`,
     :func:`~structlog.processors.format_exc_info`,
-    :class:`~structlog.processors.KeyValueRenderer`] for *processors*,
+    :class:`~structlog.processors.TimeStamper`,
+    :class:`~structlog.dev.ConsoleRenderer`] for *processors*,
     :class:`~structlog.BoundLogger` for *wrapper_class*, ``OrderedDict`` for
     *context_class*, :class:`~structlog.PrintLoggerFactory` for
     *logger_factory*, and `False` for *cache_logger_on_first_use*.

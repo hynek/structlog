@@ -8,10 +8,19 @@ The third digit is only for regressions.
 16.2.0 (UNRELEASED)
 -------------------
 
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- The default renderer is ``structlog.dev.ConsoleRenderer`` now if you don't configure ``structlog``.
+  Colors are used if available and human-friendly timestamps are prepended.
+  This is in line with our backward `compatibility policy <http://www.structlog.org/en/stable/backward-compatibility.html>`_ that explicitly excludes default settings.
+
+
 Changes:
 ^^^^^^^^
 
-*none*
+- Add *colors* argument to ``structlog.dev.ConsoleRenderer`` and make it the default renderer.
+  `#78 <https://github.com/hynek/structlog/pull/78>`_
 
 
 ----

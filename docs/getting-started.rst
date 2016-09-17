@@ -12,6 +12,10 @@ Installation
 
    $ pip install structlog
 
+If you'd like colorful output in development (you know you do!), install using::
+
+   $ pip install structlog[dev]
+
 
 Your First Log Entry
 --------------------
@@ -23,18 +27,22 @@ And indeed, the simplest possible usage looks like this:
 
    >>> import structlog
    >>> log = structlog.get_logger()
-   >>> log.msg('greeted', whom='world', more_than_a_string=[1, 2, 3])
-   whom='world' more_than_a_string=[1, 2, 3] event='greeted'
+   >>> log.msg("greeted", whom="world", more_than_a_string=[1, 2, 3])  # doctest: +SKIP
+   2016-09-17 10:13.45 greeted                        more_than_a_string=[1, 2, 3] whom='world'
 
 Here, ``structlog`` takes full advantage of its hopefully useful default settings:
 
 - Output is sent to `standard out`_ instead of exploding into the user's face.
   Yes, that seems a rather controversial attitude towards logging.
-- All keywords are formatted using :class:`structlog.processors.KeyValueRenderer`.
+- All keywords are formatted using :class:`structlog.dev.ConsoleRenderer`.
   That in turn uses `repr()`_ to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
+- If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's even rendered in nice :doc:`colors <development>`.
 
 It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
+
+.. note::
+   For brewity and to enable doctests, all further examples in ``structlog``\ 's documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
 
 There you go, structured logging!
 However, this alone wouldn't warrant its own package.
