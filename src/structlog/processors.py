@@ -198,7 +198,7 @@ class TimeStamper(object):
         You should let OS tools take care of timestamping.  See also
         :doc:`logging-best-practices`.
 
-    :param str format: strftime format string, or ``"iso"`` for `ISO 8601
+    :param str fmt: strftime format string, or ``"iso"`` for `ISO 8601
         <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
