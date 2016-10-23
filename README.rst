@@ -3,7 +3,7 @@ structlog: Structured Logging for Python
 ========================================
 
 .. image:: https://readthedocs.org/projects/structlog/badge/?version=stable
-   :target: http://structlog.readthedocs.io/en/stable/?badge=stable
+   :target: https://structlog.readthedocs.io/en/stable/?badge=stable
    :alt: Documentation Status
 
 .. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
