@@ -116,3 +116,15 @@ Advanced log aggregation and analysis tools like `logstash <https://www.elastic.
 
 More examples can be found in the :ref:`examples <processors-examples>` chapter.
 For a list of shipped processors, check out the :ref:`API documentation <procs>`.
+
+
+Third Party Packages
+--------------------
+
+Since processors are self-contained callables,
+it's easy to write your own and to share them in separate packages.
+The following processor packages are known to be currently available on PyPI:
+
+- `structlog-pretty <https://github.com/underyx/structlog-pretty>`_: Processors for prettier output -- a code syntax highlighter, JSON and XML prettifiers, a multiline string printer, and a numeric value rounder.
+
+Please feel free to submit a pull request to extend this list with *your* package!
