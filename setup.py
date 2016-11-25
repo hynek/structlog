@@ -48,6 +48,7 @@ def read(*parts):
     with codecs.open(os.path.join(HERE, *parts), "rb", "utf-8") as f:
         return f.read()
 
+
 try:
     PACKAGES
 except NameError:
