@@ -171,7 +171,7 @@ def configure(processors=None, wrapper_class=None, context_class=None,
 
 def configure_once(*args, **kw):
     """
-    Configures iff structlog isn't configured yet.
+    Configures if structlog isn't configured yet.
 
     It does *not* matter whether is was configured using :func:`configure`
     or :func:`configure_once` before.
