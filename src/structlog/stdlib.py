@@ -277,6 +277,7 @@ class PositionalArgumentsFormatter(object):
                 del event_dict['positional_args']
         return event_dict
 
+
 # Adapted from the stdlib
 
 CRITICAL = 50
