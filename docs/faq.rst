@@ -48,7 +48,7 @@ How can I make third party components log in JSON too?
               self._log = structlog.get_logger()
 
           def emit(self, record):
-              self._log.log(record.levelno, record.msg, name=record.name)
+              self._log.log(record.levelno, record.getMessage(), name=record.name)
 
       root_logger = logging.getLogger()
       root_logger.addHandler(StructlogHandler())
