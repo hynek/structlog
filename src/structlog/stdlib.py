@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function
 import logging
 
 from structlog._base import BoundLoggerBase
+from structlog._config import get_logger
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
 
@@ -103,8 +104,7 @@ class BoundLogger(BoundLoggerBase):
 
     fatal = critical
 
-    def _proxy_to_logger(self, method_name, event, *event_args,
-                         **event_kw):
+    def _proxy_to_logger(self, method_name, event, *event_args, **event_kw):
         """
         Propagate a method call to the wrapped logger.
 
@@ -114,6 +114,7 @@ class BoundLogger(BoundLoggerBase):
         """
         if event_args:
             event_kw['positional_args'] = event_args
+
         return super(BoundLogger, self)._proxy_to_logger(method_name,
                                                          event=event,
                                                          **event_kw)
@@ -194,6 +195,114 @@ class BoundLogger(BoundLoggerBase):
         return self._logger.getChild(suffix)
 
 
+class Handler(logging.Handler):
+    """
+    Feeds all events back into ``structlog``. Typical use-case is to let
+    third-party emit their logs through ``structlog``::
+
+        root_logger = logging.getLogger()
+        root_logger.addHandler(structlog.stdlib.Handler())
+
+    This should be sufficient to log directly to structlog. However, you may
+    notice that if you try to use the stdlib LoggerFactory with this Handler
+    (which you probably shouldn't be doing as it's better to output logs to
+    stdout/stderr), it will fail with an infinite recursion. It's actually
+    possible to use custom handlers using
+    :func:`structlog.stdlib.wrap_handler`.
+    """
+    def __init__(self):
+        super(Handler, self).__init__()
+        self._logger = get_logger()
+
+    def emit(self, record):
+        """
+        Emit the log record to ``structlog``.
+
+        :param record: the log record.
+        :type record: `logging.LogRecord`
+        """
+        kwargs = {}
+        if record.exc_info:
+            kwargs['exc_info'] = record.exc_info
+
+        self._logger.log(record.levelno, record.getMessage(), name=record.name,
+                         **kwargs)
+
+
+class _HandlerWrapper(logging.Handler):
+    """
+    Wrapper class that will help you make your custom handlers pass through
+    structlog. See :func:`structlog.stdlib.wrap_handler`.
+
+    :param handler: The handler to which structlog logs should be forwarded.
+        For example, if you want to forward to a StreamHandler, you can set
+        this to `logging.StreamHandler()`.
+    :type handler: `logging.Handler`
+    """
+    def __init__(self, handler):
+        super(_HandlerWrapper, self).__init__()
+        self._structlog_handler = Handler()
+        self._wrapped_handler = handler
+
+        # self._flush = False
+
+    def emit(self, record):
+        """
+        Emit the log record to ``structlog`` or to wrapped handler.
+
+        :param record: the log record.
+        :type record: `logging.LogRecord`
+        """
+        # Not sure this section is necessary. Commenting it for now.
+        # if self._flush:
+        # We are recursively logging, which means the log has been already
+        # been formatted by structlog. We have to forward the formatted
+        # record to the wrapped handler.
+        #     self._wrapper_handler.emit(record)
+        #     return
+        #
+        # self._flush = True
+        self._structlog_handler.emit(record)
+        # self._flush = False
+
+    @property
+    def wrapped_handler(self):
+        """
+        Accessor to the wrapped handler.
+
+        :return The wrapped handler
+        :type `logging.Handler`
+        """
+        return self._wrapped_handler
+
+
+def wrap_handler(handler):
+    """
+    Helper function that will let you use vanilla log handlers with
+    ``structlog``.
+
+    Example::
+
+        StructlogHandler = structlog.stdlib.wrap_handler(SomeHandler())
+        root_logger = logging.getLogger()
+        root_logger.addHandler(WrappedHandler())
+
+    You may want to configure your LoggerFactory to emit its records directly
+    to this handler then::
+
+        structlog.configure(
+            logger_factory=structlog.stdlib.LoggerFactory(
+                handlers=root_logger.handlers
+            )
+        )
+
+    :param handler: The handler to wrap. For example, if you want to forward to
+        a StreamHandler, you can set this to `logging.StreamHandler()`.
+    :type handler: `logging.Handler`
+    """
+    return lambda: _HandlerWrapper(handler)
+
+
 class LoggerFactory(object):
     """
     Build a standard library logger when an *instance* is called.
@@ -210,10 +319,28 @@ class LoggerFactory(object):
         applications you'll want to set it to
         ``['venusian', 'pyramid.config']``.
     :type ignore_frame_names: `list` of `str`
+    :param handlers: Allows to override the handlers of loggers generated by
+        this factory. If None, handlers will not be overridden. Note that if
+        you set this parameter, generated loggers will no longer propagate to
+        parent loggers.
+    :type handlers: collections.Iterable
     """
-    def __init__(self, ignore_frame_names=None):
+    def __init__(self, ignore_frame_names=None, handlers=None):
         self._ignore = ignore_frame_names
+        self._handlers = handlers
         logging.setLoggerClass(_FixedFindCallerLogger)
+
+    def _override_handlers(self, logger):
+        """
+        Override the logger handlers with the ones specified in this factory.
+        In case one of the loggers is a _WrappedLogger, it forwards directly to
+        the wrapped logger since we don't need to go through all this again.
+        """
+        for handler in self._handlers:
+            if isinstance(handler, _HandlerWrapper):
+                handler = handler.wrapped_handler
+
+            logger.addHandler(handler)
 
     def __call__(self, *args):
         """
@@ -231,13 +358,20 @@ class LoggerFactory(object):
             Added support for optional positional arguments.  Using the first
             one for naming the constructed logger.
         """
-        if args:
-            return logging.getLogger(args[0])
+        try:
+            name = args[0]
+        except IndexError:
+            # We skip all frames that originate from within structlog or one of
+            # the configured names.
+            _, name = _find_first_app_frame_and_name(self._ignore)
 
-        # We skip all frames that originate from within structlog or one of the
-        # configured names.
-        _, name = _find_first_app_frame_and_name(self._ignore)
-        return logging.getLogger(name)
+        logger = logging.getLogger(name)
+
+        if self._handlers is not None:
+            logger.propagate = False
+            self._override_handlers(logger)
+
+        return logger
 
 
 class PositionalArgumentsFormatter(object):
