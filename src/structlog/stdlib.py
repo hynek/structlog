@@ -231,8 +231,9 @@ class Handler(logging.Handler):
 
 class _HandlerWrapper(logging.Handler):
     """
-    Wrapper class that will help you make your custom handlers pass through
-    structlog. See :func:`structlog.stdlib.wrap_handler`.
+    Wrapper class that will make structlog logs pass through wrapped handler.
+
+    See :func:`structlog.stdlib.wrap_handler`.
 
     :param handler: The handler to which structlog logs should be forwarded.
         For example, if you want to forward to a StreamHandler, you can set
@@ -244,8 +245,6 @@ class _HandlerWrapper(logging.Handler):
         self._structlog_handler = Handler()
         self._wrapped_handler = handler
 
-        # self._flush = False
-
     def emit(self, record):
         """
         Emit the log record to ``structlog`` or to wrapped handler.
@@ -253,17 +252,7 @@ class _HandlerWrapper(logging.Handler):
         :param record: the log record.
         :type record: `logging.LogRecord`
         """
-        # Not sure this section is necessary. Commenting it for now.
-        # if self._flush:
-        # We are recursively logging, which means the log has been already
-        # been formatted by structlog. We have to forward the formatted
-        # record to the wrapped handler.
-        #     self._wrapper_handler.emit(record)
-        #     return
-        #
-        # self._flush = True
         self._structlog_handler.emit(record)
-        # self._flush = False
 
     @property
     def wrapped_handler(self):
@@ -285,7 +274,7 @@ def wrap_handler(handler):
 
         StructlogHandler = structlog.stdlib.wrap_handler(SomeHandler())
         root_logger = logging.getLogger()
-        root_logger.addHandler(WrappedHandler())
+        root_logger.addHandler(StructlogHandler())
 
     You may want to configure your LoggerFactory to emit its records directly
     to this handler then::
@@ -334,7 +323,8 @@ class LoggerFactory(object):
         """
         Override the logger handlers with the ones specified in this factory.
         In case one of the loggers is a _WrappedLogger, it forwards directly to
-        the wrapped logger since we don't need to go through all this again.
+        the wrapped logger since we don't structlog logs to be recursively
+        processed.
         """
         for handler in self._handlers:
             if isinstance(handler, _HandlerWrapper):
@@ -368,7 +358,9 @@ class LoggerFactory(object):
         logger = logging.getLogger(name)
 
         if self._handlers is not None:
-            logger.propagate = False
+            logger.propagate = False  # We don't propagate structlog logs to
+                                      # prevent them from being infinitely
+                                      # processed by a parent _WrappedLogger.
             self._override_handlers(logger)
 
         return logger
