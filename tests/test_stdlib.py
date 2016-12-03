@@ -156,7 +156,8 @@ def log_record():
 class TestHandler(object):
     def test_logs_are_emitted_to_structlog(self, log_record, monkeypatch):
         bound_logger = BoundLogger(ReturnLogger(), [return_method_name], {})
-        monkeypatch.setattr("structlog.stdlib.get_logger", lambda: bound_logger)
+        monkeypatch.setattr("structlog.stdlib.get_logger",
+                            lambda: bound_logger)
 
         log_stub = call_recorder(lambda *args, **kw: None)
         monkeypatch.setattr(bound_logger, 'log', log_stub)
@@ -190,7 +191,8 @@ class TestWrapHandler(object):
         )
 
         logger.error(u'foo')
-        get_logger('TestWrapHandler.test_wrap_handler_emit.child').error(u'bar')
+        get_logger('TestWrapHandler.test_wrap_handler_emit.child')\
+            .error(u'bar')
 
         logs = stream.getvalue()
 

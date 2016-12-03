@@ -358,9 +358,9 @@ class LoggerFactory(object):
         logger = logging.getLogger(name)
 
         if self._handlers is not None:
-            logger.propagate = False  # We don't propagate structlog logs to
-                                      # prevent them from being infinitely
-                                      # processed by a parent _WrappedLogger.
+            # We don't propagate structlog logs to prevent them from being
+            # infinitely processed by a parent _WrappedLogger.
+            logger.propagate = False
             self._override_handlers(logger)
 
         return logger
