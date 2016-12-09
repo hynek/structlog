@@ -99,15 +99,22 @@ class ConsoleRenderer(object):
 
     :param int pad_event: Pad the event to this many characters.
     :param bool colors: Use colors for a nicer output.
+    :param bool repr_native_str: When ``True``, :func:`repr()` is also applied
+        to native strings (i.e. unicode on Python 3 and bytes on Python 2).
+        Setting this to ``False`` is useful if you want to have human-readable
+        non-ASCII output on Python 2.  The `event` key is *never*
+        :func:`repr()` -ed.
 
     Requires the colorama_ package if *colors* is ``True``.
 
     .. _colorama: https://pypi.org/project/colorama/
 
     .. versionadded:: 16.0
-    .. versionadded:: 16.1 *colors* argument
+    .. versionadded:: 16.1 *colors*
+    .. versionadded:: 16.2 *repr_native_str*
     """
-    def __init__(self, pad_event=_EVENT_WIDTH, colors=True):
+    def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
+                 repr_native_str=False):
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -141,6 +148,16 @@ class ConsoleRenderer(object):
             self._level_to_color.keys(),
             key=lambda e: len(e)
         ))
+
+        if repr_native_str is True:
+            self._repr = repr
+        else:
+            def _repr(inst):
+                if isinstance(inst, str):
+                    return inst
+                else:
+                    return repr(inst)
+            self._repr = _repr
 
     def __call__(self, _, __, event_dict):
         sio = StringIO()
@@ -180,7 +197,7 @@ class ConsoleRenderer(object):
             " ".join(
                 self._styles.kv_key + key + self._styles.reset +
                 "=" +
-                self._styles.kv_value + repr(event_dict[key]) +
+                self._styles.kv_value + self._repr(event_dict[key]) +
                 self._styles.reset
                 for key in sorted(event_dict.keys())
             )

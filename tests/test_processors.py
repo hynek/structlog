@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
@@ -10,6 +12,7 @@ import sys
 
 import pytest
 import simplejson
+import six
 
 try:
     import rapidjson
@@ -125,6 +128,21 @@ class TestKeyValueRenderer(object):
         """
         rv = KeyValueRenderer()(None, None, event_dict)
         assert isinstance(rv, str)
+
+    @pytest.mark.parametrize("rns", [True, False])
+    def test_repr_native_str(self, rns):
+        """
+        repr_native_str=False doesn't repr on native strings.
+        """
+        rv = KeyValueRenderer(repr_native_str=rns)(None, None, {
+            "event": "哈", "key": 42, "key2": "哈",
+        })
+
+        cnt = rv.count("哈")
+        if rns and six.PY2:
+            assert 0 == cnt
+        else:
+            assert 2 == cnt
 
 
 class TestJSONRenderer(object):

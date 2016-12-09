@@ -279,7 +279,6 @@ class PositionalArgumentsFormatter(object):
 
 
 # Adapted from the stdlib
-
 CRITICAL = 50
 FATAL = CRITICAL
 ERROR = 40

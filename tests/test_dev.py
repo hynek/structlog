@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
@@ -5,6 +7,7 @@
 from __future__ import absolute_import, division, print_function
 
 import pytest
+import six
 
 from structlog import dev
 
@@ -94,7 +97,7 @@ class TestConsoleRenderer(object):
             styles.reset + "] " +
             padded +
             styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "'bar'" + styles.reset
+            styles.kv_value + "bar" + styles.reset
         ) == rv
 
     def test_logger_name(self, cr, styles, padded):
@@ -122,10 +125,10 @@ class TestConsoleRenderer(object):
         assert (
             padded +
             styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "'bar'" +
+            styles.kv_value + "bar" +
             styles.reset + " " +
             styles.kv_key + "key" + styles.reset + "=" +
-            styles.kv_value + "'value'" +
+            styles.kv_value + "value" +
             styles.reset
         ) == rv
 
@@ -172,7 +175,7 @@ class TestConsoleRenderer(object):
             dev._pad("test", 42) +
             styles.reset + " " +
             styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "'bar'" + styles.reset
+            styles.kv_value + "bar" + styles.reset
         ) == rv
 
     def test_everything(self, cr, styles, padded):
@@ -203,10 +206,10 @@ class TestConsoleRenderer(object):
             "some_module" +
             styles.reset + "] " +
             styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "'bar'" +
+            styles.kv_value + "bar" +
             styles.reset + " " +
             styles.kv_key + "key" + styles.reset + "=" +
-            styles.kv_value + "'value'" +
+            styles.kv_value + "value" +
             styles.reset +
             "\n" + stack + "\n\n" + "=" * 79 + "\n" +
             "\n" + exc
@@ -223,4 +226,22 @@ class TestConsoleRenderer(object):
         })
 
         assert dev._PlainStyles is plain_cr._styles
-        assert "[info     ] event                          foo='bar'" == rv
+        assert "[info     ] event                          foo=bar" == rv
+
+    @pytest.mark.parametrize("rns", [True, False])
+    def test_repr_native_str(self, rns):
+        """
+        repr_native_str=False doesn't repr on native strings.  "event" is
+        never repr'ed.
+        """
+        rv = dev.ConsoleRenderer(
+            colors=False, repr_native_str=rns)(None, None, {
+                "event": "哈", "key": 42, "key2": "哈",
+            }
+        )
+
+        cnt = rv.count("哈")
+        if rns and six.PY2:
+            assert 1 == cnt
+        else:
+            assert 2 == cnt

@@ -32,15 +32,19 @@ class KeyValueRenderer(object):
     :param list key_order: List of keys that should be rendered in this exact
         order.  Missing keys will be rendered as ``None``, extra keys depending
         on *sort_keys* and the dict class.
-    :param bool drop_missing: When True, extra keys in *key_order* will be
+    :param bool drop_missing: When ``True``, extra keys in *key_order* will be
         dropped rather than rendered as ``None``.
+    :param bool repr_native_str: When ``True``, :func:`repr()` is also applied
+        to native strings (i.e. unicode on Python 3 and bytes on Python 2).
+        Setting this to ``False`` is useful if you want to have human-readable
+        non-ASCII output on Python 2.
 
-    .. versionadded:: 0.2.0
-        *key_order*
-    .. versionadded:: 16.1.0
-        *drop_missing*
+    .. versionadded:: 0.2.0 *key_order*
+    .. versionadded:: 16.1.0 *drop_missing*
+    .. versionadded:: 16.2.0 *repr_native_str*
     """
-    def __init__(self, sort_keys=False, key_order=None, drop_missing=False):
+    def __init__(self, sort_keys=False, key_order=None, drop_missing=False,
+                 repr_native_str=True):
         # Use an optimized version for each case.
         if key_order and sort_keys:
             def ordered_items(event_dict):
@@ -68,8 +72,18 @@ class KeyValueRenderer(object):
 
         self._ordered_items = ordered_items
 
+        if repr_native_str is True:
+            self._repr = repr
+        else:
+            def _repr(inst):
+                if isinstance(inst, str):
+                    return inst
+                else:
+                    return repr(inst)
+            self._repr = _repr
+
     def __call__(self, _, __, event_dict):
-        return ' '.join(k + '=' + repr(v)
+        return ' '.join(k + '=' + self._repr(v)
                         for k, v in self._ordered_items(event_dict))
 
 
