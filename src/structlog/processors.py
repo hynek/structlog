@@ -89,22 +89,27 @@ class KeyValueRenderer(object):
 
 class LogRecordCompatibleDictRenderer(object):
     """
-    Render the `event_dict` as a stdlib logging compatible dict with "msg" and "extra" for constructing LogRecord.
+    Render the `event_dict` as a stdlib logging compatible 
+    dict with "msg" and "extra" for constructing LogRecord.
 
     :param add_extra_event_dict: if True - add `event_dict` as extra argument`.
     :type add_extra_event_dict: `bool`
-    :param add_event_dict_with_key: add `event_dict` as `extra[add_event_dict_with_key]` argument`.
+    :param add_event_dict_with_key: add `event_dict` as
+        `extra[add_event_dict_with_key]` argument`.
     :type add_event_dict_with_key: `str`
 
-    Just put it in the processor chain as last element if you using stdlib logging.
+    Just put it in the processor chain as last element 
+    if you using stdlib logging.
 
     Typical use-case is to use ``structlog`` as "frontend" for logging
-    and then stdlib logging handlers and formatters as backend that actually put log message with data somewhere
+    and then stdlib logging handlers and formatters as backend 
+    that actually put log message with data somewhere
 
     .. versionadded:: 16.2.0
     """
 
-    def __init__(self, add_extra_event_dict=False, add_event_dict_with_key=None):
+    def __init__(self, add_extra_event_dict=False,
+                 add_event_dict_with_key=None):
         self.add_extra_event_dict = add_extra_event_dict
         self.add_event_dict_with_key = add_event_dict_with_key
 
