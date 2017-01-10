@@ -5,7 +5,7 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
-16.2.0 (UNRELEASED)
+17.1.0 (UNRELEASED)
 -------------------
 
 Backward-incompatible changes:
@@ -19,6 +19,11 @@ Backward-incompatible changes:
 Changes:
 ^^^^^^^^
 
+- Added ``structlog.stdlib.render_to_log_kwargs()``.
+  This allows to let standard library's ``logging`` do all formatting.
+  It gives you much more consistently formatted logs if you have mixed ``structlog`` and ``logging`` output.
+  Have a look at the updated `standard library chapter <http://www.structlog.org/en/stable/standard-library.html>`_ on how to use it!
+  `#98 <https://github.com/hynek/structlog/issues/98>`_
 - UNIX epoch timestamps from ``structlog.processors.TimeStamper`` are more precise now.
 - Add *repr_native_str* to ``structlog.processors.KeyValueRenderer`` and ``structlog.dev.ConsoleRenderer``.
   This allows for human-readable non-ASCII output on Python 2 (``repr()`` on Python 2 haves like ``ascii()`` on Python 3 in that regard).
@@ -26,7 +31,7 @@ Changes:
   `#94 <https://github.com/hynek/structlog/issues/94>`_
 - Add *colors* argument to ``structlog.dev.ConsoleRenderer`` and make it the default renderer.
   `#78 <https://github.com/hynek/structlog/pull/78>`_
-- Fix bug with Python 3 and ``structlog.stdlib.log`` function. Error log level was not reproductible and was logged as exception
+- Fix bug with Python 3 and ``structlog.stdlib.BoundLogger.log()``. Error log level was not reproductible and was logged as exception
   one time out of two.
   `#92 <https://github.com/hynek/structlog/pull/92>`_
 

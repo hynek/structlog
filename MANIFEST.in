@@ -1,4 +1,4 @@
-include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc
+include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py
 include *.rst
 include *.txt
 include .travis.yml

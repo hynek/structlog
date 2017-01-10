@@ -178,6 +178,8 @@ API Reference
 .. autoclass:: LoggerFactory
    :members: __call__
 
+.. autofunction:: render_to_log_kwargs
+
 .. autofunction:: filter_by_level
 
 .. autofunction:: add_log_level

@@ -348,3 +348,20 @@ def add_logger_name(logger, method_name, event_dict):
     """
     event_dict['logger'] = logger.name
     return event_dict
+
+
+def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
+    """
+    Render `event_dict` into keyword arguments for :func:`logging.log`.
+
+    The `event` field is translated into `msg` and the rest of the `event_dict`
+    is added as `extra`.
+
+    This allows you to defer formatting to :mod:`logging`.
+
+    .. versionadded:: 17.1.0
+    """
+    return {
+        "msg": event_dict.pop("event"),
+        "extra": event_dict,
+    }

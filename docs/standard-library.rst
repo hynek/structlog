@@ -1,5 +1,5 @@
-Python Standard Library
-=======================
+Standard Library Logging
+========================
 
 Ideally, ``structlog`` should be able to be used as a drop-in replacement for standard library's :mod:`logging` by wrapping it.
 In other words, you should be able to replace your call to :func:`logging.getLogger` by a call to :func:`structlog.get_logger` and things should keep working as before (if ``structlog`` is configured right, see :ref:`stdlib-config` below).
@@ -24,6 +24,10 @@ Processors
 
 ``structlog`` comes with a few standard library-specific processors:
 
+:func:`~structlog.stdlib.render_to_log_kwargs`:
+   Renders the event dictionary into keyword arguments for :func:`logging.log` that attaches everything except the `event` field to the *extra* argument.
+   This is useful if you want to render your log entries entirely within :mod:`logging`.
+
 :func:`~structlog.stdlib.filter_by_level`:
    Checks the log entry's log level against the configuration of standard library's logging.
    Log entries below the threshold get silently dropped.
@@ -41,8 +45,64 @@ Processors
 
 .. _stdlib-config:
 
-Suggested Configuration
------------------------
+Suggested Configurations
+------------------------
+
+Depending where you'd like to do your formatting, you can take one of two approaches:
+
+
+Rendering Within :mod:`logging`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    import structlog
+
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
+            structlog.stdlib.render_to_log_kwargs,
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
+
+Now you have the event dict available within each log record.
+If you want all your log entries (i.e. also those not from your app/``structlog``) to be formatted as JSON, you can use the `python-json-logger library <https://github.com/madzak/python-json-logger>`_:
+
+.. code-block:: python
+
+    import logging
+    import sys
+
+    from pythonjsonlogger import jsonlogger
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(jsonlogger.JsonFormatter())
+    root_logger = logging.getLogger()
+    root_logger.addHandler(handler)
+
+Now both ``structlog`` and ``logging`` will emit JSON logs:
+
+.. code-block:: pycon
+
+    >>> structlog.get_logger("test").warning("hello")
+    {"message": "hello", "logger": "test", "level": "warning"}
+
+    >>> logging.getLogger("test").warning("hello")
+    {"message": "hello"}
+
+
+Rendering Within ``structlog``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A basic configuration to output structured logs in JSON format looks like this:
 
@@ -73,6 +133,7 @@ A basic configuration to output structured logs in JSON format looks like this:
 To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the ``logging`` module like this::
 
   import logging
+  import sys
 
   logging.basicConfig(
       format="%(message)s",
@@ -80,8 +141,14 @@ To make your program behave like a proper `12 factor app`_ that outputs only JSO
       level=logging.INFO,
   )
 
-If you plan to hook up the logging output to `logstash`, as suggested in :doc:`logging-best-practices`, the simplest approach is to configure ``logstash-forwarder`` to pick up the output from your application.
-To achieve this, configure your process supervisor (such as ``runit`` or ``supervisord``) to store the output in a file, and have ``logstash-forwarder`` monitor that file to ship it to the central log collection server.
-This approach also applies to other centralized logging solutions.
+In this case *only* your own logs are formatted as JSON:
+
+.. code-block:: pycon
+
+    >>> structlog.get_logger("test").warning("hello")
+    {"event": "hello", "logger": "test", "level": "warning", "timestamp": "2017-03-06T07:39:09.518720Z"}
+
+    >>> logging.getLogger("test").warning("hello")
+    hello
 
 .. _`12 factor app`: http://12factor.net/logs

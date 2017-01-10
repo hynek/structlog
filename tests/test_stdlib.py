@@ -19,10 +19,11 @@ from structlog.stdlib import (
     LoggerFactory,
     PositionalArgumentsFormatter,
     WARN,
-    filter_by_level,
+    _FixedFindCallerLogger,
     add_log_level,
     add_logger_name,
-    _FixedFindCallerLogger,
+    render_to_log_kwargs,
+    filter_by_level,
 )
 
 from .additional_frame import additional_frame
@@ -283,7 +284,26 @@ class TestAddLoggerName(object):
         """
         The logger name is added to the event dict.
         """
-        name = 'sample-name'
+        name = "sample-name"
         logger = logging.getLogger(name)
         event_dict = add_logger_name(logger, None, {})
-        assert name == event_dict['logger']
+        assert name == event_dict["logger"]
+
+
+class TestRenderToLogKW(object):
+    def test_default(self):
+        """
+        Translates `event` to `msg` and handles otherwise empty `event_dict`s.
+        """
+        d = render_to_log_kwargs(None, None, {"event": "message"})
+
+        assert {"msg": "message", "extra": {}} == d
+
+    def test_add_extra_event_dict(self, event_dict):
+        """
+        Adds all remaining data from `event_dict` into `extra`.
+        """
+        event_dict["event"] = "message"
+        d = render_to_log_kwargs(None, None, event_dict)
+
+        assert {"msg": "message", "extra": event_dict} == d

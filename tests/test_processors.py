@@ -20,7 +20,6 @@ except ImportError:
     rapidjson = None
 
 from freezegun import freeze_time
-from six.moves import cStringIO as StringIO
 
 import structlog
 
@@ -39,20 +38,6 @@ from structlog.processors import (
 from structlog.threadlocal import wrap_dict
 
 from .utils import py3_only
-
-
-@pytest.fixture
-def sio():
-    return StringIO()
-
-
-@pytest.fixture
-def event_dict():
-    class A(object):
-        def __repr__(self):
-            return '<A(\o/)>'
-
-    return {'a': A(), 'b': [3, 4], 'x': 7, 'y': 'test', 'z': (1, 2)}
 
 
 class TestKeyValueRenderer(object):
