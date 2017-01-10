@@ -162,7 +162,8 @@ class TestLogRecordDictRenderer(object):
         Add all data from event_dict into extra.
         """
         event_dict['event'] = 'e'
-        d = LogRecordCompatibleDictRenderer(add_extra_event_dict=True)(None, None, event_dict)
+        d = LogRecordCompatibleDictRenderer(
+            add_extra_event_dict=True)(None, None, event_dict)
         assert (
             {'msg': 'e', 'extra': event_dict} == d
         )
@@ -172,17 +173,21 @@ class TestLogRecordDictRenderer(object):
         Add all data from event_dict into extra with specified key.
         """
         event_dict['event'] = 'e'
-        d = LogRecordCompatibleDictRenderer(add_event_dict_with_key='test')(None, None, event_dict)
+        d = LogRecordCompatibleDictRenderer(
+            add_event_dict_with_key='test')(None, None, event_dict)
         assert (
             {'msg': 'e', 'extra': {'test': event_dict}} == d
         )
 
-    def test_add_extra_event_dict_and_add_event_dict_with_key(self, event_dict):
+    def test_add_extra_event_dict_add_event_dict_with_key(self, event_dict):
         """
-        Renders a predictable dict with data from event_dict in extra itself and with specified key.
+        Renders a predictable dict with data from event_dict in extra itself
+        and with specified key.
         """
         event_dict["event"] = "e"
-        d = LogRecordCompatibleDictRenderer(add_extra_event_dict=True, add_event_dict_with_key="test")(None, None, event_dict)
+        d = LogRecordCompatibleDictRenderer(
+            add_extra_event_dict=True,
+            add_event_dict_with_key="test")(None, None, event_dict)
         event_dict["test"] = event_dict.copy()
         assert (
             {"msg": "e", "extra": event_dict} == d
