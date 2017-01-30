@@ -80,7 +80,7 @@ API Reference
    >>> with tmp_bind(logger, x=5) as tmp_logger:
    ...     logger = logger.bind(y=3)
    ...     tmp_logger.msg("event")
-   y=3 x=5 event='event'
+   x=5 y=3 event='event'
    >>> logger.msg("event")
    event='event'
 

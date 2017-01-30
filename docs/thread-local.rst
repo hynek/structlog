@@ -101,7 +101,7 @@ In order to be able to bind values temporarily to a logger, :mod:`structlog.thre
    x=42 event='event!'
    >>> with tmp_bind(log, x=23, y="foo") as tmp_log:
    ...     tmp_log.msg("another event!")
-   y='foo' x=23 event='another event!'
+   x=23 y='foo' event='another event!'
    >>> log.msg("one last event!")
    x=42 event='one last event!'
 
