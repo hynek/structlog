@@ -168,7 +168,7 @@ class ConsoleRenderer(object):
                 # can be a number if timestamp is UNIXy
                 self._styles.timestamp + str(ts) + self._styles.reset + " "
             )
-        level = event_dict.pop("level",  None)
+        level = event_dict.pop("level", None)
         if level is not None:
             sio.write(
                 "[" + self._level_to_color[level] +
@@ -176,7 +176,7 @@ class ConsoleRenderer(object):
                 self._styles.reset + "] "
             )
 
-        event = event_dict.pop("event")
+        event = self._repr(event_dict.pop("event", "--"))
         if event_dict:
             event = _pad(event, self._pad_event) + self._styles.reset + " "
         else:

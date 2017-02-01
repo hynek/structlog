@@ -178,6 +178,21 @@ class TestConsoleRenderer(object):
             styles.kv_value + "bar" + styles.reset
         ) == rv
 
+    def test_missing_event(self, cr, styles, padded):
+        """
+        ConsoleRenderer use with a event_dict which has no `event` key
+        """
+        cr(None, None, {"no_event": "test"})
+        # assert no KeyError is raised
+
+    def test_event_not_a_str(self, cr, styles, padded):
+        """
+        ConsoleRenderer use with a event_dict
+        where the value of the `event` key no not a string
+        """
+        cr(None, None, {"event": 42})
+        # assert no TypeError is raised
+
     def test_everything(self, cr, styles, padded):
         """
         Put all cases together.
