@@ -176,7 +176,8 @@ class ConsoleRenderer(object):
                 self._styles.reset + "] "
             )
 
-        event = self._repr(event_dict.pop("event", "--"))
+        # event = self._repr(event_dict.pop("event", "--"))
+        event = str(event_dict.pop("event", "--"))
         if event_dict:
             event = _pad(event, self._pad_event) + self._styles.reset + " "
         else:
