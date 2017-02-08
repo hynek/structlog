@@ -25,6 +25,9 @@ Changes:
   `#94 <https://github.com/hynek/structlog/issues/94>`_
 - Add *colors* argument to ``structlog.dev.ConsoleRenderer`` and make it the default renderer.
   `#78 <https://github.com/hynek/structlog/pull/78>`_
+- Fix bug with Python 3 and ``structlog.stdlib.log`` function. Error log level was not reproductible and was logged as exception
+  one time out of two.
+  `#92 <https://github.com/hynek/structlog/pull/92>`_
 
 
 ----

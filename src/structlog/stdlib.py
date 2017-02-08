@@ -301,7 +301,7 @@ _NAME_TO_LEVEL = {
 
 _LEVEL_TO_NAME = dict(
     (v, k) for k, v in _NAME_TO_LEVEL.items()
-    if k not in ("warn", "notset")
+    if k not in ("warn", "exception", "notset", )
 )
 
 
