@@ -8,7 +8,6 @@ Processors useful regardless of the logging framework.
 
 from __future__ import absolute_import, division, print_function
 
-import calendar
 import datetime
 import json
 import operator
@@ -225,7 +224,7 @@ class TimeStamper(object):
         now_method = getattr(datetime.datetime, 'utcnow' if utc else 'now')
         if fmt is None:
             def stamper(self, _, __, event_dict):
-                event_dict[key] = calendar.timegm(time.gmtime())
+                event_dict[key] = time.time()
                 return event_dict
         elif fmt.upper() == 'ISO':
             if utc:

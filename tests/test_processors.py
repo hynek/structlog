@@ -211,10 +211,13 @@ class TestTimeStamper(object):
         assert 'UNIX timestamps are always UTC.' == e.value.args[0]
 
     def test_insertsUTCUNIXTimestampByDefault(self):
+        """
+        Per default a float UNIX timestamp is used.
+        """
         ts = TimeStamper()
         d = ts(None, None, {})
-        # freezegun doesn't work with time.gmtime :(
-        assert isinstance(d['timestamp'], int)
+        # freezegun doesn't work with time.time. :(
+        assert isinstance(d['timestamp'], float)
 
     @freeze_time('1980-03-25 16:00:00')
     def test_local(self):
