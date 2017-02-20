@@ -62,7 +62,7 @@ That allows for simple but powerful data manipulation:
 
    def timestamper(logger, log_method, event_dict):
        """Add a timestamp to each log entry."""
-       event_dict["timestamp"] = calendar.timegm(time.gmtime())
+       event_dict["timestamp"] = time.time()
        return event_dict
 
 There are `plenty of processors <http://www.structlog.org/en/stable/api.html#module-structlog.processors>`_ for most common tasks coming with ``structlog``:
