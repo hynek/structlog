@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import io
 import os
 
 import logging
@@ -11,6 +12,7 @@ import logging
 import pytest
 from pretend import call_recorder
 
+from structlog._config import get_logger, configure
 from structlog._loggers import ReturnLogger
 from structlog.exceptions import DropEvent
 from structlog.stdlib import (
@@ -23,21 +25,12 @@ from structlog.stdlib import (
     add_log_level,
     add_logger_name,
     _FixedFindCallerLogger,
+    Handler,
+    wrap_handler,
 )
 
 from .additional_frame import additional_frame
 from .utils import py3_only
-
-
-def build_bl(logger=None, processors=None, context=None):
-    """
-    Convenience function to build BoundLogger with sane defaults.
-    """
-    return BoundLogger(
-        logger or ReturnLogger(),
-        processors,
-        {}
-    )
 
 
 def return_method_name(_, method_name, __):
@@ -117,6 +110,93 @@ class TestLoggerFactory(object):
         """
         l = LoggerFactory()('foo')
         assert 'foo' == l.name
+
+    def test_specified_handlers_are_used(self):
+        """
+        Assert that LoggerFactory uses provided handlers.
+        """
+        stream1 = io.StringIO()
+        stream2 = io.StringIO()
+        h1 = logging.StreamHandler(stream1)
+        h2 = logging.StreamHandler(stream2)
+        logger = LoggerFactory(handlers=[h1, h2])()
+        logger.error(u'foo')
+        assert stream1.getvalue() == u'foo\n'
+        assert stream2.getvalue() == u'foo\n'
+
+    def test_logs_are_not_propagated_when_handlers_are_specified(self):
+        """
+        Assert that LoggerFactory does not propagate it's handlers if
+        overridden. This is to prevent multiple processing of the log.
+        """
+        parent_logger = logging.getLogger(
+            'TestLoggerFactory.test_provided_handlers_are_not_propagated'
+        )
+        stream = io.StringIO()
+        handler = logging.StreamHandler(stream)
+        parent_logger = parent_logger.addHandler(handler)
+
+        child_logger = LoggerFactory(handlers=[logging.NullHandler()])(
+            'TestLoggerFactory.test_provided_handlers_are_not_propagated.child'
+        )
+        child_logger.error('foo')
+
+        assert stream.getvalue() == ''
+
+
+@pytest.fixture
+def log_record():
+    """
+    Returns a LogRecord.
+    """
+    return logging.LogRecord('fixture_log_record', logging.DEBUG, __file__, 42,
+                             'foo', (), {'foo': 'bar'})
+
+
+class TestHandler(object):
+    def test_logs_are_emitted_to_structlog(self, log_record, monkeypatch):
+        bound_logger = BoundLogger(ReturnLogger(), [return_method_name], {})
+        monkeypatch.setattr("structlog.stdlib.get_logger",
+                            lambda: bound_logger)
+
+        log_stub = call_recorder(lambda *args, **kw: None)
+        monkeypatch.setattr(bound_logger, 'log', log_stub)
+
+        handler = Handler()
+        handler.emit(log_record)
+
+        log_stub_call_args = log_stub.calls[0].args
+        log_stub_call_kwargs = log_stub.calls[0].kwargs
+        assert log_stub_call_args[0] == logging.DEBUG
+        assert log_stub_call_args[1] == log_record.getMessage()
+        assert log_stub_call_kwargs['name'] == 'fixture_log_record'
+        assert log_stub_call_kwargs['exc_info'] == {'foo': 'bar'}
+
+
+class TestWrapHandler(object):
+    def test_wrap_handler_emit(self, log_record, monkeypatch):
+        def processor(_, __, event_dict):
+            return event_dict['event']
+
+        stream = io.StringIO()
+        wrapped_handler = logging.StreamHandler(stream)
+        handler = wrap_handler(wrapped_handler)()
+        logger = logging.getLogger('TestWrapHandler.test_wrap_handler_emit')
+        logger.addHandler(handler)
+
+        configure(
+            processors=[processor],
+            wrapper_class=BoundLogger,
+            logger_factory=LoggerFactory(handlers=logger.handlers)
+        )
+
+        logger.error(u'foo')
+        get_logger('TestWrapHandler.test_wrap_handler_emit.child')\
+            .error(u'bar')
+
+        logs = stream.getvalue()
+
+        assert logs == 'foo\nbar\n'
 
 
 class TestFilterByLevel(object):
