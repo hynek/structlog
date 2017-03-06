@@ -119,7 +119,7 @@ class TestProcessing(object):
 
     def test_last_processor_returns_dict(self):
         """
-        If the final processor returns a dict, ``(), the_dict`` is returnend.
+        If the final processor returns a dict, ``(), the_dict`` is returned.
         """
         logger = stub(msg=lambda *args, **kw: (args, kw))
         b = build_bl(logger, processors=[lambda *_: {'event': 'foo'}])
@@ -145,6 +145,10 @@ class TestProcessing(object):
 
 class TestProxying(object):
     def test_processor_raising_DropEvent_silently_aborts_chain(self, capsys):
+        """
+        If a processor raises DropEvent, the chain is aborted and nothing is
+        proxied to the logger.
+        """
         b = build_bl(processors=[raiser(DropEvent), raiser(ValueError)])
-        b._proxy_to_logger('', None, x=5)
-        assert (('', '') == capsys.readouterr())
+        b._proxy_to_logger("", None, x=5)
+        assert (("", "") == capsys.readouterr())
