@@ -431,7 +431,7 @@ class ProcessorFormatter(logging.Formatter):
         The result is later unpacked by :class:`ProcessorFormatter` when
         formatting log entries.
 
-        Use this statc method as the renderer (i.e. final processor) if you
+        Use this static method as the renderer (i.e. final processor) if you
         want to use :class:`ProcessorFormatter` in your :mod:`logging`
         configuration.
         """
