@@ -51,7 +51,7 @@ Processors
 Suggested Configurations
 ------------------------
 
-Depending where you'd like to do your formatting, you can take one of three approaches:
+Depending *where* you'd like to do your formatting, you can take one of three approaches:
 
 
 Rendering Using :mod:`logging`-based Formatters

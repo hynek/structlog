@@ -410,7 +410,7 @@ class TestProcessorFormatter(object):
 
         assert (
             "",
-            "[warning  ] foo\n",
+            "[warning  ] foo [in test_foreign_pre_chain]\n",
         ) == capsys.readouterr()
 
     def test_native(self, configure_for_pf, capsys):
@@ -423,5 +423,5 @@ class TestProcessorFormatter(object):
 
         assert (
             "",
-            "[warning  ] foo\n",
+            "[warning  ] foo [in test_native]\n",
         ) == capsys.readouterr()
