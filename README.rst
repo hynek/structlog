@@ -97,6 +97,7 @@ Output
   Easy to use and fast.
 - Use the **standard library**'s or **Twisted**'s logging modules for compatibility.
   In this case ``structlog`` works like a wrapper that formats a string and passes them off into existing systems that won't ever know that ``structlog`` even exists.
+  Or the other way round: ``structlog`` comes with a ``logging`` formatter that allows for processing third party log records.
 - Don't format it to a string at all!
   ``structlog`` passes you a dictionary and you can do with it whatever you want.
   Reported uses cases are sending them out via network or saving them in a database.
