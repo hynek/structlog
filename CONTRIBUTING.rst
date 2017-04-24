@@ -38,7 +38,7 @@ Code
 
          :rtype: str
          """
-- If you add or change public APIs, tag the docstring using ``..  versionadded:: 16.0.0 WHAT`` or ``..  versionchanged:: 16.2.0 WHAT``.
+- If you add or change public APIs, tag the docstring using ``..  versionadded:: 16.0.0 WHAT`` or ``..  versionchanged:: 17.1.0 WHAT``.
 - Prefer double quotes (``"``) over single quotes (``'``) unless the string contains double quotes itself.
 
 

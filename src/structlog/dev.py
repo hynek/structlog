@@ -111,7 +111,7 @@ class ConsoleRenderer(object):
 
     .. versionadded:: 16.0
     .. versionadded:: 16.1 *colors*
-    .. versionadded:: 16.2 *repr_native_str*
+    .. versionadded:: 17.1 *repr_native_str*
     """
     def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
                  repr_native_str=False):

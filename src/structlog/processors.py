@@ -40,7 +40,7 @@ class KeyValueRenderer(object):
 
     .. versionadded:: 0.2.0 *key_order*
     .. versionadded:: 16.1.0 *drop_missing*
-    .. versionadded:: 16.2.0 *repr_native_str*
+    .. versionadded:: 17.1.0 *repr_native_str*
     """
     def __init__(self, sort_keys=False, key_order=None, drop_missing=False,
                  repr_native_str=True):
