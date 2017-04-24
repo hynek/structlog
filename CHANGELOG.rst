@@ -5,7 +5,7 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
-17.1.0 (UNRELEASED)
+17.1.0 (2017-04-24)
 -------------------
 
 The main features of this release are massive improvements in standard library's ``logging`` integration.
