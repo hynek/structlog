@@ -64,7 +64,7 @@ Changes:
   `#105 <https://github.com/hynek/structlog/issues/105>`_
 - UNIX epoch timestamps from ``structlog.processors.TimeStamper`` are more precise now.
 - Added *repr_native_str* to ``structlog.processors.KeyValueRenderer`` and ``structlog.dev.ConsoleRenderer``.
-  This allows for human-readable non-ASCII output on Python 2 (``repr()`` on Python 2 haves like ``ascii()`` on Python 3 in that regard).
+  This allows for human-readable non-ASCII output on Python 2 (``repr()`` on Python 2 behaves like ``ascii()`` on Python 3 in that regard).
   As per compatibility policy, it's on (original behavior) in ``KeyValueRenderer`` and off (humand-friendly behavior) in ``ConsoleRenderer``.
   `#94 <https://github.com/hynek/structlog/issues/94>`_
 - Added *colors* argument to ``structlog.dev.ConsoleRenderer`` and made it the default renderer.
