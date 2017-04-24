@@ -16,7 +16,7 @@ Special thanks go to `Iva Kaneva <https://github.com/if-fi>`_, `sky-code <https:
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- The default renderer is ``structlog.dev.ConsoleRenderer`` if you don't configure ``structlog`` now.
+- The default renderer now is ``structlog.dev.ConsoleRenderer`` if you don't configure ``structlog``.
   Colors are used if available and human-friendly timestamps are prepended.
   This is in line with our backward `compatibility policy <http://www.structlog.org/en/stable/backward-compatibility.html>`_ that explicitly excludes default settings.
 

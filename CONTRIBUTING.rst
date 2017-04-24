@@ -90,11 +90,11 @@ Documentation
 
   .. code-block:: rst
 
-     - Added ``structlog.func()``.
-       The feature really *is* awesome.
+     - Added ``structlog.func()`` that does foo.
+       It's pretty cool.
        [`#1 <https://github.com/hynek/structlog/pull/1>`_]
      - ``structlog.func()`` now doesn't crash the Large Hadron Collider anymore.
-       The bug really *was* nasty.
+       That was a nasty bug!
        [`#2 <https://github.com/hynek/structlog/pull/2>`_]
 
 
