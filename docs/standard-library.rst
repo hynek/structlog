@@ -245,4 +245,4 @@ In this case *only* your own logs are formatted as JSON:
     >>> logging.getLogger("test").warning("hello")
     hello
 
-.. _`12 factor app`: http://12factor.net/logs
+.. _`12 factor app`: https://12factor.net/logs

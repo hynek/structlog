@@ -112,8 +112,8 @@ Thank you for considering contributing to ``structlog``!
 .. _`Code of Conduct`: https://github.com/hynek/structlog/blob/master/CODE_OF_CONDUCT.rst
 .. _changelog: https://github.com/hynek/structlog/blob/master/CHANGELOG.rst
 .. _`backward compatibility`: https://structlog.readthedocs.io/en/latest/backward-compatibility.html
-.. _`tox`: https://testrun.org/tox/
-.. _pyenv: https://github.com/yyuu/pyenv
+.. _tox: https://tox.readthedocs.io/
+.. _pyenv: https://github.com/pyenv/pyenv
 .. _reStructuredText: http://sphinx-doc.org/rest.html
 .. _semantic newlines: http://rhodesmill.org/brandon/2012/one-sentence-per-line/
 .. _CI: https://travis-ci.org/hynek/structlog/
