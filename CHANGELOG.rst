@@ -10,7 +10,13 @@ The third digit is only for regressions.
 
 The main features of this release are massive improvements in standard library's ``logging`` integration.
 Have a look at the updated `standard library chapter <http://www.structlog.org/en/stable/standard-library.html>`_ on how to use them!
-Special thanks go to `Iva Kaneva <https://github.com/if-fi>`_, `sky-code <https://github.com/sky-code>`_, `insolite <https://github.com/insolite>`_, and `Gilbert Gilb's <https://github.com/gilbsgilbs>`_ that made them possible.
+Special thanks go to
+`Fabian Büchler <https://github.com/fabianbuechler>`_,
+`Gilbert Gilb's <https://github.com/gilbsgilbs>`_,
+`Iva Kaneva <https://github.com/if-fi>`_,
+`insolite <https://github.com/insolite>`_,
+and `sky-code <https://github.com/sky-code>`_,
+that made them possible.
 
 
 Backward-incompatible changes:
