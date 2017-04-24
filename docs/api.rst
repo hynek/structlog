@@ -188,6 +188,9 @@ API Reference
 
 .. autoclass:: PositionalArgumentsFormatter
 
+.. autoclass:: ProcessorFormatter
+   :members: wrap_for_formatter
+
 
 :mod:`twisted` Module
 ---------------------

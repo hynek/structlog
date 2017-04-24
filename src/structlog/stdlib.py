@@ -365,3 +365,76 @@ def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
         "msg": event_dict.pop("event"),
         "extra": event_dict,
     }
+
+
+class ProcessorFormatter(logging.Formatter):
+    """
+    Call ``structlog`` processors on :mod:`logging.LogRecord`\ s.
+
+    This :class:`logging.Formatter` allows to configure :mod:`logging` to call
+    *processor* on ``structlog``-borne log entries (origin is determined solely
+    on the fact whether the ``msg`` field on the :class:`logging.LogRecord` is
+    a dict or not).
+
+    This allows for two interesting use cases:
+
+    #. You can format non-``structlog`` log entries.
+    #. You can multiplex log records into multiple :class:`logging.Handler`\ s.
+
+    Please refer to :doc:`standard-library` for examples.
+
+    :param callable processor: A ``structlog`` processor.
+    :param foreign_pre_chain:
+        If not `None`, it is used as an iterable of processors that is applied
+        to non-``structlog`` log entries before *processor*.  If `None`,
+        formatting is left to :mod:`logging`. (default: `None`)
+
+    :rtype: str
+
+    .. versionadded:: 17.1.0
+    """
+    def __init__(self, processor, foreign_pre_chain=None, *args, **kwargs):
+        fmt = kwargs.pop("fmt", "%(message)s")
+        super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
+        self.processor = processor
+        self.foreign_pre_chain = foreign_pre_chain
+
+    def format(self, record):
+        """
+        Extract ``structlog``'s `event_dict` from ``record.msg`` and format it.
+        """
+        if isinstance(record.msg, dict):
+            # Both attached by wrap_for_formatter
+            logger = record._logger
+            meth_name = record._name
+
+            # We need to copy because it's possible that the same record gets
+            # processed by multiple logging formatters.  LogRecord.getMessage
+            # would transform our dict into a str.
+            ed = record.msg.copy()
+        else:
+            logger = None
+            meth_name = record.levelname.lower()
+            ed = {"event": record.getMessage()}
+
+            # Non-structlog allows to run through a chain to prepare it for the
+            # final processor (e.g. adding timestamps and log levels).
+            for proc in self.foreign_pre_chain or ():
+                ed = proc(None, meth_name, ed)
+
+        record.msg = self.processor(logger, meth_name, ed)
+        return super(ProcessorFormatter, self).format(record)
+
+    @staticmethod
+    def wrap_for_formatter(logger, name, event_dict):
+        """
+        Wrap *logger*, *name*, and *event_dict*.
+
+        The result is later unpacked by :class:`ProcessorFormatter` when
+        formatting log entries.
+
+        Use this static method as the renderer (i.e. final processor) if you
+        want to use :class:`ProcessorFormatter` in your :mod:`logging`
+        configuration.
+        """
+        return (event_dict,), {"extra": {"_logger": logger, "_name": name}}

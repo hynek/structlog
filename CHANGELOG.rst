@@ -8,6 +8,10 @@ The third digit is only for regressions.
 17.1.0 (UNRELEASED)
 -------------------
 
+The main features of this release are multiple improvements in standard library's ``logging`` integration.
+Have a look at the updated `standard library chapter <http://www.structlog.org/en/stable/standard-library.html>`_ on how to use them!
+
+
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -20,10 +24,11 @@ Changes:
 ^^^^^^^^
 
 - Added ``structlog.stdlib.render_to_log_kwargs()``.
-  This allows to let standard library's ``logging`` do all formatting.
-  It gives you much more consistently formatted logs if you have mixed ``structlog`` and ``logging`` output.
-  Have a look at the updated `standard library chapter <http://www.structlog.org/en/stable/standard-library.html>`_ on how to use it!
+  This allows you to use ``logging``-based formatters to take care of rendering your entries.
   `#98 <https://github.com/hynek/structlog/issues/98>`_
+- Added ``structlog.stdlib.ProcessorFormatter`` which does the opposite:
+  This allows you to run ``structlog`` processors on arbitrary ``logging.LogRecords``.
+  `#79 <https://github.com/hynek/structlog/issues/79>`_
 - UNIX epoch timestamps from ``structlog.processors.TimeStamper`` are more precise now.
 - Add *repr_native_str* to ``structlog.processors.KeyValueRenderer`` and ``structlog.dev.ConsoleRenderer``.
   This allows for human-readable non-ASCII output on Python 2 (``repr()`` on Python 2 haves like ``ascii()`` on Python 3 in that regard).

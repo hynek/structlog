@@ -7,23 +7,27 @@ from __future__ import absolute_import, division, print_function
 import os
 
 import logging
+import logging.config
 
 import pytest
+
 from pretend import call_recorder
 
-from structlog._loggers import ReturnLogger
+from structlog import reset_defaults, configure, ReturnLogger, get_logger
+from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.stdlib import (
     BoundLogger,
     CRITICAL,
     LoggerFactory,
     PositionalArgumentsFormatter,
+    ProcessorFormatter,
     WARN,
     _FixedFindCallerLogger,
     add_log_level,
     add_logger_name,
-    render_to_log_kwargs,
     filter_by_level,
+    render_to_log_kwargs,
 )
 
 from .additional_frame import additional_frame
@@ -307,3 +311,117 @@ class TestRenderToLogKW(object):
         d = render_to_log_kwargs(None, None, event_dict)
 
         assert {"msg": "message", "extra": event_dict} == d
+
+
+@pytest.fixture
+def configure_for_pf():
+    """
+    Configure structlog to use ProcessorFormatter.
+
+    Reset both structlog and logging setting after the test.
+    """
+    configure(
+        processors=[
+            add_log_level,
+            ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=LoggerFactory(),
+        wrapper_class=BoundLogger,
+    )
+
+    yield
+
+    logging.basicConfig()
+    reset_defaults()
+
+
+def configure_logging(pre_chain):
+    """
+    Configure logging to use ProcessorFormatter.
+    """
+    return logging.config.dictConfig({
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "plain": {
+                "()": ProcessorFormatter,
+                "processor": ConsoleRenderer(colors=False),
+                "foreign_pre_chain": pre_chain,
+                "format": "%(message)s [in %(funcName)s]"
+            }
+        },
+        "handlers": {
+            "default": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "plain",
+            },
+        },
+        "loggers": {
+            "": {
+                "handlers": ["default"],
+                "level": "DEBUG",
+                "propagate": True,
+            },
+        }
+    })
+
+
+class TestProcessorFormatter(object):
+    """
+    These are all integration tests because they're all about integration.
+    """
+    def test_foreign_delegate(self, configure_for_pf, capsys):
+        """
+        If foreign_pre_chain is None, non-structlog log entries are delegated
+        to logging.
+        """
+        configure_logging(None)
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning("foo")
+
+        assert (
+            "",
+            "foo [in test_foreign_delegate]\n",
+        ) == capsys.readouterr()
+
+    def test_foreign_pre_chain(self, configure_for_pf, capsys):
+        """
+        If foreign_pre_chain is an iterable, it's used to pre-process
+        non-structlog log entries.
+        """
+        configure_logging((add_log_level,))
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning("foo")
+
+        assert (
+            "",
+            "[warning  ] foo [in test_foreign_pre_chain]\n",
+        ) == capsys.readouterr()
+
+    def test_native(self, configure_for_pf, capsys):
+        """
+        If the log entry comes from structlog, it's unpackaged and processed.
+        """
+        configure_logging(None)
+
+        get_logger().warning("foo")
+
+        assert (
+            "",
+            "[warning  ] foo [in test_native]\n",
+        ) == capsys.readouterr()
