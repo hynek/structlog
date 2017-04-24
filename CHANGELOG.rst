@@ -41,6 +41,8 @@ Changes:
 - Fixed bug with Python 3 and ``structlog.stdlib.BoundLogger.log()``.
   Error log level was not reproductible and was logged as exception one time out of two.
   `#92 <https://github.com/hynek/structlog/pull/92>`_
+- Positional arguments are now removed even if they are empty.
+  `#82 <https://github.com/hynek/structlog/pull/82>`_
 
 
 ----

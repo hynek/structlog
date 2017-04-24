@@ -266,6 +266,17 @@ class TestPositionalArgumentsFormatter(object):
         formatter = PositionalArgumentsFormatter()
         assert {} == formatter(None, None, {})
 
+    def test_args_removed_if_empty(self):
+        """
+        If remove_positional_args is True and positional_args is (), still
+        remove them.
+
+        Regression test for https://github.com/hynek/structlog/issues/82.
+        """
+        formatter = PositionalArgumentsFormatter()
+
+        assert {} == formatter(None, None, {"positional_args": ()})
+
 
 class TestAddLogLevel(object):
     def test_log_level_added(self):
