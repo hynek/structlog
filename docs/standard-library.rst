@@ -246,3 +246,42 @@ In this case *only* your own logs are formatted as JSON:
     hello
 
 .. _`12 factor app`: http://12factor.net/logs
+
+Alternative Suggested Configuration
+-----------------------------------
+A basic configuration to forward structured logs in stdlib logging looks like this:
+
+.. code-block:: python
+
+    import structlog
+
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
+            structlog.processors.LogRecordCompatibleDictRenderer(
+                add_extra_event_dict=True, # add all context data from that log message to LogRecord.
+                add_event_dict_with_key="data") # add all context data from that log message to LogRecord with key "data", useful for debug
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
+
+Now you have LogRecord with all data from ``structlog`` ``event_dict`` which can be handled by stdlib logger
+
+.. code-block:: python
+
+    import logging
+    import sys
+
+    handler = logging.StreamHandler(sys.stdout)
+    your_logger = logging.getLogger()
+    your_logger.addHandler(handler)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s %(data)s')
+    your_logger.setFormatter(formatter)
+
