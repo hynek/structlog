@@ -8,14 +8,15 @@ The third digit is only for regressions.
 17.1.0 (UNRELEASED)
 -------------------
 
-The main features of this release are multiple improvements in standard library's ``logging`` integration.
+The main features of this release are massive improvements in standard library's ``logging`` integration.
 Have a look at the updated `standard library chapter <http://www.structlog.org/en/stable/standard-library.html>`_ on how to use them!
+Special thanks go to `Iva Kaneva <https://github.com/if-fi>`_, `sky-code <https://github.com/sky-code>`_, `insolite <https://github.com/insolite>`_, and `Gilbert Gilb's <https://github.com/gilbsgilbs>`_ that made them possible.
 
 
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- The default renderer is ``structlog.dev.ConsoleRenderer`` now if you don't configure ``structlog``.
+- The default renderer is ``structlog.dev.ConsoleRenderer`` if you don't configure ``structlog`` now.
   Colors are used if available and human-friendly timestamps are prepended.
   This is in line with our backward `compatibility policy <http://www.structlog.org/en/stable/backward-compatibility.html>`_ that explicitly excludes default settings.
 
@@ -29,15 +30,16 @@ Changes:
 - Added ``structlog.stdlib.ProcessorFormatter`` which does the opposite:
   This allows you to run ``structlog`` processors on arbitrary ``logging.LogRecords``.
   `#79 <https://github.com/hynek/structlog/issues/79>`_
+  `#105 <https://github.com/hynek/structlog/issues/105>`_
 - UNIX epoch timestamps from ``structlog.processors.TimeStamper`` are more precise now.
-- Add *repr_native_str* to ``structlog.processors.KeyValueRenderer`` and ``structlog.dev.ConsoleRenderer``.
+- Added *repr_native_str* to ``structlog.processors.KeyValueRenderer`` and ``structlog.dev.ConsoleRenderer``.
   This allows for human-readable non-ASCII output on Python 2 (``repr()`` on Python 2 haves like ``ascii()`` on Python 3 in that regard).
   As per compatibility policy, it's on (original behavior) in ``KeyValueRenderer`` and off (humand-friendly behavior) in ``ConsoleRenderer``.
   `#94 <https://github.com/hynek/structlog/issues/94>`_
-- Add *colors* argument to ``structlog.dev.ConsoleRenderer`` and make it the default renderer.
+- Added *colors* argument to ``structlog.dev.ConsoleRenderer`` and made it the default renderer.
   `#78 <https://github.com/hynek/structlog/pull/78>`_
-- Fix bug with Python 3 and ``structlog.stdlib.BoundLogger.log()``. Error log level was not reproductible and was logged as exception
-  one time out of two.
+- Fixed bug with Python 3 and ``structlog.stdlib.BoundLogger.log()``.
+  Error log level was not reproductible and was logged as exception one time out of two.
   `#92 <https://github.com/hynek/structlog/pull/92>`_
 
 
