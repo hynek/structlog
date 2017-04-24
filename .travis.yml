@@ -30,8 +30,8 @@ matrix:
       env: TOXENV=pypy-greenlets
     - python: "2.7"
       env: TOXENV=py27-colorama
-    - python: "3.5"
-      env: TOXENV=py35-colorama
+    - python: "3.6"
+      env: TOXENV=py36-colorama
 
 
     # Meta
