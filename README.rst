@@ -1,4 +1,4 @@
-.. image:: https://www.structlog.org/en/latest/_static/structlog_logo.png
+.. image:: http://www.structlog.org/en/latest/_static/structlog_logo.png
    :alt: structlog Logo
    :width: 256px
    :target: http://www.structlog.org/
