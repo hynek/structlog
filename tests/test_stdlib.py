@@ -424,6 +424,24 @@ class TestProcessorFormatter(object):
             "[warning  ] foo [in test_foreign_pre_chain]\n",
         ) == capsys.readouterr()
 
+    def test_foreign_pre_chain_gets_exc_info(self, configure_for_pf):
+        """
+        If non-structlog record contains exc_info, foreign_pre_chain functions
+        have access to it.
+        """
+
+        test_processor = call_recorder(lambda l, m, event_dict: None)
+        configure_logging((test_processor,))
+
+        try:
+            raise RuntimeError("nooo")
+        except Exception:
+            logging.getLogger().exception("duh")
+
+        event_dict = test_processor.calls[0].args[2]
+        assert 'exc_info' in event_dict
+        assert isinstance(event_dict['exc_info'], tuple)
+
     def test_native(self, configure_for_pf, capsys):
         """
         If the log entry comes from structlog, it's unpackaged and processed.

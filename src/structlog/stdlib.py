@@ -403,6 +403,10 @@ class ProcessorFormatter(logging.Formatter):
         """
         Extract ``structlog``'s `event_dict` from ``record.msg`` and format it.
         """
+
+        # Make a shallow copy of the record to let other handlers/formatters
+        # process the original one
+        record = logging.makeLogRecord(record.__dict__)
         if isinstance(record.msg, dict):
             # Both attached by wrap_for_formatter
             logger = record._logger
@@ -416,6 +420,17 @@ class ProcessorFormatter(logging.Formatter):
             logger = None
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage()}
+
+            if record.exc_info:
+                ed['exc_info'] = record.exc_info
+            if record.stack_info:
+                ed['stack_info'] = record.stack_info
+
+            # Unset some attributes on the record copy so that the base
+            # implementation wouldn't append stacktraces to the output
+            record.exc_info = None
+            record.stack_info = None
+            record.exc_text = None
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
