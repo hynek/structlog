@@ -424,14 +424,20 @@ class TestProcessorFormatter(object):
             "[warning  ] foo [in test_foreign_pre_chain]\n",
         ) == capsys.readouterr()
 
-    def test_foreign_pre_chain_gets_exc_info(self, configure_for_pf):
+    def test_foreign_pre_chain_gets_exc_info(self, configure_for_pf, capsys):
         """
         If non-structlog record contains exc_info, foreign_pre_chain functions
         have access to it.
         """
-
-        test_processor = call_recorder(lambda l, m, event_dict: None)
+        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((test_processor,))
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
 
         try:
             raise RuntimeError("nooo")
@@ -441,6 +447,8 @@ class TestProcessorFormatter(object):
         event_dict = test_processor.calls[0].args[2]
         assert 'exc_info' in event_dict
         assert isinstance(event_dict['exc_info'], tuple)
+
+        capsys.readouterr()
 
     def test_native(self, configure_for_pf, capsys):
         """

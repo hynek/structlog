@@ -421,16 +421,16 @@ class ProcessorFormatter(logging.Formatter):
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage()}
 
+            # Add stack-related attributes to event_dict and unset them
+            # on the record copy so that the base implementation wouldn't
+            # append stacktraces to the output
+            record.exc_text = None
             if record.exc_info:
                 ed['exc_info'] = record.exc_info
-            if record.stack_info:
+                record.exc_info = None
+            if PY3 and record.stack_info:
                 ed['stack_info'] = record.stack_info
-
-            # Unset some attributes on the record copy so that the base
-            # implementation wouldn't append stacktraces to the output
-            record.exc_info = None
-            record.stack_info = None
-            record.exc_text = None
+                record.stack_info = None
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
