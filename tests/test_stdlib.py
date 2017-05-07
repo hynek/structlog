@@ -5,6 +5,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import sys
 
 import logging
 import logging.config
@@ -376,6 +377,83 @@ def configure_logging(pre_chain):
             },
         }
     })
+
+
+class TestProcessorFormatterConfiguration(object):
+    def test_serializable_configuration(self, capsys):
+        class FakeModule(object):
+            PRE_CHAIN = [add_log_level, ]
+        sys.modules["testmodule"] = FakeModule
+        logging.config.dictConfig({
+            "version": 1,
+            "disable_existing_loggers": False,
+            "formatters": {
+                "plain": {
+                    "()": "structlog.stdlib.ProcessorFormatter",
+                    "processor": "structlog.dev.ConsoleRenderer",
+                    "processor_args": [1],
+                    "processor_kwargs": {"colors": False},
+                    "foreign_pre_chain": "testmodule.PRE_CHAIN",
+                    "format": "%(message)s [in %(funcName)s]"
+                }
+            },
+            "handlers": {
+                "default": {
+                    "level": "DEBUG",
+                    "class": "logging.StreamHandler",
+                    "formatter": "plain",
+                },
+            },
+            "loggers": {
+                "": {
+                    "handlers": ["default"],
+                    "level": "DEBUG",
+                    "propagate": True,
+                },
+            }
+        })
+
+        logging.getLogger().warning("foo")
+
+        assert (
+            "",
+            "[warning  ] foo [in test_serializable_configuration]\n",
+        ) == capsys.readouterr()
+
+    def test_non_serializable_configuration(self, capsys):
+        logging.config.dictConfig({
+            "version": 1,
+            "disable_existing_loggers": False,
+            "formatters": {
+                "plain": {
+                    "()": ProcessorFormatter,
+                    "processor": ConsoleRenderer(1, colors=False),
+                    "foreign_pre_chain": [add_log_level, ],
+                    "format": "%(message)s [in %(funcName)s]"
+                }
+            },
+            "handlers": {
+                "default": {
+                    "level": "DEBUG",
+                    "class": "logging.StreamHandler",
+                    "formatter": "plain",
+                },
+            },
+            "loggers": {
+                "": {
+                    "handlers": ["default"],
+                    "level": "DEBUG",
+                    "propagate": True,
+                },
+            }
+        })
+
+        logging.getLogger().warning("foo")
+
+        assert (
+            "",
+            "[warning  ] foo [in test_non_serializable_configuration]\n",
+        ) == capsys.readouterr()
 
 
 class TestProcessorFormatter(object):

@@ -11,13 +11,14 @@ See also :doc:`structlog's standard library support <standard-library>`.
 
 from __future__ import absolute_import, division, print_function
 
+import importlib
 import logging
 
 from structlog._base import BoundLoggerBase
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
 
-from six import PY3
+from six import PY3, string_types
 
 
 class _FixedFindCallerLogger(logging.Logger):
@@ -383,7 +384,15 @@ class ProcessorFormatter(logging.Formatter):
 
     Please refer to :doc:`standard-library` for examples.
 
-    :param callable processor: A ``structlog`` processor.
+    :param callable|str processor:
+        If ``callable``, a ``structlog`` processor instance. If ``str``, a full
+        path to a processor class. E.g.: ``"structlog.dev.ConsoleRenderer"``.
+    :param None|iterable processor_args:
+        When ``processor`` is a string, the positional arguments that will be
+        used to instantiate the processor. None means no positional arguments.
+    :param None|mapping processor_kwargs:
+        When ``processor`` is a string, the keyword arguments that will be used
+        to instantiate the processor. None means no keyword argument.
     :param foreign_pre_chain:
         If not `None`, it is used as an iterable of processors that is applied
         to non-``structlog`` log entries before *processor*.  If `None`,
@@ -393,11 +402,25 @@ class ProcessorFormatter(logging.Formatter):
 
     .. versionadded:: 17.1.0
     """
-    def __init__(self, processor, foreign_pre_chain=None, *args, **kwargs):
+    def __init__(self, processor, processor_args=None, processor_kwargs=None,
+                 foreign_pre_chain=None, *args, **kwargs):
         fmt = kwargs.pop("fmt", "%(message)s")
         super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
+
+        if isinstance(processor, string_types):
+            class_ = self._import_attr_from_str(processor)
+            processor = class_(*processor_args or (), **processor_kwargs or {})
         self.processor = processor
+
+        if isinstance(foreign_pre_chain, string_types):
+            foreign_pre_chain = self._import_attr_from_str(foreign_pre_chain)
         self.foreign_pre_chain = foreign_pre_chain
+
+    @staticmethod
+    def _import_attr_from_str(string):
+        module_name, attr_name = string.rsplit(".", 1)
+        module = importlib.import_module(module_name)
+        return getattr(module, attr_name)
 
     def format(self, record):
         """

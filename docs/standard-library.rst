@@ -127,14 +127,20 @@ You can leave rendering for later and yet use ``structlog``’s renderers for it
             "disable_existing_loggers": False,
             "formatters": {
                 "plain": {
-                    "()": structlog.stdlib.ProcessorFormatter,
-                    "processor": structlog.dev.ConsoleRenderer(colors=False),
+                    "()": "structlog.stdlib.ProcessorFormatter",
+                    "processor": "structlog.dev.ConsoleRenderer",
+                    "processor_kwargs": {"colors": False},
                     "foreign_pre_chain": pre_chain,
+                    # alternatively
+                    # "foreign_pre_chain": "mymodule.pre_chain",
                 },
                 "colored": {
-                    "()": structlog.stdlib.ProcessorFormatter,
-                    "processor": structlog.dev.ConsoleRenderer(colors=True),
+                    "()": "structlog.stdlib.ProcessorFormatter",
+                    "processor": "structlog.dev.ConsoleRenderer",
+                    "processor_kwargs": {"colors": True},
                     "foreign_pre_chain": pre_chain,
+                    # alternatively
+                    # "foreign_pre_chain": "mymodule.pre_chain",
                 },
             },
             "handlers": {
