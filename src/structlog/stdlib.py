@@ -368,6 +368,44 @@ def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
     }
 
 
+def _import(path):
+    """
+    Import an attribute from a module provided its path.
+
+    Example:
+        ``StreamHandler = _import("logging.StreamHandler")``
+
+    :param str path: The path to the attribute to import.
+    :return the imported attribute
+    """
+    module_name, attr_name = path.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    return getattr(module, attr_name)
+
+
+def ProcessorHandler(handler_class, *args, **kwargs):
+    """
+    Wraps any stdlib handler to make it work nicely with ``structlog``.
+
+    :param str|logging.Handler handler_class: The handler class or path to the
+    logging handler_class that should be instantiated.
+    E.g.: ``"logging.StreamHandler"``
+    :return an instance of handler_class that will play nicely with
+    ``structlog``.
+    """
+    if isinstance(handler_class, string_types):
+        handler_class = _import(handler_class)
+
+    class WrappedHandler(handler_class):
+        def emit(self, *args, **kwargs):
+            try:
+                return super(WrappedHandler, self).emit(*args, **kwargs)
+            except DropEvent:
+                pass
+
+    return WrappedHandler(*args, **kwargs)
+
+
 class ProcessorFormatter(logging.Formatter):
     """
     Call ``structlog`` processors on :mod:`logging.LogRecord`\ s.
@@ -408,19 +446,13 @@ class ProcessorFormatter(logging.Formatter):
         super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
 
         if isinstance(processor, string_types):
-            class_ = self._import_attr_from_str(processor)
+            class_ = _import(processor)
             processor = class_(*processor_args or (), **processor_kwargs or {})
         self.processor = processor
 
         if isinstance(foreign_pre_chain, string_types):
-            foreign_pre_chain = self._import_attr_from_str(foreign_pre_chain)
+            foreign_pre_chain = _import(foreign_pre_chain)
         self.foreign_pre_chain = foreign_pre_chain
-
-    @staticmethod
-    def _import_attr_from_str(string):
-        module_name, attr_name = string.rsplit(".", 1)
-        module = importlib.import_module(module_name)
-        return getattr(module, attr_name)
 
     def format(self, record):
         """

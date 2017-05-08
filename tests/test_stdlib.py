@@ -23,6 +23,7 @@ from structlog.stdlib import (
     LoggerFactory,
     PositionalArgumentsFormatter,
     ProcessorFormatter,
+    ProcessorHandler,
     WARN,
     _FixedFindCallerLogger,
     add_log_level,
@@ -365,7 +366,8 @@ def configure_logging(pre_chain):
         "handlers": {
             "default": {
                 "level": "DEBUG",
-                "class": "logging.StreamHandler",
+                "()": ProcessorHandler,
+                "handler_class": logging.StreamHandler,
                 "formatter": "plain",
             },
         },
@@ -400,7 +402,8 @@ class TestProcessorFormatterConfiguration(object):
             "handlers": {
                 "default": {
                     "level": "DEBUG",
-                    "class": "logging.StreamHandler",
+                    "()": "structlog.stdlib.ProcessorHandler",
+                    "handler_class": "logging.StreamHandler",
                     "formatter": "plain",
                 },
             },
@@ -435,7 +438,8 @@ class TestProcessorFormatterConfiguration(object):
             "handlers": {
                 "default": {
                     "level": "DEBUG",
-                    "class": "logging.StreamHandler",
+                    "()": ProcessorHandler,
+                    "handler_class": logging.StreamHandler,
                     "formatter": "plain",
                 },
             },
@@ -513,4 +517,26 @@ class TestProcessorFormatter(object):
         assert (
             "",
             "[warning  ] foo [in test_native]\n",
+        ) == capsys.readouterr()
+
+    def test_drop_event(self, configure_for_pf, capsys):
+        """
+        Test that DropEvent works in stdlib loggers.
+        """
+        def drop(logger, method_name, event_dict):
+            raise DropEvent
+        configure_logging((drop, ))
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning("foo")
+
+        assert (
+            "",
+            "",
         ) == capsys.readouterr()
