@@ -4,3 +4,4 @@ freezegun>=0.2.8
 pretend
 pytest
 simplejson
+twisted
