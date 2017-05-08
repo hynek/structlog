@@ -540,3 +540,24 @@ class TestProcessorFormatter(object):
             "",
             "",
         ) == capsys.readouterr()
+
+    def test_exceptions_are_handled(self, configure_for_pf, capsys):
+        """
+        Test that exceptions other than DropEvent are still handled.
+        """
+        def fail(logger, method_name, event_dict):
+            raise Exception
+        configure_logging((fail, ))
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning("foo")
+
+        out, err = capsys.readouterr()
+        assert "" == out
+        assert "raise Exception" in err

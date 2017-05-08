@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, print_function
 
 import importlib
 import logging
+import sys
 
 from structlog._base import BoundLoggerBase
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
@@ -401,7 +402,15 @@ def ProcessorHandler(handler_class, *args, **kwargs):
             try:
                 return super(WrappedHandler, self).emit(*args, **kwargs)
             except DropEvent:
+                # Python3 emit does not forward BaseException subclasses to the
+                # handleError method. Since DropEvent is a BaseException
+                # subclass, the error would raise without being caught.
                 pass
+
+        def handleError(self, *args, **kwargs):
+            exc_type, _, _ = sys.exc_info()
+            if not issubclass(exc_type, DropEvent):
+                return super(WrappedHandler, self).handleError(*args, **kwargs)
 
     return WrappedHandler(*args, **kwargs)
 
