@@ -393,11 +393,13 @@ class ProcessorFormatter(logging.Formatter):
 
     .. versionadded:: 17.1.0
     """
-    def __init__(self, processor, foreign_pre_chain=None, *args, **kwargs):
+    def __init__(self, processor, foreign_pre_chain=None,
+                 unset_record_stack=False, *args, **kwargs):
         fmt = kwargs.pop("fmt", "%(message)s")
         super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
         self.processor = processor
         self.foreign_pre_chain = foreign_pre_chain
+        self.unset_record_stack = unset_record_stack
 
     def format(self, record):
         """
@@ -424,13 +426,16 @@ class ProcessorFormatter(logging.Formatter):
             # Add stack-related attributes to event_dict and unset them
             # on the record copy so that the base implementation wouldn't
             # append stacktraces to the output
-            record.exc_text = None
             if record.exc_info:
                 ed['exc_info'] = record.exc_info
-                record.exc_info = None
             if PY3 and record.stack_info:
                 ed['stack_info'] = record.stack_info
-                record.stack_info = None
+
+            if self.unset_record_stack:
+                record.exc_text = None
+                record.exc_info = None
+                if PY3:
+                    record.stack_info = None
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
