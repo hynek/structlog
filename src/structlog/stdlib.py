@@ -429,6 +429,7 @@ class ProcessorFormatter(logging.Formatter):
             del ed["_record"]
 
         record.msg = self.processor(logger, meth_name, ed)
+        record.args = ()
         return super(ProcessorFormatter, self).format(record)
 
     @staticmethod

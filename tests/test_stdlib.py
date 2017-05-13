@@ -432,6 +432,22 @@ class TestProcessorFormatter(object):
             "foo [in test_foreign_delegate]\n",
         ) == capsys.readouterr()
 
+    def test_clears_args(self, capsys, configure_for_pf):
+        """
+        We render our log records before sending it back to logging.  Therefore
+        we must clear `LogRecord.args` otherwise the user gets an
+        `TypeError: not all arguments converted during string formatting.` if
+        they use positional formatting in stdlib logging.
+        """
+        configure_logging(None)
+
+        logging.getLogger().warning("hello %s.", "world")
+
+        assert (
+            "",
+            "hello world. [in test_clears_args]\n",
+        ) == capsys.readouterr()
+
     def test_foreign_pre_chain(self, configure_for_pf, capsys):
         """
         If foreign_pre_chain is an iterable, it's used to pre-process
