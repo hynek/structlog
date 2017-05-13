@@ -346,10 +346,11 @@ def add_logger_name(logger, method_name, event_dict):
     """
     Add the logger name to the event dict.
     """
-    if "_record" in event_dict:
-        event_dict["logger"] = event_dict["_record"].name
-    else:
+    record = event_dict.get("_record")
+    if record is None:
         event_dict["logger"] = logger.name
+    else:
+        event_dict["logger"] = record.name
     return event_dict
 
 
