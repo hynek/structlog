@@ -455,7 +455,7 @@ class TestProcessorFormatter(object):
 
     def test_foreign_pre_chain_add_logger_name(self, configure_for_pf, capsys):
         """
-        foreign_pre_chain should work with add_logger_name processor.
+        foreign_pre_chain works with add_logger_name processor.
         """
         configure_logging((add_logger_name,))
         configure(
