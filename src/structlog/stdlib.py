@@ -346,7 +346,11 @@ def add_logger_name(logger, method_name, event_dict):
     """
     Add the logger name to the event dict.
     """
-    event_dict['logger'] = logger.name
+    record = event_dict.get("_record")
+    if record is None:
+        event_dict["logger"] = logger.name
+    else:
+        event_dict["logger"] = record.name
     return event_dict
 
 
@@ -415,12 +419,14 @@ class ProcessorFormatter(logging.Formatter):
         else:
             logger = None
             meth_name = record.levelname.lower()
-            ed = {"event": record.getMessage()}
+            ed = {"event": record.getMessage(), "_record": record}
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
             for proc in self.foreign_pre_chain or ():
                 ed = proc(None, meth_name, ed)
+
+            del ed["_record"]
 
         record.msg = self.processor(logger, meth_name, ed)
         return super(ProcessorFormatter, self).format(record)

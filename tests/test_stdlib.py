@@ -294,6 +294,26 @@ class TestAddLogLevel(object):
         assert 'warning' == event_dict['level']
 
 
+@pytest.fixture
+def log_record():
+    """
+    A LogRecord factory.
+    """
+    def create_log_record(**kwargs):
+        defaults = {
+            "name": "sample-name",
+            "level": logging.INFO,
+            "pathname": None,
+            "lineno": None,
+            "msg": "sample-message",
+            "args": [],
+            "exc_info": None,
+        }
+        defaults.update(kwargs)
+        return logging.LogRecord(**defaults)
+    return create_log_record
+
+
 class TestAddLoggerName(object):
     def test_logger_name_added(self):
         """
@@ -302,6 +322,15 @@ class TestAddLoggerName(object):
         name = "sample-name"
         logger = logging.getLogger(name)
         event_dict = add_logger_name(logger, None, {})
+        assert name == event_dict["logger"]
+
+    def test_logger_name_added_with_record(self, log_record):
+        """
+        The logger name is deduced from the LogRecord if provided.
+        """
+        name = "sample-name"
+        record = log_record(name=name)
+        event_dict = add_logger_name(None, None, {"_record": record})
         assert name == event_dict["logger"]
 
 
@@ -422,6 +451,27 @@ class TestProcessorFormatter(object):
         assert (
             "",
             "[warning  ] foo [in test_foreign_pre_chain]\n",
+        ) == capsys.readouterr()
+
+    def test_foreign_pre_chain_add_logger_name(self, configure_for_pf, capsys):
+        """
+        foreign_pre_chain works with add_logger_name processor.
+        """
+        configure_logging((add_logger_name,))
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger("sample-name").warning("foo")
+
+        assert (
+            "",
+            "foo                            [sample-name]  [in test_foreign_pr"
+            "e_chain_add_logger_name]\n",
         ) == capsys.readouterr()
 
     def test_native(self, configure_for_pf, capsys):

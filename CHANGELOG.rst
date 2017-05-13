@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- ``structlog.stdlib.add_logger_name()`` now works in ``structlog.stdlib.ProcessorFormatter``'s ``foreign_pre_chain``.
+  `#112 <https://github.com/hynek/structlog/issues/112>`_
 
 
 ----
