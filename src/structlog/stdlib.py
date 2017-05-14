@@ -11,6 +11,7 @@ See also :doc:`structlog's standard library support <standard-library>`.
 
 from __future__ import absolute_import, division, print_function
 
+import json
 import logging
 
 from structlog._base import BoundLoggerBase
@@ -407,15 +408,12 @@ class ProcessorFormatter(logging.Formatter):
         """
         Extract ``structlog``'s `event_dict` from ``record.msg`` and format it.
         """
+        should_format = False
         if isinstance(record.msg, dict):
-            # Both attached by wrap_for_formatter
-            logger = record._logger
-            meth_name = record._name
-
-            # We need to copy because it's possible that the same record gets
-            # processed by multiple logging formatters.  LogRecord.getMessage
-            # would transform our dict into a str.
-            ed = record.msg.copy()
+            logger, meth_name, ed = self.get_logger_name_and_msg(record)
+        elif self.is_json(record.msg):
+            record.msg = json.loads(record.msg)
+            logger, meth_name, ed = self.get_logger_name_and_msg(record)
         else:
             logger = None
             meth_name = record.levelname.lower()
@@ -427,9 +425,11 @@ class ProcessorFormatter(logging.Formatter):
                 ed = proc(None, meth_name, ed)
 
             del ed["_record"]
+            should_format = True
 
         record.msg = self.processor(logger, meth_name, ed)
-        return super(ProcessorFormatter, self).format(record)
+        msg = super(ProcessorFormatter, self).format(record) if should_format else record.msg
+        return msg
 
     @staticmethod
     def wrap_for_formatter(logger, name, event_dict):
@@ -444,3 +444,23 @@ class ProcessorFormatter(logging.Formatter):
         configuration.
         """
         return (event_dict,), {"extra": {"_logger": logger, "_name": name}}
+
+    @staticmethod
+    def get_logger_name_and_msg(record):
+        # Both attached by wrap_for_formatter
+        logger = record._logger if hasattr(record, '_logger') else None
+        meth_name = record._name if hasattr(record, '_name') else None
+
+        # We need to copy because it's possible that the same record gets
+        # processed by multiple logging formatters.  LogRecord.getMessage
+        # would transform our dict into a str.
+        ed = record.msg.copy()
+        return logger, meth_name, ed
+
+    @staticmethod
+    def is_json(message):
+        try:
+            json.loads(message)
+        except ValueError:
+            return False
+        return True
