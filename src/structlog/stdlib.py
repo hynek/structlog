@@ -373,7 +373,7 @@ def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
 
 class ProcessorFormatter(logging.Formatter):
     """
-    Call ``structlog`` processors on :mod:`logging.LogRecord`\ s.
+    Call ``structlog`` processors on :class:`logging.LogRecord`\ s.
 
     This :class:`logging.Formatter` allows to configure :mod:`logging` to call
     *processor* on ``structlog``-borne log entries (origin is determined solely
@@ -392,21 +392,34 @@ class ProcessorFormatter(logging.Formatter):
         If not `None`, it is used as an iterable of processors that is applied
         to non-``structlog`` log entries before *processor*.  If `None`,
         formatting is left to :mod:`logging`. (default: `None`)
+    :param bool keep_exc_info: ``exc_info`` on :class:`logging.LogRecord`\ s is
+        added to the ``event_dict`` and removed afterwards. Set this to
+        ``True`` to keep it on the :class:`logging.LogRecord`. (default: False)
+    :param bool keep_stack_info: Same as *keep_exc_info* except for Python 3's
+        ``stack_info``.
 
     :rtype: str
 
     .. versionadded:: 17.1.0
+    .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
     """
-    def __init__(self, processor, foreign_pre_chain=None, *args, **kwargs):
+    def __init__(self, processor, foreign_pre_chain=None,
+                 keep_exc_info=False, keep_stack_info=False, *args, **kwargs):
         fmt = kwargs.pop("fmt", "%(message)s")
         super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
         self.processor = processor
         self.foreign_pre_chain = foreign_pre_chain
+        self.keep_exc_info = keep_exc_info
+        # The and clause saves us checking for PY3 in the formatter.
+        self.keep_stack_info = keep_stack_info and PY3
 
     def format(self, record):
         """
         Extract ``structlog``'s `event_dict` from ``record.msg`` and format it.
         """
+        # Make a shallow copy of the record to let other handlers/formatters
+        # process the original one
+        record = logging.makeLogRecord(record.__dict__)
         if isinstance(record.msg, dict):
             # Both attached by wrap_for_formatter
             logger = record._logger
@@ -421,6 +434,20 @@ class ProcessorFormatter(logging.Formatter):
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
             record.args = ()
+
+            # Add stack-related attributes to event_dict and unset them
+            # on the record copy so that the base implementation wouldn't
+            # append stacktraces to the output.
+            if record.exc_info:
+                ed["exc_info"] = record.exc_info
+            if PY3 and record.stack_info:
+                ed["stack_info"] = record.stack_info
+
+            if not self.keep_exc_info:
+                record.exc_text = None
+                record.exc_info = None
+            if not self.keep_stack_info:
+                record.stack_info = None
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).

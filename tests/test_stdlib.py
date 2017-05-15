@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function
 import os
 
 import logging
+import collections
 import logging.config
 
 import pytest
@@ -15,6 +16,7 @@ from pretend import call_recorder
 
 from structlog import reset_defaults, configure, ReturnLogger, get_logger
 from structlog.dev import ConsoleRenderer
+from structlog.processors import JSONRenderer
 from structlog.exceptions import DropEvent
 from structlog.stdlib import (
     BoundLogger,
@@ -489,6 +491,117 @@ class TestProcessorFormatter(object):
             "foo                            [sample-name]  [in test_foreign_pr"
             "e_chain_add_logger_name]\n",
         ) == capsys.readouterr()
+
+    def test_foreign_pre_chain_gets_exc_info(self, configure_for_pf, capsys):
+        """
+        If non-structlog record contains exc_info, foreign_pre_chain functions
+        have access to it.
+        """
+        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        configure_logging((test_processor,))
+        configure(
+            processors=[
+                ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        try:
+            raise RuntimeError("oh noo")
+        except Exception:
+            logging.getLogger().exception("okay")
+
+        event_dict = test_processor.calls[0].args[2]
+        assert "exc_info" in event_dict
+        assert isinstance(event_dict["exc_info"], tuple)
+
+    def test_other_handlers_get_original_record(self, configure_for_pf,
+                                                capsys):
+        """
+        Logging handlers that come after the handler with ProcessorFormatter
+        should receive original, unmodified record.
+        """
+        configure_logging(None)
+
+        handler1 = logging.StreamHandler()
+        handler1.setFormatter(ProcessorFormatter(JSONRenderer()))
+        handler2 = type("", (), {})()
+        handler2.handle = call_recorder(lambda record: None)
+        handler2.level = logging.INFO
+        logger = logging.getLogger()
+        logger.addHandler(handler1)
+        logger.addHandler(handler2)
+
+        logger.info("meh")
+
+        assert 1 == len(handler2.handle.calls)
+        handler2_record = handler2.handle.calls[0].args[0]
+        assert "meh" == handler2_record.msg
+
+    @pytest.mark.parametrize("keep", [True, False])
+    def test_formatter_unsets_exc_info(self, configure_for_pf, capsys, keep):
+        """
+        Stack traces doesn't get printed outside of the json document when
+        keep_exc_info are set to False but preserved if set to True.
+        """
+        configure_logging(None)
+        logger = logging.getLogger()
+
+        def format_exc_info_fake(logger, name, event_dict):
+            event_dict = collections.OrderedDict(event_dict)
+            del event_dict["exc_info"]
+            event_dict["exception"] = "Exception!"
+            return event_dict
+
+        formatter = ProcessorFormatter(
+            processor=JSONRenderer(),
+            keep_stack_info=keep,
+            keep_exc_info=keep,
+            foreign_pre_chain=[format_exc_info_fake],
+        )
+        logger.handlers[0].setFormatter(formatter)
+
+        try:
+            raise RuntimeError("oh noo")
+        except Exception:
+            logging.getLogger().exception("seen worse")
+
+        out, err = capsys.readouterr()
+        assert "" == out
+        if keep is False:
+            assert (
+                '{"event": "seen worse", "exception": "Exception!"}\n'
+            ) == err
+        else:
+            assert "Traceback (most recent call last):" in err
+
+    @pytest.mark.parametrize("keep", [True, False])
+    @py3_only
+    def test_formatter_unsets_stack_info(self, configure_for_pf, capsys, keep):
+        """
+        Stack traces doesn't get printed outside of the json document when
+        keep_stack_info are set to False but preserved if set to True.
+        """
+        configure_logging(None)
+        logger = logging.getLogger()
+
+        formatter = ProcessorFormatter(
+            processor=JSONRenderer(),
+            keep_stack_info=keep,
+            keep_exc_info=keep,
+            foreign_pre_chain=[],
+        )
+        logger.handlers[0].setFormatter(formatter)
+
+        logging.getLogger().warn("have a stack trace", stack_info=True)
+
+        out, err = capsys.readouterr()
+        assert "" == out
+        if keep is False:
+            assert 1 == err.count("Stack (most recent call last):")
+        else:
+            assert 2 == err.count("Stack (most recent call last):")
 
     def test_native(self, configure_for_pf, capsys):
         """

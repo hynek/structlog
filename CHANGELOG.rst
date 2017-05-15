@@ -24,6 +24,9 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- ``structlog.stdlib.ProcessorFormatter`` now accepts *keep_exc_info* and *keep_stack_info* arguments to control what to do with this information on log records.
+  Most likely you want them both to be ``False`` therefore it's the default.
+  `#109 <https://github.com/hynek/structlog/issues/109>`_
 - ``structlog.stdlib.add_logger_name()`` now works in ``structlog.stdlib.ProcessorFormatter``'s ``foreign_pre_chain``.
   `#112 <https://github.com/hynek/structlog/issues/112>`_
 - Clear log record args in ``structlog.stdlib.ProcessorFormatter`` after rendering.
