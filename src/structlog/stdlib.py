@@ -420,6 +420,7 @@ class ProcessorFormatter(logging.Formatter):
             logger = None
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
+            record.args = ()
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).

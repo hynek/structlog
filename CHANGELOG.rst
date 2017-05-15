@@ -26,6 +26,10 @@ Changes:
 
 - ``structlog.stdlib.add_logger_name()`` now works in ``structlog.stdlib.ProcessorFormatter``'s ``foreign_pre_chain``.
   `#112 <https://github.com/hynek/structlog/issues/112>`_
+- Clear log record args in ``structlog.stdlib.ProcessorFormatter`` after rendering.
+  This fix is for you if you tried to use it and got ``TypeError: not all arguments converted during string formatting`` exceptions.
+  `#116 <https://github.com/hynek/structlog/issues/116>`_
+  `#117 <https://github.com/hynek/structlog/issues/117>`_
 
 
 ----
