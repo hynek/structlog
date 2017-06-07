@@ -202,6 +202,11 @@ def format_exc_info(logger, name, event_dict):
     return event_dict
 
 
+def event_dict_to_message(logger, name, event_dict):
+    """Pass the event_dict to stdlib handler for special formatting."""
+    return (event_dict,), {'extra': {'_logger': logger, '_name': name}}
+
+
 class TimeStamper(object):
     """
     Add a timestamp to `event_dict`.

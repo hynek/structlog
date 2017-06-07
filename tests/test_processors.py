@@ -9,6 +9,7 @@ from __future__ import absolute_import, division, print_function
 import datetime
 import json
 import sys
+import logging
 
 import pytest
 import simplejson
@@ -34,6 +35,7 @@ from structlog.processors import (
     _figure_out_exc_info,
     _json_fallback_handler,
     format_exc_info,
+    event_dict_to_message,
 )
 from structlog.threadlocal import wrap_dict
 
@@ -281,6 +283,20 @@ class TestFormatExcInfo(object):
             "exc_info": Exception("no traceback!")
         })
         assert {"exception": "Exception: no traceback!"} == rv
+
+
+class TestEventDictToMessage(object):
+    def test_process(self):
+        """
+        Adapted message for stdlib handler is returned
+        """
+        logger = logging.getLogger()
+        name = 'foobar'
+        event_dict = {'foo': 'bar'}
+        expected_message = ((event_dict,),
+                            {'extra': {'_logger': logger, '_name': name}})
+        actual_message = event_dict_to_message(logger, name, event_dict)
+        assert expected_message == actual_message
 
 
 class TestUnicodeEncoder(object):
