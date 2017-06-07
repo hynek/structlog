@@ -161,6 +161,7 @@ class ConsoleRenderer(object):
 
     def __call__(self, _, __, event_dict):
         sio = StringIO()
+        sio.write(RESET_ALL)
 
         ts = event_dict.pop("timestamp", None)
         if ts is not None:
