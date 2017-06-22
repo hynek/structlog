@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Empty strings are valid events now.
+  `#110 <https://github.com/hynek/structlog/issues/110>`_
 
 
 ----

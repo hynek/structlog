@@ -20,8 +20,8 @@ def build_bl(logger=None, processors=None, context=None):
     Convenience function to build BoundLoggerBases with sane defaults.
     """
     return BoundLoggerBase(
-        logger or ReturnLogger(),
-        processors or _CONFIG.default_processors,
+        logger if logger is not None else ReturnLogger(),
+        processors if processors is not None else _CONFIG.default_processors,
         context if context is not None else _CONFIG.default_context_class(),
     )
 
@@ -75,6 +75,17 @@ class TestBinding(object):
 
 
 class TestProcessing(object):
+    def test_event_empty_string(self):
+        """
+        Empty strings are a valid event.
+        """
+        b = build_bl(processors=[], context={})
+
+        args, kw = b._process_event("meth", "", {"foo": "bar"})
+
+        assert () == args
+        assert {"event": "", "foo": "bar"} == kw
+
     def test_copies_context_before_processing(self):
         """
         BoundLoggerBase._process_event() gets called before relaying events

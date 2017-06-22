@@ -130,8 +130,8 @@ class BoundLoggerBase(object):
         """
         event_dict = self._context.copy()
         event_dict.update(**event_kw)
-        if event:
-            event_dict['event'] = event
+        if event is not None:
+            event_dict["event"] = event
         for proc in self._processors:
             event_dict = proc(self._logger, method_name, event_dict)
         if isinstance(event_dict, string_types):
