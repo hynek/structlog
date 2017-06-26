@@ -104,6 +104,8 @@ class ConsoleRenderer(object):
         Setting this to ``False`` is useful if you want to have human-readable
         non-ASCII output on Python 2.  The `event` key is *never*
         :func:`repr()` -ed.
+    :param dict colorama_kwargs: Forward kwargs to colorama.init.
+        For example, in order for colors in PyCharm console ``colorama.init(strip=False)`` is needed.
 
     Requires the colorama_ package if *colors* is ``True``.
 
@@ -112,9 +114,10 @@ class ConsoleRenderer(object):
     .. versionadded:: 16.0
     .. versionadded:: 16.1 *colors*
     .. versionadded:: 17.1 *repr_native_str*
+    .. versionadded:: 17.2 *colorama_kwargs*
     """
     def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
-                 repr_native_str=False):
+                 repr_native_str=False, colorama_kwargs=None):
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -123,8 +126,8 @@ class ConsoleRenderer(object):
                         package="colorama"
                     )
                 )
-
-            colorama.init()
+            colorama_kwargs = colorama_kwargs or {}
+            colorama.init(**colorama_kwargs)
             styles = _ColorfulStyles
         else:
             styles = _PlainStyles
