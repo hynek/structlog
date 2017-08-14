@@ -100,6 +100,23 @@ class TestConsoleRenderer(object):
             styles.kv_value + "bar" + styles.reset
         ) == rv
 
+    def test_level_accepts_levels_from_stdlib(self, cr, styles, padded):
+        """
+        Stdlib levels are rendered aligned, in brackets, and color coded.
+        """
+        rv = cr(None, None, {
+            "event": "test", "level": "CRITICAL", "foo": "bar"
+        })
+
+        assert (
+            "[" + dev.RED + styles.bright +
+            dev._pad("CRITICAL", cr._longest_level) +
+            styles.reset + "] " +
+            padded +
+            styles.kv_key + "foo" + styles.reset + "=" +
+            styles.kv_value + "bar" + styles.reset
+        ) == rv
+
     def test_logger_name(self, cr, styles, padded):
         """
         Logger names are appended after the event.

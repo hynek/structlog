@@ -148,6 +148,8 @@ class ConsoleRenderer(object):
             self._level_to_color.keys(),
             key=lambda e: len(e)
         ))
+        for key in list(self._level_to_color.keys()):
+            self._level_to_color[key.upper()] = self._level_to_color[key]
 
         if repr_native_str is True:
             self._repr = repr
