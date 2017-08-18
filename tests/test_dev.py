@@ -100,17 +100,22 @@ class TestConsoleRenderer(object):
             styles.kv_value + "bar" + styles.reset
         ) == rv
 
-    def test_level_accepts_levels_from_stdlib(self, cr, styles, padded):
+    def test_init_accepts_overriding_levels(self, styles, padded):
         """
         Stdlib levels are rendered aligned, in brackets, and color coded.
         """
+        my_styles = dev.ConsoleRenderer.default_level_styles(colors=dev._has_colorama)
+        my_styles["MY_OH_MY"] = my_styles["critical"]
+        cr = dev.ConsoleRenderer(colors=dev._has_colorama, level_styles=my_styles)
+
+        # this would blow up if the level_styles override failed
         rv = cr(None, None, {
-            "event": "test", "level": "CRITICAL", "foo": "bar"
+            "event": "test", "level": "MY_OH_MY", "foo": "bar"
         })
 
         assert (
             "[" + dev.RED + styles.bright +
-            dev._pad("CRITICAL", cr._longest_level) +
+            dev._pad("MY_OH_MY", cr._longest_level) +
             styles.reset + "] " +
             padded +
             styles.kv_key + "foo" + styles.reset + "=" +

@@ -63,6 +63,7 @@ API Reference
 .. automodule:: structlog.dev
 
 .. autoclass:: ConsoleRenderer
+    :members: default_level_styles
 
 
 :mod:`threadlocal` Module
