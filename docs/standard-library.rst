@@ -114,7 +114,7 @@ The :class:`~structlog.stdlib.ProcessorFormatter` has two parts to its API:
 #. The :meth:`~structlog.stdlib.ProcessorFormatter.wrap_for_formatter` method must be used as the last processor in :func:`structlog.configure`,
    it converts the the processed event dict to something that the ``ProcessorFormatter`` understands.
 #. The :class:`~structlog.stdlib.ProcessorFormatter` itself,
-   which can wrap any structlog renderer to handle the output of both structlog and stdlib events.
+   which can wrap any ``structlog`` renderer to handle the output of both ``structlog`` and standard library events.
 
 Thus, the simplest possible configuration looks like the following:
 
@@ -153,8 +153,7 @@ which will allow both of these to work in other modules:
     amazing                        events=oh yes
 
 Of course, you probably want timestamps and log levels in your output.
-The :class:`~structlog.stdlib.ProcessorFormatter` has a ``foreign_pre_chain`` argument which is responsible for adding properties to events from the standard library,
-and which should in general match the ``processors`` argument to :func:`structlog.configure`.
+The :class:`~structlog.stdlib.ProcessorFormatter` has a ``foreign_pre_chain`` argument which is responsible for adding properties to events from the standard library -- i.e. that do not originate from a ``structlog`` logger -- and which should in general match the ``processors`` argument to :func:`structlog.configure` so you get a consistent output.
 
 For example, to add timestamps, log levels, and traceback handling to your logs you should do:
 
@@ -188,8 +187,8 @@ which (given the same ``logging.*`` calls as in the previous example) will resul
     >>> structlog.get_logger('structlog').info('amazing', events='oh yes')
     2017-03-06 14:59:20 [info     ] amazing                        events=oh yes
 
-This allows you to set up some sophisticated logging configs.
-For example, to use the standard library's :func:`~logging.config.dictConfig` to log colored logs to the console and colorless logs to a file you could do:
+This allows you to set up some sophisticated logging configurations.
+For example, to use the standard library's :func:`~logging.config.dictConfig` to log colored logs to the console and plain logs to a file you could do:
 
 .. code-block:: python
 
