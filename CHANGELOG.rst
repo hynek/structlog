@@ -27,6 +27,8 @@ Changes:
 - Empty strings are valid events now.
   `#110 <https://github.com/hynek/structlog/issues/110>`_
 
+- ``structlog.dev.ConsoleRenderer`` now accepts a *force_colors* argument to output colored logs even if the destination is not a tty. 
+  Use this option if your logs are stored in files that are intended to be streamed to the console.
 
 ----
 

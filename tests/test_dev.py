@@ -228,6 +228,29 @@ class TestConsoleRenderer(object):
         assert dev._PlainStyles is plain_cr._styles
         assert "[info     ] event                          foo=bar" == rv
 
+    def test_colorama_force_colors(self, styles, padded):
+        """
+        If force_colors is True, use colors even if
+        the destination is non-tty.
+        """
+        cr = dev.ConsoleRenderer(
+            colors=dev._has_colorama, force_colors=dev._has_colorama)
+
+        rv = cr(None, None, {
+            "event": "test", "level": "critical", "foo": "bar"
+        })
+
+        assert (
+            "[" + dev.RED + styles.bright +
+            dev._pad("critical", cr._longest_level) +
+            styles.reset + "] " +
+            padded +
+            styles.kv_key + "foo" + styles.reset + "=" +
+            styles.kv_value + "bar" + styles.reset
+        ) == rv
+
+        assert not dev._has_colorama or dev._ColorfulStyles is cr._styles
+
     @pytest.mark.parametrize("rns", [True, False])
     def test_repr_native_str(self, rns):
         """
