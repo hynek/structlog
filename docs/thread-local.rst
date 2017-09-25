@@ -61,12 +61,13 @@ Within one thread, every instance of the returned class will have a *common* ins
    <WrappedDict-...({'a': 1, 'b': 2, 'c': 3})>
 
 
-To enable thread local context, then, use the generated class as the context class::
+To enable thread local context use the generated class as the context class::
 
    configure(context_class=WrappedDictClass)
 
 .. note::
-   Creation of a new ``BoundLogger`` initializes the logger's context as ``context_class(initial_values)``, and then adds any values passed via ``.bind()``. As all instances of a wrapped dict-like class share the same data, in the case above, the new logger's context will contain all previously bound values in addition to the new ones.
+   Creation of a new ``BoundLogger`` initializes the logger's context as ``context_class(initial_values)``, and then adds any values passed via ``.bind()``.
+   As all instances of a wrapped dict-like class share the same data, in the case above, the new logger's context will contain all previously bound values in addition to the new ones.
 
 :func:`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
 
