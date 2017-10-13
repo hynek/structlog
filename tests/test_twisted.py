@@ -115,13 +115,13 @@ class TestExtractStuffAndWhy(object):
         """
         f = Failure(ValueError())
         assert (
-            (f, "foo", {}) ==
+            ({'value': f}, "foo", {}) ==
             _extractStuffAndWhy({"_why": "foo",
-                                 "_stuff": f})
+                                 "_stuff": {'value': f}})
         )
         assert (
-            (f, None, {}) ==
-            _extractStuffAndWhy({"_stuff": f})
+            ({'value': f}, None, {}) ==
+            _extractStuffAndWhy({"_stuff": {'value': f}})
         )
 
     def test_handlesMissingFailure(self):
@@ -154,6 +154,7 @@ class TestEventAdapter(object):
     """
     Some tests here are redundant because they predate _extractStuffAndWhy.
     """
+
     def test_EventAdapterFormatsLog(self):
         la = EventAdapter(_render_repr)
         assert "{'foo': 'bar'}" == la(None, 'msg', {'foo': 'bar'})
