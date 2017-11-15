@@ -26,7 +26,8 @@ Changes:
 
 - Empty strings are valid events now.
   `#110 <https://github.com/hynek/structlog/issues/110>`_
-
+- Do not encapsulate Twisted failures twice with newer versions of Twisted.
+  `#144 <https://github.com/hynek/structlog/issues/144>`_
 
 ----
 

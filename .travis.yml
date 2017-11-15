@@ -32,6 +32,8 @@ matrix:
       env: TOXENV=py27-colorama
     - python: "3.6"
       env: TOXENV=py36-colorama
+    - python: "3.6"
+      env: TOXENV=py36-oldtwisted
 
 
     # Meta
