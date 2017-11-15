@@ -24,9 +24,9 @@ matrix:
       env: TOXENV=py36-threads
     - python: "3.6"
       env: TOXENV=py36-greenlets
-    - python: "pypy"
+    - python: "pypy2.7-5.8.0"
       env: TOXENV=pypy-threads
-    - python: "pypy"
+    - python: "pypy2.7-5.8.0"
       env: TOXENV=pypy-greenlets
     - python: "2.7"
       env: TOXENV=py27-colorama
