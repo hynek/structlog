@@ -28,6 +28,10 @@ matrix:
       env: TOXENV=pypy-threads
     - python: "pypy2.7-5.8.0"
       env: TOXENV=pypy-greenlets
+    - python: "pypy3.5-5.8.0"
+      env: TOXENV=pypy3-threads
+    - python: "pypy3.5-5.8.0"
+      env: TOXENV=pypy3-greenlets
     - python: "2.7"
       env: TOXENV=py27-colorama
     - python: "3.6"
