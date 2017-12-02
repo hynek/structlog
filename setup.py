@@ -34,6 +34,13 @@ CLASSIFIERS = [
 INSTALL_REQUIRES = ["six"]
 EXTRAS_REQUIRE = {
     "dev": ["colorama"],
+    "test": [
+        "coverage",
+        "freezegun>=0.2.8",
+        "pretend",
+        "pytest>=3.3.0",
+        "simplejson",
+    ]
 }
 
 ###############################################################################
