@@ -2,5 +2,5 @@
 coverage
 freezegun>=0.2.8
 pretend
-pytest
+pytest>=3.3.0
 simplejson

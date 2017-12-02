@@ -81,7 +81,7 @@ class TestLoggerFactory(object):
         name is not from structlog or one of the configurable other names.
         """
         assert '__main__' == additional_frame(LoggerFactory(
-            ignore_frame_names=['tests.', '_pytest.'])
+            ignore_frame_names=["tests.", "_pytest.", "pluggy"])
         ).name
 
     def test_deduces_correct_caller(self):
