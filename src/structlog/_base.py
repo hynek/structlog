@@ -149,7 +149,7 @@ class BoundLoggerBase(object):
                 "string."
             )
 
-    def _proxy_to_logger(self, method_name, event=None, **event_kw):
+    def _proxy_to_logger(self, method_name, event=None, *args, **event_kw):
         """
         Run processor chain on event & call *method_name* on wrapped logger.
 
@@ -162,6 +162,8 @@ class BoundLoggerBase(object):
             user called because it also get passed into processors.
         :param event: The event -- usually the first positional argument to a
             logger.
+        :param args: argument to render into the event (for compatibility with
+            lazy argument evaluation of logging.* functions)
         :param event_kw: Additional event keywords.  For example if someone
             calls ``log.msg('foo', bar=42)``, *event* would to be ``'foo'``
             and *event_kw* ``{'bar': 42}``.
@@ -172,6 +174,8 @@ class BoundLoggerBase(object):
 
             See also :doc:`custom-wrappers`.
         """
+        if args:
+            event = event % args
         try:
             args, kw = self._process_event(method_name, event, event_kw)
             return getattr(self._logger, method_name)(*args, **kw)
