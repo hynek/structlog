@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, print_function
 
 from six import StringIO
 
+
 try:
     import colorama
 except ImportError:
@@ -225,9 +226,10 @@ class ConsoleRenderer(object):
         """
         Get the default styles for log levels
 
-        This is intended to be used with :class:`ConsoleRenderer`'s ``level_styles``
-        parameter. For example, if you are adding custom levels in your
-        home-grown :func:`~structlog.stdlib.add_log_level` you could do::
+        This is intended to be used with :class:`ConsoleRenderer`'s
+        ``level_styles`` parameter.  For example, if you are adding
+        custom levels in your home-grown
+        :func:`~structlog.stdlib.add_log_level` you could do::
 
             my_styles = ConsoleRenderer.default_level_styles()
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
