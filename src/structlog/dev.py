@@ -110,7 +110,8 @@ class ConsoleRenderer(object):
         :func:`repr()` -ed.
     :param dict level_styles: When present, use these styles for colors. This
         must be a dict from level names (strings) to colorama styles. The
-        default is the output of :meth:`ConsoleRenderer.default_level_styles`
+        default can be obtained by calling
+        :meth:`ConsoleRenderer.get_default_level_styles`
 
     Requires the colorama_ package if *colors* is ``True``.
 
@@ -147,7 +148,7 @@ class ConsoleRenderer(object):
         self._pad_event = pad_event
 
         if level_styles is None:
-            self._level_to_color = self.default_level_styles(colors)
+            self._level_to_color = self.get_default_level_styles(colors)
         else:
             self._level_to_color = level_styles
 
@@ -222,7 +223,7 @@ class ConsoleRenderer(object):
         return sio.getvalue()
 
     @staticmethod
-    def default_level_styles(colors=True):
+    def get_default_level_styles(colors=True):
         """
         Get the default styles for log levels
 
@@ -231,7 +232,7 @@ class ConsoleRenderer(object):
         custom levels in your home-grown
         :func:`~structlog.stdlib.add_log_level` you could do::
 
-            my_styles = ConsoleRenderer.default_level_styles()
+            my_styles = ConsoleRenderer.get_default_level_styles()
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
             renderer = ConsoleRenderer(level_styles=my_styles)
 

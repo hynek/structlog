@@ -104,7 +104,7 @@ class TestConsoleRenderer(object):
         """
         Stdlib levels are rendered aligned, in brackets, and color coded.
         """
-        my_styles = dev.ConsoleRenderer.default_level_styles(
+        my_styles = dev.ConsoleRenderer.get_default_level_styles(
             colors=dev._has_colorama
         )
         my_styles["MY_OH_MY"] = my_styles["critical"]

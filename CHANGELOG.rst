@@ -30,9 +30,9 @@ Changes:
   `#144 <https://github.com/hynek/structlog/issues/144>`_
 - ``structlog.dev.ConsoleRenderer`` now accepts a *force_colors* argument to output colored logs even if the destination is not a tty.
   Use this option if your logs are stored in files that are intended to be streamed to the console.
-- ``structlog.dev.ConsoleRenderer`` now allows you to override the colors for individual levels, as well as to add new levels by adjusting the style map.
-  See the docs for ``ConsoleRenderer.default_level_styles`` for usage.
-  `#139 <https://github.com/hynek/structlog/pull/139>`
+- ``structlog.dev.ConsoleRenderer`` now accepts a *level_styles* argument for overriding the colors for individual levels, as well as to add new levels.
+  See the docs for ``ConsoleRenderer.get_default_level_styles()`` for usage.
+  `#139 <https://github.com/hynek/structlog/pull/139>`_
 
 
 ----
