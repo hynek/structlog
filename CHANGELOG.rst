@@ -33,6 +33,8 @@ Changes:
 - ``structlog.dev.ConsoleRenderer`` now accepts a *level_styles* argument for overriding the colors for individual levels, as well as to add new levels.
   See the docs for ``ConsoleRenderer.get_default_level_styles()`` for usage.
   `#139 <https://github.com/hynek/structlog/pull/139>`_
+- ``structlog.stdlib.BoundLogger.exception()`` now uses the ``exc_info`` argument if it has been passed instead of setting it unconditionally to ``True``.
+  `#149 <https://github.com/hynek/structlog/pull/149>`_
 
 
 ----

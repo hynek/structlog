@@ -210,12 +210,22 @@ class TestBoundLogger(object):
         BoundLogger.exception sets exc_info=True.
         """
         bl = BoundLogger(ReturnLogger(), [], {})
-        assert ((),
-                {"exc_info": True, "event": "event"}) == bl.exception('event')
 
-    def test_exception_maps_to_error(self):
-        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
-        assert "error" == bl.exception("event")
+        assert (
+            (),
+            {"exc_info": True, "event": "event"}
+        ) == bl.exception("event")
+
+    def test_exception_exc_info_override(self):
+        """
+        If *exc_info* is password to exception, it's used.
+        """
+        bl = BoundLogger(ReturnLogger(), [], {})
+
+        assert (
+            (),
+            {"exc_info": 42, "event": "event"}
+        ) == bl.exception("event", exc_info=42)
 
 
 class TestPositionalArgumentsFormatter(object):

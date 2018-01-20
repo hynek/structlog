@@ -91,7 +91,7 @@ class BoundLogger(BoundLoggerBase):
         Process event and call :meth:`logging.Logger.error` with the result,
         after setting ``exc_info`` to `True`.
         """
-        kw['exc_info'] = True
+        kw.setdefault("exc_info", True)
         return self.error(event, *args, **kw)
 
     def log(self, level, event, *args, **kw):
