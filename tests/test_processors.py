@@ -11,33 +11,31 @@ import json
 import sys
 
 import pytest
-import simplejson
 import six
-
-try:
-    import rapidjson
-except ImportError:
-    rapidjson = None
 
 from freezegun import freeze_time
 
 import structlog
 
 from structlog.processors import (
-    ExceptionPrettyPrinter,
-    JSONRenderer,
-    KeyValueRenderer,
-    StackInfoRenderer,
-    TimeStamper,
-    UnicodeDecoder,
-    UnicodeEncoder,
-    _figure_out_exc_info,
-    _json_fallback_handler,
-    format_exc_info,
+    ExceptionPrettyPrinter, JSONRenderer, KeyValueRenderer, StackInfoRenderer,
+    TimeStamper, UnicodeDecoder, UnicodeEncoder, _figure_out_exc_info,
+    _json_fallback_handler, format_exc_info
 )
 from structlog.threadlocal import wrap_dict
 
 from .utils import py3_only
+
+
+try:
+    import simplejson
+except ImportError:
+    simplejson = None
+
+try:
+    import rapidjson
+except ImportError:
+    rapidjson = None
 
 
 class TestKeyValueRenderer(object):
@@ -167,6 +165,7 @@ class TestJSONRenderer(object):
 
         assert {"a": 42} == jr(None, None, obj)
 
+    @pytest.mark.skipif(simplejson is None, reason="simplejson is missing.")
     def test_simplejson(self, event_dict):
         """
         Integration test with simplejson.

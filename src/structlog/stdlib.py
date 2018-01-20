@@ -13,11 +13,11 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 
+from six import PY3
+
 from structlog._base import BoundLoggerBase
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
-
-from six import PY3
 
 
 class _FixedFindCallerLogger(logging.Logger):
@@ -252,7 +252,7 @@ class PositionalArgumentsFormatter(object):
     used for keyword placeholders in the `event` string, otherwise it
     will be used for positional placeholders.
 
-    `positional_args` is populated by `structlog.stdlib.BoundLogger` or
+    `positional_args` is populated by :class:`structlog.stdlib.BoundLogger` or
     can be set manually.
 
     The `remove_positional_args` flag can be set to `False` to keep the

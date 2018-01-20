@@ -26,10 +26,14 @@ Changes:
 
 - Empty strings are valid events now.
   `#110 <https://github.com/hynek/structlog/issues/110>`_
-- ``structlog.dev.ConsoleRenderer`` now allows you to override the colors for individual levels,
-  as well as to add new levels by adjusting the style map.
+- Do not encapsulate Twisted failures twice with newer versions of Twisted.
+  `#144 <https://github.com/hynek/structlog/issues/144>`_
+- ``structlog.dev.ConsoleRenderer`` now accepts a *force_colors* argument to output colored logs even if the destination is not a tty. 
+  Use this option if your logs are stored in files that are intended to be streamed to the console.
+- ``structlog.dev.ConsoleRenderer`` now allows you to override the colors for individual levels, as well as to add new levels by adjusting the style map.
   See the docs for ``ConsoleRenderer.default_level_styles`` for usage.
   `#139 <https://github.com/hynek/structlog/pull/139>`
+
 
 ----
 

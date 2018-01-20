@@ -12,24 +12,18 @@ import pytest
 
 from pretend import call_recorder
 from six import PY3
-from six.moves import cStringIO as StringIO
-from twisted.python.failure import Failure, NoCurrentExceptionError
-from twisted.python.log import ILogObserver
 
-from structlog._config import _CONFIG
+from six.moves import cStringIO as StringIO
 from structlog import ReturnLogger
+from structlog._config import _CONFIG
 from structlog.processors import KeyValueRenderer
 from structlog.twisted import (
-    BoundLogger,
-    EventAdapter,
-    JSONLogObserverWrapper,
-    JSONRenderer,
-    LoggerFactory,
-    PlainFileLogObserver,
-    ReprWrapper,
-    _extractStuffAndWhy,
-    plainJSONStdOutLogger,
+    BoundLogger, EventAdapter, JSONLogObserverWrapper, JSONRenderer,
+    LoggerFactory, PlainFileLogObserver, ReprWrapper, _extractStuffAndWhy,
+    plainJSONStdOutLogger
 )
+from twisted.python.failure import Failure, NoCurrentExceptionError
+from twisted.python.log import ILogObserver
 
 
 def test_LoggerFactory():
@@ -115,13 +109,13 @@ class TestExtractStuffAndWhy(object):
         """
         f = Failure(ValueError())
         assert (
-            (f, "foo", {}) ==
+            ({'value': f}, "foo", {}) ==
             _extractStuffAndWhy({"_why": "foo",
-                                 "_stuff": f})
+                                 "_stuff": {'value': f}})
         )
         assert (
-            (f, None, {}) ==
-            _extractStuffAndWhy({"_stuff": f})
+            ({'value': f}, None, {}) ==
+            _extractStuffAndWhy({"_stuff": {'value': f}})
         )
 
     def test_handlesMissingFailure(self):
@@ -154,6 +148,7 @@ class TestEventAdapter(object):
     """
     Some tests here are redundant because they predate _extractStuffAndWhy.
     """
+
     def test_EventAdapterFormatsLog(self):
         la = EventAdapter(_render_repr)
         assert "{'foo': 'bar'}" == la(None, 'msg', {'foo': 'bar'})

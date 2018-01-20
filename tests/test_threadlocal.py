@@ -13,7 +13,8 @@ import pytest
 from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
 from structlog._loggers import ReturnLogger
-from structlog.threadlocal import as_immutable, wrap_dict, tmp_bind
+from structlog.threadlocal import as_immutable, tmp_bind, wrap_dict
+
 
 try:
     import greenlet

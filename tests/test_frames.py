@@ -13,9 +13,7 @@ from pretend import stub
 import structlog._frames
 
 from structlog._frames import (
-    _find_first_app_frame_and_name,
-    _format_exception,
-    _format_stack,
+    _find_first_app_frame_and_name, _format_exception, _format_stack
 )
 
 

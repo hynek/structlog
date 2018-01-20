@@ -8,6 +8,28 @@ If you run into incompatibilities, it is a *bug* so please take the time to `rep
 If you're a heavy :mod:`logging` user, your `help <https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib>`_ to ensure a better compatibility would be highly appreciated!
 
 
+Just Enough ``logging``
+-----------------------
+
+If you want to use ``structlog`` with :mod:`logging`, you still have to have at least fleeting understanding on how the standard library operates because ``structlog`` will *not* do any magic things in the background for you.
+Most importantly you have *configure* the :mod:`logging` system *additionally* to configuring ``structlog``.
+
+Usually it is enough to use::
+
+  import logging
+  import sys
+
+  logging.basicConfig(
+      format="%(message)s",
+      stream=sys.stdout,
+      level=logging.INFO,
+  )
+
+This will send all log messages with the `log level <https://docs.python.org/3/library/logging.html#logging-levels>`_ ``logging.INFO`` and above (that means that e.g. :func:`logging.debug` calls are ignored) to standard out without any special formatting by the standard library.
+
+If you require more complex behavior, please refer to the standard library's :mod:`logging` documentation.
+
+
 Concrete Bound Logger
 ---------------------
 
@@ -107,7 +129,88 @@ Now both ``structlog`` and ``logging`` will emit JSON logs:
 Rendering Using ``structlog``-based Formatters Within :mod:`logging`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can leave rendering for later and yet use ``structlog``’s renderers for it:
+``structlog`` comes with a :class:`~structlog.stdlib.ProcessorFormatter` that can be used as a :class:`~logging.Formatter` in any stdlib :mod:`Handler <logging.handlers>` object.
+
+The :class:`~structlog.stdlib.ProcessorFormatter` has two parts to its API:
+
+#. The :meth:`~structlog.stdlib.ProcessorFormatter.wrap_for_formatter` method must be used as the last processor in :func:`structlog.configure`,
+   it converts the the processed event dict to something that the ``ProcessorFormatter`` understands.
+#. The :class:`~structlog.stdlib.ProcessorFormatter` itself,
+   which can wrap any ``structlog`` renderer to handle the output of both ``structlog`` and standard library events.
+
+Thus, the simplest possible configuration looks like the following:
+
+.. code-block:: python
+
+    import logging
+    import structlog
+
+    structlog.configure(
+        processors=[
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+    )
+
+    formatter = structlog.stdlib.ProcessorFormatter(
+        processor=structlog.dev.ConsoleRenderer(),
+    )
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    root_logger = logging.getLogger()
+    root_logger.addHandler(handler)
+    root_logger.setLevel(logging.INFO)
+
+which will allow both of these to work in other modules:
+
+.. code-block:: pycon
+
+    >>> import logging
+    >>> import structlog
+
+    >>> logging.getLogger('stdlog').info('woo')
+    woo
+    >>> structlog.get_logger('structlog').info('amazing', events='oh yes')
+    amazing                        events=oh yes
+
+Of course, you probably want timestamps and log levels in your output.
+The :class:`~structlog.stdlib.ProcessorFormatter` has a ``foreign_pre_chain`` argument which is responsible for adding properties to events from the standard library -- i.e. that do not originate from a ``structlog`` logger -- and which should in general match the ``processors`` argument to :func:`structlog.configure` so you get a consistent output.
+
+For example, to add timestamps, log levels, and traceback handling to your logs you should do:
+
+.. code-block:: python
+
+    timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
+    shared_processors = [
+        structlog.stdlib.add_log_level,
+        timestamper,
+    ]
+
+    structlog.configure(
+        processors=shared_processors + [
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        cache_logger_on_first_use=True,
+    )
+
+    formatter = structlog.stdlib.ProcessorFormatter(
+        processor=structlog.dev.ConsoleRenderer(),
+        foreign_pre_chain=shared_processors,
+    )
+
+which (given the same ``logging.*`` calls as in the previous example) will result in:
+
+.. code-block:: pycon
+
+    >>> logging.getLogger('stdlog').info('woo')
+    2017-03-06 14:59:20 [info     ] woo
+    >>> structlog.get_logger('structlog').info('amazing', events='oh yes')
+    2017-03-06 14:59:20 [info     ] amazing                        events=oh yes
+
+This allows you to set up some sophisticated logging configurations.
+For example, to use the standard library's :func:`~logging.config.dictConfig` to log colored logs to the console and plain logs to a file you could do:
 
 .. code-block:: python
 

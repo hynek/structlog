@@ -8,22 +8,15 @@ import warnings
 
 import pytest
 
-from pretend import call_recorder, call, stub
+from pretend import call, call_recorder, stub
 from six import PY3
 
 from structlog._base import BoundLoggerBase
 from structlog._config import (
-    BoundLoggerLazyProxy,
-    _CONFIG,
-    _BUILTIN_DEFAULT_CONTEXT_CLASS,
-    _BUILTIN_DEFAULT_PROCESSORS,
-    _BUILTIN_DEFAULT_LOGGER_FACTORY,
-    _BUILTIN_DEFAULT_WRAPPER_CLASS,
-    configure,
-    configure_once,
-    get_logger,
-    reset_defaults,
-    wrap_logger,
+    _BUILTIN_DEFAULT_CONTEXT_CLASS, _BUILTIN_DEFAULT_LOGGER_FACTORY,
+    _BUILTIN_DEFAULT_PROCESSORS, _BUILTIN_DEFAULT_WRAPPER_CLASS, _CONFIG,
+    BoundLoggerLazyProxy, configure, configure_once, get_logger,
+    reset_defaults, wrap_logger
 )
 
 
@@ -262,8 +255,9 @@ class TestFunctions(object):
         """
         # We need to do a bind such that we get an actual logger and not just
         # a lazy proxy.
-        l = wrap_logger(object(), processors=[]).new()
-        assert [] == l._processors
+        logger = wrap_logger(object(), processors=[]).new()
+
+        assert [] == logger._processors
 
     def test_wrap_returns_proxy(self):
         assert isinstance(wrap_logger(None), BoundLoggerLazyProxy)

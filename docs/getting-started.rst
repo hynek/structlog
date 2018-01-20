@@ -111,7 +111,7 @@ To make this common case as simple as possible, ``structlog`` comes with some to
    >>> from structlog.stdlib import LoggerFactory
    >>> configure(logger_factory=LoggerFactory())  # doctest: +SKIP
    >>> log = get_logger()
-   >>> log.warn('it works!', difficulty='easy')  # doctest: +SKIP
+   >>> log.warning('it works!', difficulty='easy')  # doctest: +SKIP
    WARNING:structlog...:difficulty='easy' event='it works!'
 
 In other words, you tell ``structlog`` that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.
