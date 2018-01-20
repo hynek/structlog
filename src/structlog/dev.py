@@ -99,6 +99,9 @@ class ConsoleRenderer(object):
 
     :param int pad_event: Pad the event to this many characters.
     :param bool colors: Use colors for a nicer output.
+    :param bool force_colors: Force colors even for non-tty destinations.
+        Use this option if your logs are stored in a file that is meant
+        to be streamed to the console.
     :param bool repr_native_str: When ``True``, :func:`repr()` is also applied
         to native strings (i.e. unicode on Python 3 and bytes on Python 2).
         Setting this to ``False`` is useful if you want to have human-readable
@@ -114,7 +117,7 @@ class ConsoleRenderer(object):
     .. versionadded:: 17.1 *repr_native_str*
     """
     def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
-                 repr_native_str=False):
+                 force_colors=False, repr_native_str=False):
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -124,7 +127,12 @@ class ConsoleRenderer(object):
                     )
                 )
 
-            colorama.init()
+            if force_colors:
+                colorama.deinit()
+                colorama.init(strip=False)
+            else:
+                colorama.init()
+
             styles = _ColorfulStyles
         else:
             styles = _PlainStyles
@@ -168,7 +176,7 @@ class ConsoleRenderer(object):
                 # can be a number if timestamp is UNIXy
                 self._styles.timestamp + str(ts) + self._styles.reset + " "
             )
-        level = event_dict.pop("level",  None)
+        level = event_dict.pop("level", None)
         if level is not None:
             sio.write(
                 "[" + self._level_to_color[level] +
