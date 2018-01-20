@@ -108,6 +108,9 @@ class ConsoleRenderer(object):
         Setting this to ``False`` is useful if you want to have human-readable
         non-ASCII output on Python 2.  The `event` key is *never*
         :func:`repr()` -ed.
+    :param dict level_styles: When present, use these styles for colors. This
+        must be a dict from level names (strings) to colorama styles. The
+        default is the output of :meth:`ConsoleRenderer.default_level_styles`
 
     Requires the colorama_ package if *colors* is ``True``.
 
@@ -117,9 +120,10 @@ class ConsoleRenderer(object):
     .. versionadded:: 16.1 *colors*
     .. versionadded:: 17.1 *repr_native_str*
     .. versionadded:: 18.1 *force_colors*
+    .. versionadded:: 18.1 *level_styles*
     """
     def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
-                 force_colors=False, repr_native_str=False):
+                 force_colors=False, repr_native_str=False, level_styles=None):
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -141,16 +145,11 @@ class ConsoleRenderer(object):
 
         self._styles = styles
         self._pad_event = pad_event
-        self._level_to_color = {
-            "critical": styles.level_critical,
-            "exception": styles.level_exception,
-            "error": styles.level_error,
-            "warn": styles.level_warn,
-            "warning": styles.level_warn,
-            "info": styles.level_info,
-            "debug": styles.level_debug,
-            "notset": styles.level_notset,
-        }
+
+        if level_styles is None:
+            self._level_to_color = self.default_level_styles(colors)
+        else:
+            self._level_to_color = level_styles
 
         for key in self._level_to_color.keys():
             self._level_to_color[key] += styles.bright
@@ -221,3 +220,35 @@ class ConsoleRenderer(object):
             sio.write("\n" + exc)
 
         return sio.getvalue()
+
+    @staticmethod
+    def default_level_styles(colors=True):
+        """
+        Get the default styles for log levels
+
+        This is intended to be used with :class:`ConsoleRenderer`'s
+        ``level_styles`` parameter.  For example, if you are adding
+        custom levels in your home-grown
+        :func:`~structlog.stdlib.add_log_level` you could do::
+
+            my_styles = ConsoleRenderer.default_level_styles()
+            my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
+            renderer = ConsoleRenderer(level_styles=my_styles)
+
+        :param bool colors: Whether to use colorful styles. This must match the
+            `colors` parameter to :class:`ConsoleRenderer`. Default: True.
+        """
+        if colors:
+            styles = _ColorfulStyles
+        else:
+            styles = _PlainStyles
+        return {
+            "critical": styles.level_critical,
+            "exception": styles.level_exception,
+            "error": styles.level_error,
+            "warn": styles.level_warn,
+            "warning": styles.level_warn,
+            "info": styles.level_info,
+            "debug": styles.level_debug,
+            "notset": styles.level_notset,
+        }
