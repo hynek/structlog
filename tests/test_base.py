@@ -28,8 +28,11 @@ def build_bl(logger=None, processors=None, context=None):
 
 class TestBinding(object):
     def test_repr(self):
-        l = build_bl(processors=[1, 2, 3], context={})
-        assert '<BoundLoggerBase(context={}, processors=[1, 2, 3])>' == repr(l)
+        bl = build_bl(processors=[1, 2, 3], context={})
+
+        assert (
+            "<BoundLoggerBase(context={}, processors=[1, 2, 3])>"
+        ) == repr(bl)
 
     def test_binds_independently(self):
         """

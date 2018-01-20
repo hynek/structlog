@@ -83,14 +83,16 @@ class TestPrintLoggerFactory(object):
         Due to doctest weirdness, we must not re-use PrintLoggers.
         """
         f = PrintLoggerFactory()
+
         assert f() is not f()
 
     def test_passes_file(self):
         """
         If a file is passed to the factory, it get passed on to the logger.
         """
-        l = PrintLoggerFactory(sys.stderr)()
-        assert sys.stderr is l._file
+        pl = PrintLoggerFactory(sys.stderr)()
+
+        assert sys.stderr is pl._file
 
     def test_ignores_args(self):
         """

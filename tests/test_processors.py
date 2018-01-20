@@ -11,8 +11,12 @@ import json
 import sys
 
 import pytest
-import simplejson
 import six
+
+try:
+    import simplejson
+except ImportError:
+    simplejson = None
 
 try:
     import rapidjson
@@ -167,6 +171,7 @@ class TestJSONRenderer(object):
 
         assert {"a": 42} == jr(None, None, obj)
 
+    @pytest.mark.skipif(simplejson is None, reason="simplejson is missing.")
     def test_simplejson(self, event_dict):
         """
         Integration test with simplejson.

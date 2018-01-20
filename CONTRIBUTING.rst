@@ -112,20 +112,14 @@ Next get an up to date checkout of the ``structlog`` repository:
 
     git checkout git@github.com:hynek/structlog.git
 
-Change into the newly created directory and **after activating your virtual environment** install an editable version of ``structlog``:
+Change into the newly created directory and **after activating your virtual environment** install an editable version of ``structlog`` along with its test dependencies:
 
 .. code-block:: bash
 
     cd structlog
-    pip install -e .
+    pip install -e .[test]
 
 If you run the virtual environment’s Python and try to ``import structlog`` it should work!
-
-To run the test suite, you'll need our development dependencies which can be installed using
-
-.. code-block:: bash
-
-    pip install -r dev-requirements.txt
 
 At this point
 

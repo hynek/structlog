@@ -262,8 +262,9 @@ class TestFunctions(object):
         """
         # We need to do a bind such that we get an actual logger and not just
         # a lazy proxy.
-        l = wrap_logger(object(), processors=[]).new()
-        assert [] == l._processors
+        logger = wrap_logger(object(), processors=[]).new()
+
+        assert [] == logger._processors
 
     def test_wrap_returns_proxy(self):
         assert isinstance(wrap_logger(None), BoundLoggerLazyProxy)

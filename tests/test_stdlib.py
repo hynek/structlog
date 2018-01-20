@@ -81,7 +81,7 @@ class TestLoggerFactory(object):
         name is not from structlog or one of the configurable other names.
         """
         assert '__main__' == additional_frame(LoggerFactory(
-            ignore_frame_names=['tests.', '_pytest.'])
+            ignore_frame_names=["tests.", "_pytest.", "pluggy"])
         ).name
 
     def test_deduces_correct_caller(self):
@@ -122,8 +122,9 @@ class TestLoggerFactory(object):
         If a positional argument is passed to the factory, it's used as the
         name instead of guessing.
         """
-        l = LoggerFactory()('foo')
-        assert 'foo' == l.name
+        lf = LoggerFactory()("foo")
+
+        assert "foo" == lf.name
 
 
 class TestFilterByLevel(object):

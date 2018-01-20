@@ -107,7 +107,7 @@ def _extractStuffAndWhy(eventDict):
         _stuff = Failure()
     # Either we used the error ourselves or the user supplied one for
     # formatting.  Avoid log.err() to dump another traceback into the log.
-    if isinstance(_stuff, BaseException):
+    if isinstance(_stuff, BaseException) and not isinstance(_stuff, Failure):
         _stuff = Failure(_stuff)
     if PY2:
         sys.exc_clear()

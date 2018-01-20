@@ -8,6 +8,28 @@ If you run into incompatibilities, it is a *bug* so please take the time to `rep
 If you're a heavy :mod:`logging` user, your `help <https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib>`_ to ensure a better compatibility would be highly appreciated!
 
 
+Just Enough ``logging``
+-----------------------
+
+If you want to use ``structlog`` with :mod:`logging`, you still have to have at least fleeting understanding on how the standard library operates because ``structlog`` will *not* do any magic things in the background for you.
+Most importantly you have *configure* the :mod:`logging` system *additionally* to configuring ``structlog``.
+
+Usually it is enough to use::
+
+  import logging
+  import sys
+
+  logging.basicConfig(
+      format="%(message)s",
+      stream=sys.stdout,
+      level=logging.INFO,
+  )
+
+This will send all log messages with the `log level <https://docs.python.org/3/library/logging.html#logging-levels>`_ ``logging.INFO`` and above (that means that e.g. :func:`logging.debug` calls are ignored) to standard out without any special formatting by the standard library.
+
+If you require more complex behavior, please refer to the standard library's :mod:`logging` documentation.
+
+
 Concrete Bound Logger
 ---------------------
 
