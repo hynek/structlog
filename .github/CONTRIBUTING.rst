@@ -56,7 +56,7 @@ Tests
 
 - To run the test suite, all you need is a recent tox_.
   It will ensure the test suite runs with all dependencies against all Python versions just as it will on Travis CI.
-  If you lack some Python versions, you can can always limit the environments like ``tox -e py27,py35`` (in that case you may want to look into pyenv_, which makes it very easy to install many different Python versions in parallel).
+  If you lack some Python versions, you can can make it a non-failure using ``tox --skip-missing-interpreters`` (in that case you may want to look into pyenv_ that makes it very easy to install many different Python versions in parallel).
 - Write `good test docstrings`_.
 
 
@@ -155,7 +155,7 @@ Thank you for considering contributing to ``structlog``!
 .. _`PEP 8`: https://www.python.org/dev/peps/pep-0008/
 .. _`PEP 257`: https://www.python.org/dev/peps/pep-0257/
 .. _`good test docstrings`: https://jml.io/pages/test-docstrings.html
-.. _`Code of Conduct`: https://github.com/hynek/structlog/blob/master/CODE_OF_CONDUCT.rst
+.. _`Code of Conduct`: https://github.com/hynek/structlog/blob/master/.github/CODE_OF_CONDUCT.rst
 .. _changelog: https://github.com/hynek/structlog/blob/master/CHANGELOG.rst
 .. _`backward compatibility`: https://structlog.readthedocs.io/en/latest/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
