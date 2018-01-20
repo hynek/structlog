@@ -119,7 +119,7 @@ The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
    While neither allows for customization using parameters yet, they may do so in the future.
 
 Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger` with the default values explained above.
-I don't believe silent loggers are a sensible default.
+We don't believe silent loggers are a sensible default.
 
 
 Where to Configure
