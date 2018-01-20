@@ -13,15 +13,10 @@ import warnings
 from collections import OrderedDict
 
 from ._generic import BoundLogger
-from ._loggers import (
-    PrintLoggerFactory,
-)
+from ._loggers import PrintLoggerFactory
 from .dev import ConsoleRenderer, _has_colorama
-from .processors import (
-    StackInfoRenderer,
-    TimeStamper,
-    format_exc_info,
-)
+from .processors import StackInfoRenderer, TimeStamper, format_exc_info
+
 
 _BUILTIN_DEFAULT_PROCESSORS = [
     StackInfoRenderer(),

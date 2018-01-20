@@ -13,6 +13,7 @@ import uuid
 
 from structlog._config import BoundLoggerLazyProxy
 
+
 try:
     from greenlet import getcurrent
 except ImportError:

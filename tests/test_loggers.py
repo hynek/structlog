@@ -10,11 +10,8 @@ import pytest
 
 from six.moves import cStringIO as StringIO
 from structlog._loggers import (
-    PrintLogger,
-    PrintLoggerFactory,
-    ReturnLogger,
-    ReturnLoggerFactory,
-    WRITE_LOCKS,
+    WRITE_LOCKS, PrintLogger, PrintLoggerFactory, ReturnLogger,
+    ReturnLoggerFactory
 )
 from structlog.stdlib import _NAME_TO_LEVEL
 

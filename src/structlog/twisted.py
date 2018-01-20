@@ -15,6 +15,7 @@ import json
 import sys
 
 from six import PY2, string_types
+
 from twisted.python import log
 from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver, textFromEventDict
@@ -23,10 +24,7 @@ from zope.interface import implementer
 from ._base import BoundLoggerBase
 from ._config import _BUILTIN_DEFAULT_PROCESSORS
 from ._utils import until_not_interrupted
-from .processors import (
-    # can't import processors module without risking circular imports
-    JSONRenderer as GenericJSONRenderer,
-)
+from .processors import JSONRenderer as GenericJSONRenderer
 
 
 class BoundLogger(BoundLoggerBase):

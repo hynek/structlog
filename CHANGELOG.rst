@@ -5,7 +5,7 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
-17.3.0 (UNRELEASED)
+18.1.0 (UNRELEASED)
 -------------------
 
 
@@ -28,8 +28,9 @@ Changes:
   `#110 <https://github.com/hynek/structlog/issues/110>`_
 - Do not encapsulate Twisted failures twice with newer versions of Twisted.
   `#144 <https://github.com/hynek/structlog/issues/144>`_
-- ``structlog.dev.ConsoleRenderer`` now accepts a *force_colors* argument to output colored logs even if the destination is not a tty. 
+- ``structlog.dev.ConsoleRenderer`` now accepts a *force_colors* argument to output colored logs even if the destination is not a tty.
   Use this option if your logs are stored in files that are intended to be streamed to the console.
+  `#141 <https://github.com/hynek/structlog/issues/141>`_
 
 
 ----

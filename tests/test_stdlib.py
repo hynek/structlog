@@ -4,32 +4,23 @@
 
 from __future__ import absolute_import, division, print_function
 
-import os
-
-import logging
 import collections
+import logging
 import logging.config
+import os
 
 import pytest
 
 from pretend import call_recorder
 
-from structlog import reset_defaults, configure, ReturnLogger, get_logger
+from structlog import ReturnLogger, configure, get_logger, reset_defaults
 from structlog.dev import ConsoleRenderer
-from structlog.processors import JSONRenderer
 from structlog.exceptions import DropEvent
+from structlog.processors import JSONRenderer
 from structlog.stdlib import (
-    BoundLogger,
-    CRITICAL,
-    LoggerFactory,
-    PositionalArgumentsFormatter,
-    ProcessorFormatter,
-    WARN,
-    _FixedFindCallerLogger,
-    add_log_level,
-    add_logger_name,
-    filter_by_level,
-    render_to_log_kwargs,
+    CRITICAL, WARN, BoundLogger, LoggerFactory, PositionalArgumentsFormatter,
+    ProcessorFormatter, _FixedFindCallerLogger, add_log_level, add_logger_name,
+    filter_by_level, render_to_log_kwargs
 )
 
 from .additional_frame import additional_frame
@@ -595,7 +586,7 @@ class TestProcessorFormatter(object):
         )
         logger.handlers[0].setFormatter(formatter)
 
-        logging.getLogger().warn("have a stack trace", stack_info=True)
+        logging.getLogger().warning("have a stack trace", stack_info=True)
 
         out, err = capsys.readouterr()
         assert "" == out

@@ -1,3 +1,5 @@
+dist: trusty
+group: travis_latest
 sudo: false
 cache:
   directories:
@@ -24,13 +26,13 @@ matrix:
       env: TOXENV=py36-threads
     - python: "3.6"
       env: TOXENV=py36-greenlets
-    - python: "pypy2.7-5.8.0"
+    - python: "pypy"
       env: TOXENV=pypy-threads
-    - python: "pypy2.7-5.8.0"
+    - python: "pypy"
       env: TOXENV=pypy-greenlets
-    - python: "pypy3.5-5.8.0"
+    - python: "pypy3"
       env: TOXENV=pypy3-threads
-    - python: "pypy3.5-5.8.0"
+    - python: "pypy3"
       env: TOXENV=pypy3-greenlets
     - python: "2.7"
       env: TOXENV=py27-colorama

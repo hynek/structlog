@@ -8,22 +8,15 @@ import warnings
 
 import pytest
 
-from pretend import call_recorder, call, stub
+from pretend import call, call_recorder, stub
 from six import PY3
 
 from structlog._base import BoundLoggerBase
 from structlog._config import (
-    BoundLoggerLazyProxy,
-    _CONFIG,
-    _BUILTIN_DEFAULT_CONTEXT_CLASS,
-    _BUILTIN_DEFAULT_PROCESSORS,
-    _BUILTIN_DEFAULT_LOGGER_FACTORY,
-    _BUILTIN_DEFAULT_WRAPPER_CLASS,
-    configure,
-    configure_once,
-    get_logger,
-    reset_defaults,
-    wrap_logger,
+    _BUILTIN_DEFAULT_CONTEXT_CLASS, _BUILTIN_DEFAULT_LOGGER_FACTORY,
+    _BUILTIN_DEFAULT_PROCESSORS, _BUILTIN_DEFAULT_WRAPPER_CLASS, _CONFIG,
+    BoundLoggerLazyProxy, configure, configure_once, get_logger,
+    reset_defaults, wrap_logger
 )
 
 

@@ -1,3 +1,0 @@
--e .
-sphinx<1.6.0
-twisted

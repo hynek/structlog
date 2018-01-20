@@ -8,35 +8,17 @@ Structured logging for Python.
 
 from __future__ import absolute_import, division, print_function
 
-from structlog import (
-    dev,
-    processors,
-    stdlib,
-    threadlocal,
-)
-from structlog._base import (
-    BoundLoggerBase,
-)
+from structlog import dev, processors, stdlib, threadlocal
+from structlog._base import BoundLoggerBase
 from structlog._config import (
-    configure,
-    configure_once,
-    getLogger,
-    get_logger,
-    reset_defaults,
-    wrap_logger,
+    configure, configure_once, get_logger, getLogger, reset_defaults,
+    wrap_logger
 )
-from structlog.exceptions import (
-    DropEvent,
-)
-from structlog._generic import (
-    BoundLogger
-)
+from structlog._generic import BoundLogger
 from structlog._loggers import (
-    PrintLogger,
-    PrintLoggerFactory,
-    ReturnLogger,
-    ReturnLoggerFactory,
+    PrintLogger, PrintLoggerFactory, ReturnLogger, ReturnLoggerFactory
 )
+from structlog.exceptions import DropEvent
 
 
 try:
@@ -45,7 +27,7 @@ except ImportError:  # pragma: nocover
     twisted = None
 
 
-__version__ = "17.3.0.dev0"
+__version__ = "18.1.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging for Python"

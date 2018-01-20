@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, print_function
 
 from six import StringIO
 
+
 try:
     import colorama
 except ImportError:
@@ -115,6 +116,7 @@ class ConsoleRenderer(object):
     .. versionadded:: 16.0
     .. versionadded:: 16.1 *colors*
     .. versionadded:: 17.1 *repr_native_str*
+    .. versionadded:: 18.1 *force_colors*
     """
     def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
                  force_colors=False, repr_native_str=False):

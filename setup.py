@@ -2,11 +2,11 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from setuptools import setup, find_packages
-
 import codecs
 import os
 import re
+
+from setuptools import find_packages, setup
 
 
 ###############################################################################
@@ -34,12 +34,16 @@ CLASSIFIERS = [
 INSTALL_REQUIRES = ["six"]
 EXTRAS_REQUIRE = {
     "dev": ["colorama"],
-    "test": [
+    "tests": [
         "coverage",
         "freezegun>=0.2.8",
         "pretend",
         "pytest>=3.3.0",
         "simplejson",
+    ],
+    "docs": [
+        "sphinx<1.6.0",
+        "twisted",
     ]
 }
 

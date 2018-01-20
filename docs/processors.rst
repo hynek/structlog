@@ -20,7 +20,7 @@ Each processors receives three positional arguments:
 
 **method_name**
    The name of the wrapped method.
-   If you called ``log.warn('foo')``, it will be ``"warn"``.
+   If you called ``log.warning('foo')``, it will be ``"warning"``.
 
 **event_dict**
    Current context together with the current event.

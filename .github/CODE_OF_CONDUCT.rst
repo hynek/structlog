@@ -4,7 +4,7 @@ Contributor Covenant Code of Conduct
 Our Pledge
 ----------
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 Our Standards
 -------------
@@ -43,7 +43,7 @@ Enforcement
 -----------
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at hs@ox.cx.
-all complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
+All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
 The project team is obligated to maintain confidentiality with regard to the reporter of an incident.
 Further details of specific enforcement policies may be posted separately.
 
@@ -52,4 +52,4 @@ Project maintainers who do not follow or enforce the Code of Conduct in good fai
 Attribution
 -----------
 
-This Code of Conduct is adapted from the `Contributor Covenant <http://contributor-covenant.org>`_, version 1.4, available at http://contributor-covenant.org/version/1/4.
+This Code of Conduct is adapted from the `Contributor Covenant <https://www.contributor-covenant.org>`_, version 1.4, available at <https://www.contributor-covenant.org/version/1/4/code-of-conduct.html>.

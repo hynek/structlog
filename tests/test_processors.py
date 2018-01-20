@@ -13,6 +13,20 @@ import sys
 import pytest
 import six
 
+from freezegun import freeze_time
+
+import structlog
+
+from structlog.processors import (
+    ExceptionPrettyPrinter, JSONRenderer, KeyValueRenderer, StackInfoRenderer,
+    TimeStamper, UnicodeDecoder, UnicodeEncoder, _figure_out_exc_info,
+    _json_fallback_handler, format_exc_info
+)
+from structlog.threadlocal import wrap_dict
+
+from .utils import py3_only
+
+
 try:
     import simplejson
 except ImportError:
@@ -22,26 +36,6 @@ try:
     import rapidjson
 except ImportError:
     rapidjson = None
-
-from freezegun import freeze_time
-
-import structlog
-
-from structlog.processors import (
-    ExceptionPrettyPrinter,
-    JSONRenderer,
-    KeyValueRenderer,
-    StackInfoRenderer,
-    TimeStamper,
-    UnicodeDecoder,
-    UnicodeEncoder,
-    _figure_out_exc_info,
-    _json_fallback_handler,
-    format_exc_info,
-)
-from structlog.threadlocal import wrap_dict
-
-from .utils import py3_only
 
 
 class TestKeyValueRenderer(object):
