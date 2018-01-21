@@ -141,8 +141,8 @@ So assuming you want to follow :doc:`best practices <logging-best-practices>` an
 
 .. _standard-library-lite:
 
-structlog and Standard Library's logging
-----------------------------------------
+``structlog`` and Standard Library's ``logging``
+------------------------------------------------
 
 ``structlog``'s primary application isn't printing though.
 Instead, it's intended to wrap your *existing* loggers and **add** *structure* and *incremental context building* to them.
