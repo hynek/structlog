@@ -14,7 +14,7 @@ Installation
 
 If you'd like colorful output in development (you know you do!), install using::
 
-   $ pip install structlog[dev]
+   $ pip install structlog colorama
 
 
 Your First Log Entry

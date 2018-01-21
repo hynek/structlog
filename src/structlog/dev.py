@@ -24,8 +24,6 @@ __all__ = [
 
 _MISSING = (
     "{who} requires the {package} package installed.  "
-    "If you want to use the helpers from structlog.dev, it is strongly "
-    "recommended to install structlog using `pip install structlog[dev]`."
 )
 _EVENT_WIDTH = 30  # pad the event name to so many characters
 
