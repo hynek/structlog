@@ -30,7 +30,7 @@ class _FixedFindCallerLogger(logging.Logger):
         info is populated for wrapping stdlib.
         This logger gets set as the default one when using LoggerFactory.
         """
-        f, name = _find_first_app_frame_and_name(['logging'])
+        f, name = _find_first_app_frame_and_name(["logging"])
         if PY3:
             if stack_info:
                 sinfo = _format_stack(f)
@@ -58,19 +58,19 @@ class BoundLogger(BoundLoggerBase):
         """
         Process event and call :meth:`logging.Logger.debug` with the result.
         """
-        return self._proxy_to_logger('debug', event, *args, **kw)
+        return self._proxy_to_logger("debug", event, *args, **kw)
 
     def info(self, event=None, *args, **kw):
         """
         Process event and call :meth:`logging.Logger.info` with the result.
         """
-        return self._proxy_to_logger('info', event, *args, **kw)
+        return self._proxy_to_logger("info", event, *args, **kw)
 
     def warning(self, event=None, *args, **kw):
         """
         Process event and call :meth:`logging.Logger.warning` with the result.
         """
-        return self._proxy_to_logger('warning', event, *args, **kw)
+        return self._proxy_to_logger("warning", event, *args, **kw)
 
     warn = warning
 
@@ -78,13 +78,13 @@ class BoundLogger(BoundLoggerBase):
         """
         Process event and call :meth:`logging.Logger.error` with the result.
         """
-        return self._proxy_to_logger('error', event, *args, **kw)
+        return self._proxy_to_logger("error", event, *args, **kw)
 
     def critical(self, event=None, *args, **kw):
         """
         Process event and call :meth:`logging.Logger.critical` with the result.
         """
-        return self._proxy_to_logger('critical', event, *args, **kw)
+        return self._proxy_to_logger("critical", event, *args, **kw)
 
     def exception(self, event=None, *args, **kw):
         """
@@ -113,7 +113,7 @@ class BoundLogger(BoundLoggerBase):
         that the stdblib's support for format strings can be used.
         """
         if event_args:
-            event_kw['positional_args'] = event_args
+            event_kw["positional_args"] = event_args
         return super(BoundLogger, self)._proxy_to_logger(method_name,
                                                          event=event,
                                                          **event_kw)
@@ -208,8 +208,8 @@ class LoggerFactory(object):
     :param ignore_frame_names: When guessing the name of a logger, skip frames
         whose names *start* with one of these.  For example, in pyramid
         applications you'll want to set it to
-        ``['venusian', 'pyramid.config']``.
-    :type ignore_frame_names: `list` of `str`
+        ``["venusian", "pyramid.config"]``.
+    :type ignore_frame_names: ``list`` of ``str``
     """
     def __init__(self, ignore_frame_names=None):
         self._ignore = ignore_frame_names
@@ -222,8 +222,8 @@ class LoggerFactory(object):
         If an optional argument is passed, it will be used as the logger name
         instead of guesswork.  This optional argument would be passed from the
         :func:`structlog.get_logger` call.  For example
-        ``structlog.get_logger('foo')`` would cause this method to be called
-        with ``'foo'`` as its first positional argument.
+        ``structlog.get_logger("foo")`` would cause this method to be called
+        with ``"foo"`` as its first positional argument.
 
         :rtype: logging.Logger
 
@@ -289,14 +289,14 @@ DEBUG = 10
 NOTSET = 0
 
 _NAME_TO_LEVEL = {
-    'critical': CRITICAL,
-    'exception': ERROR,
-    'error': ERROR,
-    'warn': WARNING,
-    'warning': WARNING,
-    'info': INFO,
-    'debug': DEBUG,
-    'notset': NOTSET,
+    "critical": CRITICAL,
+    "exception": ERROR,
+    "error": ERROR,
+    "warn": WARNING,
+    "warning": WARNING,
+    "info": INFO,
+    "debug": DEBUG,
+    "notset": NOTSET,
 }
 
 _LEVEL_TO_NAME = dict(

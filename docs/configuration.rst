@@ -35,14 +35,14 @@ The :ref:`example <proc>` from the previous chapter could thus have been written
    from structlog import PrintLogger, configure, reset_defaults, wrap_logger, get_logger
    from structlog.threadlocal import wrap_dict
    def proc(logger, method_name, event_dict):
-      print('I got called with', event_dict)
+      print("I got called with", event_dict)
       return repr(event_dict)
 
 .. doctest:: config_wrap_logger
 
    >>> configure(processors=[proc], context_class=dict)
    >>> log = wrap_logger(PrintLogger())
-   >>> log.msg('hello world')
+   >>> log.msg("hello world")
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
 
@@ -52,7 +52,7 @@ In fact, it could even be written like
 
    >>> configure(processors=[proc], context_class=dict)
    >>> log = get_logger()
-   >>> log.msg('hello world')
+   >>> log.msg("hello world")
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
 
@@ -113,7 +113,7 @@ But you can also pass in an instance of a class with a ``__call__`` method for m
    :func:`structlog.get_logger` can optionally take positional parameters.
 
 These will be passed to the logger factories.
-For example, if you use run ``structlog.get_logger('a name')`` and configure ``structlog`` to use the standard library :class:`~structlog.stdlib.LoggerFactory` which has support for positional parameters, the returned logger will have the name ``'a name'``.
+For example, if you use run ``structlog.get_logger("a name")`` and configure ``structlog`` to use the standard library :class:`~structlog.stdlib.LoggerFactory` which has support for positional parameters, the returned logger will have the name ``"a name"``.
 
 When writing custom logger factories, they should always accept positional parameters even if they don't use them.
 That makes sure that loggers are interchangeable.
@@ -129,7 +129,7 @@ So all it takes to use ``structlog`` with standard library logging is this::
    >>> from structlog.stdlib import LoggerFactory
    >>> configure(logger_factory=LoggerFactory())
    >>> log = get_logger()
-   >>> log.critical('this is too easy!')
+   >>> log.critical("this is too easy!")
    event='this is too easy!'
 
 By using ``structlog``'s :class:`structlog.stdlib.LoggerFactory`, it is also ensured that variables like function names and line numbers are expanded correctly in your log format.

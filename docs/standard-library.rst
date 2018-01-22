@@ -169,9 +169,9 @@ which will allow both of these to work in other modules:
     >>> import logging
     >>> import structlog
 
-    >>> logging.getLogger('stdlog').info('woo')
+    >>> logging.getLogger("stdlog").info("woo")
     woo
-    >>> structlog.get_logger('structlog').info('amazing', events='oh yes')
+    >>> structlog.get_logger("structlog").info("amazing", events="oh yes")
     amazing                        events=oh yes
 
 Of course, you probably want timestamps and log levels in your output.
@@ -204,9 +204,9 @@ which (given the same ``logging.*`` calls as in the previous example) will resul
 
 .. code-block:: pycon
 
-    >>> logging.getLogger('stdlog').info('woo')
+    >>> logging.getLogger("stdlog").info("woo")
     2017-03-06 14:59:20 [info     ] woo
-    >>> structlog.get_logger('structlog').info('amazing', events='oh yes')
+    >>> structlog.get_logger("structlog").info("amazing", events="oh yes")
     2017-03-06 14:59:20 [info     ] amazing                        events=oh yes
 
 This allows you to set up some sophisticated logging configurations.

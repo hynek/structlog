@@ -65,7 +65,7 @@ class KeyValueRenderer(object):
             def ordered_items(event_dict):
                 return sorted(event_dict.items())
         else:
-            ordered_items = operator.methodcaller('items')
+            ordered_items = operator.methodcaller("items")
 
         self._ordered_items = ordered_items
 
@@ -80,7 +80,7 @@ class KeyValueRenderer(object):
             self._repr = _repr
 
     def __call__(self, _, __, event_dict):
-        return ' '.join(k + '=' + self._repr(v)
+        return " ".join(k + "=" + self._repr(v)
                         for k, v in self._ordered_items(event_dict))
 
 
@@ -88,16 +88,16 @@ class UnicodeEncoder(object):
     """
     Encode unicode values in `event_dict`.
 
-    :param str encoding: Encoding to encode to (default: ``'utf-8'``).
+    :param str encoding: Encoding to encode to (default: ``"utf-8"``).
     :param str errors: How to cope with encoding errors (default
-        ``'backslashreplace'``).
+        ``"backslashreplace"``).
 
     Useful if you're running Python 2 as otherwise ``u"abc"`` will be rendered
     as ``'u"abc"'``.
 
     Just put it in the processor chain before the renderer.
     """
-    def __init__(self, encoding='utf-8', errors='backslashreplace'):
+    def __init__(self, encoding="utf-8", errors="backslashreplace"):
         self._encoding = encoding
         self._errors = errors
 
@@ -112,9 +112,9 @@ class UnicodeDecoder(object):
     """
     Decode byte string values in `event_dict`.
 
-    :param str encoding: Encoding to decode from (default: ``'utf-8'``).
+    :param str encoding: Encoding to decode from (default: ``"utf-8"``).
     :param str errors: How to cope with encoding errors (default:
-        ``'replace'``).
+        ``"replace"``).
 
     Useful if you're running Python 3 as otherwise ``b"abc"`` will be rendered
     as ``'b"abc"'``.
@@ -123,7 +123,7 @@ class UnicodeDecoder(object):
 
     .. versionadded:: 15.4.0
     """
-    def __init__(self, encoding='utf-8', errors='replace'):
+    def __init__(self, encoding="utf-8", errors="replace"):
         self._encoding = encoding
         self._errors = errors
 
@@ -192,9 +192,9 @@ def format_exc_info(logger, name, event_dict):
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
     """
-    exc_info = event_dict.pop('exc_info', None)
+    exc_info = event_dict.pop("exc_info", None)
     if exc_info:
-        event_dict['exception'] = _format_exception(
+        event_dict["exception"] = _format_exception(
             _figure_out_exc_info(exc_info)
         )
     return event_dict
@@ -215,19 +215,19 @@ class TimeStamper(object):
     :param bool utc: Whether timestamp should be in UTC or local time.
     :param str key: Target key in `event_dict` for added timestamps.
     """
-    def __new__(cls, fmt=None, utc=True, key='timestamp'):
+    def __new__(cls, fmt=None, utc=True, key="timestamp"):
         if fmt is None and not utc:
-            raise ValueError('UNIX timestamps are always UTC.')
+            raise ValueError("UNIX timestamps are always UTC.")
 
-        now_method = getattr(datetime.datetime, 'utcnow' if utc else 'now')
+        now_method = getattr(datetime.datetime, "utcnow" if utc else "now")
         if fmt is None:
             def stamper(self, _, __, event_dict):
                 event_dict[key] = time.time()
                 return event_dict
-        elif fmt.upper() == 'ISO':
+        elif fmt.upper() == "ISO":
             if utc:
                 def stamper(self, _, __, event_dict):
-                    event_dict[key] = now_method().isoformat() + 'Z'
+                    event_dict[key] = now_method().isoformat() + "Z"
                     return event_dict
             else:
                 def stamper(self, _, __, event_dict):
@@ -238,7 +238,7 @@ class TimeStamper(object):
                 event_dict[key] = now_method().strftime(fmt)
                 return event_dict
 
-        return type('TimeStamper', (object,), {'__call__': stamper})()
+        return type("TimeStamper", (object,), {"__call__": stamper})()
 
 
 def _figure_out_exc_info(v):
@@ -309,8 +309,8 @@ class StackInfoRenderer(object):
     .. versionadded:: 0.4.0
     """
     def __call__(self, logger, name, event_dict):
-        if event_dict.pop('stack_info', None):
-            event_dict['stack'] = _format_stack(
+        if event_dict.pop("stack_info", None):
+            event_dict["stack"] = _format_stack(
                 _find_first_app_frame_and_name()[0]
             )
         return event_dict

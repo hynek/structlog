@@ -27,7 +27,7 @@ Here are a few hints how to get most out of ``structlog`` in production:
       def f():
          log = logger.bind()
          for i in range(1000000000):
-            log.info('iterated', i=i)
+            log.info("iterated", i=i)
 
 
 #. Set the `cache_logger_on_first_use` option to `True` so the aforementioned on-demand loggers will be assembled only once and cached for future uses::

@@ -32,7 +32,7 @@ class Echo(protocol.Protocol):
         self._counter.inc()
         log = self._log.bind(data=data)
         self.transport.write(data)
-        log.msg('echoed data!')
+        log.msg("echoed data!")
 
 
 if __name__ == "__main__":

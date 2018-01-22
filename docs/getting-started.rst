@@ -32,7 +32,7 @@ And indeed, the simplest possible usage looks like this:
 
 Here, ``structlog`` takes full advantage of its hopefully useful default settings:
 
-- Output is sent to `standard out`_ instead of exploding into the user's face.
+- Output is sent to `standard out`_ instead of exploding into the user's face or doing nothing.
 - All keywords are formatted using :class:`structlog.dev.ConsoleRenderer`.
   That in turn uses `repr()`_ to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
@@ -41,7 +41,7 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
 
 .. note::
-   For brewity and to enable doctests, all further examples in ``structlog``\ 's documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
+   For brewity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
 
 There you go, structured logging!
 However, this alone wouldn't warrant its own package.
@@ -158,7 +158,7 @@ To make this common case as simple as possible, ``structlog`` comes with some to
    >>> from structlog.stdlib import LoggerFactory
    >>> structlog.configure(logger_factory=LoggerFactory())  # doctest: +SKIP
    >>> log = structlog.get_logger()
-   >>> log.warning('it works!', difficulty='easy')  # doctest: +SKIP
+   >>> log.warning("it works!", difficulty="easy")  # doctest: +SKIP
    WARNING:structlog...:difficulty='easy' event='it works!'
 
 In other words, you tell ``structlog`` that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.

@@ -11,7 +11,7 @@ The highlight is :class:`structlog.dev.ConsoleRenderer` that offers nicely align
 To use it, just add it as a renderer to your processor chain.
 It will recognize logger names, log levels, time stamps, stack infos, and tracebacks as produced by ``structlog``'s processors and render them in special ways.
 
-Suggested configuration for standard library logging:
+``structlog``'s default configuration already uses it, but if you want to use it along with standard library logging, we suggest the following configuration:
 
 .. code-block:: python
 

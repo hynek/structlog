@@ -49,10 +49,10 @@ Within one thread, every instance of the returned class will have a *common* ins
 
    >>> from structlog.threadlocal import wrap_dict
    >>> WrappedDictClass = wrap_dict(dict)
-   >>> d1 = WrappedDictClass({'a': 1})
-   >>> d2 = WrappedDictClass({'b': 2})
+   >>> d1 = WrappedDictClass({"a": 1})
+   >>> d2 = WrappedDictClass({"b": 2})
    >>> d3 = WrappedDictClass()
-   >>> d3['c'] = 3
+   >>> d3["c"] = 3
    >>> d1 is d3
    False
    >>> d1 == d2 == d3 == WrappedDictClass()

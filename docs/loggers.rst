@@ -26,22 +26,22 @@ For that there is the :func:`structlog.wrap_logger` function (or the convenience
    ...     def msg(self, message):
    ...         print(message)
    >>> def proc(logger, method_name, event_dict):
-   ...     print('I got called with', event_dict)
+   ...     print("I got called with", event_dict)
    ...     return repr(event_dict)
    >>> log = wrap_logger(PrintLogger(), processors=[proc], context_class=dict)
    >>> log2 = log.bind(x=42)
    >>> log == log2
    False
-   >>> log.msg('hello world')
+   >>> log.msg("hello world")
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
-   >>> log2.msg('hello world')
+   >>> log2.msg("hello world")
    I got called with {'x': 42, 'event': 'hello world'}
    {'x': 42, 'event': 'hello world'}
-   >>> log3 = log2.unbind('x')
+   >>> log3 = log2.unbind("x")
    >>> log == log3
    True
-   >>> log3.msg('nothing bound anymore', foo='but you can structure the event too')
+   >>> log3.msg("nothing bound anymore", foo="but you can structure the event too")
    I got called with {'foo': 'but you can structure the event too', 'event': 'nothing bound anymore'}
    {'foo': 'but you can structure the event too', 'event': 'nothing bound anymore'}
 
@@ -102,10 +102,10 @@ Additionally -- mostly for unit testing -- ``structlog`` also ships with a logge
    >>> from structlog import ReturnLogger
    >>> ReturnLogger().msg(42) == 42
    True
-   >>> obj = ['hi']
+   >>> obj = ["hi"]
    >>> ReturnLogger().msg(obj) is obj
    True
-   >>> ReturnLogger().msg('hello', when='again')
+   >>> ReturnLogger().msg("hello", when="again")
    (('hello',), {'when': 'again'})
 
 

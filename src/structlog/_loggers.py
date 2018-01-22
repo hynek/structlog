@@ -43,12 +43,11 @@ class PrintLogger(object):
     :param file file: File to print to. (default: stdout)
 
     >>> from structlog import PrintLogger
-    >>> PrintLogger().msg('hello')
+    >>> PrintLogger().msg("hello")
     hello
 
-    Useful if you just capture your stdout with tools like `runit
-    <http://smarden.org/runit/>`_ or if you `forward your stderr to syslog
-    <https://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
+    Useful if you follow
+    :doc:`current logging best practices <logging-best-practices>`.
 
     Also very useful for testing and examples since logging is finicky in
     doctests.
@@ -101,12 +100,12 @@ class ReturnLogger(object):
     Return the arguments that it's called with.
 
     >>> from structlog import ReturnLogger
-    >>> ReturnLogger().msg('hello')
+    >>> ReturnLogger().msg("hello")
     'hello'
-    >>> ReturnLogger().msg('hello', when='again')
+    >>> ReturnLogger().msg("hello", when="again")
     (('hello',), {'when': 'again'})
 
-    Useful for unit tests.
+    Useful for testing.
 
     .. versionchanged:: 0.3.0
         Allow for arbitrary arguments and keyword arguments to be passed in.

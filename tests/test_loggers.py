@@ -30,7 +30,8 @@ class TestPrintLogger(object):
         Instantiating without arguments gives conveniently a logger to standard
         out.
         """
-        PrintLogger().msg('hello')
+        PrintLogger().msg("hello")
+
         out, err = capsys.readouterr()
         assert 'hello\n' == out
         assert '' == err
@@ -39,13 +40,14 @@ class TestPrintLogger(object):
         """
         Supplied files are respected.
         """
-        f = tmpdir.join('test.log')
-        fo = f.open('w')
-        PrintLogger(fo).msg('hello')
+        f = tmpdir.join("test.log")
+        fo = f.open("w")
+        PrintLogger(fo).msg("hello")
         out, err = capsys.readouterr()
-        assert '' == out == err
+
+        assert "" == out == err
         fo.close()
-        assert 'hello\n' == f.read()
+        assert "hello\n" == f.read()
 
     def test_repr(self):
         """
@@ -60,8 +62,11 @@ class TestPrintLogger(object):
         Creating a logger adds a lock to WRITE_LOCKS.
         """
         sio = StringIO()
+
         assert sio not in WRITE_LOCKS
+
         PrintLogger(sio)
+
         assert sio in WRITE_LOCKS
 
     @pytest.mark.parametrize("method", STDLIB_MSG_METHODS)
@@ -70,8 +75,10 @@ class TestPrintLogger(object):
         PrintLogger implements methods of stdlib loggers.
         """
         sio = StringIO()
-        getattr(PrintLogger(sio), method)('hello')
-        assert 'hello' in sio.getvalue()
+
+        getattr(PrintLogger(sio), method)("hello")
+
+        assert "hello" in sio.getvalue()
 
 
 class TestPrintLoggerFactory(object):
@@ -105,13 +112,15 @@ class ReturnLoggerTest(object):
         """
         ReturnLogger implements methods of stdlib loggers.
         """
-        v = getattr(ReturnLogger(), method)('hello')
-        assert 'hello' == v
+        v = getattr(ReturnLogger(), method)("hello")
+
+        assert "hello" == v
 
 
 class TestReturnLoggerFactory(object):
     def test_builds_returnloggers(self):
         f = ReturnLoggerFactory()
+
         assert isinstance(f(), ReturnLogger)
 
     def test_caches(self):
@@ -120,6 +129,7 @@ class TestReturnLoggerFactory(object):
         each call.
         """
         f = ReturnLoggerFactory()
+
         assert f() is f()
 
     def test_ignores_args(self):

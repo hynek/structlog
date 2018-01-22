@@ -36,7 +36,7 @@ Processors
 
       def onError(fail):
          failure = fail.trap(MoonExploded)
-         log.err(failure, _why='event-that-happend')
+         log.err(failure, _why="event-that-happend")
 
    will still work as expected.
 

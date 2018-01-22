@@ -20,11 +20,11 @@ Each processors receives three positional arguments:
 
 **method_name**
    The name of the wrapped method.
-   If you called ``log.warning('foo')``, it will be ``"warning"``.
+   If you called ``log.warning("foo")``, it will be ``"warning"``.
 
 **event_dict**
    Current context together with the current event.
-   If the context was ``{'a': 42}`` and the event is ``"foo"``, the initial ``event_dict`` will be ``{'a':42, 'event': 'foo'}``.
+   If the context was ``{"a": 42}`` and the event is ``"foo"``, the initial ``event_dict`` will be ``{"a":42, "event": "foo"}``.
 
 The return value of each processor is passed on to the next one as ``event_dict`` until finally the return value of the last processor gets passed into the wrapped logging method.
 
@@ -41,15 +41,15 @@ If you set up your logger like:
    logger = wrap_logger(wrapped_logger, processors=[f1, f2, f3, f4])
    log = logger.new(x=42)
 
-and call ``log.msg('some_event', y=23)``, it results in the following call chain:
+and call ``log.msg("some_event", y=23)``, it results in the following call chain:
 
 .. code:: python
 
    wrapped_logger.msg(
-      f4(wrapped_logger, 'msg',
-         f3(wrapped_logger, 'msg',
-            f2(wrapped_logger, 'msg',
-               f1(wrapped_logger, 'msg', {'event': 'some_event', 'x': 42, 'y': 23})
+      f4(wrapped_logger, "msg",
+         f3(wrapped_logger, "msg",
+            f2(wrapped_logger, "msg",
+               f1(wrapped_logger, "msg", {"event": "some_event", "x": 42, "y": 23})
             )
          )
       )
@@ -100,7 +100,7 @@ It can return one of three types:
 - A tuple of ``(args, kwargs)`` that are passed as ``log_method(*args, **kwargs)``.
 - A dictionary which is passed as ``log_method(**kwargs)``.
 
-Therefore ``return 'hello world'`` is a shortcut for ``return (('hello world',), {})`` (the example in :ref:`chains` assumes this shortcut has been taken).
+Therefore ``return "hello world"`` is a shortcut for ``return (("hello world",), {})`` (the example in :ref:`chains` assumes this shortcut has been taken).
 
 This should give you enough power to use ``structlog`` with any logging system while writing agnostic processors that operate on dictionaries.
 
@@ -121,8 +121,7 @@ For a list of shipped processors, check out the :ref:`API documentation <procs>`
 Third Party Packages
 --------------------
 
-Since processors are self-contained callables,
-it's easy to write your own and to share them in separate packages.
+Since processors are self-contained callables, it's easy to write your own and to share them in separate packages.
 The following processor packages are known to be currently available on PyPI:
 
 - `structlog-pretty <https://github.com/underyx/structlog-pretty>`_: Processors for prettier output -- a code syntax highlighter, JSON and XML prettifiers, a multiline string printer, and a numeric value rounder.
