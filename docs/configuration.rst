@@ -87,9 +87,10 @@ At any time, you can check whether and how ``structlog`` is configured:
 
 .. note::
 
-   Since you will call :func:`structlog.wrap_logger` (or one of the ``get_logger()`` functions) most likely at import time and thus before you had a chance to configure ``structlog``, they return a **proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
+   Since you will call :func:`structlog.get_logger` most likely in module scope, they run at import time before you had a chance to configure ``structlog``.
+   Hence they return a **lazy proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
 
-   Therefore, you must not call ``new()`` or ``bind()`` in module scope!
+   Therefore, you must never call ``new()`` or ``bind()`` in module or class scope becauce otherwise you will receive a logger configured with ``structlog``'s default values.
    Use :func:`~structlog.get_logger`\ 's ``initial_values`` to achieve pre-populated contexts.
 
    To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
@@ -140,7 +141,7 @@ The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
    `LoggerFactory()`-style factories always need to get passed as *instances* like in the examples above.
    While neither allows for customization using parameters yet, they may do so in the future.
 
-Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger` with the default values explained above.
+Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger`.
 We don't believe silent loggers are a sensible default.
 
 
