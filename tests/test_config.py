@@ -4,7 +4,11 @@
 
 from __future__ import absolute_import, division, print_function
 
+import platform
+import sys
 import warnings
+
+from collections import OrderedDict
 
 import pytest
 
@@ -32,6 +36,22 @@ class Wrapper(BoundLoggerBase):
     """
     Custom wrapper class for testing.
     """
+
+
+def test_default_context_class():
+    """
+    Default context class is dict on Python 3.6+ and PyPy, OrderedDict
+    otherwise.
+    """
+    if (
+        platform.python_implementation() == "PyPy" or
+        sys.version_info[:2] >= (3, 6)
+    ):
+        cls = dict
+    else:
+        cls = OrderedDict
+
+    assert cls is _BUILTIN_DEFAULT_CONTEXT_CLASS
 
 
 class TestConfigure(object):

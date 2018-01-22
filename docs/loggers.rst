@@ -60,7 +60,8 @@ As you can see, it accepts one mandatory and a few optional arguments:
    The class to save your context in.
    Particularly useful for :ref:`thread local context storage <threadlocal>`.
 
-   Default is :class:`collections.OrderedDict`.
+   On Python versions that have ordered dictionaries (Python 3.6+, PyPy) the default is a plain :class:`dict`.
+   For everything else it's :class:`collections.OrderedDict`.
 
 Additionally, the following arguments are allowed too:
 

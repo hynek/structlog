@@ -85,7 +85,7 @@ For ``structlog``, a log entry is just a dictionary called *event dict[ionary]*:
 - As soon as an *event* happens -- which is a dictionary too -- it is merged together with the *context* to an *event dict* and logged out.
 - If you don't like the concept of pre-building a context: just don't!
   Convenient key-value-based logging is great to have on its own.
-- To keep as much order of the keys as possible, an :class:`collections.OrderedDict` is used for the context by default.
+- To keep as much order of the keys as possible, an :class:`collections.OrderedDict` is used for the context by default for Pythons that do not have ordered dictionaries by default (notably all versions of CPython before 3.6).
 - The recommended way of binding values is the one in these examples: creating new loggers with a new context.
   If you're okay with giving up immutable local state for convenience, you can also use :ref:`thread/greenlet local storage <threadlocal>` for the context.
 
