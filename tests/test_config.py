@@ -15,12 +15,13 @@ import pytest
 from pretend import call, call_recorder, stub
 from six import PY3
 
+import structlog
+
 from structlog._base import BoundLoggerBase
 from structlog._config import (
     _BUILTIN_DEFAULT_CONTEXT_CLASS, _BUILTIN_DEFAULT_LOGGER_FACTORY,
     _BUILTIN_DEFAULT_PROCESSORS, _BUILTIN_DEFAULT_WRAPPER_CLASS, _CONFIG,
-    BoundLoggerLazyProxy, configure, configure_once, get_logger,
-    reset_defaults, wrap_logger
+    BoundLoggerLazyProxy, configure, configure_once, get_logger, wrap_logger
 )
 
 
@@ -56,20 +57,38 @@ def test_default_context_class():
 
 class TestConfigure(object):
     def teardown_method(self, method):
-        reset_defaults()
+        structlog.reset_defaults()
+
+    def test_get_config_is_configured(self):
+        """
+        Return value of structlog.get_config() works as input for
+        structlog.configure(). is_configured() reflects the state of
+        configuration.
+        """
+        assert False is structlog.is_configured()
+
+        structlog.configure(**structlog.get_config())
+
+        assert True is structlog.is_configured()
+
+        structlog.reset_defaults()
+
+        assert False is structlog.is_configured()
 
     def test_configure_all(self, proxy):
         x = stub()
         configure(processors=[x], context_class=dict)
         b = proxy.bind()
+
         assert [x] == b._processors
         assert dict is b._context.__class__
 
     def test_reset(self, proxy):
         x = stub()
         configure(processors=[x], context_class=dict, wrapper_class=Wrapper)
-        reset_defaults()
+        structlog.reset_defaults()
         b = proxy.bind()
+
         assert [x] != b._processors
         assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
         assert isinstance(b, _BUILTIN_DEFAULT_WRAPPER_CLASS)
@@ -95,11 +114,6 @@ class TestConfigure(object):
         configure()
         assert True is _CONFIG.is_configured
 
-    def test_rest_resets_is_configured(self):
-        configure()
-        reset_defaults()
-        assert False is _CONFIG.is_configured
-
     def test_configures_logger_factory(self):
         def f():
             pass
@@ -110,7 +124,7 @@ class TestConfigure(object):
 
 class TestBoundLoggerLazyProxy(object):
     def teardown_method(self, method):
-        reset_defaults()
+        structlog.reset_defaults()
 
     def test_repr(self):
         p = BoundLoggerLazyProxy(
@@ -260,7 +274,7 @@ class TestBoundLoggerLazyProxy(object):
 
 class TestFunctions(object):
     def teardown_method(self, method):
-        reset_defaults()
+        structlog.reset_defaults()
 
     def test_wrap_passes_args(self):
         logger = object()

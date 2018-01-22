@@ -38,6 +38,10 @@ API Reference
 
 .. autofunction:: reset_defaults
 
+.. autofunction:: is_configured
+
+.. autofunction:: get_config
+
 .. autoclass:: BoundLogger
    :members: new, bind, unbind
 

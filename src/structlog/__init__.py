@@ -11,8 +11,8 @@ from __future__ import absolute_import, division, print_function
 from structlog import dev, processors, stdlib, threadlocal
 from structlog._base import BoundLoggerBase
 from structlog._config import (
-    configure, configure_once, get_logger, getLogger, reset_defaults,
-    wrap_logger
+    configure, configure_once, get_config, get_logger, getLogger,
+    is_configured, reset_defaults, wrap_logger
 )
 from structlog._generic import BoundLogger
 from structlog._loggers import (
@@ -50,9 +50,11 @@ __all__ = [
     "ReturnLoggerFactory",
     "configure",
     "configure_once",
-    "getLogger",
-    "get_logger",
     "dev",
+    "getLogger",
+    "get_config",
+    "get_logger",
+    "is_configured",
     "processors",
     "reset_defaults",
     "stdlib",

@@ -57,6 +57,40 @@ Global defaults used when arguments to :func:`wrap_logger` are omitted.
 """
 
 
+def is_configured():
+    """
+    Return whether ``structlog`` has been configured.
+
+    If ``False``, ``structlog`` is running with builtin defaults.
+
+    :rtype: bool
+
+    .. versionadded: 18.1
+    """
+    return _CONFIG.is_configured
+
+
+def get_config():
+    """
+    Get a dictionary with the current configuration.
+
+    .. note::
+
+       Changes to the returned dictionary do *not* affect ``structlog``.
+
+    :rtype: dict
+
+    .. versionadded: 18.1
+    """
+    return {
+        "processors": _CONFIG.default_processors,
+        "context_class": _CONFIG.default_context_class,
+        "wrapper_class": _CONFIG.default_wrapper_class,
+        "logger_factory": _CONFIG.logger_factory,
+        "cache_logger_on_first_use": _CONFIG.cache_logger_on_first_use,
+    }
+
+
 def get_logger(*args, **initial_values):
     """
     Convenience function that returns a logger according to configuration.
@@ -139,9 +173,11 @@ def configure(processors=None, wrapper_class=None, context_class=None,
 
     They are used if :func:`wrap_logger` has been called without arguments.
 
-    Also sets the global class attribute :attr:`is_configured` to `True` on
-    first call.  Can be called several times, keeping an argument at `None`
-    leaves is unchanged from the current setting.
+    Can be called several times, keeping an argument at `None` leaves is
+    unchanged from the current setting.
+
+    After calling for the first time, :func:`is_configured` starts returning
+    ``True``.
 
     Use :func:`reset_defaults` to undo your changes.
 
@@ -163,11 +199,11 @@ def configure(processors=None, wrapper_class=None, context_class=None,
     _CONFIG.is_configured = True
     if processors is not None:
         _CONFIG.default_processors = processors
-    if wrapper_class:
+    if wrapper_class is not None:
         _CONFIG.default_wrapper_class = wrapper_class
-    if context_class:
+    if context_class is not None:
         _CONFIG.default_context_class = context_class
-    if logger_factory:
+    if logger_factory is not None:
         _CONFIG.logger_factory = logger_factory
     if cache_logger_on_first_use is not None:
         _CONFIG.cache_logger_on_first_use = cache_logger_on_first_use
@@ -180,7 +216,7 @@ def configure_once(*args, **kw):
     It does *not* matter whether is was configured using :func:`configure`
     or :func:`configure_once` before.
 
-    Raises a RuntimeWarning if repeated configuration is attempted.
+    Raises a :class:`RuntimeWarning` if repeated configuration is attempted.
     """
     if not _CONFIG.is_configured:
         configure(*args, **kw)
@@ -190,17 +226,9 @@ def configure_once(*args, **kw):
 
 def reset_defaults():
     """
-    Resets global default values to builtins.
+    Resets global default values to builtin defaults.
 
-    That means [:class:`~structlog.processors.StackInfoRenderer`,
-    :func:`~structlog.processors.format_exc_info`,
-    :class:`~structlog.processors.TimeStamper`,
-    :class:`~structlog.dev.ConsoleRenderer`] for *processors*,
-    :class:`~structlog.BoundLogger` for *wrapper_class*, ``OrderedDict`` for
-    *context_class*, :class:`~structlog.PrintLoggerFactory` for
-    *logger_factory*, and `False` for *cache_logger_on_first_use*.
-
-    Also sets the global class attribute :attr:`is_configured` to `False`.
+    :func:`is_configured` starts returning ``False`` afterwards.
     """
     _CONFIG.is_configured = False
     _CONFIG.default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]

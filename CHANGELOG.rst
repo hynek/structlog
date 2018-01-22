@@ -38,6 +38,8 @@ Changes:
 - ``structlog.stdlib.BoundLogger.exception()`` now uses the ``exc_info`` argument if it has been passed instead of setting it unconditionally to ``True``.
   `#149 <https://github.com/hynek/structlog/pull/149>`_
 - Default configuration now uses plain ``dict``\ s on Python 3.6+ and PyPy since they are ordered by default.
+- Added ``structlog.is_configured()`` to check whether or not ``structlog`` has been configured.
+- Added ``structlog.get_config()`` to introspect current configuration.
 
 
 ----

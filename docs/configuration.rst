@@ -8,7 +8,7 @@ Global Defaults
 ---------------
 
 To make logging as unintrusive and straight-forward to use as possible, ``structlog`` comes with a plethora of configuration options and convenience functions.
-Let me start at the end and introduce you to the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger` (and its Twisted-friendly alias :func:`structlog.getLogger`).
+Let me start at the end and introduce you to the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger` (and its camelCase-friendly alias :func:`structlog.getLogger` for y'all Twisted and Zope aficionados).
 
 The goal is to reduce your per-file logging boilerplate to::
 
@@ -17,10 +17,15 @@ The goal is to reduce your per-file logging boilerplate to::
 
 while still giving you the full power via configuration.
 
-To achieve that you'll have to call :func:`structlog.configure` on app initialization (of course, only if you're not content with the defaults).
+To achieve that you'll have to call :func:`structlog.configure` on app initialization.
 The :ref:`example <proc>` from the previous chapter could thus have been written as following:
 
 .. testcleanup:: *
+
+   import structlog
+   structlog.reset_defaults()
+
+.. testsetup:: *
 
    import structlog
    structlog.reset_defaults()
@@ -53,15 +58,32 @@ In fact, it could even be written like
 
 because :class:`~structlog.processors.PrintLogger` is the default ``LoggerFactory`` used (see :ref:`logger-factories`).
 
+You can call :func:`structlog.configure` repeatedly and only set one or more settings -- the rest will not be affected.
+
 ``structlog`` tries to behave in the least surprising way when it comes to handling defaults and configuration:
 
 #. Arguments passed to :func:`structlog.wrap_logger` *always* take the highest precedence over configuration.
    That means that you can overwrite whatever you've configured for each logger respectively.
-#. If you leave them on `None`, ``structlog`` will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
-#. If you haven't configured or passed anything at all, the default fallback values are used which means :class:`collections.OrderedDict` for context and ``[``:class:`~structlog.processors.StackInfoRenderer`, :func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]`` for the processor chain, and `False` for `cache_logger_on_first_use`.
+#. If you leave them on ``None``, ``structlog`` will check whether you've configured default values using :func:`structlog.configure` and uses them if so.
+#. If you haven't configured or passed anything at all, the default fallback values try to be convenient and development-friendly.
 
 If necessary, you can always reset your global configuration back to default values using :func:`structlog.reset_defaults`.
 That can be handy in tests.
+
+At any time, you can check whether and how ``structlog`` is configured:
+
+.. doctest::
+
+   >>> structlog.is_configured()
+   False
+   >>> class MyDict(dict): pass
+   >>> structlog.configure(context_class=MyDict)
+   >>> structlog.is_configured()
+   True
+   >>> cfg = structlog.get_config()
+   >>> cfg["context_class"]
+   <class 'MyDict'>
+
 
 .. note::
 
