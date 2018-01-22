@@ -11,7 +11,7 @@ Why…
 
       I believe these presumptions are **no longer correct** in server side software.
 
-      ---`Paul Querna <https://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/>`_
+      ---`Paul Querna`_
 
 Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your logs but that you log *events* that happen in a *context* instead.
 
@@ -38,3 +38,5 @@ Additionally, ``structlog`` offers you a flexible way to *filter* and *modify* y
 The possibilities include :class:`logging in JSON <structlog.processors.JSONRenderer>`, adding arbitrary meta data like :class:`timestamps <structlog.processors.TimeStamper>`, counting events as metrics, or :ref:`dropping log entries <cond_drop>` caused by your monitoring system.
 
 ``structlog`` is also flexible enough to allow transparent :ref:`thread local <threadlocal>` storage for your context if you don't like the idea of local bindings as in the example above.
+
+.. _`Paul Querna`: https://web.archive.org/web/20170801134840/https://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/
