@@ -137,7 +137,7 @@ If you use standard library's logging, it makes sense to configure them next to 
    See `Logging Application Errors <http://flask.pocoo.org/docs/errorhandling/>`_.
 
 **Pyramid**
-   `Application constructor <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
+   `Application constructor <https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
 
 **Twisted**
    The `plugin definition <https://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.

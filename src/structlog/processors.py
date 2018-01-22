@@ -142,8 +142,8 @@ class JSONRenderer(object):
     :param callable serializer: A :func:`json.dumps`-compatible callable that
         will be used to format the string.  This can be used to use alternative
         JSON encoders like `simplejson
-        <https://pypi.python.org/pypi/simplejson/>`_ or `RapidJSON
-        <https://pypi.python.org/pypi/python-rapidjson/>`_ (faster but Python
+        <https://pypi.org/project/simplejson/>`_ or `RapidJSON
+        <https://pypi.org/project/python-rapidjson/>`_ (faster but Python
         3-only) (default: :func:`json.dumps`).
 
     .. versionadded:: 0.2.0

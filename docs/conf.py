@@ -326,12 +326,6 @@ epub_copyright = copyright
 # epub_tocdup = True
 
 linkcheck_ignore = [
-    # 404s for unknown reasons
-    r'http://graylog2.org.*',
-    # Times out way too often
-    r'http://www.rabbitmq.com',
-    # throws a 406 for unknown reasons
-    r'http://www.elasticsearch.org',
 ]
 
 # Twisted's trac tends to be slow

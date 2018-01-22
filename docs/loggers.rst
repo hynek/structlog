@@ -86,15 +86,13 @@ Additionally, the following arguments are allowed too:
 Printing and Testing
 --------------------
 
-To save you the hassle of using standard library logging for simple standard out logging, ``structlog`` ships a :class:`~structlog.PrintLogger` that can log into arbitrary files -- including standard out (which is the default if no file is passed into the constructor):
+To save you the hassle and slowdown of using standard library's ``logging`` for standard out logging, ``structlog`` ships a :class:`~structlog.PrintLogger` that can log into arbitrary files -- including standard out (which is the default if no file is passed into the constructor):
 
 .. doctest::
 
    >>> from structlog import PrintLogger
-   >>> PrintLogger().info('hello world!')
+   >>> PrintLogger().info("hello world!")
    hello world!
-
-It's handy for both examples and in combination with tools like `runit <http://smarden.org/runit/>`_ or `stdout/stderr-forwarding <https://hynek.me/articles/taking-some-pain-out-of-python-logging/>`_.
 
 Additionally -- mostly for unit testing -- ``structlog`` also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
