@@ -5,6 +5,10 @@ Twisted
 
    Since :func:`sys.exc_clear` has been dropped in Python 3, there is currently no way to avoid multiple tracebacks in your log files if using ``structlog`` together with Twisted on Python 3.
 
+.. note::
+
+   ``structlog`` currently only supports the legacy -- but still perfectly working -- Twisted logging system found in ``twisted.python.log``.
+
 
 Concrete Bound Logger
 ---------------------
