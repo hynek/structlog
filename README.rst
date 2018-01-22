@@ -3,8 +3,8 @@
    :width: 256px
    :target: http://www.structlog.org/
 
-structlog: Structured Logging for Python
-========================================
+``structlog``: Structured Logging for Python
+============================================
 
 .. image:: https://readthedocs.org/projects/structlog/badge/?version=stable
    :target: https://structlog.readthedocs.io/en/stable/?badge=stable
