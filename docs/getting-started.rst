@@ -169,7 +169,7 @@ Since ``structlog`` is mainly used together with standard library's logging, the
 Liked what you saw?
 -------------------
 
-Now you're all set for the rest of the user's guide.
+Now you're all set for the rest of the user's guide and can start reading about :doc:`bound loggers <loggers>` -- the heart of ``structlog``.
 If you want to see more code, make sure to check out the :ref:`examples`!
 
 .. [*] In production, you're more likely to use :class:`~structlog.processors.JSONRenderer` that can also be customized using a ``__structlog__`` method so you don't have to change your repr methods to something they weren't originally intended for.

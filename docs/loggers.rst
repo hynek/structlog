@@ -7,15 +7,46 @@ Bound Loggers
 
 The center of ``structlog`` is the immutable log wrapper :class:`~structlog.BoundLogger`.
 
-All it does is:
+.. image:: _static/BoundLogger.svg
 
-- Keep a *context dictionary* and a *logger* that it's wrapping,
-- recreate itself with (optional) *additional* context data (the :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new` methods),
-- recreate itself with *less* data (:func:`~structlog.BoundLogger.unbind`),
-- and finally relay *all* other method calls to the wrapped logger\ [*]_ after processing the log entry with the configured chain of :ref:`processors <processors>`.
+What it does is:
+
+- Store a *context dictionary* with key-value pairs that should be part of every log entry,
+- store a list of :ref:`processors <processors>` that are called on every log entry,
+- and store a *logger* that it's wrapping.
+  This *can* be :class:`logging.Logger` but absolutely doesn't have to.
+
+To manipulate the context dictionary, it offers to:
+
+- Recreate itself with (optional) *additional* context data: :func:`~structlog.BoundLogger.bind` and :func:`~structlog.BoundLogger.new`.
+- Recreate itself with *less* context data: :func:`~structlog.BoundLogger.unbind`.
+
+In any case, the original bound logger or its context are never mutated.
+
+Finally, if you call *any other* method on :class:`~structlog.BoundLogger`, it will:
+
+#. Make a copy of the context -- now it becomes the *event dictionary*,
+#. Add the keyword arguments of the method call to the event dict.
+#. Add a new key ``event`` with the value of the first positional argument of the method call to the event dict.
+#. Run the processors on the event dict.
+   Each processor receives the result of its predecessor.
+#. Finally it takes the result of the final processor and calls the method with the same name that got called on the bound logger on ther wrapped logger\ [1]_.
+   For flexibility, the final processor can return either a string that is passed directly as a positional parameter, or a tuple ``(args, kwargs)`` that are passed as ``wrapped_logger.log_method(*args, **kwargs)``.
+
+
+.. [1] Since this is slightly magicy, ``structlog`` comes with concrete loggers for the :doc:`standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
+       Of course, you are free to implement your own bound loggers too.
+
+
+Creation
+--------
 
 You won't be instantiating it yourself though.
-For that there is the :func:`structlog.wrap_logger` function (or the convenience function :func:`structlog.get_logger` we'll discuss in a minute):
+In practice you will configure ``structlog`` as explained in the :doc:`next chapter <configuration>`  and then just call :func:`structlog.get_logger`.
+
+
+In some rare cases you may not want to do that.
+For that times there is the :func:`structlog.wrap_logger` function that can be used to wrap a logger without any global state (i.e. configuration):
 
 .. _proc:
 
@@ -107,6 +138,3 @@ Additionally -- mostly for unit testing -- ``structlog`` also ships with a logge
    True
    >>> ReturnLogger().msg("hello", when="again")
    (('hello',), {'when': 'again'})
-
-
-.. [*] Since this is slightly magicy, ``structlog`` comes with concrete loggers for the :doc:`standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.

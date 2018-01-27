@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="411.5 584 700 180" width="700pt" height="15pc" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata> Produced by OmniGraffle 7.6.1 
+    <dc:date>2018-01-27 14:28:12 +0000</dc:date>
+  </metadata>
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 8 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="975.0061" descent="-216.99524" font-weight="bold">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue-Bold"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Source Code Pro" font-size="16" panose-1="2 11 5 9 3 4 3 2 2 4" units-per-em="1000" underline-position="-75" underline-thickness="50" slope="0" x-height="480" cap-height="660" ascent="984.002" descent="-273.00055" font-weight="500">
+      <font-face-src>
+        <font-face-name name="SourceCodePro-Regular"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <g stroke="none" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1">
+    <title>Canvas 1</title>
+    <rect fill="white" width="700" height="180"/>
+    <g>
+      <title>Layer 1</title>
+      <rect x="411.5" y="584" width="700" height="180" fill="white"/>
+      <rect x="411.5" y="584" width="700" height="180" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <text transform="translate(438 593.26794)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".492" y="16">BoundLogger</tspan>
+      </text>
+      <rect x="436.5" y="623.75" width="200" height="120" fill="#ffc0ff"/>
+      <rect x="436.5" y="623.75" width="200" height="120" stroke="#ff7fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <text transform="translate(449.0269 659.8596)" fill="black">
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="16">{</tspan>
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="36">  &quot;user&quot;: &quot;Guido&quot;,</tspan>
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="56">  &quot;ip&quot;: &quot;8.8.8.8&quot;,</tspan>
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="76">}</tspan>
+      </text>
+      <text transform="translate(441.5 628.30366)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".9415054" y="16">Context</tspan>
+      </text>
+      <rect x="661.5" y="623.75" width="200" height="120" fill="#c0ffc0"/>
+      <rect x="661.5" y="623.75" width="200" height="120" stroke="#81ff80" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <text transform="translate(674.0269 669.8596)" fill="black">
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="16">- censor_ip()</tspan>
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="36">- add_timestamp()</tspan>
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="56">- format_to_json()</tspan>
+      </text>
+      <text transform="translate(667.5 628.30366)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".236" y="16">Pr</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x="16.844" y="16">ocessors</tspan>
+      </text>
+      <rect x="886.5" y="623.75" width="200" height="120" fill="#ffffc0"/>
+      <rect x="886.5" y="623.75" width="200" height="120" stroke="#ffff80" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <text transform="translate(899.0269 689.8596)" fill="black">
+        <tspan font-family="Source Code Pro" font-size="16" font-weight="500" x="0" y="16">logging.Logger</tspan>
+      </text>
+      <text transform="translate(893.1 628.30366)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".296" y="16">W</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x="15.112" y="16">rapped Logger</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

@@ -8,7 +8,7 @@ Global Defaults
 ---------------
 
 To make logging as unintrusive and straight-forward to use as possible, ``structlog`` comes with a plethora of configuration options and convenience functions.
-Let me start at the end and introduce you to the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger` (and its camelCase-friendly alias :func:`structlog.getLogger` for y'all Twisted and Zope aficionados).
+Let's start at the end and introduce the ultimate convenience function that relies purely on configuration: :func:`structlog.get_logger`.
 
 The goal is to reduce your per-file logging boilerplate to::
 
@@ -17,8 +17,8 @@ The goal is to reduce your per-file logging boilerplate to::
 
 while still giving you the full power via configuration.
 
-To achieve that you'll have to call :func:`structlog.configure` on app initialization.
-The :ref:`example <proc>` from the previous chapter could thus have been written as following:
+To that end you'll have to call :func:`structlog.configure` on app initialization.
+Thus the :ref:`example <proc>` from the previous chapter could have been written as following:
 
 .. testcleanup:: *
 
@@ -38,16 +38,6 @@ The :ref:`example <proc>` from the previous chapter could thus have been written
       print("I got called with", event_dict)
       return repr(event_dict)
 
-.. doctest:: config_wrap_logger
-
-   >>> configure(processors=[proc], context_class=dict)
-   >>> log = wrap_logger(PrintLogger())
-   >>> log.msg("hello world")
-   I got called with {'event': 'hello world'}
-   {'event': 'hello world'}
-
-In fact, it could even be written like
-
 .. doctest:: config_get_logger
 
    >>> configure(processors=[proc], context_class=dict)
@@ -57,6 +47,19 @@ In fact, it could even be written like
    {'event': 'hello world'}
 
 because :class:`~structlog.processors.PrintLogger` is the default ``LoggerFactory`` used (see :ref:`logger-factories`).
+
+Configuration also applies to :func:`~structlog.wrap_logger` because that's what's used internally:
+
+.. doctest:: config_wrap_logger
+
+   >>> configure(processors=[proc], context_class=dict)
+   >>> log = wrap_logger(PrintLogger())
+   >>> log.msg("hello world")
+   I got called with {'event': 'hello world'}
+   {'event': 'hello world'}
+
+
+-----
 
 You can call :func:`structlog.configure` repeatedly and only set one or more settings -- the rest will not be affected.
 
