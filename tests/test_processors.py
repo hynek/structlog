@@ -176,7 +176,8 @@ class TestJSONRenderer(object):
             'a': '<A(\\o/)>', 'b': [3, 4], 'x': 7, 'y': 'test', 'z': [1, 2]
         } == json.loads(jr(None, None, event_dict))
 
-    @pytest.mark.skipif(rapidjson is None, reason="rapidjson is missing.")
+    @pytest.mark.skipif(rapidjson is None,
+                        reason="python-rapidjson is missing.")
     def test_rapidjson(self, event_dict):
         """
         Integration test with python-rapidjson.
@@ -189,46 +190,66 @@ class TestJSONRenderer(object):
 
 
 class TestTimeStamper(object):
-    def test_disallowsNonUTCUNIXTimestamps(self):
+    def test_disallows_non_utc_unix_timestamps(self):
+        """
+        A asking for a UNIX timestamp with a timezone that's not UTC raises a
+        ValueError.
+        """
         with pytest.raises(ValueError) as e:
             TimeStamper(utc=False)
-        assert 'UNIX timestamps are always UTC.' == e.value.args[0]
 
-    def test_insertsUTCUNIXTimestampByDefault(self):
+        assert "UNIX timestamps are always UTC." == e.value.args[0]
+
+    def test_inserts_utc_unix_timestamp_by_default(self):
         """
         Per default a float UNIX timestamp is used.
         """
         ts = TimeStamper()
         d = ts(None, None, {})
+
         # freezegun doesn't work with time.time. :(
-        assert isinstance(d['timestamp'], float)
+        assert isinstance(d["timestamp"], float)
 
     @freeze_time('1980-03-25 16:00:00')
     def test_local(self):
-        ts = TimeStamper(fmt='iso', utc=False)
+        """
+        Timestamp in local timezone work.  We can't add a timezone to the
+        string without additional libraries.
+        """
+        ts = TimeStamper(fmt="iso", utc=False)
         d = ts(None, None, {})
-        assert '1980-03-25T16:00:00' == d['timestamp']
+
+        assert "1980-03-25T16:00:00" == d["timestamp"]
 
     @freeze_time('1980-03-25 16:00:00')
     def test_formats(self):
-        ts = TimeStamper(fmt='%Y')
+        """
+        The fmt string is respected.
+        """
+        ts = TimeStamper(fmt="%Y")
         d = ts(None, None, {})
-        assert '1980' == d['timestamp']
+
+        assert "1980" == d["timestamp"]
 
     @freeze_time('1980-03-25 16:00:00')
     def test_adds_Z_to_iso(self):
-        ts = TimeStamper(fmt='iso', utc=True)
+        """
+        stdlib's isoformat is buggy, so we fix it.
+        """
+        ts = TimeStamper(fmt="iso", utc=True)
         d = ts(None, None, {})
-        assert '1980-03-25T16:00:00Z' == d['timestamp']
+
+        assert "1980-03-25T16:00:00Z" == d["timestamp"]
 
     @freeze_time('1980-03-25 16:00:00')
     def test_key_can_be_specified(self):
         """
         Timestamp is stored with the specified key.
         """
-        ts = TimeStamper(fmt='%m', key='month')
+        ts = TimeStamper(fmt="%m", key="month")
         d = ts(None, None, {})
-        assert '03' == d['month']
+
+        assert "03" == d["month"]
 
 
 class TestFormatExcInfo(object):

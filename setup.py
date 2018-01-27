@@ -39,6 +39,7 @@ EXTRAS_REQUIRE = {
         "freezegun>=0.2.8",
         "pretend",
         "pytest>=3.3.0",
+        "python-rapidjson; python_version>='3.6'",
         "simplejson",
     ],
     "docs": [
