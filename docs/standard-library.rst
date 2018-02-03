@@ -58,6 +58,9 @@ Processors
 :func:`~structlog.stdlib.add_logger_name`:
    Adds the name of the logger to the event dictionary under the key ``logger``.
 
+:func:`~structlog.stdlib.add_log_level_number`:
+   Adds the log level number to the event dictionary under the key ``level_number``.
+
 :func:`~structlog.stdlib.add_log_level`:
    Adds the log level to the event dictionary under the key ``level``.
 

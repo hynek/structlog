@@ -330,6 +330,14 @@ def filter_by_level(logger, name, event_dict):
         raise DropEvent
 
 
+def add_log_level_number(logger, method_name, event_dict):
+    """
+    Adds the log level number to the event dict.
+    """
+    event_dict['level_number'] = _NAME_TO_LEVEL[method_name]
+    return event_dict
+
+
 def add_log_level(logger, method_name, event_dict):
     """
     Add the log level to the event dict.

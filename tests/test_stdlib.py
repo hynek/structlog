@@ -18,9 +18,10 @@ from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer
 from structlog.stdlib import (
-    CRITICAL, WARN, BoundLogger, LoggerFactory, PositionalArgumentsFormatter,
-    ProcessorFormatter, _FixedFindCallerLogger, add_log_level, add_logger_name,
-    filter_by_level, render_to_log_kwargs
+    _NAME_TO_LEVEL, CRITICAL, WARN, BoundLogger, LoggerFactory,
+    PositionalArgumentsFormatter, ProcessorFormatter, _FixedFindCallerLogger,
+    add_log_level, add_log_level_number, add_logger_name, filter_by_level,
+    render_to_log_kwargs
 )
 
 from .additional_frame import additional_frame
@@ -280,6 +281,16 @@ class TestPositionalArgumentsFormatter(object):
         formatter = PositionalArgumentsFormatter()
 
         assert {} == formatter(None, None, {"positional_args": ()})
+
+
+class TestAddLogLevelNumber(object):
+    @pytest.mark.parametrize('level, number', _NAME_TO_LEVEL.items())
+    def test_log_level_number_added(self, level, number):
+        """
+        The log level number is added to the event dict.
+        """
+        event_dict = add_log_level_number(None, level, {})
+        assert number == event_dict['level_number']
 
 
 class TestAddLogLevel(object):
