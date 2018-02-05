@@ -187,9 +187,9 @@ API Reference
 
 .. autofunction:: filter_by_level
 
-.. autofunction:: add_log_level_number
-
 .. autofunction:: add_log_level
+
+.. autofunction:: add_log_level_number
 
 .. autofunction:: add_logger_name
 

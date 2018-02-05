@@ -12,8 +12,8 @@ import pytest
 
 from pretend import call_recorder
 from six import PY3
-
 from six.moves import cStringIO as StringIO
+
 from structlog import ReturnLogger
 from structlog._config import _CONFIG
 from structlog.processors import KeyValueRenderer
