@@ -24,7 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Added ``structlog.stdlib.add_log_level_number`` processor to add level number of log level to the event dictionary. Can be used to simplify log filtering.
+- Added :meth:`~structlog.stdlib.add_log_level_number` processor to add level number of log level to the event dictionary. Can be used to simplify log filtering.
   `#151 <https://github.com/hynek/structlog/pull/151>`_
 
 
