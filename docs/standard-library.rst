@@ -61,6 +61,15 @@ Processors
 :func:`~structlog.stdlib.add_log_level`:
    Adds the log level to the event dictionary under the key ``level``.
 
+:func:`~structlog.stdlib.add_log_level_number`:
+   Adds the log level number to the event dictionary under the key ``level_number``.
+   Log level numbers map to the log level names. The Python stdlib uses them for filtering logic. This adds the same numbers so users can leverage similar filtering. Compare::
+   
+      level in ("warning", "error", "critical")
+      level_number >= 30
+
+   The mapping of names to numbers is in :data:`~structlog.stdlib._NAME_TO_LEVEL`
+
 :class:`~structlog.stdlib.PositionalArgumentsFormatter`:
    This processes and formats positional arguments (if any) passed to log methods in the same way the ``logging`` module would do, e.g. ``logger.info("Hello, %s", name)``.
 

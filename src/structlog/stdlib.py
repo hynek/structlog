@@ -342,6 +342,26 @@ def add_log_level(logger, method_name, event_dict):
     return event_dict
 
 
+def add_log_level_number(logger, method_name, event_dict):
+    """
+    Add the log level number to the event dict.
+
+    Log level numbers map to the log level names. The Python stdlib uses them
+    for filtering logic. This adds the same numbers so users can leverage
+    similar filtering. Compare::
+
+       level in ("warning", "error", "critical")
+       level_number >= 30
+
+    The mapping of names to numbers is in
+    :data:`~structlog.stdlib._NAME_TO_LEVEL`.
+
+    .. versionadded:: 18.2.0
+    """
+    event_dict["level_number"] = _NAME_TO_LEVEL[method_name]
+    return event_dict
+
+
 def add_logger_name(logger, method_name, event_dict):
     """
     Add the logger name to the event dict.

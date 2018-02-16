@@ -9,6 +9,7 @@ import sys
 import pytest
 
 from six.moves import cStringIO as StringIO
+
 from structlog._loggers import (
     WRITE_LOCKS, PrintLogger, PrintLoggerFactory, ReturnLogger,
     ReturnLoggerFactory

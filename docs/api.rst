@@ -189,6 +189,8 @@ API Reference
 
 .. autofunction:: add_log_level
 
+.. autofunction:: add_log_level_number
+
 .. autofunction:: add_logger_name
 
 .. autoclass:: PositionalArgumentsFormatter
