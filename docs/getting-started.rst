@@ -41,7 +41,7 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
 
 .. note::
-   For brewity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
+   For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
 
 There you go, structured logging!
 However, this alone wouldn't warrant its own package.
