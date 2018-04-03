@@ -18,8 +18,8 @@ This is why the popular `twelve-factor app methodology`_ suggests just that.
 Centralized Logging
 -------------------
 
-Nowadays you usually don't want your logfiles in compressed archives distributed over dozens -- if not thousands -- servers or cluster nodes.
-You want them in a single location; parsed, indexed and easy to search.
+Nowadays you usually don't want your logfiles in compressed archives distributed over dozens -- if not thousands -- of servers or cluster nodes.
+You want them in a single location; parsed, indexed, and easy to search.
 
 
 ELK
