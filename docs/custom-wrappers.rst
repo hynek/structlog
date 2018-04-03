@@ -52,9 +52,9 @@ You can observe the following:
 
 - The wrapped logger can be found in the instance variable :attr:`structlog.BoundLoggerBase._logger`.
 - The helper method :func:`structlog.BoundLoggerBase._proxy_to_logger` that is a DRY_ convenience function that runs the processor chain, handles possible :exc:`~structlog.DropEvent`\ s and calls a named function on :attr:`~structlog.BoundLoggerBase._logger`.
-- You can run the chain by hand though using :func:`structlog.BoundLoggerBase._process_event` .
+- You can run the chain by hand through using :func:`structlog.BoundLoggerBase._process_event` .
 
-These two methods and one attribute is all you need to write own wrapper classes.
+These two methods and one attribute are all you need to write own wrapper classes.
 
 
 .. _DRY: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
