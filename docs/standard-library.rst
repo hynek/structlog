@@ -12,7 +12,7 @@ Just Enough ``logging``
 -----------------------
 
 If you want to use ``structlog`` with :mod:`logging`, you still have to have at least fleeting understanding on how the standard library operates because ``structlog`` will *not* do any magic things in the background for you.
-Most importantly you have *configure* the :mod:`logging` system *additionally* to configuring ``structlog``.
+Most importantly you have to *configure* the :mod:`logging` system *additionally* to configuring ``structlog``.
 
 Usually it is enough to use::
 
@@ -53,7 +53,7 @@ Processors
 :func:`~structlog.stdlib.filter_by_level`:
    Checks the log entry's log level against the configuration of standard library's logging.
    Log entries below the threshold get silently dropped.
-   Put it at the beginning of your processing chain to avoid expensive operations happen in the first place.
+   Put it at the beginning of your processing chain to avoid expensive operations from happening in the first place.
 
 :func:`~structlog.stdlib.add_logger_name`:
    Adds the name of the logger to the event dictionary under the key ``logger``.
@@ -304,9 +304,9 @@ Log entries that do not originate from ``structlog``, are additionally pre-proce
     2017-03-06 11:49:27 [warning  ] bar
     2017-03-06 11:49:32 [warning  ] foo                            x=42
 
-(sadly, you have to imagine the colors in the first two outputs)
+(Sadly, you have to imagine the colors in the first two outputs.)
 
-If you leave ``foreign_pre_chain`` `None`, formatting will be left to :mod:`logging`.
+If you leave ``foreign_pre_chain`` as `None`, formatting will be left to :mod:`logging`.
 Meaning: you can define a ``format`` for :class:`~structlog.stdlib.ProcessorFormatter` too!
 
 
@@ -337,7 +337,7 @@ A basic configuration to output structured logs in JSON format looks like this:
         cache_logger_on_first_use=True,
     )
 
-(if you're still runnning Python 2, replace :class:`~structlog.processors.UnicodeDecoder` through :class:`~structlog.processors.UnicodeEncoder`)
+(If you're still runnning Python 2, replace :class:`~structlog.processors.UnicodeDecoder` through :class:`~structlog.processors.UnicodeEncoder`.)
 
 To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the ``logging`` module like this::
 
