@@ -63,7 +63,7 @@ Parsing human-readable timestamps is tedious, not so `UNIX timestamps <https://e
 .. literalinclude:: code_examples/processors/timestamper.py
    :language: python
 
-Please note, that ``structlog`` comes with such an processor built in: :class:`~structlog.processors.TimeStamper`.
+Please note, that ``structlog`` comes with such a processor built in: :class:`~structlog.processors.TimeStamper`.
 
 
 Filtering
