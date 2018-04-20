@@ -153,12 +153,12 @@ class JSONRenderer(object):
         ``serializer`` parameter.
     """
     def __init__(self, serializer=json.dumps, **dumps_kw):
+        dumps_kw.setdefault('default', _json_fallback_handler)
         self._dumps_kw = dumps_kw
         self._dumps = serializer
 
     def __call__(self, logger, name, event_dict):
-        return self._dumps(event_dict, default=_json_fallback_handler,
-                           **self._dumps_kw)
+        return self._dumps(event_dict, **self._dumps_kw)
 
 
 def _json_fallback_handler(obj):
