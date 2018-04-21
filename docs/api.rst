@@ -127,6 +127,8 @@ API Reference
 
    Please note that additionally to strings, you can also return any type the standard library JSON module knows about -- like in this example a list.
 
+   If you choose to pass a *default* parameter as part of *json_kw*, support for ``__structlog__`` is disabled.
+   This can be useful when used together with more elegant serialization methods like :func:`functools.singledispatch`: `Better Python Object Serialization <https://hynek.me/articles/serialization/>`_.
 
 .. autoclass:: KeyValueRenderer
 

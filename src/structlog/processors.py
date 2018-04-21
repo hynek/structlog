@@ -138,7 +138,9 @@ class JSONRenderer(object):
     """
     Render the `event_dict` using ``serializer(event_dict, **json_kw)``.
 
-    :param dict json_kw: Are passed unmodified to *serializer*.
+    :param dict json_kw: Are passed unmodified to *serializer*.  If *default*
+        is passed, it will disable support for ``__structlog__``-based
+        serialization.
     :param callable serializer: A :func:`json.dumps`-compatible callable that
         will be used to format the string.  This can be used to use alternative
         JSON encoders like `simplejson
@@ -150,7 +152,11 @@ class JSONRenderer(object):
         Support for ``__structlog__`` serialization method.
 
     .. versionadded:: 15.4.0
-        ``serializer`` parameter.
+        *serializer* parameter.
+
+    .. versionadded:: 18.2.0
+       Serializer's *default* parameter can be overwritten now.
+
     """
     def __init__(self, serializer=json.dumps, **dumps_kw):
         dumps_kw.setdefault('default', _json_fallback_handler)

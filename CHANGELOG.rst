@@ -27,6 +27,9 @@ Changes:
 - Added ``structlog.stdlib.add_log_level_number`` processor to add level number of log level to the event dictionary.
   Can be used to simplify log filtering.
   `#151 <https://github.com/hynek/structlog/pull/151>`_
+- ``structlog.processors.JSONRenderer`` now allows for overwriting the *default* argument of its serializer.
+  `#77 <https://github.com/hynek/structlog/pull/77>`_
+  `#163 <https://github.com/hynek/structlog/pull/163>`_
 
 
 ----
