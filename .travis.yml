@@ -9,6 +9,8 @@ language: python
 
 
 matrix:
+  fast_finish: true
+
   include:
     - python: "2.7"
       env: TOXENV=py27-threads
@@ -41,6 +43,15 @@ matrix:
     - python: "3.6"
       env: TOXENV=py36-oldtwisted
 
+    # Prevent breakage by a new releases
+    - python: "3.6-dev"
+      env: TOXENV=py36-threads
+    - python: "3.6-dev"
+      env: TOXENV=py36-greenlets
+    - python: "3.7-dev"
+      env: TOXENV=py37-threads
+    - python: "3.7-dev"
+      env: TOXENV=py37-greenlets
 
     # Meta
     - python: "3.6"
@@ -51,6 +62,10 @@ matrix:
       env: TOXENV=docs
     - python: "3.6"
       env: TOXENV=readme
+
+  allow_failures:
+    - python: "3.6-dev"
+    - python: "3.7-dev"
 
 
 install:
