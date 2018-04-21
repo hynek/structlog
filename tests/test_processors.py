@@ -165,6 +165,15 @@ class TestJSONRenderer(object):
 
         assert {"a": 42} == jr(None, None, obj)
 
+    def test_custom_fallback(self):
+        """
+        A custom fallback handler can be used.
+        """
+        jr = JSONRenderer(default=lambda x: repr(x)[::-1])
+        d = {'date': datetime.date(1980, 3, 25)}
+
+        assert '{"date": ")52 ,3 ,0891(etad.emitetad"}' == jr(None, None, d)
+
     @pytest.mark.skipif(simplejson is None, reason="simplejson is missing.")
     def test_simplejson(self, event_dict):
         """
