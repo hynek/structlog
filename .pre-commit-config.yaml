@@ -10,10 +10,8 @@ repos:
     rev: v1.0.0
     hooks:
       - id: seed-isort-config
-        language_version: python3.6
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v4.3.4
     hooks:
       - id: isort
         types: [python]
-        language_version: python3.6
