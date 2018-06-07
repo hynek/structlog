@@ -110,7 +110,7 @@ The processor would look like this:
   ...     return event_dict
 
 Plain Python, plain dictionaries.
-No you have to tell ``structlog`` about your processor by :doc:`configuring <configuration>` it:
+Now you have to tell ``structlog`` about your processor by :doc:`configuring <configuration>` it:
 
 .. doctest::
 
