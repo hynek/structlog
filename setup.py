@@ -42,7 +42,7 @@ EXTRAS_REQUIRE = {
         "python-rapidjson; python_version>='3.6'",
         "simplejson",
     ],
-    "docs": ["sphinx<1.6.0", "twisted"],
+    "docs": ["sphinx", "twisted"],
 }
 
 ###############################################################################
