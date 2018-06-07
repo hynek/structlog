@@ -1,10 +1,12 @@
 import sys
 import uuid
 
-import structlog
 import twisted
 
 from twisted.internet import protocol, reactor
+
+import structlog
+
 
 logger = structlog.getLogger()
 

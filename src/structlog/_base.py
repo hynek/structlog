@@ -25,6 +25,7 @@ class BoundLoggerBase(object):
 
     See also :doc:`custom-wrappers`.
     """
+
     _logger = None
     """
     Wrapped logger.
@@ -42,10 +43,8 @@ class BoundLoggerBase(object):
         self._context = context
 
     def __repr__(self):
-        return '<{0}(context={1!r}, processors={2!r})>'.format(
-            self.__class__.__name__,
-            self._context,
-            self._processors,
+        return "<{0}(context={1!r}, processors={2!r})>".format(
+            self.__class__.__name__, self._context, self._processors
         )
 
     def __eq__(self, other):
@@ -69,7 +68,7 @@ class BoundLoggerBase(object):
         return self.__class__(
             self._logger,
             self._processors,
-            self._context.__class__(self._context, **new_values)
+            self._context.__class__(self._context, **new_values),
         )
 
     def unbind(self, *keys):

@@ -15,7 +15,6 @@ import json
 import sys
 
 from six import PY2, string_types
-
 from twisted.python import log
 from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver, textFromEventDict
@@ -41,6 +40,7 @@ class BoundLogger(BoundLoggerBase):
         )
 
     """
+
     def msg(self, event=None, **kw):
         """
         Process event and call ``log.msg()`` with the result.
@@ -62,6 +62,7 @@ class LoggerFactory(object):
     >>> from structlog.twisted import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
     """
+
     def __call__(self, *args):
         """
         Positional arguments are silently ignored.
@@ -84,20 +85,17 @@ def _extractStuffAndWhy(eventDict):
 
     **Modifies** *eventDict*!
     """
-    _stuff = eventDict.pop('_stuff', None)
-    _why = eventDict.pop('_why', None)
-    event = eventDict.pop('event', None)
-    if (
-        isinstance(_stuff, _FAIL_TYPES) and
-        isinstance(event, _FAIL_TYPES)
-    ):
-        raise ValueError('Both _stuff and event contain an Exception/Failure.')
+    _stuff = eventDict.pop("_stuff", None)
+    _why = eventDict.pop("_why", None)
+    event = eventDict.pop("event", None)
+    if isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
+        raise ValueError("Both _stuff and event contain an Exception/Failure.")
     # `log.err('event', _why='alsoEvent')` is ambiguous.
     if _why and isinstance(event, string_types):
-        raise ValueError('Both `_why` and `event` supplied.')
+        raise ValueError("Both `_why` and `event` supplied.")
     # Two failures are ambiguous too.
     if not isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
-        _why = _why or 'error'
+        _why = _why or "error"
         _stuff = event
     if isinstance(event, string_types):
         _why = event
@@ -125,6 +123,7 @@ class ReprWrapper(object):
 
     Note the extra quotes in the unwrapped example.
     """
+
     def __init__(self, string):
         self.string = string
 
@@ -132,8 +131,9 @@ class ReprWrapper(object):
         """
         Check for equality, actually just for tests.
         """
-        return isinstance(other, self.__class__) \
-            and self.string == other.string
+        return (
+            isinstance(other, self.__class__) and self.string == other.string
+        )
 
     def __repr__(self):
         return self.string
@@ -160,18 +160,24 @@ class JSONRenderer(GenericJSONRenderer):
     Use together with a :class:`JSONLogObserverWrapper`-wrapped Twisted logger
     like :func:`plainJSONStdOutLogger` for pure-JSON logs.
     """
+
     def __call__(self, logger, name, eventDict):
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
-        if name == 'err':
-            eventDict['event'] = _why
+        if name == "err":
+            eventDict["event"] = _why
             if isinstance(_stuff, Failure):
-                eventDict['exception'] = _stuff.getTraceback(detail='verbose')
+                eventDict["exception"] = _stuff.getTraceback(detail="verbose")
                 _stuff.cleanFailure()
         else:
-            eventDict['event'] = _why
-        return ((ReprWrapper(
-            GenericJSONRenderer.__call__(self, logger, name, eventDict)
-        ),), {'_structlog': True})
+            eventDict["event"] = _why
+        return (
+            (
+                ReprWrapper(
+                    GenericJSONRenderer.__call__(self, logger, name, eventDict)
+                ),
+            ),
+            {"_structlog": True},
+        )
 
 
 @implementer(ILogObserver)
@@ -187,12 +193,13 @@ class PlainFileLogObserver(object):
 
     .. versionadded:: 0.2.0
     """
+
     def __init__(self, file):
         self._write = file.write
         self._flush = file.flush
 
     def __call__(self, eventDict):
-        until_not_interrupted(self._write, textFromEventDict(eventDict) + '\n')
+        until_not_interrupted(self._write, textFromEventDict(eventDict) + "\n")
         until_not_interrupted(self._flush)
 
 
@@ -208,16 +215,21 @@ class JSONLogObserverWrapper(object):
 
     .. versionadded:: 0.2.0
     """
+
     def __init__(self, observer):
         self._observer = observer
 
     def __call__(self, eventDict):
-        if '_structlog' not in eventDict:
-            eventDict['message'] = (json.dumps({
-                'event': textFromEventDict(eventDict),
-                'system': eventDict.get('system'),
-            }),)
-            eventDict['_structlog'] = True
+        if "_structlog" not in eventDict:
+            eventDict["message"] = (
+                json.dumps(
+                    {
+                        "event": textFromEventDict(eventDict),
+                        "system": eventDict.get("system"),
+                    }
+                ),
+            )
+            eventDict["_structlog"] = True
         return self._observer(eventDict)
 
 
@@ -262,6 +274,7 @@ class EventAdapter(object):
     for the actual formatting as an constructor argument in order to be able to
     fully support the original behaviors of ``log.msg()`` and ``log.err()``.
     """
+
     def __init__(self, dictRenderer=None):
         """
         :param dictRenderer: A processor used to format the log message.
@@ -269,16 +282,19 @@ class EventAdapter(object):
         self._dictRenderer = dictRenderer or _BUILTIN_DEFAULT_PROCESSORS[-1]
 
     def __call__(self, logger, name, eventDict):
-        if name == 'err':
+        if name == "err":
             # This aspires to handle the following cases correctly:
             #   - log.err(failure, _why='event', **kw)
             #   - log.err('event', **kw)
             #   - log.err(_stuff=failure, _why='event', **kw)
             _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
-            eventDict['event'] = _why
-            return ((), {
-                '_stuff': _stuff,
-                '_why': self._dictRenderer(logger, name, eventDict),
-            })
+            eventDict["event"] = _why
+            return (
+                (),
+                {
+                    "_stuff": _stuff,
+                    "_why": self._dictRenderer(logger, name, eventDict),
+                },
+            )
         else:
             return self._dictRenderer(logger, name, eventDict)

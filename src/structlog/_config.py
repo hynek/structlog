@@ -27,8 +27,8 @@ _BUILTIN_DEFAULT_PROCESSORS = [
     ConsoleRenderer(colors=_has_colorama),
 ]
 if (
-    sys.version_info[:2] >= (3, 6) or
-    platform.python_implementation() == "PyPy"
+    sys.version_info[:2] >= (3, 6)
+    or platform.python_implementation() == "PyPy"
 ):
     # Python 3.6+ and PyPy have ordered dicts.
     _BUILTIN_DEFAULT_CONTEXT_CLASS = dict
@@ -43,6 +43,7 @@ class _Configuration(object):
     """
     Global defaults.
     """
+
     is_configured = False
     default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class = _BUILTIN_DEFAULT_CONTEXT_CLASS
@@ -128,9 +129,15 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 """
 
 
-def wrap_logger(logger, processors=None, wrapper_class=None,
-                context_class=None, cache_logger_on_first_use=None,
-                logger_factory_args=None, **initial_values):
+def wrap_logger(
+    logger,
+    processors=None,
+    wrapper_class=None,
+    context_class=None,
+    cache_logger_on_first_use=None,
+    logger_factory_args=None,
+    **initial_values
+):
     """
     Create a new bound logger for an arbitrary *logger*.
 
@@ -166,8 +173,13 @@ def wrap_logger(logger, processors=None, wrapper_class=None,
     )
 
 
-def configure(processors=None, wrapper_class=None, context_class=None,
-              logger_factory=None, cache_logger_on_first_use=None):
+def configure(
+    processors=None,
+    wrapper_class=None,
+    context_class=None,
+    logger_factory=None,
+    cache_logger_on_first_use=None,
+):
     """
     Configures the **global** defaults.
 
@@ -221,7 +233,7 @@ def configure_once(*args, **kw):
     if not _CONFIG.is_configured:
         configure(*args, **kw)
     else:
-        warnings.warn('Repeated configuration attempted.', RuntimeWarning)
+        warnings.warn("Repeated configuration attempted.", RuntimeWarning)
 
 
 def reset_defaults():
@@ -253,9 +265,17 @@ class BoundLoggerLazyProxy(object):
     .. versionchanged:: 0.4.0
         Added support for `logger_factory_args`.
     """
-    def __init__(self, logger, wrapper_class=None, processors=None,
-                 context_class=None, cache_logger_on_first_use=None,
-                 initial_values=None, logger_factory_args=None):
+
+    def __init__(
+        self,
+        logger,
+        wrapper_class=None,
+        processors=None,
+        context_class=None,
+        cache_logger_on_first_use=None,
+        initial_values=None,
+        logger_factory_args=None,
+    ):
         self._logger = logger
         self._wrapper_class = wrapper_class
         self._processors = processors
@@ -266,11 +286,11 @@ class BoundLoggerLazyProxy(object):
 
     def __repr__(self):
         return (
-            '<BoundLoggerLazyProxy(logger={0._logger!r}, wrapper_class='
-            '{0._wrapper_class!r}, processors={0._processors!r}, '
-            'context_class={0._context_class!r}, '
-            'initial_values={0._initial_values!r}, '
-            'logger_factory_args={0._logger_factory_args!r})>'.format(self)
+            "<BoundLoggerLazyProxy(logger={0._logger!r}, wrapper_class="
+            "{0._wrapper_class!r}, processors={0._processors!r}, "
+            "context_class={0._context_class!r}, "
+            "initial_values={0._initial_values!r}, "
+            "logger_factory_args={0._logger_factory_args!r})>".format(self)
         )
 
     def bind(self, **new_values):
@@ -290,11 +310,7 @@ class BoundLoggerLazyProxy(object):
             procs = _CONFIG.default_processors
         else:
             procs = self._processors
-        logger = cls(
-            _logger,
-            processors=procs,
-            context=ctx,
-        )
+        logger = cls(_logger, processors=procs, context=ctx)
 
         def finalized_bind(**new_values):
             """
@@ -305,10 +321,9 @@ class BoundLoggerLazyProxy(object):
             else:
                 return logger
 
-        if (
-            self._cache_logger_on_first_use is True or
-            (self._cache_logger_on_first_use is None and
-             _CONFIG.cache_logger_on_first_use is True)
+        if self._cache_logger_on_first_use is True or (
+            self._cache_logger_on_first_use is None
+            and _CONFIG.cache_logger_on_first_use is True
         ):
             self.bind = finalized_bind
         return finalized_bind(**new_values)

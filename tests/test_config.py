@@ -19,9 +19,16 @@ import structlog
 
 from structlog._base import BoundLoggerBase
 from structlog._config import (
-    _BUILTIN_DEFAULT_CONTEXT_CLASS, _BUILTIN_DEFAULT_LOGGER_FACTORY,
-    _BUILTIN_DEFAULT_PROCESSORS, _BUILTIN_DEFAULT_WRAPPER_CLASS, _CONFIG,
-    BoundLoggerLazyProxy, configure, configure_once, get_logger, wrap_logger
+    _BUILTIN_DEFAULT_CONTEXT_CLASS,
+    _BUILTIN_DEFAULT_LOGGER_FACTORY,
+    _BUILTIN_DEFAULT_PROCESSORS,
+    _BUILTIN_DEFAULT_WRAPPER_CLASS,
+    _CONFIG,
+    BoundLoggerLazyProxy,
+    configure,
+    configure_once,
+    get_logger,
+    wrap_logger,
 )
 
 
@@ -44,9 +51,9 @@ def test_default_context_class():
     Default context class is dict on Python 3.6+ and PyPy, OrderedDict
     otherwise.
     """
-    if (
-        platform.python_implementation() == "PyPy" or
-        sys.version_info[:2] >= (3, 6)
+    if platform.python_implementation() == "PyPy" or sys.version_info[:2] >= (
+        3,
+        6,
     ):
         cls = dict
     else:
@@ -128,16 +135,18 @@ class TestBoundLoggerLazyProxy(object):
 
     def test_repr(self):
         p = BoundLoggerLazyProxy(
-            None, processors=[1, 2, 3], context_class=dict,
-            initial_values={'foo': 42}, logger_factory_args=(4, 5),
+            None,
+            processors=[1, 2, 3],
+            context_class=dict,
+            initial_values={"foo": 42},
+            logger_factory_args=(4, 5),
         )
         assert (
             "<BoundLoggerLazyProxy(logger=None, wrapper_class=None, "
             "processors=[1, 2, 3], "
             "context_class=<%s 'dict'>, "
             "initial_values={'foo': 42}, "
-            "logger_factory_args=(4, 5))>"
-            % ('class' if PY3 else 'type',)
+            "logger_factory_args=(4, 5))>" % ("class" if PY3 else "type",)
         ) == repr(p)
 
     def test_returns_bound_logger_on_bind(self, proxy):
@@ -147,8 +156,9 @@ class TestBoundLoggerLazyProxy(object):
         assert isinstance(proxy.new(), BoundLoggerBase)
 
     def test_prefers_args_over_config(self):
-        p = BoundLoggerLazyProxy(None, processors=[1, 2, 3],
-                                 context_class=dict)
+        p = BoundLoggerLazyProxy(
+            None, processors=[1, 2, 3], context_class=dict
+        )
         b = p.bind()
         assert isinstance(b._context, dict)
         assert [1, 2, 3] == b._processors
@@ -159,6 +169,7 @@ class TestBoundLoggerLazyProxy(object):
 
             def update(self, *args, **kw):
                 pass
+
         configure(processors=[4, 5, 6], context_class=Class)
         b = p.bind()
         assert not isinstance(b._context, Class)
@@ -170,20 +181,20 @@ class TestBoundLoggerLazyProxy(object):
         assert _CONFIG.default_processors == b._processors
 
     def test_bind_honors_initial_values(self):
-        p = BoundLoggerLazyProxy(None, initial_values={'a': 1, 'b': 2})
+        p = BoundLoggerLazyProxy(None, initial_values={"a": 1, "b": 2})
         b = p.bind()
-        assert {'a': 1, 'b': 2} == b._context
+        assert {"a": 1, "b": 2} == b._context
         b = p.bind(c=3)
-        assert {'a': 1, 'b': 2, 'c': 3} == b._context
+        assert {"a": 1, "b": 2, "c": 3} == b._context
 
     def test_bind_binds_new_values(self, proxy):
         b = proxy.bind(c=3)
-        assert {'c': 3} == b._context
+        assert {"c": 3} == b._context
 
     def test_unbind_unbinds_from_initial_values(self):
-        p = BoundLoggerLazyProxy(None, initial_values={'a': 1, 'b': 2})
-        b = p.unbind('a')
-        assert {'b': 2} == b._context
+        p = BoundLoggerLazyProxy(None, initial_values={"a": 1, "b": 2})
+        b = p.unbind("a")
+        assert {"b": 2} == b._context
 
     def test_honors_wrapper_class(self):
         p = BoundLoggerLazyProxy(None, wrapper_class=Wrapper)
@@ -196,16 +207,16 @@ class TestBoundLoggerLazyProxy(object):
         assert isinstance(b, Wrapper)
 
     def test_new_binds_only_initial_values_impolicit_ctx_class(self, proxy):
-        proxy = BoundLoggerLazyProxy(None, initial_values={'a': 1, 'b': 2})
+        proxy = BoundLoggerLazyProxy(None, initial_values={"a": 1, "b": 2})
         b = proxy.new(foo=42)
-        assert {'a': 1, 'b': 2, 'foo': 42} == b._context
+        assert {"a": 1, "b": 2, "foo": 42} == b._context
 
     def test_new_binds_only_initial_values_explicit_ctx_class(self, proxy):
-        proxy = BoundLoggerLazyProxy(None,
-                                     initial_values={'a': 1, 'b': 2},
-                                     context_class=dict)
+        proxy = BoundLoggerLazyProxy(
+            None, initial_values={"a": 1, "b": 2}, context_class=dict
+        )
         b = proxy.new(foo=42)
-        assert {'a': 1, 'b': 2, 'foo': 42} == b._context
+        assert {"a": 1, "b": 2, "foo": 42} == b._context
 
     def test_rebinds_bind_method(self, proxy):
         """
@@ -244,8 +255,10 @@ class TestBoundLoggerLazyProxy(object):
         Calling configure() changes BoundLoggerLazyProxys immediately.
         Previous uses of the BoundLoggerLazyProxy don't interfere.
         """
+
         class F(object):
             "New logger factory with a new attribute"
+
             def a(self, *args):
                 return 5
 
@@ -261,13 +274,13 @@ class TestBoundLoggerLazyProxy(object):
         Calling an unknown method proxy creates a new wrapped bound logger
         first.
         """
+
         class Foo(BoundLoggerBase):
             def foo(self):
                 return 42
+
         proxy = BoundLoggerLazyProxy(
-            None,
-            wrapper_class=Foo,
-            cache_logger_on_first_use=False,
+            None, wrapper_class=Foo, cache_logger_on_first_use=False
         )
         assert 42 == proxy.foo()
 
@@ -304,12 +317,13 @@ class TestFunctions(object):
             configure_once()
         assert 1 == len(warns)
         assert RuntimeWarning == warns[0].category
-        assert 'Repeated configuration attempted.' == warns[0].message.args[0]
+        assert "Repeated configuration attempted." == warns[0].message.args[0]
 
     def test_get_logger_configures_according_to_config(self):
         b = get_logger().bind()
-        assert isinstance(b._logger,
-                          _BUILTIN_DEFAULT_LOGGER_FACTORY().__class__)
+        assert isinstance(
+            b._logger, _BUILTIN_DEFAULT_LOGGER_FACTORY().__class__
+        )
         assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
         assert isinstance(b, _BUILTIN_DEFAULT_WRAPPER_CLASS)
         assert _BUILTIN_DEFAULT_CONTEXT_CLASS == b._context.__class__
@@ -321,5 +335,5 @@ class TestFunctions(object):
         """
         factory = call_recorder(lambda *args: object())
         configure(logger_factory=factory)
-        get_logger('test').bind(x=42)
-        assert [call('test')] == factory.calls
+        get_logger("test").bind(x=42)
+        assert [call("test")] == factory.calls

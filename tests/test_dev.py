@@ -39,9 +39,7 @@ def styles(cr):
 @pytest.fixture
 def padded(styles):
     return (
-        styles.bright +
-        dev._pad("test", dev._EVENT_WIDTH) +
-        styles.reset + " "
+        styles.bright + dev._pad("test", dev._EVENT_WIDTH) + styles.reset + " "
     )
 
 
@@ -79,18 +77,17 @@ class TestConsoleRenderer(object):
         """
         rv = cr(None, None, {"event": "test", "timestamp": 42})
 
-        assert (
-            styles.timestamp + "42" + styles.reset + " " + unpadded
-        ) == rv
+        assert (styles.timestamp + "42" + styles.reset + " " + unpadded) == rv
 
     def test_level(self, cr, styles, padded):
         """
         Levels are rendered aligned, in square brackets, and color coded.
         """
-        rv = cr(None, None, {
-            "event": "test", "level": "critical", "foo": "bar"
-        })
+        rv = cr(
+            None, None, {"event": "test", "level": "critical", "foo": "bar"}
+        )
 
+        # fmt: off
         assert (
             "[" + dev.RED + styles.bright +
             dev._pad("critical", cr._longest_level) +
@@ -99,6 +96,7 @@ class TestConsoleRenderer(object):
             styles.kv_key + "foo" + styles.reset + "=" +
             styles.kv_value + "bar" + styles.reset
         ) == rv
+        # fmt: on
 
     def test_init_accepts_overriding_levels(self, styles, padded):
         """
@@ -113,10 +111,11 @@ class TestConsoleRenderer(object):
         )
 
         # this would blow up if the level_styles override failed
-        rv = cr(None, None, {
-            "event": "test", "level": "MY_OH_MY", "foo": "bar"
-        })
+        rv = cr(
+            None, None, {"event": "test", "level": "MY_OH_MY", "foo": "bar"}
+        )
 
+        # fmt: off
         assert (
             "[" + dev.RED + styles.bright +
             dev._pad("MY_OH_MY", cr._longest_level) +
@@ -125,6 +124,7 @@ class TestConsoleRenderer(object):
             styles.kv_key + "foo" + styles.reset + "=" +
             styles.kv_value + "bar" + styles.reset
         ) == rv
+        # fmt: on
 
     def test_logger_name(self, cr, styles, padded):
         """
@@ -132,22 +132,22 @@ class TestConsoleRenderer(object):
         """
         rv = cr(None, None, {"event": "test", "logger": "some_module"})
 
+        # fmt: off
         assert (
             padded +
             "[" + dev.BLUE + styles.bright +
             "some_module" +
             styles.reset + "] "
         ) == rv
+        # fmt: on
 
     def test_key_values(self, cr, styles, padded):
         """
         Key-value pairs go sorted alphabetically to the end.
         """
-        rv = cr(None, None, {
-            "event": "test",
-            "key": "value",
-            "foo": "bar",
-        })
+        rv = cr(None, None, {"event": "test", "key": "value", "foo": "bar"})
+
+        # fmt: off
         assert (
             padded +
             styles.kv_key + "foo" + styles.reset + "=" +
@@ -157,6 +157,7 @@ class TestConsoleRenderer(object):
             styles.kv_value + "value" +
             styles.reset
         ) == rv
+        # fmt: on
 
     def test_exception(self, cr, padded):
         """
@@ -164,38 +165,28 @@ class TestConsoleRenderer(object):
         """
         exc = "Traceback:\nFake traceback...\nFakeError: yolo"
 
-        rv = cr(None, None, {
-            "event": "test",
-            "exception": exc
-        })
+        rv = cr(None, None, {"event": "test", "exception": exc})
 
-        assert (
-            padded + "\n" + exc
-        ) == rv
+        assert (padded + "\n" + exc) == rv
 
     def test_stack_info(self, cr, padded):
         """
         Stack traces are rendered after a new line.
         """
         stack = "fake stack"
-        rv = cr(None, None, {
-            "event": "test",
-            "stack": stack
-        })
+        rv = cr(None, None, {"event": "test", "stack": stack})
 
-        assert (
-            padded + "\n" + stack
-        ) == rv
+        assert (padded + "\n" + stack) == rv
 
     def test_pad_event_param(self, styles):
         """
         `pad_event` parameter works.
         """
-        rv = dev.ConsoleRenderer(42, dev._has_colorama)(None, None, {
-            "event": "test",
-            "foo": "bar"
-        })
+        rv = dev.ConsoleRenderer(42, dev._has_colorama)(
+            None, None, {"event": "test", "foo": "bar"}
+        )
 
+        # fmt: off
         assert (
             styles.bright +
             dev._pad("test", 42) +
@@ -203,6 +194,7 @@ class TestConsoleRenderer(object):
             styles.kv_key + "foo" + styles.reset + "=" +
             styles.kv_value + "bar" + styles.reset
         ) == rv
+        # fmt: on
 
     def test_everything(self, cr, styles, padded):
         """
@@ -211,17 +203,22 @@ class TestConsoleRenderer(object):
         exc = "Traceback:\nFake traceback...\nFakeError: yolo"
         stack = "fake stack trace"
 
-        rv = cr(None, None, {
-            "event": "test",
-            "exception": exc,
-            "key": "value",
-            "foo": "bar",
-            "timestamp": "13:13",
-            "logger": "some_module",
-            "level": "error",
-            "stack": stack,
-        })
+        rv = cr(
+            None,
+            None,
+            {
+                "event": "test",
+                "exception": exc,
+                "key": "value",
+                "foo": "bar",
+                "timestamp": "13:13",
+                "logger": "some_module",
+                "level": "error",
+                "stack": stack,
+            },
+        )
 
+        # fmt: off
         assert (
             styles.timestamp + "13:13" + styles.reset +
             " [" + styles.level_error + styles.bright +
@@ -240,6 +237,7 @@ class TestConsoleRenderer(object):
             "\n" + stack + "\n\n" + "=" * 79 + "\n" +
             "\n" + exc
         ) == rv
+        # fmt: on
 
     def test_colorama_colors_false(self):
         """
@@ -247,25 +245,26 @@ class TestConsoleRenderer(object):
         """
         plain_cr = dev.ConsoleRenderer(colors=False)
 
-        rv = plain_cr(None, None, {
-            "event": "event", "level": "info", "foo": "bar"
-        })
+        rv = plain_cr(
+            None, None, {"event": "event", "level": "info", "foo": "bar"}
+        )
 
         assert dev._PlainStyles is plain_cr._styles
         assert "[info     ] event                          foo=bar" == rv
 
     def test_colorama_force_colors(self, styles, padded):
         """
-        If force_colors is True, use colors even if
-        the destination is non-tty.
+        If force_colors is True, use colors even if the destination is non-tty.
         """
         cr = dev.ConsoleRenderer(
-            colors=dev._has_colorama, force_colors=dev._has_colorama)
+            colors=dev._has_colorama, force_colors=dev._has_colorama
+        )
 
-        rv = cr(None, None, {
-            "event": "test", "level": "critical", "foo": "bar"
-        })
+        rv = cr(
+            None, None, {"event": "test", "level": "critical", "foo": "bar"}
+        )
 
+        # fmt: off
         assert (
             "[" + dev.RED + styles.bright +
             dev._pad("critical", cr._longest_level) +
@@ -274,6 +273,7 @@ class TestConsoleRenderer(object):
             styles.kv_key + "foo" + styles.reset + "=" +
             styles.kv_value + "bar" + styles.reset
         ) == rv
+        # fmt: on
 
         assert not dev._has_colorama or dev._ColorfulStyles is cr._styles
 
@@ -283,10 +283,8 @@ class TestConsoleRenderer(object):
         repr_native_str=False doesn't repr on native strings.  "event" is
         never repr'ed.
         """
-        rv = dev.ConsoleRenderer(
-            colors=False, repr_native_str=rns)(None, None, {
-                "event": "哈", "key": 42, "key2": "哈",
-            }
+        rv = dev.ConsoleRenderer(colors=False, repr_native_str=rns)(
+            None, None, {"event": "哈", "key": 42, "key2": "哈"}
         )
 
         cnt = rv.count("哈")

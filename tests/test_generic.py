@@ -11,10 +11,10 @@ from structlog._loggers import ReturnLogger
 
 class TestLogger(object):
     def log(self, msg):
-        return 'log', msg
+        return "log", msg
 
     def gol(self, msg):
-        return 'gol', msg
+        return "gol", msg
 
 
 class TestGenericBoundLogger(object):
@@ -27,9 +27,12 @@ class TestGenericBoundLogger(object):
             _CONFIG.default_processors,
             _CONFIG.default_context_class(),
         )
-        assert 'msg' not in b.__dict__
-        b.msg('foo')
-        assert 'msg' in b.__dict__
+
+        assert "msg" not in b.__dict__
+
+        b.msg("foo")
+
+        assert "msg" in b.__dict__
 
     def test_proxies_anything(self):
         """
@@ -41,5 +44,6 @@ class TestGenericBoundLogger(object):
             _CONFIG.default_processors,
             _CONFIG.default_context_class(),
         )
-        assert 'log', 'foo' == b.log('foo')
-        assert 'gol', 'bar' == b.gol('bar')
+
+        assert "log", "foo" == b.log("foo")
+        assert "gol", "bar" == b.gol("bar")

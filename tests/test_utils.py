@@ -17,12 +17,13 @@ class TestUntilNotInterrupted(object):
     def test_passes_arguments_and_returns_return_value(self):
         def returner(*args, **kw):
             return args, kw
-        assert ((42,), {'x': 23}) == until_not_interrupted(returner, 42, x=23)
+
+        assert ((42,), {"x": 23}) == until_not_interrupted(returner, 42, x=23)
 
     def test_leaves_unrelated_exceptions_through(self):
         exc = IOError
         with pytest.raises(exc):
-            until_not_interrupted(raiser(exc('not EINTR')))
+            until_not_interrupted(raiser(exc("not EINTR")))
 
     def test_retries_on_EINTR(self):
         calls = [0]

@@ -24,6 +24,7 @@ class _FixedFindCallerLogger(logging.Logger):
     """
     Change the behavior of findCaller to cope with structlog's extra frames.
     """
+
     def findCaller(self, stack_info=False):
         """
         Finds the first caller frame outside of structlog so that the caller
@@ -54,6 +55,7 @@ class BoundLogger(BoundLoggerBase):
         )
 
     """
+
     def debug(self, event=None, *args, **kw):
         """
         Process event and call :meth:`logging.Logger.debug` with the result.
@@ -103,8 +105,7 @@ class BoundLogger(BoundLoggerBase):
 
     fatal = critical
 
-    def _proxy_to_logger(self, method_name, event, *event_args,
-                         **event_kw):
+    def _proxy_to_logger(self, method_name, event, *event_args, **event_kw):
         """
         Propagate a method call to the wrapped logger.
 
@@ -114,9 +115,9 @@ class BoundLogger(BoundLoggerBase):
         """
         if event_args:
             event_kw["positional_args"] = event_args
-        return super(BoundLogger, self)._proxy_to_logger(method_name,
-                                                         event=event,
-                                                         **event_kw)
+        return super(BoundLogger, self)._proxy_to_logger(
+            method_name, event=event, **event_kw
+        )
 
     #
     # Pass-through methods to mimick the stdlib's logger interface.
@@ -134,13 +135,15 @@ class BoundLogger(BoundLoggerBase):
         """
         return self._logger.findCaller(stack_info=stack_info)
 
-    def makeRecord(self, name, level, fn, lno, msg, args,
-                   exc_info, func=None, extra=None):
+    def makeRecord(
+        self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None
+    ):
         """
         Calls :meth:`logging.Logger.makeRecord` with unmodified arguments.
         """
-        return self._logger.makeRecord(name, level, fn, lno, msg, args,
-                                       exc_info, func=func, extra=extra)
+        return self._logger.makeRecord(
+            name, level, fn, lno, msg, args, exc_info, func=func, extra=extra
+        )
 
     def handle(self, record):
         """
@@ -211,6 +214,7 @@ class LoggerFactory(object):
         ``["venusian", "pyramid.config"]``.
     :type ignore_frame_names: ``list`` of ``str``
     """
+
     def __init__(self, ignore_frame_names=None):
         self._ignore = ignore_frame_names
         logging.setLoggerClass(_FixedFindCallerLogger)
@@ -259,6 +263,7 @@ class PositionalArgumentsFormatter(object):
     `positional_args` key in the event dict; by default it will be
     removed from the event dict after formatting a message.
     """
+
     def __init__(self, remove_positional_args=True):
         self.remove_positional_args = remove_positional_args
 
@@ -300,8 +305,9 @@ _NAME_TO_LEVEL = {
 }
 
 _LEVEL_TO_NAME = dict(
-    (v, k) for k, v in _NAME_TO_LEVEL.items()
-    if k not in ("warn", "exception", "notset", )
+    (v, k)
+    for k, v in _NAME_TO_LEVEL.items()
+    if k not in ("warn", "exception", "notset")
 )
 
 
@@ -334,11 +340,11 @@ def add_log_level(logger, method_name, event_dict):
     """
     Add the log level to the event dict.
     """
-    if method_name == 'warn':
+    if method_name == "warn":
         # The stdlib has an alias
-        method_name = 'warning'
+        method_name = "warning"
 
-    event_dict['level'] = method_name
+    event_dict["level"] = method_name
     return event_dict
 
 
@@ -385,10 +391,7 @@ def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
 
     .. versionadded:: 17.1.0
     """
-    return {
-        "msg": event_dict.pop("event"),
-        "extra": event_dict,
-    }
+    return {"msg": event_dict.pop("event"), "extra": event_dict}
 
 
 class ProcessorFormatter(logging.Formatter):
@@ -423,8 +426,16 @@ class ProcessorFormatter(logging.Formatter):
     .. versionadded:: 17.1.0
     .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
     """
-    def __init__(self, processor, foreign_pre_chain=None,
-                 keep_exc_info=False, keep_stack_info=False, *args, **kwargs):
+
+    def __init__(
+        self,
+        processor,
+        foreign_pre_chain=None,
+        keep_exc_info=False,
+        keep_stack_info=False,
+        *args,
+        **kwargs
+    ):
         fmt = kwargs.pop("fmt", "%(message)s")
         super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
         self.processor = processor

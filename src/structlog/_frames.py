@@ -52,10 +52,10 @@ def _format_stack(frame):
     Pretty-print the stack of `frame` like logging would.
     """
     sio = StringIO()
-    sio.write('Stack (most recent call last):\n')
+    sio.write("Stack (most recent call last):\n")
     traceback.print_stack(frame, file=sio)
     sinfo = sio.getvalue()
-    if sinfo[-1] == '\n':
+    if sinfo[-1] == "\n":
         sinfo = sinfo[:-1]
     sio.close()
     return sinfo

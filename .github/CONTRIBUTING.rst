@@ -39,13 +39,14 @@ Code
          :rtype: str
          """
 - If you add or change public APIs, tag the docstring using ``..  versionadded:: 16.0.0 WHAT`` or ``..  versionchanged:: 17.1.0 WHAT``.
-- Prefer double quotes (``"``) over single quotes (``'``) unless the string contains double quotes itself.
+- We use the black_ code style with a line length of 79 characters.
+  This means that as long as you have working pre-commit_ hooks (see below), you don't have to spend any time on formatting you code.
 
 
 Tests
 -----
 
-- Write your asserts as ``expected == actual`` to line them up nicely:
+- Write your asserts as ``expected == actual`` to line them up nicely and leave an empty line before them:
 
   .. code-block:: python
 
@@ -139,6 +140,19 @@ and
 
 should build docs in ``docs/_build/html``.
 
+Next it's important to activate our pre-commit_ hooks so black_ and isort_ run automatically before committing your code.
+Since pre-commit_ is installed along with other dependencies above, all you have to do is to run
+
+.. code-block:: bash
+
+   precommit install
+
+Now you should be able to run
+
+.. code-block:: bash
+
+   pre-commit run --all-files
+
 ****
 
 Again, this list is mainly to help you to get started by codifying tribal knowledge and expectations.
@@ -163,3 +177,6 @@ Thank you for considering contributing to ``structlog``!
 .. _reStructuredText: http://sphinx-doc.org/rest.html
 .. _semantic newlines: http://rhodesmill.org/brandon/2012/one-sentence-per-line/
 .. _CI: https://travis-ci.org/hynek/structlog/
+.. _black: https://github.com/ambv/black
+.. _pre-commit: https://pre-commit.com/
+.. _isort: https://github.com/timothycrosley/isort

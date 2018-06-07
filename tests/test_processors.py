@@ -18,9 +18,16 @@ from freezegun import freeze_time
 import structlog
 
 from structlog.processors import (
-    ExceptionPrettyPrinter, JSONRenderer, KeyValueRenderer, StackInfoRenderer,
-    TimeStamper, UnicodeDecoder, UnicodeEncoder, _figure_out_exc_info,
-    _json_fallback_handler, format_exc_info
+    ExceptionPrettyPrinter,
+    JSONRenderer,
+    KeyValueRenderer,
+    StackInfoRenderer,
+    TimeStamper,
+    UnicodeDecoder,
+    UnicodeEncoder,
+    _figure_out_exc_info,
+    _json_fallback_handler,
+    format_exc_info,
 )
 from structlog.threadlocal import wrap_dict
 
@@ -43,73 +50,76 @@ class TestKeyValueRenderer(object):
         """
         Keys are sorted if sort_keys is set.
         """
-        assert (
-            r"a=<A(\o/)> b=[3, 4] x=7 y='test' z=(1, 2)" ==
-            KeyValueRenderer(sort_keys=True)(None, None, event_dict)
-        )
+        rv = KeyValueRenderer(sort_keys=True)(None, None, event_dict)
+
+        assert r"a=<A(\o/)> b=[3, 4] x=7 y='test' z=(1, 2)" == rv
 
     def test_order_complete(self, event_dict):
         """
         Orders keys according to key_order.
         """
-        assert (
-            r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
-            KeyValueRenderer(key_order=['y', 'b', 'a', 'z', 'x'])
-            (None, None, event_dict)
+        rv = KeyValueRenderer(key_order=["y", "b", "a", "z", "x"])(
+            None, None, event_dict
         )
+
+        assert r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" == rv
 
     def test_order_missing(self, event_dict):
         """
         Missing keys get rendered as None.
         """
-        assert (
-            r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
-            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'])
-            (None, None, event_dict)
+        rv = KeyValueRenderer(key_order=["c", "y", "b", "a", "z", "x"])(
+            None, None, event_dict
         )
+
+        assert r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" == rv
 
     def test_order_missing_dropped(self, event_dict):
         """
         Missing keys get dropped
         """
-        assert (
-            r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" ==
-            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
-                             drop_missing=True)
-            (None, None, event_dict)
-        )
+        rv = KeyValueRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"], drop_missing=True
+        )(None, None, event_dict)
+
+        assert r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7" == rv
 
     def test_order_extra(self, event_dict):
         """
         Extra keys get sorted if sort_keys=True.
         """
-        event_dict['B'] = 'B'
-        event_dict['A'] = 'A'
+        event_dict["B"] = "B"
+        event_dict["A"] = "A"
+
+        rv = KeyValueRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"], sort_keys=True
+        )(None, None, event_dict)
+
         assert (
-            r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'" ==
-            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
-                             sort_keys=True)
-            (None, None, event_dict)
-        )
+            r"c=None y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'"
+        ) == rv
 
     def test_order_sorted_missing_dropped(self, event_dict):
         """
         Keys get sorted if sort_keys=True and extras get dropped.
         """
-        event_dict['B'] = 'B'
-        event_dict['A'] = 'A'
-        assert (
-            r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'" ==
-            KeyValueRenderer(key_order=['c', 'y', 'b', 'a', 'z', 'x'],
-                             sort_keys=True, drop_missing=True)
-            (None, None, event_dict)
-        )
+        event_dict["B"] = "B"
+        event_dict["A"] = "A"
+
+        rv = KeyValueRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"],
+            sort_keys=True,
+            drop_missing=True,
+        )(None, None, event_dict)
+
+        assert r"y='test' b=[3, 4] a=<A(\o/)> z=(1, 2) x=7 A='A' B='B'" == rv
 
     def test_random_order(self, event_dict):
         """
         No special ordering doesn't blow up.
         """
         rv = KeyValueRenderer()(None, None, event_dict)
+
         assert isinstance(rv, str)
 
     @pytest.mark.parametrize("rns", [True, False])
@@ -117,9 +127,9 @@ class TestKeyValueRenderer(object):
         """
         repr_native_str=False doesn't repr on native strings.
         """
-        rv = KeyValueRenderer(repr_native_str=rns)(None, None, {
-            "event": "哈", "key": 42, "key2": "哈",
-        })
+        rv = KeyValueRenderer(repr_native_str=rns)(
+            None, None, {"event": "哈", "key": 42, "key2": "哈"}
+        )
 
         cnt = rv.count("哈")
         if rns and six.PY2:
@@ -133,26 +143,32 @@ class TestJSONRenderer(object):
         """
         Renders a predictable JSON string.
         """
+        rv = JSONRenderer(sort_keys=True)(None, None, event_dict)
+
         assert (
-            r'{"a": "<A(\\o/)>", "b": [3, 4], "x": 7, "y": "test", "z": '
-            r'[1, 2]}' ==
-            JSONRenderer(sort_keys=True)(None, None, event_dict)
-        )
+            r'{"a": "<A(\\o/)>", "b": [3, 4], "x": 7, '
+            r'"y": "test", "z": '
+            r"[1, 2]}"
+        ) == rv
 
     def test_FallbackEncoder_handles_ThreadLocalDictWrapped_dicts(self):
         """
         Our fallback handling handles properly ThreadLocalDictWrapper values.
         """
-        s = json.dumps(wrap_dict(dict)({'a': 42}),
-                       default=_json_fallback_handler)
+        s = json.dumps(
+            wrap_dict(dict)({"a": 42}), default=_json_fallback_handler
+        )
+
         assert '{"a": 42}' == s
 
     def test_FallbackEncoder_falls_back(self):
         """
         The fallback handler uses repr if it doesn't know the type.
         """
-        s = json.dumps({'date': datetime.date(1980, 3, 25)},
-                       default=_json_fallback_handler)
+        s = json.dumps(
+            {"date": datetime.date(1980, 3, 25)},
+            default=_json_fallback_handler,
+        )
 
         assert '{"date": "datetime.date(1980, 3, 25)"}' == s
 
@@ -170,7 +186,7 @@ class TestJSONRenderer(object):
         A custom fallback handler can be used.
         """
         jr = JSONRenderer(default=lambda x: repr(x)[::-1])
-        d = {'date': datetime.date(1980, 3, 25)}
+        d = {"date": datetime.date(1980, 3, 25)}
 
         assert '{"date": ")52 ,3 ,0891(etad.emitetad"}' == jr(None, None, d)
 
@@ -182,11 +198,16 @@ class TestJSONRenderer(object):
         jr = JSONRenderer(serializer=simplejson.dumps)
 
         assert {
-            'a': '<A(\\o/)>', 'b': [3, 4], 'x': 7, 'y': 'test', 'z': [1, 2]
+            "a": "<A(\\o/)>",
+            "b": [3, 4],
+            "x": 7,
+            "y": "test",
+            "z": [1, 2],
         } == json.loads(jr(None, None, event_dict))
 
-    @pytest.mark.skipif(rapidjson is None,
-                        reason="python-rapidjson is missing.")
+    @pytest.mark.skipif(
+        rapidjson is None, reason="python-rapidjson is missing."
+    )
     def test_rapidjson(self, event_dict):
         """
         Integration test with python-rapidjson.
@@ -194,7 +215,11 @@ class TestJSONRenderer(object):
         jr = JSONRenderer(serializer=rapidjson.dumps)
 
         assert {
-            'a': '<A(\\o/)>', 'b': [3, 4], 'x': 7, 'y': 'test', 'z': [1, 2]
+            "a": "<A(\\o/)>",
+            "b": [3, 4],
+            "x": 7,
+            "y": "test",
+            "z": [1, 2],
         } == json.loads(jr(None, None, event_dict))
 
 
@@ -219,7 +244,7 @@ class TestTimeStamper(object):
         # freezegun doesn't work with time.time. :(
         assert isinstance(d["timestamp"], float)
 
-    @freeze_time('1980-03-25 16:00:00')
+    @freeze_time("1980-03-25 16:00:00")
     def test_local(self):
         """
         Timestamp in local timezone work.  We can't add a timezone to the
@@ -230,7 +255,7 @@ class TestTimeStamper(object):
 
         assert "1980-03-25T16:00:00" == d["timestamp"]
 
-    @freeze_time('1980-03-25 16:00:00')
+    @freeze_time("1980-03-25 16:00:00")
     def test_formats(self):
         """
         The fmt string is respected.
@@ -240,7 +265,7 @@ class TestTimeStamper(object):
 
         assert "1980" == d["timestamp"]
 
-    @freeze_time('1980-03-25 16:00:00')
+    @freeze_time("1980-03-25 16:00:00")
     def test_adds_Z_to_iso(self):
         """
         stdlib's isoformat is buggy, so we fix it.
@@ -250,7 +275,7 @@ class TestTimeStamper(object):
 
         assert "1980-03-25T16:00:00Z" == d["timestamp"]
 
-    @freeze_time('1980-03-25 16:00:00')
+    @freeze_time("1980-03-25 16:00:00")
     def test_key_can_be_specified(self):
         """
         Timestamp is stored with the specified key.
@@ -266,10 +291,13 @@ class TestFormatExcInfo(object):
         """
         If exc_info is a tuple, it is used.
         """
-        monkeypatch.setattr(structlog.processors,
-                            "_format_exception",
-                            lambda exc_info: exc_info)
+        monkeypatch.setattr(
+            structlog.processors,
+            "_format_exception",
+            lambda exc_info: exc_info,
+        )
         d = format_exc_info(None, None, {"exc_info": (None, None, 42)})
+
         assert {"exception": (None, None, 42)} == d
 
     def test_gets_exc_info_on_bool(self):
@@ -279,20 +307,23 @@ class TestFormatExcInfo(object):
         # monkeypatching sys.exc_info makes currently py.test return 1 on
         # success.
         try:
-            raise ValueError('test')
+            raise ValueError("test")
         except ValueError:
             d = format_exc_info(None, None, {"exc_info": True})
+
         assert "exc_info" not in d
-        assert "raise ValueError('test')\nValueError: test" in d["exception"]
+        assert 'raise ValueError("test")\nValueError: test' in d["exception"]
 
     @py3_only
     def test_exception_on_py3(self, monkeypatch):
         """
         Passing excetions as exc_info is valid on Python 3.
         """
-        monkeypatch.setattr(structlog.processors,
-                            "_format_exception",
-                            lambda exc_info: exc_info)
+        monkeypatch.setattr(
+            structlog.processors,
+            "_format_exception",
+            lambda exc_info: exc_info,
+        )
         try:
             raise ValueError("test")
         except ValueError as e:
@@ -306,9 +337,10 @@ class TestFormatExcInfo(object):
         """
         If an Exception is missing a traceback, render it anyway.
         """
-        rv = format_exc_info(None, None, {
-            "exc_info": Exception("no traceback!")
-        })
+        rv = format_exc_info(
+            None, None, {"exc_info": Exception("no traceback!")}
+        )
+
         assert {"exception": "Exception: no traceback!"} == rv
 
 
@@ -318,6 +350,7 @@ class TestUnicodeEncoder(object):
         Unicode strings get encoded (as UTF-8 by default).
         """
         ue = UnicodeEncoder()
+
         assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": u"b\xe4r"})
 
     def test_passes_arguments(self):
@@ -325,6 +358,7 @@ class TestUnicodeEncoder(object):
         Encoding options are passed into the encoding call.
         """
         ue = UnicodeEncoder("latin1", "xmlcharrefreplace")
+
         assert {"foo": b"&#8211;"} == ue(None, None, {"foo": u"\u2013"})
 
     def test_bytes_nop(self):
@@ -332,6 +366,7 @@ class TestUnicodeEncoder(object):
         If the string is already bytes, don't do anything.
         """
         ue = UnicodeEncoder()
+
         assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": b"b\xc3\xa4r"})
 
 
@@ -341,6 +376,7 @@ class TestUnicodeDecoder(object):
         Byte strings get decoded (as UTF-8 by default).
         """
         ud = UnicodeDecoder()
+
         assert {"foo": u"b\xe4r"} == ud(None, None, {"foo": b"b\xc3\xa4r"})
 
     def test_passes_arguments(self):
@@ -348,6 +384,7 @@ class TestUnicodeDecoder(object):
         Encoding options are passed into the encoding call.
         """
         ud = UnicodeDecoder("utf-8", "ignore")
+
         assert {"foo": u""} == ud(None, None, {"foo": b"\xa1\xa4"})
 
     def test_bytes_nop(self):
@@ -355,6 +392,7 @@ class TestUnicodeDecoder(object):
         If the value is already unicode, don't do anything.
         """
         ud = UnicodeDecoder()
+
         assert {"foo": u"b\u2013r"} == ud(None, None, {"foo": u"b\u2013r"})
 
 
@@ -364,6 +402,7 @@ class TestExceptionPrettyPrinter(object):
         If no file is supplied, use stdout.
         """
         epp = ExceptionPrettyPrinter()
+
         assert sys.stdout is epp._file
 
     def test_prints_exception(self, sio):
@@ -375,12 +414,13 @@ class TestExceptionPrettyPrinter(object):
         try:
             raise ValueError
         except ValueError:
-            ed = format_exc_info(None, None, {'exc_info': True})
+            ed = format_exc_info(None, None, {"exc_info": True})
         epp(None, None, ed)
 
         out = sio.getvalue()
-        assert 'test_prints_exception' in out
-        assert 'raise ValueError' in out
+
+        assert "test_prints_exception" in out
+        assert "raise ValueError" in out
 
     def test_removes_exception_after_printing(self, sio):
         """
@@ -390,10 +430,13 @@ class TestExceptionPrettyPrinter(object):
         try:
             raise ValueError
         except ValueError:
-            ed = format_exc_info(None, None, {'exc_info': True})
-        assert 'exception' in ed
+            ed = format_exc_info(None, None, {"exc_info": True})
+
+        assert "exception" in ed
+
         new_ed = epp(None, None, ed)
-        assert 'exception' not in new_ed
+
+        assert "exception" not in new_ed
 
     def test_handles_exc_info(self, sio):
         """
@@ -403,11 +446,12 @@ class TestExceptionPrettyPrinter(object):
         try:
             raise ValueError
         except ValueError:
-            epp(None, None, {'exc_info': True})
+            epp(None, None, {"exc_info": True})
 
         out = sio.getvalue()
-        assert 'test_handles_exc_info' in out
-        assert 'raise ValueError' in out
+
+        assert "test_handles_exc_info" in out
+        assert "raise ValueError" in out
 
     def test_removes_exc_info_after_printing(self, sio):
         """
@@ -417,8 +461,9 @@ class TestExceptionPrettyPrinter(object):
         try:
             raise ValueError
         except ValueError:
-            ed = epp(None, None, {'exc_info': True})
-        assert 'exc_info' not in ed
+            ed = epp(None, None, {"exc_info": True})
+
+        assert "exc_info" not in ed
 
     def test_nop_if_no_exception(self, sio):
         """
@@ -426,7 +471,8 @@ class TestExceptionPrettyPrinter(object):
         """
         epp = ExceptionPrettyPrinter(sio)
         epp(None, None, {})
-        assert '' == sio.getvalue()
+
+        assert "" == sio.getvalue()
 
     def test_own_exc_info(self, sio):
         """
@@ -439,6 +485,7 @@ class TestExceptionPrettyPrinter(object):
             ei = sys.exc_info()
 
         epp(None, None, {"exc_info": ei})
+
         assert "XXX" in sio.getvalue()
 
     @py3_only
@@ -451,6 +498,7 @@ class TestExceptionPrettyPrinter(object):
             raise ValueError("XXX")
         except ValueError as e:
             epp(None, None, {"exc_info": e})
+
         assert "XXX" in sio.getvalue()
 
 
@@ -464,31 +512,32 @@ class TestStackInfoRenderer(object):
         """
         The `stack_info` key is removed from `event_dict`.
         """
-        ed = sir(None, None, {'stack_info': True})
-        assert 'stack_info' not in ed
+        ed = sir(None, None, {"stack_info": True})
+
+        assert "stack_info" not in ed
 
     def test_adds_stack_if_asked(self, sir):
         """
         If `stack_info` is true, `stack` is added.
         """
-        ed = sir(None, None, {'stack_info': True})
-        assert 'stack' in ed
+        ed = sir(None, None, {"stack_info": True})
+
+        assert "stack" in ed
 
     def test_renders_correct_stack(self, sir):
-        ed = sir(None, None, {'stack_info': True})
-        assert "ed = sir(None, None, {'stack_info': True})" in ed['stack']
+        ed = sir(None, None, {"stack_info": True})
+
+        assert 'ed = sir(None, None, {"stack_info": True})' in ed["stack"]
 
 
 class TestFigureOutExcInfo(object):
-    @pytest.mark.parametrize('true_value', [
-        True, 1, 1.1
-    ])
+    @pytest.mark.parametrize("true_value", [True, 1, 1.1])
     def test_obtains_exc_info_on_True(self, true_value):
         """
         If the passed argument evaluates to True obtain exc_info ourselves.
         """
         try:
-            0/0
+            0 / 0
         except Exception:
             assert sys.exc_info() == _figure_out_exc_info(true_value)
         else:
@@ -501,4 +550,5 @@ class TestFigureOutExcInfo(object):
         traceback.
         """
         e = ValueError()
+
         assert (e.__class__, e, None) == _figure_out_exc_info(e)

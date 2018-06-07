@@ -17,14 +17,10 @@ except ImportError:
     colorama = None
 
 
-__all__ = [
-    "ConsoleRenderer",
-]
+__all__ = ["ConsoleRenderer"]
 
 
-_MISSING = (
-    "{who} requires the {package} package installed.  "
-)
+_MISSING = "{who} requires the {package} package installed.  "
 _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 
@@ -52,8 +48,9 @@ if colorama is not None:
 else:
     _has_colorama = False
 
-    RESET_ALL = BRIGHT = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = \
-        RED_BACK = ""
+    RESET_ALL = (
+        BRIGHT
+    ) = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = RED_BACK = ""
 
 
 class _ColorfulStyles(object):
@@ -121,14 +118,21 @@ class ConsoleRenderer(object):
     .. versionadded:: 18.1 *force_colors*
     .. versionadded:: 18.1 *level_styles*
     """
-    def __init__(self, pad_event=_EVENT_WIDTH, colors=True,
-                 force_colors=False, repr_native_str=False, level_styles=None):
+
+    def __init__(
+        self,
+        pad_event=_EVENT_WIDTH,
+        colors=True,
+        force_colors=False,
+        repr_native_str=False,
+        level_styles=None,
+    ):
         if colors is True:
             if colorama is None:
                 raise SystemError(
                     _MISSING.format(
                         who=self.__class__.__name__ + " with `colors=True`",
-                        package="colorama"
+                        package="colorama",
                     )
                 )
 
@@ -152,19 +156,20 @@ class ConsoleRenderer(object):
 
         for key in self._level_to_color.keys():
             self._level_to_color[key] += styles.bright
-        self._longest_level = len(max(
-            self._level_to_color.keys(),
-            key=lambda e: len(e)
-        ))
+        self._longest_level = len(
+            max(self._level_to_color.keys(), key=lambda e: len(e))
+        )
 
         if repr_native_str is True:
             self._repr = repr
         else:
+
             def _repr(inst):
                 if isinstance(inst, str):
                     return inst
                 else:
                     return repr(inst)
+
             self._repr = _repr
 
     def __call__(self, _, __, event_dict):
@@ -174,14 +179,19 @@ class ConsoleRenderer(object):
         if ts is not None:
             sio.write(
                 # can be a number if timestamp is UNIXy
-                self._styles.timestamp + str(ts) + self._styles.reset + " "
+                self._styles.timestamp
+                + str(ts)
+                + self._styles.reset
+                + " "
             )
         level = event_dict.pop("level", None)
         if level is not None:
             sio.write(
-                "[" + self._level_to_color[level] +
-                _pad(level, self._longest_level) +
-                self._styles.reset + "] "
+                "["
+                + self._level_to_color[level]
+                + _pad(level, self._longest_level)
+                + self._styles.reset
+                + "] "
             )
 
         event = event_dict.pop("event")
@@ -194,19 +204,25 @@ class ConsoleRenderer(object):
         logger_name = event_dict.pop("logger", None)
         if logger_name is not None:
             sio.write(
-                "[" + self._styles.logger_name + self._styles.bright +
-                logger_name + self._styles.reset +
-                "] "
+                "["
+                + self._styles.logger_name
+                + self._styles.bright
+                + logger_name
+                + self._styles.reset
+                + "] "
             )
 
         stack = event_dict.pop("stack", None)
         exc = event_dict.pop("exception", None)
         sio.write(
             " ".join(
-                self._styles.kv_key + key + self._styles.reset +
-                "=" +
-                self._styles.kv_value + self._repr(event_dict[key]) +
-                self._styles.reset
+                self._styles.kv_key
+                + key
+                + self._styles.reset
+                + "="
+                + self._styles.kv_value
+                + self._repr(event_dict[key])
+                + self._styles.reset
                 for key in sorted(event_dict.keys())
             )
         )

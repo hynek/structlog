@@ -55,7 +55,7 @@ matrix:
 
     # Meta
     - python: "3.6"
-      env: TOXENV=flake8
+      env: TOXENV=lint
     - python: "3.6"
       env: TOXENV=manifest
     - python: "3.6"

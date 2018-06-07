@@ -24,6 +24,7 @@ def event_dict():
     """
     An example event dictionary with multiple value types w/o the event itself.
     """
+
     class A(object):
         def __repr__(self):
             return "<A(\o/)>"

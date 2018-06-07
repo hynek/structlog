@@ -25,6 +25,7 @@ else:
         """
         threading.local() replacement for greenlets.
         """
+
         def __init__(self):
             self.__dict__["_weakdict"] = WeakKeyDictionary()
 
@@ -57,8 +58,9 @@ def wrap_dict(dict_class):
 
     :rtype: `type`
     """
-    Wrapped = type('WrappedDict-' + str(uuid.uuid4()),
-                   (_ThreadLocalDictWrapper,), {})
+    Wrapped = type(
+        "WrappedDict-" + str(uuid.uuid4()), (_ThreadLocalDictWrapper,), {}
+    )
     Wrapped._tl = ThreadLocal()
     Wrapped._dict_class = dict_class
     return Wrapped
@@ -78,9 +80,7 @@ def as_immutable(logger):
     try:
         ctx = logger._context._tl.dict_.__class__(logger._context._dict)
         bl = logger.__class__(
-            logger._logger,
-            processors=logger._processors,
-            context={},
+            logger._logger, processors=logger._processors, context={}
         )
         bl._context = ctx
         return bl
@@ -112,6 +112,7 @@ class _ThreadLocalDictWrapper(object):
     Use :func:`wrap` to instantiate and use
     :func:`structlog._loggers.BoundLogger.new` to clear the context.
     """
+
     def __init__(self, *args, **kw):
         """
         We cheat.  A context dict gets never recreated.
@@ -135,7 +136,7 @@ class _ThreadLocalDictWrapper(object):
             return self.__class__._tl.dict_
 
     def __repr__(self):
-        return '<{0}({1!r})>'.format(self.__class__.__name__, self._dict)
+        return "<{0}({1!r})>".format(self.__class__.__name__, self._dict)
 
     def __eq__(self, other):
         # Same class == same dictionary

@@ -11,18 +11,21 @@ import pytest
 from six.moves import cStringIO as StringIO
 
 from structlog._loggers import (
-    WRITE_LOCKS, PrintLogger, PrintLoggerFactory, ReturnLogger,
-    ReturnLoggerFactory
+    WRITE_LOCKS,
+    PrintLogger,
+    PrintLoggerFactory,
+    ReturnLogger,
+    ReturnLoggerFactory,
 )
 from structlog.stdlib import _NAME_TO_LEVEL
 
 
 def test_return_logger():
-    obj = ['hello']
+    obj = ["hello"]
     assert obj is ReturnLogger().msg(obj)
 
 
-STDLIB_MSG_METHODS = [m for m in _NAME_TO_LEVEL if m != 'notset']
+STDLIB_MSG_METHODS = [m for m in _NAME_TO_LEVEL if m != "notset"]
 
 
 class TestPrintLogger(object):
@@ -34,8 +37,8 @@ class TestPrintLogger(object):
         PrintLogger().msg("hello")
 
         out, err = capsys.readouterr()
-        assert 'hello\n' == out
-        assert '' == err
+        assert "hello\n" == out
+        assert "" == err
 
     def test_prints_to_correct_file(self, tmpdir, capsys):
         """
@@ -54,9 +57,7 @@ class TestPrintLogger(object):
         """
         __repr__ makes sense.
         """
-        assert repr(PrintLogger()).startswith(
-            "<PrintLogger(file="
-        )
+        assert repr(PrintLogger()).startswith("<PrintLogger(file=")
 
     def test_lock(self):
         """

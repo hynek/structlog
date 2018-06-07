@@ -21,17 +21,18 @@ import re
 here = os.path.abspath(os.path.dirname(__file__))
 
 # We want an image in the README and include the README in the docs.
-suppress_warnings = ['image.nonlocal_uri']
+suppress_warnings = ["image.nonlocal_uri"]
 
 
 def read(*parts):
-    return codecs.open(os.path.join(here, *parts), 'r').read()
+    return codecs.open(os.path.join(here, *parts), "r").read()
 
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
+    version_match = re.search(
+        r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M
+    )
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
@@ -50,28 +51,28 @@ def find_version(*file_paths):
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.viewcode',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.doctest",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u'structlog'
+project = u"structlog"
 author = u"Hynek Schlawack"
-copyright = u'2013, {author}'.format(author=author)
+copyright = u"2013, {author}".format(author=author)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -94,9 +95,7 @@ release = ""
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = [
-    '_build',
-]
+exclude_patterns = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -114,7 +113,7 @@ exclude_patterns = [
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -160,7 +159,7 @@ html_logo = "_static/structlog_logo_small.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -204,7 +203,7 @@ html_static_path = ['_static']
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'structlogdoc'
+htmlhelp_basename = "structlogdoc"
 
 
 # -- Options for LaTeX output -------------------------------------------------
@@ -212,10 +211,8 @@ htmlhelp_basename = 'structlogdoc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
 }
@@ -224,8 +221,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'structlog.tex', u'structlog Documentation',
-     u'Author', 'manual'),
+    ("index", "structlog.tex", u"structlog Documentation", u"Author", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -254,8 +250,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'structlog', u'structlog Documentation',
-     [u'Author'], 1)
+    ("index", "structlog", u"structlog Documentation", [u"Author"], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -268,9 +263,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'structlog', u'structlog Documentation',
-     u'Author', 'structlog', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        "index",
+        "structlog",
+        u"structlog Documentation",
+        u"Author",
+        "structlog",
+        "One line description of project.",
+        "Miscellaneous",
+    )
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -325,12 +326,9 @@ epub_copyright = copyright
 # Allow duplicate toc entries.
 # epub_tocdup = True
 
-linkcheck_ignore = [
-]
+linkcheck_ignore = []
 
 # Twisted's trac tends to be slow
 linkcheck_timeout = 300
 
-intersphinx_mapping = {
-    'https://docs.python.org/3': None,
-}
+intersphinx_mapping = {"https://docs.python.org/3": None}

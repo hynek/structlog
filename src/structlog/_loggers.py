@@ -26,6 +26,7 @@ class PrintLoggerFactory(object):
 
     .. versionadded:: 0.4.0
     """
+
     def __init__(self, file=None):
         self._file = file
 
@@ -52,6 +53,7 @@ class PrintLogger(object):
     Also very useful for testing and examples since logging is finicky in
     doctests.
     """
+
     def __init__(self, file=None):
         self._file = file or sys.stdout
         self._write = self._file.write
@@ -64,14 +66,14 @@ class PrintLogger(object):
         self._lock = lock
 
     def __repr__(self):
-        return '<PrintLogger(file={0!r})>'.format(self._file)
+        return "<PrintLogger(file={0!r})>".format(self._file)
 
     def msg(self, message):
         """
         Print *message*.
         """
         with self._lock:
-            until_not_interrupted(self._write, message + '\n')
+            until_not_interrupted(self._write, message + "\n")
             until_not_interrupted(self._flush)
 
     log = debug = info = warn = warning = msg
@@ -88,6 +90,7 @@ class ReturnLoggerFactory(object):
 
     .. versionadded:: 0.4.0
     """
+
     def __init__(self):
         self._logger = ReturnLogger()
 
@@ -110,6 +113,7 @@ class ReturnLogger(object):
     .. versionchanged:: 0.3.0
         Allow for arbitrary arguments and keyword arguments to be passed in.
     """
+
     def msg(self, *args, **kw):
         """
         Return tuple of ``args, kw`` or just ``args[0]`` if only one arg passed

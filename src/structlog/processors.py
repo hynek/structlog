@@ -17,7 +17,9 @@ import time
 import six
 
 from structlog._frames import (
-    _find_first_app_frame_and_name, _format_exception, _format_stack
+    _find_first_app_frame_and_name,
+    _format_exception,
+    _format_stack,
 )
 
 
@@ -40,10 +42,17 @@ class KeyValueRenderer(object):
     .. versionadded:: 16.1.0 *drop_missing*
     .. versionadded:: 17.1.0 *repr_native_str*
     """
-    def __init__(self, sort_keys=False, key_order=None, drop_missing=False,
-                 repr_native_str=True):
+
+    def __init__(
+        self,
+        sort_keys=False,
+        key_order=None,
+        drop_missing=False,
+        repr_native_str=True,
+    ):
         # Use an optimized version for each case.
         if key_order and sort_keys:
+
             def ordered_items(event_dict):
                 items = []
                 for key in key_order:
@@ -52,7 +61,9 @@ class KeyValueRenderer(object):
                         items.append((key, value))
                 items += sorted(event_dict.items())
                 return items
+
         elif key_order:
+
             def ordered_items(event_dict):
                 items = []
                 for key in key_order:
@@ -61,9 +72,12 @@ class KeyValueRenderer(object):
                         items.append((key, value))
                 items += event_dict.items()
                 return items
+
         elif sort_keys:
+
             def ordered_items(event_dict):
                 return sorted(event_dict.items())
+
         else:
             ordered_items = operator.methodcaller("items")
 
@@ -72,16 +86,19 @@ class KeyValueRenderer(object):
         if repr_native_str is True:
             self._repr = repr
         else:
+
             def _repr(inst):
                 if isinstance(inst, str):
                     return inst
                 else:
                     return repr(inst)
+
             self._repr = _repr
 
     def __call__(self, _, __, event_dict):
-        return " ".join(k + "=" + self._repr(v)
-                        for k, v in self._ordered_items(event_dict))
+        return " ".join(
+            k + "=" + self._repr(v) for k, v in self._ordered_items(event_dict)
+        )
 
 
 class UnicodeEncoder(object):
@@ -97,6 +114,7 @@ class UnicodeEncoder(object):
 
     Just put it in the processor chain before the renderer.
     """
+
     def __init__(self, encoding="utf-8", errors="backslashreplace"):
         self._encoding = encoding
         self._errors = errors
@@ -123,6 +141,7 @@ class UnicodeDecoder(object):
 
     .. versionadded:: 15.4.0
     """
+
     def __init__(self, encoding="utf-8", errors="replace"):
         self._encoding = encoding
         self._errors = errors
@@ -158,8 +177,9 @@ class JSONRenderer(object):
        Serializer's *default* parameter can be overwritten now.
 
     """
+
     def __init__(self, serializer=json.dumps, **dumps_kw):
-        dumps_kw.setdefault('default', _json_fallback_handler)
+        dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw
         self._dumps = serializer
 
@@ -173,6 +193,7 @@ def _json_fallback_handler(obj):
     """
     # circular imports :(
     from structlog.threadlocal import _ThreadLocalDictWrapper
+
     if isinstance(obj, _ThreadLocalDictWrapper):
         return obj._dict
     else:
@@ -221,25 +242,33 @@ class TimeStamper(object):
     :param bool utc: Whether timestamp should be in UTC or local time.
     :param str key: Target key in `event_dict` for added timestamps.
     """
+
     def __new__(cls, fmt=None, utc=True, key="timestamp"):
         if fmt is None and not utc:
             raise ValueError("UNIX timestamps are always UTC.")
 
         now_method = getattr(datetime.datetime, "utcnow" if utc else "now")
         if fmt is None:
+
             def stamper(self, _, __, event_dict):
                 event_dict[key] = time.time()
                 return event_dict
+
         elif fmt.upper() == "ISO":
             if utc:
+
                 def stamper(self, _, __, event_dict):
                     event_dict[key] = now_method().isoformat() + "Z"
                     return event_dict
+
             else:
+
                 def stamper(self, _, __, event_dict):
                     event_dict[key] = now_method().isoformat()
                     return event_dict
+
         else:
+
             def stamper(self, _, __, event_dict):
                 event_dict[key] = now_method().strftime(fmt)
                 return event_dict
@@ -285,6 +314,7 @@ class ExceptionPrettyPrinter(object):
     .. versionchanged:: 16.0.0
        Added support for passing exceptions as ``exc_info`` on Python 3.
     """
+
     def __init__(self, file=None):
         if file is not None:
             self._file = file
@@ -314,6 +344,7 @@ class StackInfoRenderer(object):
 
     .. versionadded:: 0.4.0
     """
+
     def __call__(self, logger, name, event_dict):
         if event_dict.pop("stack_info", None):
             event_dict["stack"] = _format_stack(

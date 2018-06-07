@@ -25,6 +25,7 @@ class BoundLogger(BoundLoggerBase):
     Not intended to be instantiated by yourself.  See
     :func:`~structlog.wrap_logger` and :func:`~structlog.get_logger`.
     """
+
     def __getattr__(self, method_name):
         """
         If not done so yet, wrap the desired logger method & cache the result.
