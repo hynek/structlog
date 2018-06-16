@@ -39,8 +39,9 @@ Code
          :rtype: str
          """
 - If you add or change public APIs, tag the docstring using ``..  versionadded:: 16.0.0 WHAT`` or ``..  versionchanged:: 17.1.0 WHAT``.
-- We use the black_ code style with a line length of 79 characters.
-  This means that as long as you have working pre-commit_ hooks (see below), you don't have to spend any time on formatting you code.
+- We use isort_ to sort our imports, and we follow the Black_ code style with a line length of 79 characters.
+  As long as you run our full tox suite before committing, or install our pre-commit_ hooks (ideally you'll do both -- see below "Local Development Environment"), you won't have to spend any time on formatting your code at all.
+  If you don't, CI will catch it for you -- but that seems like a waste of your time!
 
 
 Tests
@@ -101,7 +102,8 @@ Documentation
 Local Development Environment
 -----------------------------
 
-You can (and should) run our test suite using tox_ however you’ll probably want a more traditional environment too.
+You can (and should) run our test suite using tox_.
+However, you’ll probably want a more traditional environment as well.
 We highly recommend to develop using the latest Python 3 release because you're more likely to catch certain bugs earlier.
 
 First create a `virtual environment <https://virtualenv.pypa.io/>`_.
@@ -111,14 +113,14 @@ Next get an up to date checkout of the ``structlog`` repository:
 
 .. code-block:: bash
 
-    git checkout git@github.com:hynek/structlog.git
+    $ git checkout git@github.com:hynek/structlog.git
 
-Change into the newly created directory and **after activating your virtual environment** install an editable version of ``structlog`` along with its test  and docs dependencies:
+Change into the newly created directory and **after activating your virtual environment** install an editable version of ``structlog`` along with its test and docs dependencies:
 
 .. code-block:: bash
 
-    cd structlog
-    pip install -e .[tests,docs]
+    $ cd structlog
+    $ pip install -e .[tests,docs] pre-commit
 
 If you run the virtual environment’s Python and try to ``import structlog`` it should work!
 
@@ -126,7 +128,7 @@ At this point
 
 .. code-block:: bash
 
-   python -m pytest
+   $ python -m pytest
 
 should work and pass
 
@@ -134,8 +136,8 @@ and
 
 .. code-block:: bash
 
-   cd docs
-   make html
+   $ cd docs
+   $ make html
 
 
 should build docs in ``docs/_build/html``.
@@ -145,13 +147,13 @@ Since pre-commit_ is installed along with other dependencies above, all you have
 
 .. code-block:: bash
 
-   precommit install
+   $ pre-commit install
 
-Now you should be able to run
+You can also run them anytime using:
 
 .. code-block:: bash
 
-   pre-commit run --all-files
+   $ pre-commit run --all-files
 
 ****
 
