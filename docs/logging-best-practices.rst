@@ -32,7 +32,7 @@ Logstash parses the log entries and stores them in in Elasticsearch_.
 Finally, you can view and search them in Kibana_.
 
 If your log entries consist of a JSON dictionary, this is fairly easy and efficient.
-All you have to do is to tell Logstash_ the name of you timestamp field.
+All you have to do is to tell Logstash_ the name of your timestamp field.
 
 
 Graylog
