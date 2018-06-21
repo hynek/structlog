@@ -129,6 +129,7 @@ html_theme_options = {
     "head_font_family": '"Avenir Next", Calibri, "PT Sans", sans-serif',
     "font_size": "18px",
     "page_width": "980px",
+    "show_relbars": True,
 }
 html_logo = "_static/structlog_logo_small.png"
 
