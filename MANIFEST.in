@@ -1,4 +1,4 @@
-include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py .readthedocs.yml
+include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py .readthedocs.yml pyproject.toml
 include *.rst
 recursive-include .github *.rst
 
@@ -10,4 +10,4 @@ graft docs
 prune docs/_build
 
 # Don't package GitHub-specific files.
-exclude .github/*.md .travis.yml .pre-commit-config.yaml
+exclude .github/*.md .travis.yml .pre-commit-config.yaml codecov.yml
