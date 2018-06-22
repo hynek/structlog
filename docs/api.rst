@@ -161,7 +161,7 @@ API Reference
 
 .. autoclass:: ExceptionPrettyPrinter
 
-.. autoclass:: TimeStamper(fmt=None, utc=True)
+.. autoclass:: TimeStamper(fmt=None, utc=True, key="timestamp")
 
    .. doctest::
 
