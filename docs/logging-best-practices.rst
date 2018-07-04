@@ -7,7 +7,7 @@ Logfiles have existed for decades and there's little reason to reinvent the whee
 Therefore let's rely on proven tools as much as possible and do only the absolutely necessary inside of Python\ [*]_.
 
 A simple but powerful approach is to log to unbuffered `standard out`_ and let other tools take care of the rest.
-That can be your terminal window while developing, it can be systemd_ redirecting your log entries it to syslogd_, or your `cluster manager`_.
+That can be your terminal window while developing, it can be systemd_ redirecting your log entries to syslogd_, or your `cluster manager`_.
 It doesn't matter where or how your application is running, it just works.
 
 This is why the popular `twelve-factor app methodology`_ suggests just that.
@@ -39,7 +39,7 @@ Graylog
 ^^^^^^^
 
 Graylog_ goes one step further.
-It not only supports everything those above do (and then some); you can also log directly JSON entries towards it -- optionally even through an AMQP server (like RabbitMQ_) for better reliability.
+It not only supports everything those above do (and then some); you can also directly log JSON entries towards it -- optionally even through an AMQP server (like RabbitMQ_) for better reliability.
 Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data which makes it an obvious choice to use together with ``structlog``.
 
 
