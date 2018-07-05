@@ -24,12 +24,14 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Added ``structlog.stdlib.add_log_level_number`` processor to add level number of log level to the event dictionary.
+- Added ``structlog.stdlib.add_log_level_number()`` processor that adds the level *number* to the event dictionary.
   Can be used to simplify log filtering.
   `#151 <https://github.com/hynek/structlog/pull/151>`_
 - ``structlog.processors.JSONRenderer`` now allows for overwriting the *default* argument of its serializer.
   `#77 <https://github.com/hynek/structlog/pull/77>`_
   `#163 <https://github.com/hynek/structlog/pull/163>`_
+- Added ``try_unbind()`` that works like ``unbind()`` but doesn't raise a ``KeyError`` if one of the keys is missing.
+  `#171 <https://github.com/hynek/structlog/pull/171>`_
 
 
 ----

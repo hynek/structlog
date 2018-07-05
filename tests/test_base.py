@@ -84,9 +84,35 @@ class TestBinding(object):
         assert isinstance(b.new(), Wrapper)
 
     def test_unbind(self):
+        """
+        unbind() removes keys from context.
+        """
         b = build_bl().bind(x=42, y=23).unbind("x", "y")
 
         assert {} == b._context
+
+    def test_unbind_fail(self):
+        """
+        unbind() raises KeyError if the key is missing.
+        """
+        with pytest.raises(KeyError):
+            build_bl().bind(x=42, y=23).unbind("x", "z")
+
+    def test_try_unbind(self):
+        """
+        try_unbind() removes keys from context.
+        """
+        b = build_bl().bind(x=42, y=23).try_unbind("x", "y")
+
+        assert {} == b._context
+
+    def test_try_unbind_fail(self):
+        """
+        try_unbind() does nothing if the key is missing.
+        """
+        b = build_bl().bind(x=42, y=23).try_unbind("x", "z")
+
+        assert {"y": 23} == b._context
 
 
 class TestProcessing(object):

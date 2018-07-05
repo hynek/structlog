@@ -84,6 +84,22 @@ class BoundLoggerBase(object):
             del bl._context[key]
         return bl
 
+    def try_unbind(self, *keys):
+        """
+        Like :meth:`unbind`, but best effort:  missing keys are ignored.
+
+        :rtype: `self.__class__`
+
+        .. versionadded:: 18.2.0
+        """
+        bl = self.bind()
+        for key in keys:
+            try:
+                del bl._context[key]
+            except KeyError:
+                pass
+        return bl
+
     def new(self, **new_values):
         """
         Clear context and binds *initial_values* using :func:`bind`.
