@@ -1,3 +1,10 @@
-This software is made available under the terms of *either* of the licenses
-found in LICENSE.apache or LICENSE.mit.  Contributions to structlog are made
-under the terms of *both* these licenses.
+Licensed under either of
+
+- Apache License, Version 2.0 (LICENSE.apache or <https://choosealicense.com/licenses/apache/>)
+- or MIT license (LICENSE.mit or <https://choosealicense.com/licenses/mit/>)
+
+at your option.
+
+Any contribution intentionally submitted for inclusion in the work by you, as
+defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
