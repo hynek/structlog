@@ -162,7 +162,7 @@ If you use standard library's logging, it makes sense to configure them next to 
    See `this case study <https://github.com/hynek/structlog/issues/175>`_ for more concrete information.
 
 **Flask**
-   See `Logging Application Errors <http://flask.pocoo.org/docs/errorhandling/>`_.
+   See `Logging <http://flask.pocoo.org/docs/dev/logging/>`_.
 
 **Pyramid**
    `Application constructor <https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
