@@ -114,7 +114,7 @@ Changes:
 -------------------
 
 The main features of this release are massive improvements in standard library's ``logging`` integration.
-Have a look at the updated `standard library chapter <http://www.structlog.org/en/stable/standard-library.html>`_ on how to use them!
+Have a look at the updated `standard library chapter <https://www.structlog.org/en/stable/standard-library.html>`_ on how to use them!
 Special thanks go to
 `Fabian Büchler <https://github.com/fabianbuechler>`_,
 `Gilbert Gilb's <https://github.com/gilbsgilbs>`_,
@@ -129,7 +129,7 @@ Backward-incompatible changes:
 
 - The default renderer now is ``structlog.dev.ConsoleRenderer`` if you don't configure ``structlog``.
   Colors are used if available and human-friendly timestamps are prepended.
-  This is in line with our backward `compatibility policy <http://www.structlog.org/en/stable/backward-compatibility.html>`_ that explicitly excludes default settings.
+  This is in line with our backward `compatibility policy <https://www.structlog.org/en/stable/backward-compatibility.html>`_ that explicitly excludes default settings.
 
 
 Changes:

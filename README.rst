@@ -1,13 +1,13 @@
-.. image:: http://www.structlog.org/en/latest/_static/structlog_logo_small.png
+.. image:: https://www.structlog.org/en/latest/_static/structlog_logo_small.png
    :alt: structlog Logo
    :width: 256px
-   :target: http://www.structlog.org/
+   :target: https://www.structlog.org/
 
 ``structlog``: Structured Logging for Python
 ============================================
 
 .. image:: https://readthedocs.org/projects/structlog/badge/?version=stable
-   :target: http://www.structlog.org/en/stable/?badge=stable
+   :target: https://www.structlog.org/en/stable/?badge=stable
    :alt: Documentation Status
 
 .. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
@@ -16,9 +16,6 @@
 .. image:: https://codecov.io/github/hynek/structlog/branch/master/graph/badge.svg
    :target: https://codecov.io/github/hynek/structlog
    :alt: Test Coverage
-
-.. image:: https://www.irccloud.com/invite-svg?channel=%23structlog&amp;hostname=irc.freenode.net&amp;port=6697&amp;ssl=1
-   :target: https://www.irccloud.com/invite?channel=%23structlog&amp;hostname=irc.freenode.net&amp;port=6697&amp;ssl=1
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/ambv/black
@@ -66,7 +63,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
 Powerful Pipelines
 ------------------
 
-Each log entry goes through a `processor pipeline <http://www.structlog.org/en/stable/processors.html>`_ that is just a chain of functions that receive a dictionary and return a new dictionary that gets fed into the next function.
+Each log entry goes through a `processor pipeline <https://www.structlog.org/en/stable/processors.html>`_ that is just a chain of functions that receive a dictionary and return a new dictionary that gets fed into the next function.
 That allows for simple but powerful data manipulation:
 
 .. code-block:: python
@@ -76,12 +73,12 @@ That allows for simple but powerful data manipulation:
        event_dict["timestamp"] = time.time()
        return event_dict
 
-There are `plenty of processors <http://www.structlog.org/en/stable/api.html#module-structlog.processors>`_ for most common tasks coming with ``structlog``:
+There are `plenty of processors <https://www.structlog.org/en/stable/api.html#module-structlog.processors>`_ for most common tasks coming with ``structlog``:
 
-- Collectors of `call stack information <http://www.structlog.org/en/stable/api.html#structlog.processors.StackInfoRenderer>`_ ("How did this log entry happen?"),
-- …and `exceptions <http://www.structlog.org/en/stable/api.html#structlog.processors.format_exc_info>`_ ("What happened‽").
+- Collectors of `call stack information <https://www.structlog.org/en/stable/api.html#structlog.processors.StackInfoRenderer>`_ ("How did this log entry happen?"),
+- …and `exceptions <https://www.structlog.org/en/stable/api.html#structlog.processors.format_exc_info>`_ ("What happened‽").
 - Unicode encoders/decoders.
-- Flexible `timestamping <http://www.structlog.org/en/stable/api.html#structlog.processors.TimeStamper>`_.
+- Flexible `timestamping <https://www.structlog.org/en/stable/api.html#structlog.processors.TimeStamper>`_.
 
 
 
@@ -91,8 +88,8 @@ Formatting
 ``structlog`` is completely flexible about *how* the resulting log entry is emitted.
 Since each log entry is a dictionary, it can be formatted to **any** format:
 
-- A colorful key/value format for `local development <http://www.structlog.org/en/stable/development.html>`_,
-- `JSON <http://www.structlog.org/en/stable/api.html#structlog.processors.JSONRenderer>`_ for easy parsing,
+- A colorful key/value format for `local development <https://www.structlog.org/en/stable/development.html>`_,
+- `JSON <https://www.structlog.org/en/stable/api.html#structlog.processors.JSONRenderer>`_ for easy parsing,
 - or some standard format you have parsers for like nginx or Apache httpd.
 
 Internally, formatters are processors whose return value (usually a string) is passed into loggers that are responsible for the output of your message.
@@ -116,13 +113,19 @@ Output
 .. -end-spiel-
 
 
+Getting Help
+------------
+
+Please use the ``structlog`` tag on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_ to get help.
+
+Answering questions of your fellow developers is also great way to help the project!
+
+
 Project Information
 -------------------
 
 .. -begin-meta-
 
-``structlog`` is dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.org/project/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at http://www.structlog.org/.
+``structlog`` is dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.org/project/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at https://www.structlog.org/.
 
 ``structlog`` targets Python 2.7, 3.4 and newer, and PyPy.
-
-If you need any help, visit us on ``#structlog`` on `Freenode <https://freenode.net>`_!

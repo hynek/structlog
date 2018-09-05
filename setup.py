@@ -95,7 +95,7 @@ LONG = (
         "(\d+.\d.\d \(.*?\)\n.*?)\n\n\n----\n\n\n", read("CHANGELOG.rst"), re.S
     ).group(1)
     + "\n\n`Full changelog "
-    + "<http://www.structlog.org/en/stable/changelog.html>`_.\n\n"
+    + "<https://www.structlog.org/en/stable/changelog.html>`_.\n\n"
     + read("AUTHORS.rst")
 )
 

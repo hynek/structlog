@@ -40,7 +40,7 @@ __version__ = "18.2.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging for Python"
-__uri__ = "http://www.structlog.org/"
+__uri__ = "https://www.structlog.org/"
 
 __author__ = "Hynek Schlawack"
 __email__ = "hs@ox.cx"
