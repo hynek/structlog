@@ -26,7 +26,7 @@ matrix:
       sudo: true
     - python: "pypy"
       env: TOXENV=pypy-threads
-    - python: "pypy"
+    - python: "pypy3"
       env: TOXENV=pypy3-threads
     - python: "2.7"
       env: TOXENV=py27-greenlets
