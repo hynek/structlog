@@ -14,42 +14,36 @@ matrix:
   include:
     - python: "2.7"
       env: TOXENV=py27-threads
-    - python: "2.7"
-      env: TOXENV=py27-greenlets
     - python: "3.4"
       env: TOXENV=py34-threads
-    - python: "3.4"
-      env: TOXENV=py34-greenlets
     - python: "3.5"
       env: TOXENV=py35-threads
-    - python: "3.5"
-      env: TOXENV=py35-greenlets
     - python: "3.6"
       env: TOXENV=py36-threads
-    - python: "3.6"
-      env: TOXENV=py36-greenlets
     - python: "3.7"
       env: TOXENV=py37-threads
-      dist: xenial
-      sudo: true
-    - python: "3.7"
-      env: TOXENV=py37-greenlets
-      dist: xenial
-      sudo: true
     - python: "pypy"
       env: TOXENV=pypy-threads
     - python: "pypy"
-      env: TOXENV=pypy-greenlets
-    - python: "pypy3"
       env: TOXENV=pypy3-threads
-    - python: "pypy3"
-      env: TOXENV=pypy3-greenlets
+    - python: "2.7"
+      env: TOXENV=py27-greenlets
     - python: "2.7"
       env: TOXENV=py27-colorama
-    - python: "3.6"
-      env: TOXENV=py36-colorama
-    - python: "3.6"
-      env: TOXENV=py36-oldtwisted
+    - python: "2.7"
+      env: TOXENV=py27-oldtwisted
+    - python: "3.7"
+      env: TOXENV=py37-greenlets
+    - python: "3.7"
+      env: TOXENV=py37-colorama
+    - python: "3.7"
+      env: TOXENV=py37-oldtwisted
+    - python: "pypy"
+      env: TOXENV=pypy-greenlets
+    - python: "pypy"
+      env: TOXENV=pypy-colorama
+    - python: "pypy"
+      env: TOXENV=pypy-oldtwisted
 
     # Prevent breakage by a new releases
     - python: "3.6-dev"
