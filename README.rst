@@ -3,6 +3,7 @@
    :width: 256px
    :target: https://www.structlog.org/
 
+============================================
 ``structlog``: Structured Logging for Python
 ============================================
 
@@ -33,7 +34,7 @@ It's up to you whether you want ``structlog`` to take care about the **output** 
 .. -begin-spiel-
 
 Easier Logging
---------------
+==============
 
 You can stop writing prose and start thinking in terms of an event that happens in the context of key/value pairs:
 
@@ -48,7 +49,7 @@ Each log entry is a meaningful dictionary instead of an opaque string now!
 
 
 Data Binding
-------------
+============
 
 Since log entries are dictionaries, you can start binding and re-binding key/value pairs to your loggers to ensure they are present in every following logging call:
 
@@ -61,7 +62,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
 
 
 Powerful Pipelines
-------------------
+==================
 
 Each log entry goes through a `processor pipeline <https://www.structlog.org/en/stable/processors.html>`_ that is just a chain of functions that receive a dictionary and return a new dictionary that gets fed into the next function.
 That allows for simple but powerful data manipulation:
@@ -83,7 +84,7 @@ There are `plenty of processors <https://www.structlog.org/en/stable/api.html#mo
 
 
 Formatting
-----------
+==========
 
 ``structlog`` is completely flexible about *how* the resulting log entry is emitted.
 Since each log entry is a dictionary, it can be formatted to **any** format:
@@ -97,7 +98,7 @@ Internally, formatters are processors whose return value (usually a string) is p
 
 
 Output
-------
+======
 
 ``structlog`` is also very flexible with the final output of your log entries:
 
@@ -112,9 +113,10 @@ Output
 
 .. -end-spiel-
 
+.. -begin-meta-
 
 Getting Help
-------------
+============
 
 Please use the ``structlog`` tag on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_ to get help.
 
@@ -122,9 +124,7 @@ Answering questions of your fellow developers is also great way to help the proj
 
 
 Project Information
--------------------
-
-.. -begin-meta-
+===================
 
 ``structlog`` is dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.org/project/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at https://www.structlog.org/.
 
