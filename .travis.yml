@@ -22,6 +22,8 @@ matrix:
       env: TOXENV=py36-threads
     - python: "3.7"
       env: TOXENV=py37-threads
+      dist: xenial
+      sudo: true
     - python: "pypy"
       env: TOXENV=pypy-threads
     - python: "pypy"
@@ -34,10 +36,16 @@ matrix:
       env: TOXENV=py27-oldtwisted
     - python: "3.7"
       env: TOXENV=py37-greenlets
+      dist: xenial
+      sudo: true
     - python: "3.7"
       env: TOXENV=py37-colorama
+      dist: xenial
+      sudo: true
     - python: "3.7"
       env: TOXENV=py37-oldtwisted
+      dist: xenial
+      sudo: true
     - python: "pypy"
       env: TOXENV=pypy-greenlets
     - python: "pypy"
@@ -52,8 +60,12 @@ matrix:
       env: TOXENV=py36-greenlets
     - python: "3.7-dev"
       env: TOXENV=py37-threads
+      dist: xenial
+      sudo: true
     - python: "3.7-dev"
       env: TOXENV=py37-greenlets
+      dist: xenial
+      sudo: true
 
     # Meta
     - python: "3.6"
