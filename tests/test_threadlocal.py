@@ -31,11 +31,11 @@ def D():
 
 
 @pytest.fixture
-def log():
+def log(logger):
     """
     Returns a ReturnLogger with a freshly wrapped OrderedDict.
     """
-    return wrap_logger(logger(), context_class=wrap_dict(OrderedDict))
+    return wrap_logger(logger, context_class=wrap_dict(OrderedDict))
 
 
 @pytest.fixture
