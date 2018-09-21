@@ -93,7 +93,7 @@ At any time, you can check whether and how ``structlog`` is configured:
    Since you will call :func:`structlog.get_logger` most likely in module scope, they run at import time before you had a chance to configure ``structlog``.
    Hence they return a **lazy proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
 
-   Therefore, you must never call ``new()`` or ``bind()`` in module or class scope becauce otherwise you will receive a logger configured with ``structlog``'s default values.
+   Therefore, you must never call ``new()`` or ``bind()`` in module or class scope because otherwise you will receive a logger configured with ``structlog``'s default values.
    Use :func:`~structlog.get_logger`\ 's ``initial_values`` to achieve pre-populated contexts.
 
    To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
