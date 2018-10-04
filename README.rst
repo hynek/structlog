@@ -94,7 +94,7 @@ Since each log entry is a dictionary, it can be formatted to **any** format:
 - or some standard format you have parsers for like nginx or Apache httpd.
 
 Internally, formatters are processors whose return value (usually a string) is passed into loggers that are responsible for the output of your message.
-``structlog`` comes with multiple useful formatters out of-the-box.
+``structlog`` comes with multiple useful formatters out-of-the-box.
 
 
 Output
