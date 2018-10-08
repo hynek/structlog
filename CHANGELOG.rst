@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- ``structlog.ReturnLogger`` and ``structlog.PrintLogger`` now have a ``fatal()`` log method.
+  `#181 <https://github.com/hynek/structlog/issues/181>`_
 
 
 ----

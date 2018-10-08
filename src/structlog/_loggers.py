@@ -125,4 +125,4 @@ class ReturnLogger(object):
             return args, kw
 
     log = debug = info = warn = warning = msg
-    failure = err = error = critical = exception = msg
+    fatal = failure = err = error = critical = exception = msg

@@ -46,12 +46,12 @@ API Reference
    :members: new, bind, unbind
 
 .. autoclass:: PrintLogger
-   :members: msg, err, debug, info, warning, error, critical, log, failure
+   :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
 
 .. autoclass:: PrintLoggerFactory
 
 .. autoclass:: ReturnLogger
-   :members: msg, err, debug, info, warning, error, critical, log, failure
+   :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
 
 .. autoclass:: ReturnLoggerFactory
 
