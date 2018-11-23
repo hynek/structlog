@@ -451,7 +451,11 @@ class ProcessorFormatter(logging.Formatter):
         # Make a shallow copy of the record to let other handlers/formatters
         # process the original one
         record = logging.makeLogRecord(record.__dict__)
-        if isinstance(record.msg, dict):
+        if (
+            isinstance(record.msg, dict)
+            and hasattr(record, "_logger")
+            and hasattr(record, "_name")
+        ):
             # Both attached by wrap_for_formatter
             logger = record._logger
             meth_name = record._name
