@@ -479,6 +479,27 @@ class TestProcessorFormatter(object):
     These are all integration tests because they're all about integration.
     """
 
+    def test_foreign_chain_can_pass_dictionaries_without_excepting(
+        self, configure_for_pf, capsys
+    ):
+        """
+        If a foreign logger passes a dictionary to a logging function,
+        check we correctly identify that it did not come from structlog.
+        """
+        configure_logging(None)
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning({"foo": "bar"})
+
+        assert (
+            "",
+            "{'foo': 'bar'} [in test_foreign_chain_can_pass_dictionaries_without_excepting]\n",
+        ) == capsys.readouterr()
+
     def test_foreign_delegate(self, configure_for_pf, capsys):
         """
         If foreign_pre_chain is None, non-structlog log entries are delegated
