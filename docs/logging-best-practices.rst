@@ -1,5 +1,10 @@
+======================
 Logging Best Practices
 ======================
+
+
+Servers
+=======
 
 Logging is not a new concept and in no way special to Python.
 Logfiles have existed for decades and there's little reason to reinvent the wheel in our little world.
