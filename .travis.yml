@@ -66,10 +66,6 @@ matrix:
       dist: trusty
 
     # Prevent breakage by a new releases
-    - python: "3.6-dev"
-      env: TOXENV=py36-threads
-    - python: "3.6-dev"
-      env: TOXENV=py36-greenlets
     - python: "3.7-dev"
       env: TOXENV=py37-threads
     - python: "3.7-dev"
@@ -83,7 +79,6 @@ matrix:
       env: TOXENV=pypi-description
 
   allow_failures:
-    - python: "3.6-dev"
     - python: "3.7-dev"
 
 
