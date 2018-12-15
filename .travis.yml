@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 group: travis_latest
 sudo: false
 cache:
@@ -12,7 +12,16 @@ matrix:
   fast_finish: true
 
   include:
+    # lint
+    - python: "3.7"
+      stage: lint
+      env: TOXENV=lint
+    - python: "3.7"
+      env: TOXENV=manifest
+
+    # test
     - python: "2.7"
+      stage: test
       env: TOXENV=py27-threads
     - python: "3.4"
       env: TOXENV=py34-threads
@@ -22,12 +31,12 @@ matrix:
       env: TOXENV=py36-threads
     - python: "3.7"
       env: TOXENV=py37-threads
-      dist: xenial
-      sudo: true
     - python: "pypy"
       env: TOXENV=pypy-threads
+      dist: trusty
     - python: "pypy3"
       env: TOXENV=pypy3-threads
+      dist: trusty
     - python: "2.7"
       env: TOXENV=py27-greenlets
     - python: "2.7"
@@ -48,10 +57,13 @@ matrix:
       sudo: true
     - python: "pypy"
       env: TOXENV=pypy-greenlets
+      dist: trusty
     - python: "pypy"
       env: TOXENV=pypy-colorama
+      dist: trusty
     - python: "pypy"
       env: TOXENV=pypy-oldtwisted
+      dist: trusty
 
     # Prevent breakage by a new releases
     - python: "3.6-dev"
@@ -60,22 +72,15 @@ matrix:
       env: TOXENV=py36-greenlets
     - python: "3.7-dev"
       env: TOXENV=py37-threads
-      dist: xenial
-      sudo: true
     - python: "3.7-dev"
       env: TOXENV=py37-greenlets
-      dist: xenial
-      sudo: true
 
-    # Meta
-    - python: "3.6"
-      env: TOXENV=lint
-    - python: "3.6"
-      env: TOXENV=manifest
-    - python: "3.6"
+    # docs
+    - python: "3.7"
+      stage: docs
       env: TOXENV=docs
-    - python: "3.6"
-      env: TOXENV=readme
+    - python: "3.7"
+      env: TOXENV=pypi-description
 
   allow_failures:
     - python: "3.6-dev"

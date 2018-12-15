@@ -395,7 +395,7 @@ def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
 
 
 class ProcessorFormatter(logging.Formatter):
-    """
+    r"""
     Call ``structlog`` processors on :class:`logging.LogRecord`\ s.
 
     This :class:`logging.Formatter` allows to configure :mod:`logging` to call

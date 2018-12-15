@@ -92,7 +92,9 @@ LONG = (
     + "Release Information\n"
     + "===================\n\n"
     + re.search(
-        "(\d+.\d.\d \(.*?\)\n.*?)\n\n\n----\n\n\n", read("CHANGELOG.rst"), re.S
+        r"(\d+.\d.\d \(.*?\)\n.*?)\n\n\n----\n\n\n",
+        read("CHANGELOG.rst"),
+        re.S,
     ).group(1)
     + "\n\n`Full changelog "
     + "<https://www.structlog.org/en/stable/changelog.html>`_.\n\n"

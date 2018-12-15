@@ -15,7 +15,7 @@ from structlog._utils import until_not_interrupted
 
 
 class PrintLoggerFactory(object):
-    """
+    r"""
     Produce :class:`PrintLogger`\ s.
 
     To be used with :func:`structlog.configure`\ 's `logger_factory`.
@@ -81,7 +81,7 @@ class PrintLogger(object):
 
 
 class ReturnLoggerFactory(object):
-    """
+    r"""
     Produce and cache :class:`ReturnLogger`\ s.
 
     To be used with :func:`structlog.configure`\ 's `logger_factory`.

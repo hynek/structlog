@@ -27,6 +27,6 @@ def event_dict():
 
     class A(object):
         def __repr__(self):
-            return "<A(\o/)>"
+            return r"<A(\o/)>"
 
     return {"a": A(), "b": [3, 4], "x": 7, "y": "test", "z": (1, 2)}

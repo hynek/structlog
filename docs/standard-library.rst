@@ -67,7 +67,7 @@ Processors
    The Python stdlib uses them for filtering logic.
    This adds the same numbers so users can leverage similar filtering.
    Compare::
-   
+
       level in ("warning", "error", "critical")
       level_number >= 30
 
