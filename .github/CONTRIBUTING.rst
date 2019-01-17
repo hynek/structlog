@@ -182,7 +182,7 @@ Thank you for considering contributing to ``structlog``!
 .. _`good test docstrings`: https://jml.io/pages/test-docstrings.html
 .. _`Code of Conduct`: https://github.com/hynek/structlog/blob/master/.github/CODE_OF_CONDUCT.rst
 .. _changelog: https://github.com/hynek/structlog/blob/master/CHANGELOG.rst
-.. _`backward compatibility`: https://structlog.readthedocs.io/en/latest/backward-compatibility.html
+.. _`backward compatibility`: https://www.structlog.org/en/latest/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
 .. _pyenv: https://github.com/pyenv/pyenv
 .. _reStructuredText: http://sphinx-doc.org/rest.html
