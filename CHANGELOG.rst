@@ -26,6 +26,9 @@ Changes:
 
 - ``structlog.ReturnLogger`` and ``structlog.PrintLogger`` now have a ``fatal()`` log method.
   `#181 <https://github.com/hynek/structlog/issues/181>`_
+- Under certain (rather unclear) circumstances, the frame extraction could throw an ``SystemError: error return without exception set``.
+  A workaround has been added.
+  `#174 <https://github.com/hynek/structlog/issues/174>`_
 
 
 ----
