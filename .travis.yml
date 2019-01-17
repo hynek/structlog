@@ -1,6 +1,5 @@
 dist: xenial
 group: travis_latest
-sudo: false
 cache:
   directories:
     - $HOME/.cache/pip
@@ -45,16 +44,10 @@ matrix:
       env: TOXENV=py27-oldtwisted
     - python: "3.7"
       env: TOXENV=py37-greenlets
-      dist: xenial
-      sudo: true
     - python: "3.7"
       env: TOXENV=py37-colorama
-      dist: xenial
-      sudo: true
     - python: "3.7"
       env: TOXENV=py37-oldtwisted
-      dist: xenial
-      sudo: true
     - python: "pypy"
       env: TOXENV=pypy-greenlets
       dist: trusty
