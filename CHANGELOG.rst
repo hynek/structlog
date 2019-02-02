@@ -12,7 +12,8 @@ The third digit is only for regressions.
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- As announced in 18.1.0, ``pip install -e .[dev]`` now installs all development dependencies.
+  Sorry for the inconveniences this undoubtedly will cause!
 
 
 Deprecations:

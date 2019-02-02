@@ -129,7 +129,7 @@ Change into the newly created directory and **after activating your virtual envi
 .. code-block:: bash
 
     $ cd structlog
-    $ pip install -e .[tests,docs] pre-commit
+    $ pip install -e .[dev]
 
 If you run the virtual environment’s Python and try to ``import structlog`` it should work!
 
@@ -151,8 +151,7 @@ and
 
 should build docs in ``docs/_build/html``.
 
-Next it's important to activate our pre-commit_ hooks so black_ and isort_ run automatically before committing your code.
-Since pre-commit_ is installed along with other dependencies above, all you have to do is to run
+To avoid committing code that violates our style guide, we strongly advise you to install pre-commit_ [#f1]_ hooks:
 
 .. code-block:: bash
 
@@ -163,6 +162,9 @@ You can also run them anytime using:
 .. code-block:: bash
 
    $ pre-commit run --all-files
+
+.. [#f1] pre-commit should have been installed into your virtualenv automatically when you ran ``pip install -e '.[dev]'`` above.
+   If pre-commit is missing, it may be that you need to re-run ``pip install -e '.[dev]'``.
 
 ****
 

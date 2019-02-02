@@ -7,3 +7,4 @@ docs/_build
 *.pyc
 .cache
 .pytest_cache/
+pip-wheel-metadata/

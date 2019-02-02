@@ -34,7 +34,6 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = ["six"]
 EXTRAS_REQUIRE = {
-    "dev": ["colorama"],
     "tests": [
         "coverage",
         "freezegun>=0.2.8",
@@ -45,6 +44,9 @@ EXTRAS_REQUIRE = {
     ],
     "docs": ["sphinx", "twisted"],
 }
+EXTRAS_REQUIRE["dev"] = (
+    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit"]
+)
 
 ###############################################################################
 
