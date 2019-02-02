@@ -187,8 +187,8 @@ Thank you for considering contributing to ``structlog``!
 .. _`backward compatibility`: https://www.structlog.org/en/latest/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
 .. _pyenv: https://github.com/pyenv/pyenv
-.. _reStructuredText: http://sphinx-doc.org/rest.html
-.. _semantic newlines: http://rhodesmill.org/brandon/2012/one-sentence-per-line/
+.. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+.. _semantic newlines: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
 .. _CI: https://travis-ci.org/hynek/structlog/
 .. _black: https://github.com/ambv/black
 .. _pre-commit: https://pre-commit.com/
