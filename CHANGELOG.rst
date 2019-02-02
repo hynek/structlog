@@ -29,6 +29,11 @@ Changes:
 - Under certain (rather unclear) circumstances, the frame extraction could throw an ``SystemError: error return without exception set``.
   A workaround has been added.
   `#174 <https://github.com/hynek/structlog/issues/174>`_
+- ``structlog`` now tolerates passing through ``dict``\ s to stdlib logging.
+  `#187 <https://github.com/hynek/structlog/issues/187>`_
+  `#188 <https://github.com/hynek/structlog/pull/188>`_
+  `#189 <https://github.com/hynek/structlog/pull/189>`_
+
 
 
 ----
