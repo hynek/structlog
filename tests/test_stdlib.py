@@ -562,6 +562,28 @@ class TestProcessorFormatter(object):
             "e_chain_add_logger_name]\n",
         ) == capsys.readouterr()
 
+    def test_foreign_chain_can_pass_dictionaries_without_excepting(
+        self, configure_for_pf, capsys
+    ):
+        """
+        If a foreign logger passes a dictionary to a logging function,
+        check we correctly identify that it did not come from structlog.
+        """
+        configure_logging(None)
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning({"foo": "bar"})
+
+        assert (
+            "",
+            "{'foo': 'bar'} [in "
+            "test_foreign_chain_can_pass_dictionaries_without_excepting]\n",
+        ) == capsys.readouterr()
+
     def test_foreign_pre_chain_gets_exc_info(self, configure_for_pf, capsys):
         """
         If non-structlog record contains exc_info, foreign_pre_chain functions
