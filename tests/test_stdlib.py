@@ -495,7 +495,7 @@ class TestProcessorFormatter(object):
 
         assert ("", "foo [in test_foreign_delegate]\n") == capsys.readouterr()
 
-    def test_clears_args(self, capsys, configure_for_pf):
+    def test_clears_args(self, configure_for_pf, capsys):
         """
         We render our log records before sending it back to logging.  Therefore
         we must clear `LogRecord.args` otherwise the user gets an
@@ -509,6 +509,19 @@ class TestProcessorFormatter(object):
         assert (
             "",
             "hello world. [in test_clears_args]\n",
+        ) == capsys.readouterr()
+
+    def test_log_dict(self, configure_for_pf, capsys):
+        """
+        Test that dicts can be logged with std library loggers.
+        """
+        configure_logging(None)
+
+        logging.getLogger().warning({"foo": "bar"})
+
+        assert (
+            "",
+            "{'foo': 'bar'} [in test_log_dict]\n",
         ) == capsys.readouterr()
 
     def test_foreign_pre_chain(self, configure_for_pf, capsys):
