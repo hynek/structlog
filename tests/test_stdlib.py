@@ -562,6 +562,24 @@ class TestProcessorFormatter(object):
             "e_chain_add_logger_name]\n",
         ) == capsys.readouterr()
 
+    def test_foreign_pre_chain_filter_by_level(self, configure_for_pf, capsys):
+        """
+        foreign_pre_chain works with filter_by_level processor.
+        """
+        configure_logging((filter_by_level,))
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logging.getLogger().warning("foo")
+
+        assert (
+            "",
+            "foo [in test_foreign_pre_chain_filter_by_level]\n",
+        ) == capsys.readouterr()
+
     def test_foreign_chain_can_pass_dictionaries_without_excepting(
         self, configure_for_pf, capsys
     ):

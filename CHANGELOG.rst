@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- ``ProcessorFormatter`` doesn't crash anymore on stdlib logs when using ``stuctlog.stdlib.filter_by_level`` processor.
+  `#195 <https://github.com/hynek/structlog/pull/195>`_
 
 
 ----

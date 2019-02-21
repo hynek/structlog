@@ -461,7 +461,7 @@ class ProcessorFormatter(logging.Formatter):
             # would transform our dict into a str.
             ed = record.msg.copy()
         except AttributeError:
-            logger = None
+            logger = logging.getLogger(record.name)
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
             record.args = ()
@@ -483,7 +483,7 @@ class ProcessorFormatter(logging.Formatter):
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
             for proc in self.foreign_pre_chain or ():
-                ed = proc(None, meth_name, ed)
+                ed = proc(logger, meth_name, ed)
 
             del ed["_record"]
 
