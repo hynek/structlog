@@ -128,4 +128,6 @@ Project Information
 
 ``structlog`` is dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.org/project/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at https://www.structlog.org/.
 
+We collect useful third party extension in `our wiki <https://github.com/hynek/structlog/wiki/Third-party-Extensions>`_.
+
 ``structlog`` targets Python 2.7, 3.4 and newer, and PyPy.
