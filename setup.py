@@ -115,6 +115,7 @@ if __name__ == "__main__":
         maintainer=find_meta("author"),
         maintainer_email=find_meta("email"),
         long_description=LONG,
+        long_description_content_type="text/x-rst",
         keywords=KEYWORDS,
         packages=PACKAGES,
         package_dir={"": "src"},
