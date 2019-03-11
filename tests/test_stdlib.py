@@ -192,6 +192,21 @@ class TestBoundLogger(object):
         assert ("foo",) == kwargs.get("positional_args")
 
     @pytest.mark.parametrize(
+        "attribute_name",
+        ["name", "level", "parent", "propagate", "handlers", "disabled"],
+    )
+    def test_stdlib_passthrough_attributes(self, attribute_name):
+        """
+        stdlib logger attributes are also available in stdlib BoundLogger.
+        """
+        stdlib_logger = logging.getLogger("Test")
+        stdlib_logger_attribute = getattr(stdlib_logger, attribute_name)
+        bl = BoundLogger(stdlib_logger, [], {})
+        bound_logger_attribute = getattr(bl, attribute_name)
+
+        assert bound_logger_attribute == stdlib_logger_attribute
+
+    @pytest.mark.parametrize(
         "method_name,method_args",
         [
             ("addHandler", [None]),
