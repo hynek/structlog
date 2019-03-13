@@ -120,8 +120,51 @@ class BoundLogger(BoundLoggerBase):
         )
 
     #
-    # Pass-through methods to mimick the stdlib's logger interface.
+    # Pass-through attributes and methods to mimick the stdlib's logger
+    # interface.
     #
+
+    @property
+    def name(self):
+        """
+        Returns :attr:`logging.Logger.name`
+        """
+        return self._logger.name
+
+    @property
+    def level(self):
+        """
+        Returns :attr:`logging.Logger.level`
+        """
+        return self._logger.level
+
+    @property
+    def parent(self):
+        """
+        Returns :attr:`logging.Logger.parent`
+        """
+        return self._logger.parent
+
+    @property
+    def propagate(self):
+        """
+        Returns :attr:`logging.Logger.propagate`
+        """
+        return self._logger.propagate
+
+    @property
+    def handlers(self):
+        """
+        Returns :attr:`logging.Logger.handlers`
+        """
+        return self._logger.handlers
+
+    @property
+    def disabled(self):
+        """
+        Returns :attr:`logging.Logger.disabled`
+        """
+        return self._logger.disabled
 
     def setLevel(self, level):
         """
