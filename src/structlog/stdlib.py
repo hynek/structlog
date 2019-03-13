@@ -54,6 +54,9 @@ class BoundLogger(BoundLoggerBase):
             wrapper_class=structlog.stdlib.BoundLogger,
         )
 
+    It also contains a bunch of properties that pass-through to the wrapped
+    :class:`logging.Logger` which should make it work as a drop-in
+    replacement.
     """
 
     def debug(self, event=None, *args, **kw):
