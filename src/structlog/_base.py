@@ -159,7 +159,7 @@ class BoundLoggerBase(object):
             return (), event_dict
         else:
             raise ValueError(
-                "Last processor didn't return an approriate value.  Allowed "
+                "Last processor didn't return an appropriate value.  Allowed "
                 "return values are a dict, a tuple of (args, kwargs), or a "
                 "string."
             )
