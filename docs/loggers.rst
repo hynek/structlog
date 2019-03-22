@@ -85,7 +85,7 @@ As you can see, it accepts one mandatory and a few optional arguments:
 **processors**
    A list of callables that can :ref:`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
 
-   Default is ``[``:func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.KeyValueRenderer`\ ``]``.
+   Default is ``[``:class:`~structlog.processors.StackInfoRenderer`, :func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.TimeStamper`, :class:`~structlog.dev.ConsoleRenderer`\ ``]``.
 
 **context_class**
    The class to save your context in.

@@ -93,6 +93,10 @@ class ConsoleRenderer(object):
     """
     Render `event_dict` nicely aligned, possibly in colors, and ordered.
 
+    If `event_dict` contains an ``exception`` key (for example from
+    :func:`~structlog.processors.format_exc_info`), it will be rendered *after*
+    the log line.
+
     :param int pad_event: Pad the event to this many characters.
     :param bool colors: Use colors for a nicer output.
     :param bool force_colors: Force colors even for non-tty destinations.
