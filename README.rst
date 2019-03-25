@@ -11,6 +11,10 @@
    :target: https://www.structlog.org/en/stable/?badge=stable
    :alt: Documentation Status
 
+.. image:: https://app.codeship.com/projects/f42efe20-315c-0137-fe9f-1ea91b8f8a10/status?branch=master
+   :target: https://app.codeship.com/projects/332013
+   :alt: Codeship Status for hynek/structlog
+
 .. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
    :target: https://travis-ci.org/hynek/structlog
 
