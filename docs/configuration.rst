@@ -158,7 +158,7 @@ If you use standard library's logging, it makes sense to configure them next to 
 **Django**
    ``settings.py`` together with your other logging configuration.
 
-   For per-request loggers with bound request IDs, you can write a simple middleware.
+   For per-request loggers with bound request IDs, you can use `django-structlog <https://github.com/hynek/structlog/wiki/Third-party-Extensions/>`_ or write a simple middleware yourself.
    See `this case study <https://github.com/hynek/structlog/issues/175>`_ for more concrete information.
 
 **Flask**
