@@ -111,6 +111,8 @@ class ConsoleRenderer(object):
         must be a dict from level names (strings) to colorama styles. The
         default can be obtained by calling
         :meth:`ConsoleRenderer.get_default_level_styles`
+    :param string event_key_name: The name of the event key to be used out of
+        the event dict. the default value is set to 'event'.
 
     Requires the colorama_ package if *colors* is ``True``.
 
@@ -130,6 +132,7 @@ class ConsoleRenderer(object):
         force_colors=False,
         repr_native_str=False,
         level_styles=None,
+        event_key_name="event",
     ):
         if colors is True:
             if colorama is None:
@@ -152,6 +155,7 @@ class ConsoleRenderer(object):
 
         self._styles = styles
         self._pad_event = pad_event
+        self._event_key_name = event_key_name
 
         if level_styles is None:
             self._level_to_color = self.get_default_level_styles(colors)
@@ -198,7 +202,7 @@ class ConsoleRenderer(object):
                 + "] "
             )
 
-        event = event_dict.pop("event")
+        event = event_dict.pop(self._event_key_name)
         if event_dict:
             event = _pad(event, self._pad_event) + self._styles.reset + " "
         else:

@@ -32,6 +32,13 @@ def cr():
 
 
 @pytest.fixture
+def cre():
+    return dev.ConsoleRenderer(
+        colors=dev._has_colorama, event_key_name="message"
+    )
+
+
+@pytest.fixture
 def styles(cr):
     return cr._styles
 
@@ -68,6 +75,14 @@ class TestConsoleRenderer(object):
         Works with a plain event_dict with only the event.
         """
         rv = cr(None, None, {"event": "test"})
+
+        assert unpadded == rv
+
+    def test_plain_message(self, cre, styles, unpadded):
+        """
+        Works with a plain event_dict with only the event.
+        """
+        rv = cre(None, None, {"message": "test"})
 
         assert unpadded == rv
 
