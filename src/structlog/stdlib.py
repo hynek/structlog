@@ -25,7 +25,7 @@ class _FixedFindCallerLogger(logging.Logger):
     Change the behavior of findCaller to cope with structlog's extra frames.
     """
 
-    def findCaller(self, stack_info=False):
+    def findCaller(self, stack_info=False, stacklevel=1):
         """
         Finds the first caller frame outside of structlog so that the caller
         info is populated for wrapping stdlib.
