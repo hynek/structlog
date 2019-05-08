@@ -59,10 +59,10 @@ matrix:
       dist: trusty
 
     # Prevent breakage by a new releases
-    - python: "3.7-dev"
-      env: TOXENV=py37-threads
-    - python: "3.7-dev"
-      env: TOXENV=py37-greenlets
+    - python: "3.8-dev"
+      env: TOXENV=py38-threads
+    - python: "3.8-dev"
+      env: TOXENV=py38-greenlets
 
     # docs
     - python: "3.7"
@@ -72,7 +72,7 @@ matrix:
       env: TOXENV=pypi-description
 
   allow_failures:
-    - python: "3.7-dev"
+    - python: "3.8-dev"
 
 
 install:
