@@ -11,8 +11,9 @@
    :target: https://www.structlog.org/en/stable/?badge=stable
    :alt: Documentation Status
 
-.. image:: https://travis-ci.org/hynek/structlog.svg?branch=master
-   :target: https://travis-ci.org/hynek/structlog
+.. image:: https://dev.azure.com/the-hynek/structlog/_apis/build/status/hynek.structlog?branchName=master
+   :target: https://dev.azure.com/the-hynek/structlog/_build?definitionId=1
+   :alt: CI Status
 
 .. image:: https://codecov.io/github/hynek/structlog/branch/master/graph/badge.svg
    :target: https://codecov.io/github/hynek/structlog
