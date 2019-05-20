@@ -54,23 +54,23 @@ jobs:
           python.version: pypy
         pypy-greenlets:
           TOXENV: pypy-greenlets
-          python.version: pypy
+          python.version: pypy2
         pypy-oldtwisted:
           TOXENV: pypy-oldtwisted
-          python.version: pypy
+          python.version: pypy2
         pypy-threads:
           TOXENV: pypy-threads
-          python.version: pypy
+          python.version: pypy2
         pypy3-threads:
           TOXENV: pypy3-threads
           python.version: pypy3
-             
-        py38-greenlets:
-          TOXENV: py38-greenlets
-          python.version: 3.8-dev
-        py38-threads:
-          TOXENV: py38-threads
-          python.version: 3.8-dev
+
+#        py38-greenlets:
+#          TOXENV: py38-greenlets
+#          python.version: 3.8-dev
+#        py38-threads:
+#          TOXENV: py38-threads
+#          python.version: 3.8-dev
 
         Docs:
           python.version: '3.7'
