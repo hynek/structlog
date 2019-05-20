@@ -3,12 +3,11 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 jobs:
   - job: 'Test'
-  strategy:
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
       matrix:
         - Lint:
             TOXENV: lint
