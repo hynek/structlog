@@ -3,7 +3,7 @@ Development
 
 To make development a more pleasurable experience, ``structlog`` comes with the :mod:`structlog.dev` module.
 
-The highlight is :class:`structlog.dev.ConsoleRenderer` that offers nicely aligned and colorful console output while in development:
+The highlight is :class:`structlog.dev.ConsoleRenderer` that offers nicely aligned and colorful (requires the `colorama module <https://pypi.org/project/colorama/>`_ installed) console output while in development:
 
 .. figure:: _static/console_renderer.png
    :alt: Colorful console output by ConsoleRenderer.
@@ -11,7 +11,8 @@ The highlight is :class:`structlog.dev.ConsoleRenderer` that offers nicely align
 To use it, just add it as a renderer to your processor chain.
 It will recognize logger names, log levels, time stamps, stack infos, and tracebacks as produced by ``structlog``'s processors and render them in special ways.
 
-``structlog``'s default configuration already uses it, but if you want to use it along with standard library logging, we suggest the following configuration:
+``structlog``'s default configuration already uses :class:`~structlog.dev.ConsoleRenderer`, therefore if you want nice colorful output on the console, you don't have to do anything except installing colorama.
+If you want to use it along with standard library logging, we suggest the following configuration:
 
 .. code-block:: python
 
