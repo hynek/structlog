@@ -10,4 +10,4 @@ graft docs
 prune docs/_build
 
 # Don't package GitHub-specific files.
-exclude .github/*.md .travis.yml .pre-commit-config.yaml codecov.yml
+exclude .github/*.md azure-pipelines.yml .pre-commit-config.yaml codecov.yml
