@@ -31,6 +31,7 @@ It's up to you whether you want ``structlog`` to take care about the **output** 
 
 .. -end-short-
 
+Once you feel inspired to try it out, check out our friendly `Getting Started tutorial <http://www.structlog.org/en/stable/getting-started.html>`_ that also contains detailed installation instructions!
 
 .. -begin-spiel-
 
