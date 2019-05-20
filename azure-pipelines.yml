@@ -51,7 +51,7 @@ jobs:
           python.version: '3.7'
         pypy-colorama:
           TOXENV: pypy-colorama
-          python.version: pypy
+          python.version: pypy2
         pypy-greenlets:
           TOXENV: pypy-greenlets
           python.version: pypy2
