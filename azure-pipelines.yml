@@ -87,7 +87,7 @@ jobs:
 
       - script: python -m pip install --upgrade tox codecov
         displayName: install tox
-      - script: env ATTRS_TEST_EXTRAS=azure-pipelines tox
+      - script: env STRUCTLOG_TEST_EXTRAS=azure-pipelines tox
         displayName: run tox
       - script: |
           coverage combine
