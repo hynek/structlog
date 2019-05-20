@@ -1,0 +1,96 @@
+
+# Don't have two build jobs for each pull request.
+trigger:
+- master
+
+jobs:
+  - job: 'Test'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      matrix:
+        Lint:
+            TOXENV: lint
+            python.version: '3.7'
+        Manifest:
+            TOXENV: manifest
+            python.version: '3.7'
+
+        py27-colorama:
+          TOXENV: py27-colorama
+          python.version: '2.7'
+        py27-greenlets:
+          TOXENV: py27-greenlets
+          python.version: '2.7'
+        py27-oldtwisted:
+          TOXENV: py27-oldtwisted
+          python.version: '2.7'
+        py27-threads:
+          TOXENV: py27-threads
+          python.version: '2.7'
+        py34-threads:
+          TOXENV: py34-threads
+          python.version: '3.4'
+        py35-threads:
+          TOXENV: py35-threads
+          python.version: '3.5'
+        py36-threads:
+          TOXENV: py36-threads
+          python.version: '3.6'
+        py37-colorama:
+          TOXENV: py37-colorama
+          python.version: '3.7'
+        py37-greenlets:
+          TOXENV: py37-greenlets
+          python.version: '3.7'
+        py37-oldtwisted:
+          TOXENV: py37-oldtwisted
+          python.version: '3.7'
+        py37-threads:
+          TOXENV: py37-threads
+          python.version: '3.7'
+        pypy-colorama:
+          TOXENV: pypy-colorama
+          python.version: pypy2
+        pypy-greenlets:
+          TOXENV: pypy-greenlets
+          python.version: pypy2
+        pypy-oldtwisted:
+          TOXENV: pypy-oldtwisted
+          python.version: pypy2
+        pypy-threads:
+          TOXENV: pypy-threads
+          python.version: pypy2
+        pypy3-threads:
+          TOXENV: pypy3-threads
+          python.version: pypy3
+
+#        py38-greenlets:
+#          TOXENV: py38-greenlets
+#          python.version: 3.8-dev
+#        py38-threads:
+#          TOXENV: py38-threads
+#          python.version: 3.8-dev
+
+        Docs:
+          python.version: '3.7'
+          TOXENV: docs
+        PyPI-Description:
+          python.version: '3.7'
+          TOXENV: pypi-description
+
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '$(python.version)'
+          architecture: 'x64'
+
+      - script: python -m pip install --upgrade tox codecov
+        displayName: install tox
+      - script: env STRUCTLOG_AP_TEST_EXTRAS=azure-pipelines tox
+        displayName: run tox
+      - script: |
+          coverage combine
+          codecov -t $(CODECOV_TOKEN)
+        displayName: Report Coverage
+        condition: succeeded()
