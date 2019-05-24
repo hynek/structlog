@@ -126,7 +126,7 @@ class ConsoleRenderer(object):
     def __init__(
         self,
         pad_event=_EVENT_WIDTH,
-        colors=True,
+        colors=_has_colorama,
         force_colors=False,
         repr_native_str=False,
         level_styles=None,
