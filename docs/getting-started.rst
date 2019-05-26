@@ -38,7 +38,16 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
   Thus, it's easy to add support for logging of your own objects\ [*]_.
 - If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice :doc:`colors <development>`.
 
-It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
+It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`. Using the defaults, as above, is equivalent to::
+
+   import structlog
+   structlog.configure(processors=[
+       structlog.processors.StackInfoRenderer(),
+       structlog.processors.format_exc_info,
+       structlog.processors.TimeStamper(),
+       structlog.dev.ConsoleRenderer()
+   ])
+   log = structlog.get_logger()
 
 .. note::
    For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
