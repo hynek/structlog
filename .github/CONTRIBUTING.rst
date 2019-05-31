@@ -66,7 +66,7 @@ Tests
      assert "foo" == x._a_private_attribute
 
 - To run the test suite, all you need is a recent tox_.
-  It will ensure the test suite runs with all dependencies against all Python versions just as it will on Travis CI.
+  It will ensure the test suite runs with all dependencies against all Python versions just as it will in our CI.
   If you lack some Python versions, you can can make it a non-failure using ``tox --skip-missing-interpreters`` (in that case you may want to look into pyenv_ that makes it very easy to install many different Python versions in parallel).
 - Write `good test docstrings`_.
 
@@ -189,7 +189,7 @@ Thank you for considering contributing to ``structlog``!
 .. _pyenv: https://github.com/pyenv/pyenv
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _semantic newlines: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
-.. _CI: https://travis-ci.org/hynek/structlog/
+.. _CI: https://dev.azure.com/the-hynek/structlog/_build?definitionId=1
 .. _black: https://github.com/ambv/black
 .. _pre-commit: https://pre-commit.com/
 .. _isort: https://github.com/timothycrosley/isort
