@@ -49,9 +49,10 @@ jobs:
         py37-threads:
           tox.env: py37-threads
           python.version: '3.7'
-        py38-threads:
-          tox.env: py38-threads
-          python.version: '3.8'
+        # Twisted is currently broken on 3.8.
+        # py38-threads:
+        #   tox.env: py38-threads
+        #   python.version: '3.8'
         pypy-colorama:
           tox.env: pypy-colorama
           python.version: pypy2
