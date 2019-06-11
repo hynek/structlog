@@ -95,7 +95,7 @@ Manipulating Log Entries in Flight
 
 Now that your log events are dictionaries, it's also much easier to manipulate them than if it were plain strings.
 
-To fascilitate that, ``structlog`` has the concept of :doc:`processor chains <processors>`.
+To facilitate that, ``structlog`` has the concept of :doc:`processor chains <processors>`.
 A processor is a callable like a function that receives the event dictionary along with two other arguments and returns a new event dictionary that may or may not differ from the one it got passed.
 The next processor in the chain receives that returned dictionary instead of the original one.
 
