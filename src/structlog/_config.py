@@ -20,6 +20,11 @@ from .dev import ConsoleRenderer, _has_colorama
 from .processors import StackInfoRenderer, TimeStamper, format_exc_info
 
 
+"""
+.. note::
+
+   Any changes to these defaults must be reflected in :doc:`getting-started`.
+"""
 _BUILTIN_DEFAULT_PROCESSORS = [
     StackInfoRenderer(),
     format_exc_info,
