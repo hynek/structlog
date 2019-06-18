@@ -156,10 +156,7 @@ Ideally as late as possible but *before* non-framework (i.e. your) code is execu
 If you use standard library's logging, it makes sense to configure them next to each other.
 
 **Django**
-   ``settings.py`` together with your other logging configuration.
-
-   For per-request loggers with bound request IDs, you can write a simple middleware.
-   See `this case study <https://github.com/hynek/structlog/issues/175>`_ for more concrete information.
+   See `Third-Party Extensions <https://github.com/hynek/structlog/wiki/Third-Party-Extensions/>`_ in the wiki.
 
 **Flask**
    See `Logging <http://flask.pocoo.org/docs/dev/logging/>`_.

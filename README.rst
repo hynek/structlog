@@ -7,6 +7,10 @@
 ``structlog``: Structured Logging for Python
 ============================================
 
+.. image:: https://img.shields.io/pypi/v/structlog.svg
+   :target: https://pypi.org/project/structlog/
+   :alt: PyPI
+
 .. image:: https://readthedocs.org/projects/structlog/badge/?version=stable
    :target: https://www.structlog.org/en/stable/?badge=stable
    :alt: Documentation Status
@@ -34,6 +38,9 @@ It's up to you whether you want ``structlog`` to take care about the **output** 
 Once you feel inspired to try it out, check out our friendly `Getting Started tutorial <http://www.structlog.org/en/stable/getting-started.html>`_ that also contains detailed installation instructions!
 
 .. -begin-spiel-
+
+If you prefer videos over reading, check out this DjangoCon Europe 2019 talk by `Markus Holtermann <https://twitter.com/m_holtermann>`_: "`Logging Rethought 2: The Actions of Frank Taylor Jr. <https://www.youtube.com/watch?v=Y5eyEgyHLLo>`_".
+
 
 Easier Logging
 ==============

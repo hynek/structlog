@@ -10,87 +10,136 @@ jobs:
     strategy:
       matrix:
         Lint:
-            TOXENV: lint
-            python.version: '3.7'
+          tox.env: lint
+          python.version: '3.7'
         Manifest:
-            TOXENV: manifest
-            python.version: '3.7'
+          tox.env: manifest
+          python.version: '3.7'
 
         py27-colorama:
-          TOXENV: py27-colorama
+          tox.env: py27-colorama
           python.version: '2.7'
         py27-greenlets:
-          TOXENV: py27-greenlets
+          tox.env: py27-greenlets
           python.version: '2.7'
         py27-oldtwisted:
-          TOXENV: py27-oldtwisted
+          tox.env: py27-oldtwisted
           python.version: '2.7'
         py27-threads:
-          TOXENV: py27-threads
+          tox.env: py27-threads
           python.version: '2.7'
         py34-threads:
-          TOXENV: py34-threads
+          tox.env: py34-threads
           python.version: '3.4'
         py35-threads:
-          TOXENV: py35-threads
+          tox.env: py35-threads
           python.version: '3.5'
         py36-threads:
-          TOXENV: py36-threads
+          tox.env: py36-threads
           python.version: '3.6'
         py37-colorama:
-          TOXENV: py37-colorama
+          tox.env: py37-colorama
           python.version: '3.7'
         py37-greenlets:
-          TOXENV: py37-greenlets
+          tox.env: py37-greenlets
           python.version: '3.7'
         py37-oldtwisted:
-          TOXENV: py37-oldtwisted
+          tox.env: py37-oldtwisted
           python.version: '3.7'
         py37-threads:
-          TOXENV: py37-threads
+          tox.env: py37-threads
           python.version: '3.7'
+        # Twisted is currently broken on 3.8.
+        # py38-threads:
+        #   tox.env: py38-threads
+        #   python.version: '3.8'
         pypy-colorama:
-          TOXENV: pypy-colorama
+          tox.env: pypy-colorama
           python.version: pypy2
         pypy-greenlets:
-          TOXENV: pypy-greenlets
+          tox.env: pypy-greenlets
           python.version: pypy2
         pypy-oldtwisted:
-          TOXENV: pypy-oldtwisted
+          tox.env: pypy-oldtwisted
           python.version: pypy2
         pypy-threads:
-          TOXENV: pypy-threads
+          tox.env: pypy-threads
           python.version: pypy2
         pypy3-threads:
-          TOXENV: pypy3-threads
+          tox.env: pypy3-threads
           python.version: pypy3
 
 #        py38-greenlets:
-#          TOXENV: py38-greenlets
+#          tox.env: py38-greenlets
 #          python.version: 3.8-dev
 #        py38-threads:
-#          TOXENV: py38-threads
+#          tox.env: py38-threads
 #          python.version: 3.8-dev
 
         Docs:
           python.version: '3.7'
-          TOXENV: docs
+          tox.env: docs
         PyPI-Description:
           python.version: '3.7'
-          TOXENV: pypi-description
+          tox.env: pypi-description
 
     steps:
+      - task: UsePythonVersion@0
+        displayName: Get Python for Python tools.
+        inputs:
+          versionSpec: '3.6'
+          addToPath: false
+        name: pyTools
+
+      - script: $(pyTools.pythonLocation)/bin/pip install --upgrade tox
+        displayName: Install Python-based tools.
+
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '$(python.version)'
           architecture: 'x64'
+        condition: not(in(variables['python.version'], '3.7', '3.8'))
+        displayName: Use cached Python $(python.version) for tests.
 
-      - script: python -m pip install --upgrade tox codecov
-        displayName: install tox
-      - script: env STRUCTLOG_AP_TEST_EXTRAS=azure-pipelines tox
-        displayName: run tox
       - script: |
+          sudo add-apt-repository ppa:deadsnakes
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python$(python.version)-dev python$(python.version)-distutils
+        condition: in(variables['python.version'], '3.7', '3.8')
+        displayName: Install Python $(python.version) from the deadsnakes PPA for tests.
+
+      - script: $(pyTools.pythonLocation)/bin/tox -e $(tox.env)
+        env:
+          TOX_AP_TEST_EXTRAS: azure-pipelines
+        displayName: run tox -e $(tox.env)
+
+      - script: |
+          if [ ! -f .coverage.* ]; then
+            echo No coverage data found.
+            exit 0
+          fi
+
+          # codecov shells out to "coverage" and avoiding 'sudo pip' allows for
+          # package caching.
+          PATH=$HOME/.local/bin:$PATH
+
+          case "$(python.version)" in
+          "pypy2") PY=pypy ;;
+          "pypy3") PY=pypy3 ;;
+          *) PY=python$(python.version) ;;
+          esac
+
+          # Python 3.8 needs an up-to-date pip.
+          if [ "$(python.version)" = "3.8" ]; then
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            $PY get-pip.py --user
+          fi
+
+          $PY -m pip install --user coverage codecov
+
           coverage combine
-          codecov -t $(CODECOV_TOKEN)
+          codecov
+        env:
+          CODECOV_TOKEN: $(codecov.token)
         displayName: Report Coverage
         condition: succeeded()
