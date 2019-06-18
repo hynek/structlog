@@ -42,12 +42,18 @@ It should be noted that even in most complex logging setups the example would st
 Using the defaults, as above, is equivalent to::
 
    import structlog
-   structlog.configure(processors=[
-       structlog.processors.StackInfoRenderer(),
-       structlog.processors.format_exc_info,
-       structlog.processors.TimeStamper(),
-       structlog.dev.ConsoleRenderer()
-   ])
+   structlog.configure(
+       processors=[
+           structlog.processors.StackInfoRenderer(),
+           structlog.processors.format_exc_info,
+           structlog.processors.TimeStamper(),
+           structlog.dev.ConsoleRenderer()
+       ],
+       wrapper_class=structlog.BoundLogger,
+       context_class=dict,
+       logger_factory=structlog.PrintLoggerFactory(),
+       cache_logger_on_first_use=False
+   )
    log = structlog.get_logger()
 
 .. note::
