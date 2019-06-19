@@ -39,6 +39,22 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 - If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice :doc:`colors <development>`.
 
 It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
+Using the defaults, as above, is equivalent to::
+
+   import structlog
+   structlog.configure(
+       processors=[
+           structlog.processors.StackInfoRenderer(),
+           structlog.processors.format_exc_info,
+           structlog.processors.TimeStamper(),
+           structlog.dev.ConsoleRenderer()
+       ],
+       wrapper_class=structlog.BoundLogger,
+       context_class=dict,  # or OrderedDict if the runtime's dict is unordered (e.g. Python <3.6)
+       logger_factory=structlog.PrintLoggerFactory(),
+       cache_logger_on_first_use=False
+   )
+   log = structlog.get_logger()
 
 .. note::
    For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
