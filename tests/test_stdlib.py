@@ -455,7 +455,7 @@ def configure_for_pf():
     reset_defaults()
 
 
-def configure_logging(pre_chain):
+def configure_logging(pre_chain, logger=None):
     """
     Configure logging to use ProcessorFormatter.
     """
@@ -469,6 +469,7 @@ def configure_logging(pre_chain):
                     "processor": ConsoleRenderer(colors=False),
                     "foreign_pre_chain": pre_chain,
                     "format": "%(message)s [in %(funcName)s]",
+                    "logger": logger,
                 }
             },
             "handlers": {
@@ -728,3 +729,22 @@ class TestProcessorFormatter(object):
             "",
             "[warning  ] foo [in test_native]\n",
         ) == capsys.readouterr()
+
+    def test_foreign_pre_chain_filter_by_level(self, configure_for_pf, capsys):
+        """
+        foreign_pre_chain works with filter_by_level processor.
+        """
+        logger = logging.getLogger()
+        configure_logging((filter_by_level, ), logger=logger)
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logger.warning("foo")
+
+        assert (
+                   "",
+                   "foo [in test_foreign_pre_chain_filter_by_level]\n",
+               ) == capsys.readouterr()
