@@ -79,6 +79,16 @@ class TestConsoleRenderer(object):
 
         assert (styles.timestamp + "42" + styles.reset + " " + unpadded) == rv
 
+    def test_event_stringified(self, cr, styles, unpadded):
+        """
+        Event is cast to string.
+        """
+        not_a_string = Exception("test")
+
+        rv = cr(None, None, {"event": not_a_string})
+
+        assert unpadded == rv
+
     def test_level(self, cr, styles, padded):
         """
         Levels are rendered aligned, in square brackets, and color coded.

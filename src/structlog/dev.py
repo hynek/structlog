@@ -198,7 +198,8 @@ class ConsoleRenderer(object):
                 + "] "
             )
 
-        event = event_dict.pop("event")
+        # force event to str for compatibility with standard library
+        event = str(event_dict.pop("event"))
         if event_dict:
             event = _pad(event, self._pad_event) + self._styles.reset + " "
         else:
