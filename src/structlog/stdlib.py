@@ -465,14 +465,16 @@ class ProcessorFormatter(logging.Formatter):
         added to the ``event_dict`` and removed afterwards. Set this to
         ``True`` to keep it on the :class:`logging.LogRecord`. (default: False)
     :param bool keep_stack_info: Same as *keep_exc_info* except for Python 3's
-        ``stack_info``.
-    :param logger: Logger which we want to push through the structlog processor
-        chain.
+        ``stack_info``. (default: False)
+    :param logger: Logger which we want to push through the ``structlog``
+        processor chain. This parameter is necessary for some of the
+        processors like `filter_by_level`. (default: None)
 
     :rtype: str
 
     .. versionadded:: 17.1.0
     .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
+    .. versionadded:: 19.2.0 *logger*
     """
 
     def __init__(
