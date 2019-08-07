@@ -8,6 +8,8 @@ Helpers that make development with ``structlog`` more pleasant.
 
 from __future__ import absolute_import, division, print_function
 
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
 from six import StringIO
 
 
@@ -17,6 +19,9 @@ except ImportError:
     colorama = None
 
 
+if TYPE_CHECKING:
+    from ._types import EventDict, LoggingStyles
+
 __all__ = ["ConsoleRenderer"]
 
 
@@ -25,6 +30,7 @@ _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 
 def _pad(s, l):
+    # type: (str, int) -> str
     """
     Pads *s* to length *l*.
     """
@@ -35,16 +41,16 @@ def _pad(s, l):
 if colorama is not None:
     _has_colorama = True
 
-    RESET_ALL = colorama.Style.RESET_ALL
-    BRIGHT = colorama.Style.BRIGHT
-    DIM = colorama.Style.DIM
-    RED = colorama.Fore.RED
-    BLUE = colorama.Fore.BLUE
-    CYAN = colorama.Fore.CYAN
-    MAGENTA = colorama.Fore.MAGENTA
-    YELLOW = colorama.Fore.YELLOW
-    GREEN = colorama.Fore.GREEN
-    RED_BACK = colorama.Back.RED
+    RESET_ALL = colorama.Style.RESET_ALL  # type: str
+    BRIGHT = colorama.Style.BRIGHT  # type: str
+    DIM = colorama.Style.DIM  # type: str
+    RED = colorama.Fore.RED  # type: str
+    BLUE = colorama.Fore.BLUE  # type: str
+    CYAN = colorama.Fore.CYAN  # type: str
+    MAGENTA = colorama.Fore.MAGENTA  # type: str
+    YELLOW = colorama.Fore.YELLOW  # type: str
+    GREEN = colorama.Fore.GREEN  # type: str
+    RED_BACK = colorama.Back.RED  # type: str
 else:
     _has_colorama = False
 
@@ -129,12 +135,13 @@ class ConsoleRenderer(object):
 
     def __init__(
         self,
-        pad_event=_EVENT_WIDTH,
-        colors=_has_colorama,
-        force_colors=False,
-        repr_native_str=False,
-        level_styles=None,
+        pad_event=_EVENT_WIDTH,  # type: int
+        colors=_has_colorama,  # type: bool
+        force_colors=False,  # type: bool
+        repr_native_str=False,  # type: bool
+        level_styles=None,  # type: Optional[Dict[str, str]]
     ):
+        # type: (...) -> None
         self._force_colors = self._init_colorama = False
         if colors is True:
             if colorama is None:
@@ -149,7 +156,7 @@ class ConsoleRenderer(object):
             if force_colors:
                 self._force_colors = True
 
-            styles = _ColorfulStyles
+            styles = _ColorfulStyles  # type: LoggingStyles
         else:
             styles = _PlainStyles
 
@@ -170,6 +177,7 @@ class ConsoleRenderer(object):
         self._repr_native_str = repr_native_str
 
     def _repr(self, val):
+        # type: (Any) -> str
         """
         Determine representation of *val* depending on its type &
         self._repr_native_str.
@@ -183,6 +191,7 @@ class ConsoleRenderer(object):
             return repr(val)
 
     def __call__(self, _, __, event_dict):
+        # type: (Any, Any, EventDict) -> str
         # Initialize lazily to prevent import side-effects.
         if self._init_colorama:
             if self._force_colors:
@@ -257,6 +266,7 @@ class ConsoleRenderer(object):
 
     @staticmethod
     def get_default_level_styles(colors=True):
+        # type: (bool) -> Dict[str, str]
         """
         Get the default styles for log levels
 
@@ -273,7 +283,7 @@ class ConsoleRenderer(object):
             `colors` parameter to :class:`ConsoleRenderer`. Default: True.
         """
         if colors:
-            styles = _ColorfulStyles
+            styles = _ColorfulStyles  # type: LoggingStyles
         else:
             styles = _PlainStyles
         return {
@@ -292,6 +302,7 @@ _SENTINEL = object()
 
 
 def set_exc_info(_, method_name, event_dict):
+    # type: (Any, str, EventDict) -> EventDict
     """
     Set ``event_dict["exc_info"] = True`` if *method_name* is ``"exception"``.
 

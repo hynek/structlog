@@ -14,6 +14,8 @@ from __future__ import absolute_import, division, print_function
 import json
 import sys
 
+from typing import IO, TYPE_CHECKING, Any, Optional, Tuple
+
 from six import PY2, string_types
 from twisted.python import log
 from twisted.python.failure import Failure
@@ -24,6 +26,10 @@ from ._base import BoundLoggerBase
 from ._config import _BUILTIN_DEFAULT_PROCESSORS
 from ._utils import until_not_interrupted
 from .processors import JSONRenderer as GenericJSONRenderer
+
+
+if TYPE_CHECKING:
+    from ._types import EventDict, Processor
 
 
 class BoundLogger(BoundLoggerBase):
@@ -42,12 +48,14 @@ class BoundLogger(BoundLoggerBase):
     """
 
     def msg(self, event=None, **kw):
+        # type: (Optional[str], **Any) -> Any
         """
         Process event and call ``log.msg()`` with the result.
         """
         return self._proxy_to_logger("msg", event, **kw)
 
     def err(self, event=None, **kw):
+        # type: (Optional[str], **Any) -> Any
         """
         Process event and call ``log.err()`` with the result.
         """
@@ -64,6 +72,7 @@ class LoggerFactory(object):
     """
 
     def __call__(self, *args):
+        # type: (*Any) -> Any
         """
         Positional arguments are silently ignored.
 
@@ -79,6 +88,7 @@ _FAIL_TYPES = (BaseException, Failure)
 
 
 def _extractStuffAndWhy(eventDict):
+    # type: (EventDict) -> Tuple[Any, Any, EventDict]
     """
     Removes all possible *_why*s and *_stuff*s, analyzes exc_info and returns
     a tuple of `(_stuff, _why, eventDict)`.
@@ -88,10 +98,12 @@ def _extractStuffAndWhy(eventDict):
     _stuff = eventDict.pop("_stuff", None)
     _why = eventDict.pop("_why", None)
     event = eventDict.pop("event", None)
-    if isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
+    if isinstance(_stuff, _FAIL_TYPES) and isinstance(  # type: ignore
+        event, _FAIL_TYPES
+    ):
         raise ValueError("Both _stuff and event contain an Exception/Failure.")
     # `log.err('event', _why='alsoEvent')` is ambiguous.
-    if _why and isinstance(event, string_types):
+    if _why and isinstance(event, string_types):  # type: ignore
         raise ValueError("Both `_why` and `event` supplied.")
     # Two failures are ambiguous too.
     if not isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
@@ -125,9 +137,11 @@ class ReprWrapper(object):
     """
 
     def __init__(self, string):
+        # type: (str) -> None
         self.string = string
 
     def __eq__(self, other):
+        # type: (object) -> bool
         """
         Check for equality, actually just for tests.
         """
@@ -136,6 +150,7 @@ class ReprWrapper(object):
         )
 
     def __repr__(self):
+        # type: () -> str
         return self.string
 
 
@@ -161,7 +176,7 @@ class JSONRenderer(GenericJSONRenderer):
     like :func:`plainJSONStdOutLogger` for pure-JSON logs.
     """
 
-    def __call__(self, logger, name, eventDict):
+    def __call__(self, logger, name, eventDict):  # type: ignore
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
         if name == "err":
             eventDict["event"] = _why
@@ -195,10 +210,12 @@ class PlainFileLogObserver(object):
     """
 
     def __init__(self, file):
+        # type: (IO) -> None
         self._write = file.write
         self._flush = file.flush
 
     def __call__(self, eventDict):
+        # type: (EventDict) -> None
         until_not_interrupted(self._write, textFromEventDict(eventDict) + "\n")
         until_not_interrupted(self._flush)
 
@@ -217,9 +234,11 @@ class JSONLogObserverWrapper(object):
     """
 
     def __init__(self, observer):
+        # type: (Any) -> None
         self._observer = observer
 
     def __call__(self, eventDict):
+        # type: (EventDict) -> Any
         if "_structlog" not in eventDict:
             eventDict["message"] = (
                 json.dumps(
@@ -234,6 +253,7 @@ class JSONLogObserverWrapper(object):
 
 
 def plainJSONStdOutLogger():
+    # type: () -> JSONLogObserverWrapper
     """
     Return a logger that writes only the message to stdout.
 
@@ -276,12 +296,14 @@ class EventAdapter(object):
     """
 
     def __init__(self, dictRenderer=None):
+        # type: (Optional[Processor]) -> None
         """
         :param dictRenderer: A processor used to format the log message.
         """
         self._dictRenderer = dictRenderer or _BUILTIN_DEFAULT_PROCESSORS[-1]
 
     def __call__(self, logger, name, eventDict):
+        # type: (BoundLoggerBase, str, EventDict) -> Any
         if name == "err":
             # This aspires to handle the following cases correctly:
             #   - log.err(failure, _why='event', **kw)

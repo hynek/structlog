@@ -10,8 +10,14 @@ from __future__ import absolute_import, division, print_function
 
 import errno
 
+from typing import Any, Callable, TypeVar
+
+
+T = TypeVar("T")
+
 
 def until_not_interrupted(f, *args, **kw):
+    # type: (Callable[..., T], *Any, **Any) -> T
     """
     Retry until *f* succeeds or an exception that isn't caused by EINTR occurs.
 

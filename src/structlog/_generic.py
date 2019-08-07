@@ -9,8 +9,13 @@ Generic bound logger that can wrap anything.
 from __future__ import absolute_import, division, print_function
 
 from functools import partial
+from typing import TYPE_CHECKING, Any
 
 from structlog._base import BoundLoggerBase
+
+
+if TYPE_CHECKING:
+    from ._types import EventDict
 
 
 class BoundLogger(BoundLoggerBase):
@@ -27,6 +32,7 @@ class BoundLogger(BoundLoggerBase):
     """
 
     def __getattr__(self, method_name):
+        # type: (str) -> Any
         """
         If not done so yet, wrap the desired logger method & cache the result.
         """
@@ -35,12 +41,14 @@ class BoundLogger(BoundLoggerBase):
         return wrapped
 
     def __getstate__(self):
+        # type: () -> EventDict
         """
         Out __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
     def __setstate__(self, state):
+        # type: (EventDict) -> None
         """
         Out __getattr__ magic makes this necessary.
         """

@@ -12,7 +12,14 @@ import contextlib
 import threading
 import uuid
 
+from typing import TYPE_CHECKING, Any, Iterator, Type, Union, cast
+
 from structlog._config import BoundLoggerLazyProxy
+
+
+if TYPE_CHECKING:
+    from structlog._base import BoundLoggerBase
+    from structlog._types import EventDict
 
 
 try:
@@ -22,15 +29,19 @@ except ImportError:
 else:
     from weakref import WeakKeyDictionary
 
-    class ThreadLocal(object):
+    # Mypy has issues with conditional imports
+    # https://github.com/python/mypy/issues/1297
+    class ThreadLocal(object):  # type: ignore
         """
         threading.local() replacement for greenlets.
         """
 
         def __init__(self):
+            # type: () -> None
             self.__dict__["_weakdict"] = WeakKeyDictionary()
 
         def __getattr__(self, name):
+            # type: (str) -> Any
             key = getcurrent()
             try:
                 return self._weakdict[key][name]
@@ -38,10 +49,12 @@ else:
                 raise AttributeError(name)
 
         def __setattr__(self, name, val):
+            # type: (str, str) -> None
             key = getcurrent()
             self._weakdict.setdefault(key, {})[name] = val
 
         def __delattr__(self, name):
+            # type: (str) -> None
             key = getcurrent()
             try:
                 del self._weakdict[key][name]
@@ -50,6 +63,7 @@ else:
 
 
 def wrap_dict(dict_class):
+    # type: (Type) -> Type
     """
     Wrap a dict-like class and return the resulting class.
 
@@ -62,12 +76,13 @@ def wrap_dict(dict_class):
     Wrapped = type(
         "WrappedDict-" + str(uuid.uuid4()), (_ThreadLocalDictWrapper,), {}
     )
-    Wrapped._tl = ThreadLocal()
-    Wrapped._dict_class = dict_class
+    setattr(Wrapped, "_tl", ThreadLocal())
+    setattr(Wrapped, "_dict_class", dict_class)
     return Wrapped
 
 
 def as_immutable(logger):
+    # type: (Union[BoundLoggerBase, BoundLoggerLazyProxy]) -> BoundLoggerBase
     """
     Extract the context from a thread local logger into an immutable logger.
 
@@ -79,7 +94,9 @@ def as_immutable(logger):
         logger = logger.bind()
 
     try:
-        ctx = logger._context._tl.dict_.__class__(logger._context._dict)
+        ctx = getattr(logger._context, "_tl").dict_.__class__(
+            getattr(logger._context, "_dict")
+        )
         bl = logger.__class__(
             logger._logger, processors=logger._processors, context={}
         )
@@ -91,6 +108,7 @@ def as_immutable(logger):
 
 @contextlib.contextmanager
 def tmp_bind(logger, **tmp_values):
+    # type: (BoundLoggerBase, **Any) -> Iterator[BoundLoggerBase]
     """
     Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
     """
@@ -115,6 +133,7 @@ class _ThreadLocalDictWrapper(object):
     """
 
     def __init__(self, *args, **kw):
+        # type: (*Any, **Any) -> None
         """
         We cheat.  A context dict gets never recreated.
         """
@@ -126,7 +145,7 @@ class _ThreadLocalDictWrapper(object):
             self._dict.update(*args, **kw)
 
     @property
-    def _dict(self):
+    def _dict(self):  # type: ignore
         """
         Return or create and return the current context.
         """
@@ -137,30 +156,38 @@ class _ThreadLocalDictWrapper(object):
             return self.__class__._tl.dict_
 
     def __repr__(self):
+        # type: () -> str
         return "<{0}({1!r})>".format(self.__class__.__name__, self._dict)
 
     def __eq__(self, other):
+        # type: (object) -> bool
         # Same class == same dictionary
         return self.__class__ == other.__class__
 
     def __ne__(self, other):
+        # type: (object) -> bool
         return not self.__eq__(other)
 
     # Proxy methods necessary for structlog.
     # Dunder methods don't trigger __getattr__ so we need to proxy by hand.
     def __iter__(self):
+        # type: () -> Any
         return self._dict.__iter__()
 
     def __setitem__(self, key, value):
+        # type: (Any, Any) -> None
         self._dict[key] = value
 
     def __delitem__(self, key):
+        # type: (Any) -> None
         self._dict.__delitem__(key)
 
     def __len__(self):
-        return self._dict.__len__()
+        # type: () -> int
+        return cast(int, self._dict.__len__())
 
     def __getattr__(self, name):
+        # type: (Any) -> Any
         method = getattr(self._dict, name)
         return method
 
@@ -169,6 +196,7 @@ _CONTEXT = threading.local()
 
 
 def merge_threadlocal_context(logger, method_name, event_dict):
+    # type: (BoundLoggerBase, str, EventDict) -> Any
     """
     A processor that merges in a global (thread-local) context.
 
@@ -181,6 +209,7 @@ def merge_threadlocal_context(logger, method_name, event_dict):
 
 
 def clear_threadlocal():
+    # type: () -> None
     """
     Clear the thread-local context.
 
@@ -191,6 +220,7 @@ def clear_threadlocal():
 
 
 def bind_threadlocal(**kwargs):
+    # type: (**Any) -> None
     """
     Put keys and values into the thread-local context.
 
@@ -201,6 +231,7 @@ def bind_threadlocal(**kwargs):
 
 
 def _get_context():
+    # type: () -> Any
     try:
         return _CONTEXT.context
     except AttributeError:

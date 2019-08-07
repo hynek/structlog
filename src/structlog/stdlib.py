@@ -13,6 +13,17 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    cast,
+)
+
 from six import PY3
 
 from structlog._base import BoundLoggerBase
@@ -20,12 +31,19 @@ from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
 
 
+if TYPE_CHECKING:
+    from .processors import EventDict
+    from ._types import Processor
+
+
 class _FixedFindCallerLogger(logging.Logger):
     """
     Change the behavior of findCaller to cope with structlog's extra frames.
     """
 
-    def findCaller(self, stack_info=False, stacklevel=1):
+    # Mypy does not allow subtypes incompatible with supertypes
+    # https://github.com/python/mypy/issues/1237
+    def findCaller(self, stack_info=False, stacklevel=1):  # type: ignore
         """
         Finds the first caller frame outside of structlog so that the caller
         info is populated for wrapping stdlib.
@@ -34,7 +52,7 @@ class _FixedFindCallerLogger(logging.Logger):
         f, name = _find_first_app_frame_and_name(["logging"])
         if PY3:
             if stack_info:
-                sinfo = _format_stack(f)
+                sinfo = _format_stack(f)  # type: Optional[str]
             else:
                 sinfo = None
             return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
@@ -60,18 +78,21 @@ class BoundLogger(BoundLoggerBase):
     """
 
     def debug(self, event=None, *args, **kw):
+        # type: (Any, *Any, **Any) -> Any
         """
         Process event and call :meth:`logging.Logger.debug` with the result.
         """
         return self._proxy_to_logger("debug", event, *args, **kw)
 
     def info(self, event=None, *args, **kw):
+        # type: (Any, *Any, **Any) -> Any
         """
         Process event and call :meth:`logging.Logger.info` with the result.
         """
         return self._proxy_to_logger("info", event, *args, **kw)
 
     def warning(self, event=None, *args, **kw):
+        # type: (Any, *Any, **Any) -> Any
         """
         Process event and call :meth:`logging.Logger.warning` with the result.
         """
@@ -80,18 +101,21 @@ class BoundLogger(BoundLoggerBase):
     warn = warning
 
     def error(self, event=None, *args, **kw):
+        # type: (Any, *Any, **Any) -> Any
         """
         Process event and call :meth:`logging.Logger.error` with the result.
         """
         return self._proxy_to_logger("error", event, *args, **kw)
 
     def critical(self, event=None, *args, **kw):
+        # type: (Any, *Any, **Any) -> Any
         """
         Process event and call :meth:`logging.Logger.critical` with the result.
         """
         return self._proxy_to_logger("critical", event, *args, **kw)
 
     def exception(self, event=None, *args, **kw):
+        # type: (Any, *Any, **Any) -> Any
         """
         Process event and call :meth:`logging.Logger.error` with the result,
         after setting ``exc_info`` to `True`.
@@ -100,6 +124,7 @@ class BoundLogger(BoundLoggerBase):
         return self.error(event, *args, **kw)
 
     def log(self, level, event, *args, **kw):
+        # type: (int, Any, *Any, **Any) -> Any
         """
         Process event and call the appropriate logging method depending on
         `level`.
@@ -108,7 +133,10 @@ class BoundLogger(BoundLoggerBase):
 
     fatal = critical
 
-    def _proxy_to_logger(self, method_name, event, *event_args, **event_kw):
+    def _proxy_to_logger(  # type: ignore
+        self, method_name, event, *event_args, **event_kw
+    ):
+        # type: (str, Any, *Any, **Any) -> Any
         """
         Propagate a method call to the wrapped logger.
 
@@ -129,118 +157,155 @@ class BoundLogger(BoundLoggerBase):
 
     @property
     def name(self):
+        # type: () -> str
         """
         Returns :attr:`logging.Logger.name`
         """
-        return self._logger.name
+        return cast(str, self._logger.name)  # type: ignore
 
     @property
     def level(self):
+        # type: () -> int
         """
         Returns :attr:`logging.Logger.level`
         """
-        return self._logger.level
+        return cast(int, self._logger.level)  # type: ignore
 
     @property
     def parent(self):
+        # type: () -> Any
         """
         Returns :attr:`logging.Logger.parent`
         """
-        return self._logger.parent
+        return self._logger.parent  # type: ignore
 
     @property
     def propagate(self):
+        # type: () -> bool
         """
         Returns :attr:`logging.Logger.propagate`
         """
-        return self._logger.propagate
+        return cast(bool, self._logger.propagate)  # type: ignore
 
     @property
     def handlers(self):
+        # type: () -> Any
         """
         Returns :attr:`logging.Logger.handlers`
         """
-        return self._logger.handlers
+        return self._logger.handlers  # type: ignore
 
     @property
     def disabled(self):
+        # type: () -> bool
         """
         Returns :attr:`logging.Logger.disabled`
         """
-        return self._logger.disabled
+        return cast(bool, self._logger.disabled)  # type: ignore
 
     def setLevel(self, level):
+        # type: (int) -> None
         """
         Calls :meth:`logging.Logger.setLevel` with unmodified arguments.
         """
-        self._logger.setLevel(level)
+        self._logger.setLevel(level)  # type: ignore
 
     def findCaller(self, stack_info=False):
+        # type: (bool) -> Any
         """
         Calls :meth:`logging.Logger.findCaller` with unmodified arguments.
         """
-        return self._logger.findCaller(stack_info=stack_info)
+        return self._logger.findCaller(stack_info=stack_info)  # type: ignore
 
     def makeRecord(
-        self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None
+        self,
+        name,  # type: str
+        level,  # type: int
+        fn,  # type: str
+        lno,  # type: int
+        msg,  # type: Any
+        args,  # type: logging._ArgsType
+        exc_info,  # type: Optional[logging._SysExcInfoType]
+        func=None,  # type: Optional[str]
+        extra=None,  # type: Optional[Mapping[str, Any]]
     ):
+        # type: (...) -> logging.LogRecord
         """
         Calls :meth:`logging.Logger.makeRecord` with unmodified arguments.
         """
-        return self._logger.makeRecord(
-            name, level, fn, lno, msg, args, exc_info, func=func, extra=extra
+        return cast(
+            logging.LogRecord,
+            self._logger.makeRecord(  # type: ignore
+                name,
+                level,
+                fn,
+                lno,
+                msg,
+                args,
+                exc_info,
+                func=func,
+                extra=extra,
+            ),
         )
 
     def handle(self, record):
+        # type: (logging.LogRecord) -> None
         """
         Calls :meth:`logging.Logger.handle` with unmodified arguments.
         """
-        self._logger.handle(record)
+        self._logger.handle(record)  # type: ignore
 
     def addHandler(self, hdlr):
+        # type: (logging.Handler) -> None
         """
         Calls :meth:`logging.Logger.addHandler` with unmodified arguments.
         """
-        self._logger.addHandler(hdlr)
+        self._logger.addHandler(hdlr)  # type: ignore
 
     def removeHandler(self, hdlr):
+        # type: (logging.Handler) -> None
         """
         Calls :meth:`logging.Logger.removeHandler` with unmodified arguments.
         """
-        self._logger.removeHandler(hdlr)
+        self._logger.removeHandler(hdlr)  # type: ignore
 
     def hasHandlers(self):
+        # type: () -> bool
         """
         Calls :meth:`logging.Logger.hasHandlers` with unmodified arguments.
 
         Exists only in Python 3.
         """
-        return self._logger.hasHandlers()
+        return cast(bool, self._logger.hasHandlers())  # type: ignore
 
     def callHandlers(self, record):
+        # type: (logging.LogRecord) -> None
         """
         Calls :meth:`logging.Logger.callHandlers` with unmodified arguments.
         """
-        self._logger.callHandlers(record)
+        self._logger.callHandlers(record)  # type: ignore
 
     def getEffectiveLevel(self):
+        # type: () -> int
         """
         Calls :meth:`logging.Logger.getEffectiveLevel` with unmodified
         arguments.
         """
-        return self._logger.getEffectiveLevel()
+        return cast(int, self._logger.getEffectiveLevel())  # type: ignore
 
     def isEnabledFor(self, level):
+        # type: (int) -> bool
         """
         Calls :meth:`logging.Logger.isEnabledFor` with unmodified arguments.
         """
-        return self._logger.isEnabledFor(level)
+        return cast(bool, self._logger.isEnabledFor(level))  # type: ignore
 
     def getChild(self, suffix):
+        # type: (str) -> Any
         """
         Calls :meth:`logging.Logger.getChild` with unmodified arguments.
         """
-        return self._logger.getChild(suffix)
+        return self._logger.getChild(suffix)  # type: ignore
 
 
 class LoggerFactory(object):
@@ -262,10 +327,12 @@ class LoggerFactory(object):
     """
 
     def __init__(self, ignore_frame_names=None):
+        # type: (Optional[List[str]]) -> None
         self._ignore = ignore_frame_names
         logging.setLoggerClass(_FixedFindCallerLogger)
 
     def __call__(self, *args):
+        # type: (*Any) -> logging.Logger
         """
         Deduce the caller's module name and create a stdlib logger.
 
@@ -311,9 +378,11 @@ class PositionalArgumentsFormatter(object):
     """
 
     def __init__(self, remove_positional_args=True):
+        # type: (Optional[bool]) -> None
         self.remove_positional_args = remove_positional_args
 
     def __call__(self, _, __, event_dict):
+        # type: (Any, Any, EventDict) -> EventDict
         args = event_dict.get("positional_args")
 
         # Mimick the formatting behaviour of the stdlib's logging
@@ -358,6 +427,7 @@ _LEVEL_TO_NAME = dict(
 
 
 def filter_by_level(logger, name, event_dict):
+    # type: (BoundLogger, str, EventDict) -> EventDict
     """
     Check whether logging is configured to accept messages from this log level.
 
@@ -383,6 +453,7 @@ def filter_by_level(logger, name, event_dict):
 
 
 def add_log_level(logger, method_name, event_dict):
+    # type: (Any, str, EventDict) -> EventDict
     """
     Add the log level to the event dict.
     """
@@ -395,6 +466,7 @@ def add_log_level(logger, method_name, event_dict):
 
 
 def add_log_level_number(logger, method_name, event_dict):
+    # type: (Any, str, EventDict) -> EventDict
     """
     Add the log level number to the event dict.
 
@@ -415,6 +487,7 @@ def add_log_level_number(logger, method_name, event_dict):
 
 
 def add_logger_name(logger, method_name, event_dict):
+    # type: (Any, str, EventDict) -> EventDict
     """
     Add the logger name to the event dict.
     """
@@ -427,6 +500,7 @@ def add_logger_name(logger, method_name, event_dict):
 
 
 def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
+    # type: (Any, str, EventDict) -> Dict[str, Any]
     """
     Render `event_dict` into keyword arguments for :func:`logging.log`.
 
@@ -479,16 +553,17 @@ class ProcessorFormatter(logging.Formatter):
 
     def __init__(
         self,
-        processor,
-        foreign_pre_chain=None,
-        keep_exc_info=False,
-        keep_stack_info=False,
-        logger=None,
-        *args,
-        **kwargs
+        processor,  # type: Processor
+        foreign_pre_chain=None,  # type: Any
+        keep_exc_info=False,  # type: Optional[bool]
+        keep_stack_info=False,  # type: Optional[bool]
+        logger=None,  # type: Any
+        *args,  # type: Any
+        **kwargs  # type: Any
     ):
+        # type: (...) -> None
         fmt = kwargs.pop("fmt", "%(message)s")
-        super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
+        super(ProcessorFormatter, self).__init__(fmt, *args, **kwargs)
         self.processor = processor
         self.foreign_pre_chain = foreign_pre_chain
         self.keep_exc_info = keep_exc_info
@@ -497,6 +572,7 @@ class ProcessorFormatter(logging.Formatter):
         self.logger = logger
 
     def format(self, record):
+        # type: (logging.LogRecord) -> str
         """
         Extract ``structlog``'s `event_dict` from ``record.msg`` and format it.
         """
@@ -505,13 +581,17 @@ class ProcessorFormatter(logging.Formatter):
         record = logging.makeLogRecord(record.__dict__)
         try:
             # Both attached by wrap_for_formatter
-            logger = self.logger if self.logger is not None else record._logger
-            meth_name = record._name
+            logger = (
+                self.logger
+                if hasattr(self, "logger")
+                else record._logger  # type: ignore
+            )
+            meth_name = record._name  # type: ignore
 
             # We need to copy because it's possible that the same record gets
             # processed by multiple logging formatters.  LogRecord.getMessage
             # would transform our dict into a str.
-            ed = record.msg.copy()
+            ed = record.msg.copy()  # type: ignore
         except AttributeError:
             logger = self.logger
             meth_name = record.levelname.lower()
@@ -530,7 +610,7 @@ class ProcessorFormatter(logging.Formatter):
                 record.exc_text = None
                 record.exc_info = None
             if not self.keep_stack_info:
-                record.stack_info = None
+                record.stack_info = None  # type: ignore
 
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
@@ -539,11 +619,16 @@ class ProcessorFormatter(logging.Formatter):
 
             del ed["_record"]
 
-        record.msg = self.processor(logger, meth_name, ed)
+        record.msg = self.processor(logger, meth_name, ed)  # type: ignore
         return super(ProcessorFormatter, self).format(record)
 
     @staticmethod
-    def wrap_for_formatter(logger, name, event_dict):
+    def wrap_for_formatter(
+        logger,  # type: BoundLogger
+        name,  # type: str
+        event_dict,  # type: EventDict
+    ):
+        # type: (...) -> Tuple[Tuple[EventDict], Dict[str, Dict[str, Any]]]
         """
         Wrap *logger*, *name*, and *event_dict*.
 

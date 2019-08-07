@@ -37,12 +37,15 @@ EXTRAS_REQUIRE = {
     "tests": [
         "coverage",
         "freezegun>=0.2.8",
+        "mypy; python_version >= '3.5'",
+        "mypy_extensions",
+        "typing; python_version < '3.5'",
         "pretend",
         "pytest>=3.3.0",
         "python-rapidjson; python_version>='3.6'",
         "simplejson",
     ],
-    "docs": ["sphinx", "twisted"],
+    "docs": ["mypy_extensions", "sphinx", "twisted"],
 }
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit"]
@@ -120,6 +123,7 @@ if __name__ == "__main__":
         long_description=LONG,
         long_description_content_type="text/x-rst",
         keywords=KEYWORDS,
+        package_data={"structlog": ["py.typed"]},
         packages=PACKAGES,
         package_dir={"": "src"},
         classifiers=CLASSIFIERS,

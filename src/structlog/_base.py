@@ -8,9 +8,15 @@ Logger wrapper and helper class.
 
 from __future__ import absolute_import, division, print_function
 
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
 from six import string_types
 
 from structlog.exceptions import DropEvent
+
+
+if TYPE_CHECKING:
+    from structlog._types import EventDict, Processor, ProcessorResult
 
 
 class BoundLoggerBase(object):
@@ -27,6 +33,7 @@ class BoundLoggerBase(object):
     """
 
     _logger = None
+
     """
     Wrapped logger.
 
@@ -38,18 +45,21 @@ class BoundLoggerBase(object):
     """
 
     def __init__(self, logger, processors, context):
+        # type: (Any, List[Processor], EventDict) -> None
         self._logger = logger
         self._processors = processors
         self._context = context
 
     def __repr__(self):
+        # type: () -> str
         return "<{0}(context={1!r}, processors={2!r})>".format(
             self.__class__.__name__, self._context, self._processors
         )
 
     def __eq__(self, other):
+        # type: (object) -> bool
         try:
-            if self._context == other._context:
+            if self._context == other._context:  # type: ignore
                 return True
             else:
                 return False
@@ -57,9 +67,11 @@ class BoundLoggerBase(object):
             return False
 
     def __ne__(self, other):
+        # type: (object) -> bool
         return not self.__eq__(other)
 
     def bind(self, **new_values):
+        # type: (**Any) -> BoundLoggerBase
         """
         Return a new logger with *new_values* added to the existing ones.
 
@@ -72,6 +84,7 @@ class BoundLoggerBase(object):
         )
 
     def unbind(self, *keys):
+        # type: (*str) -> BoundLoggerBase
         """
         Return a new logger with *keys* removed from the context.
 
@@ -85,6 +98,7 @@ class BoundLoggerBase(object):
         return bl
 
     def try_unbind(self, *keys):
+        # type: (*str) -> BoundLoggerBase
         """
         Like :meth:`unbind`, but best effort:  missing keys are ignored.
 
@@ -101,6 +115,7 @@ class BoundLoggerBase(object):
         return bl
 
     def new(self, **new_values):
+        # type: (**Any) -> BoundLoggerBase
         """
         Clear context and binds *initial_values* using :func:`bind`.
 
@@ -115,7 +130,13 @@ class BoundLoggerBase(object):
 
     # Helper methods for sub-classing concrete BoundLoggers.
 
-    def _process_event(self, method_name, event, event_kw):
+    def _process_event(
+        self,
+        method_name,  # type: str
+        event,  # type: Optional[Any]
+        event_kw,  # type: Dict[str, Any]
+    ):
+        # type: (...) -> ProcessorResult
         """
         Combines creates an `event_dict` and runs the chain.
 
@@ -147,16 +168,19 @@ class BoundLoggerBase(object):
         event_dict.update(**event_kw)
         if event is not None:
             event_dict["event"] = event
+        processed_event_dict = event_dict  # type: ProcessorResult
         for proc in self._processors:
-            event_dict = proc(self._logger, method_name, event_dict)
-        if isinstance(event_dict, string_types):
-            return (event_dict,), {}
-        elif isinstance(event_dict, tuple):
+            processed_event_dict = proc(
+                self._logger, method_name, processed_event_dict
+            )
+        if isinstance(processed_event_dict, string_types):
+            return (processed_event_dict,), {}
+        elif isinstance(processed_event_dict, tuple):
             # In this case we assume that the last processor returned a tuple
             # of ``(args, kwargs)`` and pass it right through.
-            return event_dict
-        elif isinstance(event_dict, dict):
-            return (), event_dict
+            return processed_event_dict
+        elif isinstance(processed_event_dict, dict):
+            return (), processed_event_dict
         else:
             raise ValueError(
                 "Last processor didn't return an appropriate value.  Allowed "
@@ -165,6 +189,7 @@ class BoundLoggerBase(object):
             )
 
     def _proxy_to_logger(self, method_name, event=None, **event_kw):
+        # type: (str, Optional[Any], **Any) -> Any
         """
         Run processor chain on event & call *method_name* on wrapped logger.
 

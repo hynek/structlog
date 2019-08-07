@@ -12,6 +12,7 @@ import sys
 import threading
 
 from pickle import PicklingError
+from typing import IO, Any, Dict, Optional, Tuple, Union
 
 from structlog._utils import until_not_interrupted
 
@@ -30,16 +31,19 @@ class PrintLoggerFactory(object):
     """
 
     def __init__(self, file=None):
+        # type: (Optional[IO]) -> None
         self._file = file
 
     def __call__(self, *args):
+        # type: (*Any) -> PrintLogger
         return PrintLogger(self._file)
 
 
-WRITE_LOCKS = {}
+WRITE_LOCKS = {}  # type: Dict[IO, threading.Lock]
 
 
 def _get_lock_for_file(file):
+    # type: (IO) -> threading.Lock
     global WRITE_LOCKS
 
     lock = WRITE_LOCKS.get(file)
@@ -68,6 +72,7 @@ class PrintLogger(object):
     """
 
     def __init__(self, file=None):
+        # type: (Optional[IO]) -> None
         self._file = file or sys.stdout
         self._write = self._file.write
         self._flush = self._file.flush
@@ -75,6 +80,7 @@ class PrintLogger(object):
         self._lock = _get_lock_for_file(self._file)
 
     def __getstate__(self):
+        # type: () -> str
         """
         Out __getattr__ magic makes this necessary.
         """
@@ -89,6 +95,7 @@ class PrintLogger(object):
         )
 
     def __setstate__(self, state):
+        # type: (str) -> None
         """
         Out __getattr__ magic makes this necessary.
         """
@@ -102,9 +109,11 @@ class PrintLogger(object):
         self._lock = _get_lock_for_file(self._file)
 
     def __repr__(self):
+        # type: () -> str
         return "<PrintLogger(file={0!r})>".format(self._file)
 
     def msg(self, message):
+        # type: (str) -> None
         """
         Print *message*.
         """
@@ -128,9 +137,11 @@ class ReturnLoggerFactory(object):
     """
 
     def __init__(self):
+        # type: () -> None
         self._logger = ReturnLogger()
 
     def __call__(self, *args):
+        # type: (*Any) -> ReturnLogger
         return self._logger
 
 
@@ -150,7 +161,12 @@ class ReturnLogger(object):
         Allow for arbitrary arguments and keyword arguments to be passed in.
     """
 
-    def msg(self, *args, **kw):
+    def msg(
+        self,
+        *args,  # type: Any
+        **kw  # type: Any
+    ):
+        # type: (...) -> Union[Any, Tuple[Tuple[Any, ...], Dict[str, Any]]]
         """
         Return tuple of ``args, kw`` or just ``args[0]`` if only one arg passed
         """
