@@ -121,6 +121,9 @@ class ConsoleRenderer(object):
     .. versionadded:: 17.1 *repr_native_str*
     .. versionadded:: 18.1 *force_colors*
     .. versionadded:: 18.1 *level_styles*
+    .. versionchanged:: 18.2
+       ``colorama`` now initializes lazily to avoid unwanted initializations as
+       ``ConsoleRenderer`` is used by default.
     """
 
     def __init__(
@@ -131,6 +134,7 @@ class ConsoleRenderer(object):
         repr_native_str=False,
         level_styles=None,
     ):
+        self._force_colors = self._init_colorama = False
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -140,11 +144,9 @@ class ConsoleRenderer(object):
                     )
                 )
 
+            self._init_colorama = True
             if force_colors:
-                colorama.deinit()
-                colorama.init(strip=False)
-            else:
-                colorama.init()
+                self._force_colors = True
 
             styles = _ColorfulStyles
         else:
@@ -177,6 +179,15 @@ class ConsoleRenderer(object):
             self._repr = _repr
 
     def __call__(self, _, __, event_dict):
+        # Initialize lazily to prevent import side-effects.
+        if self._init_colorama:
+            if self._force_colors:
+                colorama.deinit()
+                colorama.init(strip=False)
+            else:
+                colorama.init()
+
+            self._init_colorama = False
         sio = StringIO()
 
         ts = event_dict.pop("timestamp", None)

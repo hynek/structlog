@@ -35,6 +35,8 @@ Changes:
   `#219 <https://github.com/hynek/structlog/issues/219>`_
 - ``structlog.dev.ConsoleRenderer`` now uses no colors by default, if ``colorama`` is not available.
   `#215 <https://github.com/hynek/structlog/issues/215>`_
+- ``structlog.dev.ConsoleRenderer`` now initializes ``colorama`` lazily, to prevent accidental side-effects just by importing ``structlog``.
+  `#210 <https://github.com/hynek/structlog/issues/210>`_
 
 
 ----
