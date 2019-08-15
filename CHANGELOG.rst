@@ -32,7 +32,9 @@ Changes:
   `#198 <https://github.com/hynek/structlog/issues/198>`_
 - ``structlog.stdlib.ProcessorFormatter`` now takes a logger object as an optional keyword argument.
   This makes ``ProcessorFormatter`` work properly with ``stuctlog.stdlib.filter_by_level()``.
+  `#219 <https://github.com/hynek/structlog/issues/219>`_
 - ``structlog.dev.ConsoleRenderer`` now uses no colors by default, if ``colorama`` is not available.
+  `#215 <https://github.com/hynek/structlog/issues/215>`_
 
 
 ----
