@@ -56,7 +56,7 @@ class TestConsoleRenderer(object):
         colorama is missing.
         """
         with pytest.raises(SystemError) as e:
-            dev.ConsoleRenderer()
+            dev.ConsoleRenderer(colors=True)
 
         assert (
             "ConsoleRenderer with `colors=True` requires the colorama package "
