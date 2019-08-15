@@ -465,12 +465,16 @@ class ProcessorFormatter(logging.Formatter):
         added to the ``event_dict`` and removed afterwards. Set this to
         ``True`` to keep it on the :class:`logging.LogRecord`. (default: False)
     :param bool keep_stack_info: Same as *keep_exc_info* except for Python 3's
-        ``stack_info``.
+        ``stack_info``. (default: False)
+    :param logger: Logger which we want to push through the ``structlog``
+        processor chain. This parameter is necessary for some of the
+        processors like `filter_by_level`. (default: None)
 
     :rtype: str
 
     .. versionadded:: 17.1.0
     .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
+    .. versionadded:: 19.2.0 *logger*
     """
 
     def __init__(
@@ -479,6 +483,7 @@ class ProcessorFormatter(logging.Formatter):
         foreign_pre_chain=None,
         keep_exc_info=False,
         keep_stack_info=False,
+        logger=None,
         *args,
         **kwargs
     ):
@@ -489,6 +494,7 @@ class ProcessorFormatter(logging.Formatter):
         self.keep_exc_info = keep_exc_info
         # The and clause saves us checking for PY3 in the formatter.
         self.keep_stack_info = keep_stack_info and PY3
+        self.logger = logger
 
     def format(self, record):
         """
@@ -499,7 +505,7 @@ class ProcessorFormatter(logging.Formatter):
         record = logging.makeLogRecord(record.__dict__)
         try:
             # Both attached by wrap_for_formatter
-            logger = record._logger
+            logger = self.logger if self.logger is not None else record._logger
             meth_name = record._name
 
             # We need to copy because it's possible that the same record gets
@@ -507,7 +513,7 @@ class ProcessorFormatter(logging.Formatter):
             # would transform our dict into a str.
             ed = record.msg.copy()
         except AttributeError:
-            logger = None
+            logger = self.logger
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
             record.args = ()
@@ -529,7 +535,7 @@ class ProcessorFormatter(logging.Formatter):
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
             for proc in self.foreign_pre_chain or ():
-                ed = proc(None, meth_name, ed)
+                ed = proc(logger, meth_name, ed)
 
             del ed["_record"]
 
