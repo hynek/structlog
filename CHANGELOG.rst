@@ -30,8 +30,9 @@ Changes:
 - Added more pass-through properties to ``structlog.stdlib.BoundLogger``.
   To makes it easier to use it as a drop-in replacement for ``logging.Logger``.
   `#198 <https://github.com/hynek/structlog/issues/198>`_
-- ``ProcessorFormatter`` takes logger object as an optional keyword argument.
-  This fixes a bug when using ProcessorFormatter with ``stuctlog.stdlib.filter_by_level``.
+- ``structlog.stdlib.ProcessorFormatter`` now takes a logger object as an optional keyword argument.
+  This makes ``ProcessorFormatter`` work properly with ``stuctlog.stdlib.filter_by_level()``.
+- ``structlog.dev.ConsoleRenderer`` now uses no colors by default, if ``colorama`` is not available.
 
 
 ----
