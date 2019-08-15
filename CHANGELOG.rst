@@ -12,7 +12,10 @@ The third digit is only for regressions.
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- Python 3.4 is not supported anymore.
+  It has been unsupported by the Python core team for a while now and its PyPI downloads are negligible.
+
+  It's very unlikely that ``structlog`` will break under 3.4 anytime soon, but we don't test it anymore.
 
 
 Deprecations:
@@ -27,6 +30,8 @@ Changes:
 - Added more pass-through properties to ``structlog.stdlib.BoundLogger``.
   To makes it easier to use it as a drop-in replacement for ``logging.Logger``.
   `#198 <https://github.com/hynek/structlog/issues/198>`_
+- ``ProcessorFormatter`` takes logger object as an optional keyword argument.
+  This fixes a bug when using ProcessorFormatter with ``stuctlog.stdlib.filter_by_level``.
 
 
 ----
