@@ -27,6 +27,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- Python 3.8 support for ``structlog.stdlib``.
 - Added more pass-through properties to ``structlog.stdlib.BoundLogger``.
   To makes it easier to use it as a drop-in replacement for ``logging.Logger``.
   `#198 <https://github.com/hynek/structlog/issues/198>`_
