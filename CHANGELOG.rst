@@ -45,7 +45,11 @@ Changes:
   `#173 <https://github.com/hynek/structlog/issues/173>`_,
   `#200 <https://github.com/hynek/structlog/issues/200>`_,
   `#204 <https://github.com/hynek/structlog/issues/204>`_
-- The configuration, ``structlog.processor.TimeStamper`` and ``structlog.dev.ConsoleLogger`` can now be serialized using ``pickle``.
+- A best effort has been made to make as much of ``structlog`` pickleable as possible to make it friendlier with ``multiprocessing`` and similar libraries.
+  Some classes can only be pickled on Python 3 or using the `dill <https://pypi.org/project/dill/>`_ library though and that is very unlikely to change.
+
+  So far, the configuration proxy, ``structlog.processor.TimeStamper``, ``structlog.BoundLogger``, ``structlog.PrintLogger`` and ``structlog.dev.ConsoleLogger`` have been made pickelable.
+  Please report if you need any another class ported.
   `#126 <https://github.com/hynek/structlog/issues/126>`_
 
 

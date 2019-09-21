@@ -289,9 +289,9 @@ class TestBoundLoggerLazyProxy(object):
         """
         Can be pickled and unpickled.
         """
-        assert repr(BoundLoggerLazyProxy(None)) == repr(
-            pickle.loads(pickle.dumps(BoundLoggerLazyProxy(None)))
-        )
+        bllp = BoundLoggerLazyProxy(None)
+
+        assert repr(bllp) == repr(pickle.loads(pickle.dumps(bllp)))
 
 
 class TestFunctions(object):

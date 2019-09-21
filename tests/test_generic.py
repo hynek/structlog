@@ -4,6 +4,11 @@
 
 from __future__ import absolute_import, division, print_function
 
+import pickle
+
+import pytest
+import six
+
 from structlog._config import _CONFIG
 from structlog._generic import BoundLogger
 from structlog._loggers import ReturnLogger
@@ -47,3 +52,18 @@ class TestGenericBoundLogger(object):
 
         assert "log", "foo" == b.log("foo")
         assert "gol", "bar" == b.gol("bar")
+
+    @pytest.mark.skipif(six.PY2, reason="Needs Py3 or dill.")
+    def test_pickle(self):
+        """
+        Can be pickled and unpickled.
+
+        Works only on Python 3: TypeError: can't pickle instancemethod objects
+        """
+        b = BoundLogger(
+            ReturnLogger(),
+            _CONFIG.default_processors,
+            _CONFIG.default_context_class(),
+        ).bind(x=1)
+
+        assert b.info("hi") == pickle.loads(pickle.dumps(b)).info("hi")
