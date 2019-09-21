@@ -166,20 +166,20 @@ class ConsoleRenderer(object):
             max(self._level_to_color.keys(), key=lambda e: len(e))
         )
 
-        if repr_native_str is True:
-            self._repr = repr
-        else:
-            self._repr = self._repr_no_str
+        self._repr_native_str = repr_native_str
 
-    @staticmethod
-    def _repr_no_str(inst):
+    def _repr(self, val):
         """
-        Apply repr only to non-strings.
+        Determine representation of *val* depending on its type &
+        self._repr_native_str.
         """
-        if isinstance(inst, str):
-            return inst
+        if self._repr_native_str is True:
+            return repr(val)
+
+        if isinstance(val, str):
+            return val
         else:
-            return repr(inst)
+            return repr(val)
 
     def __call__(self, _, __, event_dict):
         # Initialize lazily to prevent import side-effects.
