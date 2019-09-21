@@ -6,6 +6,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import pickle
+
 import pytest
 import six
 
@@ -292,6 +294,20 @@ class TestConsoleRenderer(object):
             assert 1 == cnt
         else:
             assert 2 == cnt
+
+    @pytest.mark.parametrize("repr_native_str", [True, False])
+    @pytest.mark.parametrize("force_colors", [True, False])
+    def test_pickle(self, repr_native_str, force_colors):
+        """
+        ConsoleRenderer can be pickled and unpickled.
+        """
+        r = dev.ConsoleRenderer(
+            repr_native_str=repr_native_str, force_colors=force_colors
+        )
+
+        assert r(None, None, {"event": "foo"}) == pickle.loads(
+            pickle.dumps(r)
+        )(None, None, {"event": "foo"})
 
 
 class TestSetExcInfo(object):

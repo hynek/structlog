@@ -169,14 +169,17 @@ class ConsoleRenderer(object):
         if repr_native_str is True:
             self._repr = repr
         else:
+            self._repr = self._repr_no_str
 
-            def _repr(inst):
-                if isinstance(inst, str):
-                    return inst
-                else:
-                    return repr(inst)
-
-            self._repr = _repr
+    @staticmethod
+    def _repr_no_str(inst):
+        """
+        Apply repr only to non-strings.
+        """
+        if isinstance(inst, str):
+            return inst
+        else:
+            return repr(inst)
 
     def __call__(self, _, __, event_dict):
         # Initialize lazily to prevent import side-effects.

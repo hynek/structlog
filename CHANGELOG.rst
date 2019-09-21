@@ -45,6 +45,8 @@ Changes:
   `#173 <https://github.com/hynek/structlog/issues/173>`_,
   `#200 <https://github.com/hynek/structlog/issues/200>`_,
   `#204 <https://github.com/hynek/structlog/issues/204>`_
+- ``structlog.dev.ConsoleLogger`` is now serializable using ``pickle``.
+  `#126 <https://github.com/hynek/structlog/issues/126>`_
 
 
 ----
