@@ -15,11 +15,11 @@ from structlog._config import wrap_logger
 from structlog._loggers import ReturnLogger
 from structlog.threadlocal import (
     as_immutable,
+    bind_threadlocal,
+    clear_threadlocal,
+    merge_in_threadlocal,
     tmp_bind,
     wrap_dict,
-    merge_in_threadlocal,
-    clear_threadlocal,
-    bind_threadlocal,
 )
 
 
