@@ -121,9 +121,10 @@ class ConsoleRenderer(object):
     .. versionadded:: 17.1 *repr_native_str*
     .. versionadded:: 18.1 *force_colors*
     .. versionadded:: 18.1 *level_styles*
-    .. versionchanged:: 18.2
+    .. versionchanged:: 19.2
        ``colorama`` now initializes lazily to avoid unwanted initializations as
        ``ConsoleRenderer`` is used by default.
+    .. versionchanged:: 19.2 Can be pickled now.
     """
 
     def __init__(

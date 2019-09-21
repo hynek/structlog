@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import pickle
 import platform
 import sys
 import warnings
@@ -283,6 +284,14 @@ class TestBoundLoggerLazyProxy(object):
             None, wrapper_class=Foo, cache_logger_on_first_use=False
         )
         assert 42 == proxy.foo()
+
+    def test_pickle(self):
+        """
+        Can be pickled and unpickled.
+        """
+        assert repr(BoundLoggerLazyProxy(None)) == repr(
+            pickle.loads(pickle.dumps(BoundLoggerLazyProxy(None)))
+        )
 
 
 class TestFunctions(object):
