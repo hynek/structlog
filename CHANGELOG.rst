@@ -41,9 +41,9 @@ Changes:
 - Added new processor ``structlog.dev.set_exc_info()`` that will set ``exc_info=True`` if the method's name is `exception` and ``exc_info`` isn't set at all.
   *This is only necessary when the standard library integration is not used*.
   It fixes the problem that in the default configuration, ``structlog.get_logger().exception("hi")`` in an ``except`` block would not print the exception without passing ``exc_info=True`` to it explicitly.
-  `#130 <https://github.com/hynek/structlog/issues/130>`_
-  `#173 <https://github.com/hynek/structlog/issues/173>`_
-  `#200 <https://github.com/hynek/structlog/issues/200>`_
+  `#130 <https://github.com/hynek/structlog/issues/130>`_,
+  `#173 <https://github.com/hynek/structlog/issues/173>`_,
+  `#200 <https://github.com/hynek/structlog/issues/200>`_,
   `#204 <https://github.com/hynek/structlog/issues/204>`_
 
 
@@ -76,10 +76,9 @@ Changes:
   A workaround has been added.
   `#174 <https://github.com/hynek/structlog/issues/174>`_
 - ``structlog`` now tolerates passing through ``dict``\ s to stdlib logging.
-  `#187 <https://github.com/hynek/structlog/issues/187>`_
-  `#188 <https://github.com/hynek/structlog/pull/188>`_
+  `#187 <https://github.com/hynek/structlog/issues/187>`_,
+  `#188 <https://github.com/hynek/structlog/pull/188>`_,
   `#189 <https://github.com/hynek/structlog/pull/189>`_
-
 
 
 ----
@@ -108,7 +107,7 @@ Changes:
   Can be used to simplify log filtering.
   `#151 <https://github.com/hynek/structlog/pull/151>`_
 - ``structlog.processors.JSONRenderer`` now allows for overwriting the *default* argument of its serializer.
-  `#77 <https://github.com/hynek/structlog/pull/77>`_
+  `#77 <https://github.com/hynek/structlog/pull/77>`_,
   `#163 <https://github.com/hynek/structlog/pull/163>`_
 - Added ``try_unbind()`` that works like ``unbind()`` but doesn't raise a ``KeyError`` if one of the keys is missing.
   `#171 <https://github.com/hynek/structlog/pull/171>`_
@@ -183,7 +182,7 @@ Changes:
   `#112 <https://github.com/hynek/structlog/issues/112>`_
 - Clear log record args in ``structlog.stdlib.ProcessorFormatter`` after rendering.
   This fix is for you if you tried to use it and got ``TypeError: not all arguments converted during string formatting`` exceptions.
-  `#116 <https://github.com/hynek/structlog/issues/116>`_
+  `#116 <https://github.com/hynek/structlog/issues/116>`_,
   `#117 <https://github.com/hynek/structlog/issues/117>`_
 
 
@@ -220,7 +219,7 @@ Changes:
   `#98 <https://github.com/hynek/structlog/issues/98>`_
 - Added ``structlog.stdlib.ProcessorFormatter`` which does the opposite:
   This allows you to run ``structlog`` processors on arbitrary ``logging.LogRecords``.
-  `#79 <https://github.com/hynek/structlog/issues/79>`_
+  `#79 <https://github.com/hynek/structlog/issues/79>`_,
   `#105 <https://github.com/hynek/structlog/issues/105>`_
 - UNIX epoch timestamps from ``structlog.processors.TimeStamper`` are more precise now.
 - Added *repr_native_str* to ``structlog.processors.KeyValueRenderer`` and ``structlog.dev.ConsoleRenderer``.
