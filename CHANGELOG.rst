@@ -41,6 +41,10 @@ Changes:
 - Added new processor ``structlog.dev.set_exc_info()`` that will set ``exc_info=True`` if the method's name is `exception` and ``exc_info`` isn't set at all.
   *This is only necessary when the standard library integration is not used*.
   It fixes the problem that in the default configuration, ``structlog.get_logger().exception("hi")`` in an ``except`` block would not print the exception without passing ``exc_info=True`` to it explicitly.
+  `#130 <https://github.com/hynek/structlog/issues/130>`_
+  `#173 <https://github.com/hynek/structlog/issues/173>`_
+  `#200 <https://github.com/hynek/structlog/issues/200>`_
+  `#204 <https://github.com/hynek/structlog/issues/204>`_
 
 
 ----
