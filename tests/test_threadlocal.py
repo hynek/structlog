@@ -13,7 +13,14 @@ import pytest
 from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
 from structlog._loggers import ReturnLogger
-from structlog.threadlocal import as_immutable, tmp_bind, wrap_dict
+from structlog.threadlocal import (
+    as_immutable,
+    tmp_bind,
+    wrap_dict,
+    merge_in_threadlocal,
+    clear_threadlocal,
+    bind_threadlocal,
+)
 
 
 try:
@@ -262,3 +269,26 @@ class TestThreadLocalDict(object):
         The context of a new wrapped class is empty.
         """
         assert 0 == len(D())
+
+
+class TestNewThreadLocal(object):
+    def test_bind_and_merge(self):
+        bind_threadlocal(a=1)
+        assert merge_in_threadlocal(None, None, {"b": 2}) == {"a": 1, "b": 2}
+
+    def test_clear(self):
+        bind_threadlocal(a=1)
+        clear_threadlocal()
+        assert merge_in_threadlocal(None, None, {"b": 2}) == {"b": 2}
+
+    def test_merge_works_without_bind(self):
+        assert merge_in_threadlocal(None, None, {"b": 2}) == {"b": 2}
+
+    def test_multiple_binds(self):
+        bind_threadlocal(a=1, b=2)
+        bind_threadlocal(c=3)
+        assert merge_in_threadlocal(None, None, {"b": 2}) == {
+            "a": 1,
+            "b": 2,
+            "c": 3,
+        }
