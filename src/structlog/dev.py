@@ -282,3 +282,23 @@ class ConsoleRenderer(object):
             "debug": styles.level_debug,
             "notset": styles.level_notset,
         }
+
+
+_SENTINEL = object()
+
+
+def set_exc_info(_, method_name, event_dict):
+    """
+    Set ``event_dict["exc_info"] = True`` if *method_name* is ``"exception"``.
+
+    Do nothing if the name is different or ``exc_info`` is already set.
+    """
+    if (
+        method_name != "exception"
+        or event_dict.get("exc_info", _SENTINEL) is not _SENTINEL
+    ):
+        return event_dict
+
+    event_dict["exc_info"] = True
+
+    return event_dict

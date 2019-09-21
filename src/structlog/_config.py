@@ -16,7 +16,7 @@ from collections import OrderedDict
 
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
-from .dev import ConsoleRenderer, _has_colorama
+from .dev import ConsoleRenderer, _has_colorama, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, format_exc_info
 
 
@@ -27,6 +27,7 @@ from .processors import StackInfoRenderer, TimeStamper, format_exc_info
 """
 _BUILTIN_DEFAULT_PROCESSORS = [
     StackInfoRenderer(),
+    set_exc_info,
     format_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
     ConsoleRenderer(colors=_has_colorama),

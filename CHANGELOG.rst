@@ -27,7 +27,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Python 3.8 support for ``structlog.stdlib``.
+- Full Python 3.8 support for ``structlog.stdlib``.
 - Added more pass-through properties to ``structlog.stdlib.BoundLogger``.
   To makes it easier to use it as a drop-in replacement for ``logging.Logger``.
   `#198 <https://github.com/hynek/structlog/issues/198>`_
@@ -38,6 +38,9 @@ Changes:
   `#215 <https://github.com/hynek/structlog/issues/215>`_
 - ``structlog.dev.ConsoleRenderer`` now initializes ``colorama`` lazily, to prevent accidental side-effects just by importing ``structlog``.
   `#210 <https://github.com/hynek/structlog/issues/210>`_
+- Added new processor ``structlog.dev.set_exc_info()`` that will set ``exc_info=True`` if the method's name is `exception` and ``exc_info`` isn't set at all.
+  *This is only necessary when the standard library integration is not used*.
+  It fixes the problem that in the default configuration, ``structlog.get_logger().exception("hi")`` in an ``except`` block would not print the exception without passing ``exc_info=True`` to it explicitly.
 
 
 ----

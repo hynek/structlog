@@ -292,3 +292,27 @@ class TestConsoleRenderer(object):
             assert 1 == cnt
         else:
             assert 2 == cnt
+
+
+class TestSetExcInfo(object):
+    def test_wrong_name(self):
+        """
+        Do nothing if name is not exception.
+        """
+        assert {} == dev.set_exc_info(None, "foo", {})
+
+    @pytest.mark.parametrize("ei", [False, None, ()])
+    def test_already_set(self, ei):
+        """
+        Do nothing if exc_info is already set.
+        """
+        assert {"exc_info": ei} == dev.set_exc_info(
+            None, "foo", {"exc_info": ei}
+        )
+
+    def test_set_it(self):
+        """
+        Set exc_info to True if its not set and if the method name is
+        exception.
+        """
+        assert {"exc_info": True} == dev.set_exc_info(None, "exception", {})
