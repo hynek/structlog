@@ -47,24 +47,21 @@ The general flow of using these functions is:
 - Use ``structlog`` as normal.
   Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal_context` processor ensures that any thread-local binds get included in all of your log messages.
 
-.. testsetup:: merge_threadlocal
-
-   from structlog import PrintLogger, wrap_logger
-   from structlog.processors import KeyValueRenderer
-
-.. doctest:: merge_threadlocal
+.. doctest::
 
    >>> from structlog.threadlocal import (
    ...     bind_threadlocal,
    ...     clear_threadlocal,
    ...     merge_threadlocal_context,
    ... )
-   >>> # We pass merge_threadlocal_context to wrap_logger,
-   >>> # but you can also pass it to structlog.configure
-   >>> log = wrap_logger(
-   ...     PrintLogger(),
-   ...     processors=[merge_threadlocal_context, KeyValueRenderer()],
+   >>> from structlog import configure
+   >>> configure(
+   ...     processors=[
+   ...         merge_threadlocal_context,
+   ...         structlog.processors.KeyValueRenderer(),
+   ...     ]
    ... )
+   >>> log = structlog.get_logger()
    >>> # At the top of your request handler (or, ideally, some general
    >>> # middleware), clear the threadlocal context and bind some common
    >>> # values:
