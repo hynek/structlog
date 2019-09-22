@@ -41,10 +41,11 @@ These functions are :func:`structlog.threadlocal.merge_threadlocal_context`, :fu
 
 The general flow of using these functions is:
 
-- use :func:`structlog.configure` with :func:`structlog.threadlocal.merge_threadlocal_context` as your first processor
-- call :func:`structlog.threadlocal.clear_threadlocal` at the beginning of your request handler (or whenever you want to reset the thread-local context).
-- call :func:`structlog.threadlocal.bind_threadlocal` as an alternative to :func:`structlog.BoundLogger.bind` when you want to bind a particular variable to the thread-local context.
-- use ``structlog`` as normal. Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal_context` processor ensures that any thread-local binds get included in all of your log messages.
+- Use :func:`structlog.configure` with :func:`structlog.threadlocal.merge_threadlocal_context` as your first processor.
+- Call :func:`structlog.threadlocal.clear_threadlocal` at the beginning of your request handler (or whenever you want to reset the thread-local context).
+- Call :func:`structlog.threadlocal.bind_threadlocal` as an alternative to :func:`structlog.BoundLogger.bind` when you want to bind a particular variable to the thread-local context.
+- Use ``structlog`` as normal.
+  Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal_context` processor ensures that any thread-local binds get included in all of your log messages.
 
 .. testsetup:: merge_threadlocal
 
