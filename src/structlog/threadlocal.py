@@ -175,9 +175,7 @@ def merge_in_threadlocal(logger, method_name, event_dict):
     Use this as your first processor in :func:`structlog.configure` to ensure
     thread-local context is included in all log calls.
     """
-    if not hasattr(_CONTEXT, "context"):
-        _CONTEXT.context = {}
-    context = _CONTEXT.context.copy()
+    context = _get_context().copy()
     context.update(event_dict)
     return context
 
@@ -198,6 +196,12 @@ def bind_threadlocal(**kwargs):
     Use this instead of :func:`~structlog.BoundLogger.bind` when you want some
     context to be global (thread-local).
     """
-    if not hasattr(_CONTEXT, "context"):
+    _get_context().update(kwargs)
+
+
+def _get_context():
+    try:
+        return _CONTEXT.context
+    except AttributeError:
         _CONTEXT.context = {}
-    _CONTEXT.context.update(kwargs)
+        return _CONTEXT.context
