@@ -32,6 +32,7 @@ Sooner or later, global state and mutable data lead to unpleasant surprises.
 However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
 And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a couple of mechanisms to help here.
 
+
 The ``merge_threadlocal_context`` processor
 -------------------------------------------
 
