@@ -17,7 +17,7 @@ from structlog.threadlocal import (
     as_immutable,
     bind_threadlocal,
     clear_threadlocal,
-    merge_in_threadlocal,
+    merge_threadlocal_context,
     tmp_bind,
     wrap_dict,
 )
@@ -274,21 +274,21 @@ class TestThreadLocalDict(object):
 class TestNewThreadLocal(object):
     def test_bind_and_merge(self):
         bind_threadlocal(a=1)
-        assert merge_in_threadlocal(None, None, {"b": 2}) == {"a": 1, "b": 2}
+        assert {"a": 1, "b": 2} == merge_threadlocal_context(
+            None, None, {"b": 2}
+        )
 
     def test_clear(self):
         bind_threadlocal(a=1)
         clear_threadlocal()
-        assert merge_in_threadlocal(None, None, {"b": 2}) == {"b": 2}
+        assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
 
     def test_merge_works_without_bind(self):
-        assert merge_in_threadlocal(None, None, {"b": 2}) == {"b": 2}
+        assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
 
     def test_multiple_binds(self):
         bind_threadlocal(a=1, b=2)
         bind_threadlocal(c=3)
-        assert merge_in_threadlocal(None, None, {"b": 2}) == {
-            "a": 1,
-            "b": 2,
-            "c": 3,
-        }
+        assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal_context(
+            None, None, {"b": 2}
+        )

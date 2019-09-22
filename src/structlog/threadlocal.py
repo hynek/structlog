@@ -168,7 +168,7 @@ class _ThreadLocalDictWrapper(object):
 _CONTEXT = threading.local()
 
 
-def merge_in_threadlocal(logger, method_name, event_dict):
+def merge_threadlocal_context(logger, method_name, event_dict):
     """
     A structlog processor that merges in a global (thread-local) context.
 
