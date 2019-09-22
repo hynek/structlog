@@ -30,7 +30,58 @@ If you are willing to do that, you should stick to it because `immutable state <
 Sooner or later, global state and mutable data lead to unpleasant surprises.
 
 However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
-And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a dirty but convenient trick: thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_:
+And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a couple of mechanisms to help here.
+
+The ``merge_threadlocal_context`` processor
+-------------------------------------------
+
+``structlog`` provides a simple set of functions that allow explicitly binding certain fields to a global (thread-local) context.
+These functions are :func:`structlog.threadlocal.merge_threadlocal_context`, :func:`structlog.threadlocal.clear_threadlocal`, and :func:`structlog.threadlocal.bind_threadlocal`.
+
+The general flow of using these functions is:
+
+- use :func:`structlog.configure` with :func:`structlog.threadlocal.merge_threadlocal_context` as your first processor
+- call :func:`structlog.threadlocal.clear_threadlocal` at the beginning of your request handler (or whenever you want to reset the thread-local context).
+- call :func:`structlog.threadlocal.bind_threadlocal` as an alternative to :func:`structlog.BoundLogger.bind` when you want to bind a particular variable to the thread-local context.
+- use ``structlog`` as normal. Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal_context` processor ensures that any thread-local binds get included in all of your log messages.
+
+.. testsetup:: merge_threadlocal
+
+   from structlog import PrintLogger, wrap_logger
+   from structlog.processors import KeyValueRenderer
+
+.. doctest:: merge_threadlocal
+
+   >>> from structlog.threadlocal import (
+   ...     bind_threadlocal,
+   ...     clear_threadlocal,
+   ...     merge_threadlocal_context,
+   ... )
+   >>> # We pass merge_threadlocal_context to wrap_logger,
+   >>> # but you can also pass it to structlog.configure
+   >>> log = wrap_logger(
+   ...     PrintLogger(),
+   ...     processors=[merge_threadlocal_context, KeyValueRenderer()],
+   ... )
+   >>> # At the top of your request handler (or, ideally, some general
+   >>> # middleware), clear the threadlocal context and bind some common
+   >>> # values:
+   >>> clear_threadlocal()
+   >>> bind_threadlocal(a=1)
+   >>> # Then use loggers as per normal
+   >>> # (perhaps by using structlog.get_logger() to create them).
+   >>> log.msg("hi")
+   a=1 event='hi'
+   >>> # And when we clear the threadlocal state again, it goes away.
+   >>> clear_threadlocal()
+   >>> log.msg("hi there")
+   event='hi there'
+
+
+Thread-local contexts
+---------------------
+
+``structlog`` also provides thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_:
 
 Thread local storage makes your logger's context global but *only within the current thread*\ [*]_.
 In the case of web frameworks this usually means that your context becomes global to the current request.
