@@ -77,6 +77,12 @@ API Reference
 
 .. automodule:: structlog.threadlocal
 
+.. autofunction:: merge_threadlocal_context
+
+.. autofunction:: clear_threadlocal
+
+.. autofunction:: bind_threadlocal
+
 .. autofunction:: wrap_dict
 
 .. autofunction:: tmp_bind(logger, **tmp_values)
