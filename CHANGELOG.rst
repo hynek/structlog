@@ -55,6 +55,7 @@ Changes:
   `#222 <https://github.com/hynek/structlog/issues/222>`_,
   `#225 <https://github.com/hynek/structlog/issues/225>`_,
 
+
 ----
 
 

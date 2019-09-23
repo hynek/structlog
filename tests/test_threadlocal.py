@@ -278,6 +278,7 @@ class TestNewThreadLocal(object):
         merge_threadlocal_context.
         """
         bind_threadlocal(a=1)
+
         assert {"a": 1, "b": 2} == merge_threadlocal_context(
             None, None, {"b": 2}
         )
@@ -289,6 +290,7 @@ class TestNewThreadLocal(object):
         """
         bind_threadlocal(a=1)
         clear_threadlocal()
+
         assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
 
     def test_merge_works_without_bind(self):
@@ -305,6 +307,7 @@ class TestNewThreadLocal(object):
         """
         bind_threadlocal(a=1, b=2)
         bind_threadlocal(c=3)
+
         assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal_context(
             None, None, {"b": 2}
         )

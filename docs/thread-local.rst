@@ -33,7 +33,7 @@ However, in the case of conventional web development, we realize that passing lo
 And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a couple of mechanisms to help here.
 
 
-The ``merge_threadlocal_context`` processor
+The ``merge_threadlocal_context`` Processor
 -------------------------------------------
 
 ``structlog`` provides a simple set of functions that allow explicitly binding certain fields to a global (thread-local) context.
@@ -77,7 +77,7 @@ The general flow of using these functions is:
    event='hi there'
 
 
-Thread-local contexts
+Thread-local Contexts
 ---------------------
 
 ``structlog`` also provides thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_:
