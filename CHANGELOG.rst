@@ -51,7 +51,9 @@ Changes:
   So far, the configuration proxy, ``structlog.processor.TimeStamper``, ``structlog.BoundLogger``, ``structlog.PrintLogger`` and ``structlog.dev.ConsoleLogger`` have been made pickelable.
   Please report if you need any another class ported.
   `#126 <https://github.com/hynek/structlog/issues/126>`_
-
+- Added a new thread-local API that allows binding values to a thread-local context explicitly without affecting the default behavior of ``bind()``.
+  `#222 <https://github.com/hynek/structlog/issues/222>`_,
+  `#225 <https://github.com/hynek/structlog/issues/225>`_,
 
 ----
 

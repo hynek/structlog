@@ -13,7 +13,14 @@ import pytest
 from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
 from structlog._loggers import ReturnLogger
-from structlog.threadlocal import as_immutable, tmp_bind, wrap_dict
+from structlog.threadlocal import (
+    as_immutable,
+    bind_threadlocal,
+    clear_threadlocal,
+    merge_threadlocal_context,
+    tmp_bind,
+    wrap_dict,
+)
 
 
 try:
@@ -262,3 +269,42 @@ class TestThreadLocalDict(object):
         The context of a new wrapped class is empty.
         """
         assert 0 == len(D())
+
+
+class TestNewThreadLocal(object):
+    def test_bind_and_merge(self):
+        """
+        Binding a variable causes it to be included in the result of
+        merge_threadlocal_context.
+        """
+        bind_threadlocal(a=1)
+        assert {"a": 1, "b": 2} == merge_threadlocal_context(
+            None, None, {"b": 2}
+        )
+
+    def test_clear(self):
+        """
+        The thread-local context can be cleared, causing any previously bound
+        variables to not be included in merge_threadlocal_context's result.
+        """
+        bind_threadlocal(a=1)
+        clear_threadlocal()
+        assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
+
+    def test_merge_works_without_bind(self):
+        """
+        merge_threadlocal_context returns values as normal even when there has
+        been no previous calls to bind_threadlocal.
+        """
+        assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
+
+    def test_multiple_binds(self):
+        """
+        Multiple calls to bind_threadlocal accumulate values instead of
+        replacing them.
+        """
+        bind_threadlocal(a=1, b=2)
+        bind_threadlocal(c=3)
+        assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal_context(
+            None, None, {"b": 2}
+        )
