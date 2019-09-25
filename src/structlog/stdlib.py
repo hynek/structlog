@@ -486,6 +486,7 @@ class ProcessorFormatter(logging.Formatter):
         keep_exc_info=False,
         keep_stack_info=False,
         logger=None,
+        pass_foreign_args=False,
         *args,
         **kwargs
     ):
@@ -497,6 +498,7 @@ class ProcessorFormatter(logging.Formatter):
         # The and clause saves us checking for PY3 in the formatter.
         self.keep_stack_info = keep_stack_info and PY3
         self.logger = logger
+        self.pass_foreign_args = pass_foreign_args
 
     def format(self, record):
         """
@@ -518,6 +520,10 @@ class ProcessorFormatter(logging.Formatter):
             logger = self.logger
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
+
+            if self.pass_foreign_args:
+                ed["positional_args"] = record.args
+
             record.args = ()
 
             # Add stack-related attributes to event_dict and unset them
