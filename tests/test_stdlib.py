@@ -455,7 +455,7 @@ def configure_for_pf():
     reset_defaults()
 
 
-def configure_logging(pre_chain):
+def configure_logging(pre_chain, logger=None, pass_foreign_args=False):
     """
     Configure logging to use ProcessorFormatter.
     """
@@ -469,6 +469,8 @@ def configure_logging(pre_chain):
                     "processor": ConsoleRenderer(colors=False),
                     "foreign_pre_chain": pre_chain,
                     "format": "%(message)s [in %(funcName)s]",
+                    "logger": logger,
+                    "pass_foreign_args": pass_foreign_args,
                 }
             },
             "handlers": {
@@ -525,6 +527,29 @@ class TestProcessorFormatter(object):
             "",
             "hello world. [in test_clears_args]\n",
         ) == capsys.readouterr()
+
+    def test_pass_foreign_args_true_sets_positional_args_key(
+        self, configure_for_pf, capsys
+    ):
+        """
+        Test that when `pass_foreign_args` is `True` we set the
+        `positional_args` key in the `event_dict` before clearing args.
+        """
+        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        configure_logging((test_processor,), pass_foreign_args=True)
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        positional_args = {"foo": "bar"}
+        logging.getLogger().info("okay %(foo)s", positional_args)
+
+        event_dict = test_processor.calls[0].args[2]
+
+        assert "positional_args" in event_dict
+        assert positional_args == event_dict["positional_args"]
 
     def test_log_dict(self, configure_for_pf, capsys):
         """
@@ -727,4 +752,23 @@ class TestProcessorFormatter(object):
         assert (
             "",
             "[warning  ] foo [in test_native]\n",
+        ) == capsys.readouterr()
+
+    def test_foreign_pre_chain_filter_by_level(self, configure_for_pf, capsys):
+        """
+        foreign_pre_chain works with filter_by_level processor.
+        """
+        logger = logging.getLogger()
+        configure_logging((filter_by_level,), logger=logger)
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        logger.warning("foo")
+
+        assert (
+            "",
+            "foo [in test_foreign_pre_chain_filter_by_level]\n",
         ) == capsys.readouterr()

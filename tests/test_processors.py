@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 import json
+import pickle
 import sys
 
 import pytest
@@ -284,6 +285,24 @@ class TestTimeStamper(object):
         d = ts(None, None, {})
 
         assert "03" == d["month"]
+
+    @freeze_time("1980-03-25 16:00:00")
+    @pytest.mark.parametrize("fmt", [None, "%Y"])
+    @pytest.mark.parametrize("utc", [True, False])
+    @pytest.mark.parametrize("key", [None, "other-key"])
+    def test_pickle(self, fmt, utc, key):
+        """
+        TimeStamper is serializable.
+        """
+        # UNIX timestamps must be UTC.
+        if fmt is None and not utc:
+            pytest.skip()
+
+        ts = TimeStamper()
+
+        assert ts(None, None, {}) == pickle.loads(pickle.dumps(ts))(
+            None, None, {}
+        )
 
 
 class TestFormatExcInfo(object):

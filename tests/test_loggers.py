@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import pickle
 import sys
 
 import pytest
@@ -81,6 +82,30 @@ class TestPrintLogger(object):
         getattr(PrintLogger(sio), method)("hello")
 
         assert "hello" in sio.getvalue()
+
+    @pytest.mark.parametrize("file", [None, sys.stdout, sys.stderr])
+    def test_pickle(self, file):
+        """
+        Can be pickled and unpickled for stdout and stderr.
+
+        Can't compare output because capsys et all would confuse the logic.
+        """
+        pl = PrintLogger(file=file)
+
+        assert pl._file is pickle.loads(pickle.dumps(pl))._file
+        assert pl._lock is pickle.loads(pickle.dumps(pl))._lock
+
+    def test_pickle_not_stdout_stderr(self, tmpdir):
+        """
+        PrintLoggers with differnt files than stdout/stderr raise a
+        PickingError.
+        """
+        f = tmpdir.join("file.log")
+        f.write("")
+        pl = PrintLogger(file=f.open())
+
+        with pytest.raises(pickle.PicklingError, match="Only PrintLoggers to"):
+            pickle.dumps(pl)
 
 
 class TestPrintLoggerFactory(object):

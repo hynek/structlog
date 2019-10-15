@@ -121,16 +121,21 @@ class ConsoleRenderer(object):
     .. versionadded:: 17.1 *repr_native_str*
     .. versionadded:: 18.1 *force_colors*
     .. versionadded:: 18.1 *level_styles*
+    .. versionchanged:: 19.2
+       ``colorama`` now initializes lazily to avoid unwanted initializations as
+       ``ConsoleRenderer`` is used by default.
+    .. versionchanged:: 19.2 Can be pickled now.
     """
 
     def __init__(
         self,
         pad_event=_EVENT_WIDTH,
-        colors=True,
+        colors=_has_colorama,
         force_colors=False,
         repr_native_str=False,
         level_styles=None,
     ):
+        self._force_colors = self._init_colorama = False
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -140,11 +145,9 @@ class ConsoleRenderer(object):
                     )
                 )
 
+            self._init_colorama = True
             if force_colors:
-                colorama.deinit()
-                colorama.init(strip=False)
-            else:
-                colorama.init()
+                self._force_colors = True
 
             styles = _ColorfulStyles
         else:
@@ -164,19 +167,31 @@ class ConsoleRenderer(object):
             max(self._level_to_color.keys(), key=lambda e: len(e))
         )
 
-        if repr_native_str is True:
-            self._repr = repr
+        self._repr_native_str = repr_native_str
+
+    def _repr(self, val):
+        """
+        Determine representation of *val* depending on its type &
+        self._repr_native_str.
+        """
+        if self._repr_native_str is True:
+            return repr(val)
+
+        if isinstance(val, str):
+            return val
         else:
-
-            def _repr(inst):
-                if isinstance(inst, str):
-                    return inst
-                else:
-                    return repr(inst)
-
-            self._repr = _repr
+            return repr(val)
 
     def __call__(self, _, __, event_dict):
+        # Initialize lazily to prevent import side-effects.
+        if self._init_colorama:
+            if self._force_colors:
+                colorama.deinit()
+                colorama.init(strip=False)
+            else:
+                colorama.init()
+
+            self._init_colorama = False
         sio = StringIO()
 
         ts = event_dict.pop("timestamp", None)
@@ -272,3 +287,23 @@ class ConsoleRenderer(object):
             "debug": styles.level_debug,
             "notset": styles.level_notset,
         }
+
+
+_SENTINEL = object()
+
+
+def set_exc_info(_, method_name, event_dict):
+    """
+    Set ``event_dict["exc_info"] = True`` if *method_name* is ``"exception"``.
+
+    Do nothing if the name is different or ``exc_info`` is already set.
+    """
+    if (
+        method_name != "exception"
+        or event_dict.get("exc_info", _SENTINEL) is not _SENTINEL
+    ):
+        return event_dict
+
+    event_dict["exc_info"] = True
+
+    return event_dict

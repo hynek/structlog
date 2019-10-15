@@ -45,6 +45,7 @@ Using the defaults, as above, is equivalent to::
    structlog.configure(
        processors=[
            structlog.processors.StackInfoRenderer(),
+           structlog.dev.set_exc_info,
            structlog.processors.format_exc_info,
            structlog.processors.TimeStamper(),
            structlog.dev.ConsoleRenderer()

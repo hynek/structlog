@@ -28,9 +28,6 @@ jobs:
         py27-threads:
           tox.env: py27-threads
           python.version: '2.7'
-        py34-threads:
-          tox.env: py34-threads
-          python.version: '3.4'
         py35-threads:
           tox.env: py35-threads
           python.version: '3.5'

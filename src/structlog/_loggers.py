@@ -11,6 +11,8 @@ from __future__ import absolute_import, division, print_function
 import sys
 import threading
 
+from pickle import PicklingError
+
 from structlog._utils import until_not_interrupted
 
 
@@ -37,6 +39,17 @@ class PrintLoggerFactory(object):
 WRITE_LOCKS = {}
 
 
+def _get_lock_for_file(file):
+    global WRITE_LOCKS
+
+    lock = WRITE_LOCKS.get(file)
+    if lock is None:
+        lock = threading.Lock()
+        WRITE_LOCKS[file] = lock
+
+    return lock
+
+
 class PrintLogger(object):
     """
     Print events into a file.
@@ -59,11 +72,34 @@ class PrintLogger(object):
         self._write = self._file.write
         self._flush = self._file.flush
 
-        lock = WRITE_LOCKS.get(self._file)
-        if lock is None:
-            lock = threading.Lock()
-            WRITE_LOCKS[self._file] = lock
-        self._lock = lock
+        self._lock = _get_lock_for_file(self._file)
+
+    def __getstate__(self):
+        """
+        Out __getattr__ magic makes this necessary.
+        """
+        if self._file is sys.stdout:
+            return "stdout"
+
+        elif self._file is sys.stderr:
+            return "stderr"
+
+        raise PicklingError(
+            "Only PrintLoggers to sys.stdout and sys.stderr can be pickled."
+        )
+
+    def __setstate__(self, state):
+        """
+        Out __getattr__ magic makes this necessary.
+        """
+        if state == "stdout":
+            self._file = sys.stdout
+        else:
+            self._file = sys.stderr
+
+        self._write = self._file.write
+        self._flush = self._file.flush
+        self._lock = _get_lock_for_file(self._file)
 
     def __repr__(self):
         return "<PrintLogger(file={0!r})>".format(self._file)

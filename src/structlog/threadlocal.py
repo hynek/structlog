@@ -9,6 +9,7 @@ Primitives to keep context global but thread (and greenlet) local.
 from __future__ import absolute_import, division, print_function
 
 import contextlib
+import threading
 import uuid
 
 from structlog._config import BoundLoggerLazyProxy
@@ -162,3 +163,46 @@ class _ThreadLocalDictWrapper(object):
     def __getattr__(self, name):
         method = getattr(self._dict, name)
         return method
+
+
+_CONTEXT = threading.local()
+
+
+def merge_threadlocal_context(logger, method_name, event_dict):
+    """
+    A processor that merges in a global (thread-local) context.
+
+    Use this as your first processor in :func:`structlog.configure` to ensure
+    thread-local context is included in all log calls.
+    """
+    context = _get_context().copy()
+    context.update(event_dict)
+    return context
+
+
+def clear_threadlocal():
+    """
+    Clear the thread-local context.
+
+    The typical use-case for this function is to invoke it early in
+    request-handling code.
+    """
+    _CONTEXT.context = {}
+
+
+def bind_threadlocal(**kwargs):
+    """
+    Put keys and values into the thread-local context.
+
+    Use this instead of :func:`~structlog.BoundLogger.bind` when you want some
+    context to be global (thread-local).
+    """
+    _get_context().update(kwargs)
+
+
+def _get_context():
+    try:
+        return _CONTEXT.context
+    except AttributeError:
+        _CONTEXT.context = {}
+        return _CONTEXT.context

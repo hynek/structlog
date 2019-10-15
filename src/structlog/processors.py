@@ -240,40 +240,68 @@ class TimeStamper(object):
         <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
     :param bool utc: Whether timestamp should be in UTC or local time.
-    :param str key: Target key in `event_dict` for added timestamps.
+    :param str key: Target key in *event_dict* for added timestamps.
+
+    .. versionchanged:: 19.2 Can be pickled now.
     """
 
-    def __new__(cls, fmt=None, utc=True, key="timestamp"):
-        if fmt is None and not utc:
-            raise ValueError("UNIX timestamps are always UTC.")
+    __slots__ = ("_stamper", "fmt", "utc", "key")
 
-        now_method = getattr(datetime.datetime, "utcnow" if utc else "now")
-        if fmt is None:
+    def __init__(self, fmt=None, utc=True, key="timestamp"):
+        self.fmt, self.utc, self.key = fmt, utc, key
 
-            def stamper(self, _, __, event_dict):
-                event_dict[key] = time.time()
-                return event_dict
+        self._stamper = _make_stamper(fmt, utc, key)
 
-        elif fmt.upper() == "ISO":
-            if utc:
+    def __call__(self, _, __, event_dict):
+        return self._stamper(event_dict)
 
-                def stamper(self, _, __, event_dict):
-                    event_dict[key] = now_method().isoformat() + "Z"
-                    return event_dict
+    def __getstate__(self):
+        return {"fmt": self.fmt, "utc": self.utc, "key": self.key}
 
-            else:
+    def __setstate__(self, state):
+        self.fmt = state["fmt"]
+        self.utc = state["utc"]
+        self.key = state["key"]
 
-                def stamper(self, _, __, event_dict):
-                    event_dict[key] = now_method().isoformat()
-                    return event_dict
+        self._stamper = _make_stamper(**state)
 
+
+def _make_stamper(fmt, utc, key):
+    """
+    Create a stamper function.
+    """
+    if fmt is None and not utc:
+        raise ValueError("UNIX timestamps are always UTC.")
+
+    now = getattr(datetime.datetime, "utcnow" if utc else "now")
+
+    if fmt is None:
+
+        def stamper_unix(event_dict):
+            event_dict[key] = time.time()
+            return event_dict
+
+        return stamper_unix
+    elif fmt.upper() == "ISO":
+
+        def stamper_iso_local(event_dict):
+            event_dict[key] = now().isoformat()
+            return event_dict
+
+        def stamper_iso_utc(event_dict):
+            event_dict[key] = now().isoformat() + "Z"
+            return event_dict
+
+        if utc:
+            return stamper_iso_utc
         else:
+            return stamper_iso_local
 
-            def stamper(self, _, __, event_dict):
-                event_dict[key] = now_method().strftime(fmt)
-                return event_dict
+    def stamper_fmt(event_dict):
+        event_dict[key] = now().strftime(fmt)
+        return event_dict
 
-        return type("TimeStamper", (object,), {"__call__": stamper})()
+    return stamper_fmt
 
 
 def _figure_out_exc_info(v):

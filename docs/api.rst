@@ -69,11 +69,19 @@ API Reference
 .. autoclass:: ConsoleRenderer
     :members: get_default_level_styles
 
+.. autofunction:: set_exc_info
+
 
 :mod:`threadlocal` Module
 -------------------------
 
 .. automodule:: structlog.threadlocal
+
+.. autofunction:: merge_threadlocal_context
+
+.. autofunction:: clear_threadlocal
+
+.. autofunction:: bind_threadlocal
 
 .. autofunction:: wrap_dict
 

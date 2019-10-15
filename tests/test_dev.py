@@ -6,6 +6,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import pickle
+
 import pytest
 import six
 
@@ -56,7 +58,7 @@ class TestConsoleRenderer(object):
         colorama is missing.
         """
         with pytest.raises(SystemError) as e:
-            dev.ConsoleRenderer()
+            dev.ConsoleRenderer(colors=True)
 
         assert (
             "ConsoleRenderer with `colors=True` requires the colorama package "
@@ -302,3 +304,41 @@ class TestConsoleRenderer(object):
             assert 1 == cnt
         else:
             assert 2 == cnt
+
+    @pytest.mark.parametrize("repr_native_str", [True, False])
+    @pytest.mark.parametrize("force_colors", [True, False])
+    def test_pickle(self, repr_native_str, force_colors):
+        """
+        ConsoleRenderer can be pickled and unpickled.
+        """
+        r = dev.ConsoleRenderer(
+            repr_native_str=repr_native_str, force_colors=force_colors
+        )
+
+        assert r(None, None, {"event": "foo"}) == pickle.loads(
+            pickle.dumps(r)
+        )(None, None, {"event": "foo"})
+
+
+class TestSetExcInfo(object):
+    def test_wrong_name(self):
+        """
+        Do nothing if name is not exception.
+        """
+        assert {} == dev.set_exc_info(None, "foo", {})
+
+    @pytest.mark.parametrize("ei", [False, None, ()])
+    def test_already_set(self, ei):
+        """
+        Do nothing if exc_info is already set.
+        """
+        assert {"exc_info": ei} == dev.set_exc_info(
+            None, "foo", {"exc_info": ei}
+        )
+
+    def test_set_it(self):
+        """
+        Set exc_info to True if its not set and if the method name is
+        exception.
+        """
+        assert {"exc_info": True} == dev.set_exc_info(None, "exception", {})
