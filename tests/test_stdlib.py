@@ -532,8 +532,8 @@ class TestProcessorFormatter(object):
         self, configure_for_pf, capsys
     ):
         """
-        Test that when `pass_foreign_args` is `True` we set the
-        `positional_args` key in the `event_dict` before clearing args.
+        If `pass_foreign_args` is `True` we set the `positional_args` key in
+        the `event_dict` before clearing args.
         """
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((test_processor,), pass_foreign_args=True)

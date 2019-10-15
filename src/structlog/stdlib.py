@@ -469,8 +469,9 @@ class ProcessorFormatter(logging.Formatter):
     :param logger: Logger which we want to push through the ``structlog``
         processor chain. This parameter is necessary for some of the
         processors like `filter_by_level`. (default: None)
-    :param bool pass_foreign_args: If `True`, pass a foreign log record's
-        `args` to the event_dict under `positional_args` key. (default: False)
+    :param bool pass_foreign_args: If True, pass a foreign log record's
+        ``args`` attribute to the ``event_dict`` under ``positional_args`` key.
+        (default: False)
     :rtype: str
 
     .. versionadded:: 17.1.0
