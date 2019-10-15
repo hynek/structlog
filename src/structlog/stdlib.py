@@ -469,12 +469,14 @@ class ProcessorFormatter(logging.Formatter):
     :param logger: Logger which we want to push through the ``structlog``
         processor chain. This parameter is necessary for some of the
         processors like `filter_by_level`. (default: None)
-
+    :param bool pass_foreign_args: If `True`, pass a foreign log record's
+        `args` to the event_dict under `positional_args` key. (default: False)
     :rtype: str
 
     .. versionadded:: 17.1.0
     .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
     .. versionadded:: 19.2.0 *logger*
+    .. versionadded:: 19.2.0 *pass_foreign_args*
     """
 
     def __init__(
@@ -484,6 +486,7 @@ class ProcessorFormatter(logging.Formatter):
         keep_exc_info=False,
         keep_stack_info=False,
         logger=None,
+        pass_foreign_args=False,
         *args,
         **kwargs
     ):
@@ -495,6 +498,7 @@ class ProcessorFormatter(logging.Formatter):
         # The and clause saves us checking for PY3 in the formatter.
         self.keep_stack_info = keep_stack_info and PY3
         self.logger = logger
+        self.pass_foreign_args = pass_foreign_args
 
     def format(self, record):
         """
@@ -516,6 +520,10 @@ class ProcessorFormatter(logging.Formatter):
             logger = self.logger
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
+
+            if self.pass_foreign_args:
+                ed["positional_args"] = record.args
+
             record.args = ()
 
             # Add stack-related attributes to event_dict and unset them
