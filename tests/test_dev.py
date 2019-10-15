@@ -297,7 +297,8 @@ class TestConsoleRenderer(object):
 
     @pytest.mark.parametrize("repr_native_str", [True, False])
     @pytest.mark.parametrize("force_colors", [True, False])
-    def test_pickle(self, repr_native_str, force_colors):
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    def test_pickle(self, repr_native_str, force_colors, proto):
         """
         ConsoleRenderer can be pickled and unpickled.
         """
@@ -306,7 +307,7 @@ class TestConsoleRenderer(object):
         )
 
         assert r(None, None, {"event": "foo"}) == pickle.loads(
-            pickle.dumps(r)
+            pickle.dumps(r, proto)
         )(None, None, {"event": "foo"})
 
 

@@ -54,7 +54,8 @@ class TestGenericBoundLogger(object):
         assert "gol", "bar" == b.gol("bar")
 
     @pytest.mark.skipif(six.PY2, reason="Needs Py3 or dill.")
-    def test_pickle(self):
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    def test_pickle(self, proto):
         """
         Can be pickled and unpickled.
 
@@ -66,4 +67,4 @@ class TestGenericBoundLogger(object):
             _CONFIG.default_context_class(),
         ).bind(x=1)
 
-        assert b.info("hi") == pickle.loads(pickle.dumps(b)).info("hi")
+        assert b.info("hi") == pickle.loads(pickle.dumps(b, proto)).info("hi")

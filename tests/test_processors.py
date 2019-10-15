@@ -290,7 +290,8 @@ class TestTimeStamper(object):
     @pytest.mark.parametrize("fmt", [None, "%Y"])
     @pytest.mark.parametrize("utc", [True, False])
     @pytest.mark.parametrize("key", [None, "other-key"])
-    def test_pickle(self, fmt, utc, key):
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    def test_pickle(self, fmt, utc, key, proto):
         """
         TimeStamper is serializable.
         """
@@ -300,7 +301,7 @@ class TestTimeStamper(object):
 
         ts = TimeStamper()
 
-        assert ts(None, None, {}) == pickle.loads(pickle.dumps(ts))(
+        assert ts(None, None, {}) == pickle.loads(pickle.dumps(ts, proto))(
             None, None, {}
         )
 

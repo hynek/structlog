@@ -285,13 +285,14 @@ class TestBoundLoggerLazyProxy(object):
         )
         assert 42 == proxy.foo()
 
-    def test_pickle(self):
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    def test_pickle(self, proto):
         """
         Can be pickled and unpickled.
         """
         bllp = BoundLoggerLazyProxy(None)
 
-        assert repr(bllp) == repr(pickle.loads(pickle.dumps(bllp)))
+        assert repr(bllp) == repr(pickle.loads(pickle.dumps(bllp, proto)))
 
 
 class TestFunctions(object):
