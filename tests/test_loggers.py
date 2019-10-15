@@ -84,7 +84,8 @@ class TestPrintLogger(object):
         assert "hello" in sio.getvalue()
 
     @pytest.mark.parametrize("file", [None, sys.stdout, sys.stderr])
-    def test_pickle(self, file):
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    def test_pickle(self, file, proto):
         """
         Can be pickled and unpickled for stdout and stderr.
 
@@ -92,10 +93,13 @@ class TestPrintLogger(object):
         """
         pl = PrintLogger(file=file)
 
-        assert pl._file is pickle.loads(pickle.dumps(pl))._file
-        assert pl._lock is pickle.loads(pickle.dumps(pl))._lock
+        rv = pickle.loads(pickle.dumps(pl, proto))
 
-    def test_pickle_not_stdout_stderr(self, tmpdir):
+        assert pl._file is rv._file
+        assert pl._lock is rv._lock
+
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    def test_pickle_not_stdout_stderr(self, tmpdir, proto):
         """
         PrintLoggers with differnt files than stdout/stderr raise a
         PickingError.
@@ -105,7 +109,7 @@ class TestPrintLogger(object):
         pl = PrintLogger(file=f.open())
 
         with pytest.raises(pickle.PicklingError, match="Only PrintLoggers to"):
-            pickle.dumps(pl)
+            pickle.dumps(pl, proto)
 
 
 class TestPrintLoggerFactory(object):
