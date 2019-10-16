@@ -126,4 +126,5 @@ if __name__ == "__main__":
         install_requires=INSTALL_REQUIRES,
         extras_require=EXTRAS_REQUIRE,
         zip_safe=False,
+        options={"bdist_wheel": {"universal": "1"}},
     )
