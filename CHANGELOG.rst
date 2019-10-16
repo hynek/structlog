@@ -57,7 +57,7 @@ Changes:
 - Added ``pass_foreign_args`` argument to ``structlog.stdlib.ProcessorFormatter``.
   It allows to pass a foreign log record's ``args`` attribute to the event dictionary under the ``positional_args`` key.
   `#228 <https://github.com/hynek/structlog/issues/228>`_,
-- ``structlog.dev.ConsoleRenderer`` now calls ``str`` on the event value.
+- ``structlog.dev.ConsoleRenderer`` now calls ``str()`` on the event value.
   `#221 <https://github.com/hynek/structlog/issues/221>`_,
 
 
