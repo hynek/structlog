@@ -81,6 +81,27 @@ class TestConsoleRenderer(object):
 
         assert (styles.timestamp + "42" + styles.reset + " " + unpadded) == rv
 
+    def test_event_stringified(self, cr, styles, unpadded):
+        """
+        Event is cast to string.
+        """
+        not_a_string = Exception("test")
+
+        rv = cr(None, None, {"event": not_a_string})
+
+        assert unpadded == rv
+
+    @pytest.mark.skipif(not six.PY2, reason="Problem only exists on Python 2.")
+    @pytest.mark.parametrize("s", [u"\xc3\xa4".encode("utf-8"), u"ä", "ä"])
+    def test_event_py2_only_stringify_non_strings(self, cr, s, styles):
+        """
+        If event is a string type already, leave it be on Python 2. Running
+        str() on unicode strings with non-ascii characters raises an error.
+        """
+        rv = cr(None, None, {"event": s})
+
+        assert styles.bright + s + styles.reset == rv
+
     def test_level(self, cr, styles, padded):
         """
         Levels are rendered aligned, in square brackets, and color coded.

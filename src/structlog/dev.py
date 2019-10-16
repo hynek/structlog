@@ -8,7 +8,7 @@ Helpers that make development with ``structlog`` more pleasant.
 
 from __future__ import absolute_import, division, print_function
 
-from six import StringIO
+from six import PY2, StringIO, string_types
 
 
 try:
@@ -213,7 +213,11 @@ class ConsoleRenderer(object):
                 + "] "
             )
 
+        # force event to str for compatibility with standard library
         event = event_dict.pop("event")
+        if not PY2 or not isinstance(event, string_types):
+            event = str(event)
+
         if event_dict:
             event = _pad(event, self._pad_event) + self._styles.reset + " "
         else:
