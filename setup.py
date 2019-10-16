@@ -111,6 +111,7 @@ if __name__ == "__main__":
         name=NAME,
         description=find_meta("description"),
         license=find_meta("license"),
+        license_file="LICENSE",
         url=find_meta("uri"),
         version=VERSION,
         author=find_meta("author"),
