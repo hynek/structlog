@@ -2,7 +2,7 @@ include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py .readthedocs
 include *.rst
 recursive-include .github *.rst
 
-include tox.ini
+include tox.ini pytest.ini
 graft tests
 recursive-exclude tests *.pyc
 

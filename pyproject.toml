@@ -5,3 +5,15 @@ build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 79
+
+
+[tool.isort]
+atomic=true
+include_trailing_comma=true
+lines_after_imports=2
+lines_between_types=1
+multi_line_output=3
+not_skip="__init__.py"
+
+known_first_party="structlog"
+known_third_party=["flask", "freezegun", "pretend", "pytest", "setuptools", "six", "some_module", "structlog", "twisted", "zope"]
