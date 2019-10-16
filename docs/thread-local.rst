@@ -80,7 +80,7 @@ The general flow of using these functions is:
 Thread-local Contexts
 ---------------------
 
-``structlog`` also provides thread local context storage which you may already know from `Flask <http://flask.pocoo.org/docs/design/#thread-locals>`_:
+``structlog`` also provides thread local context storage which you may already know from `Flask <https://flask.palletsprojects.com/en/master/design/#thread-locals>`_:
 
 Thread local storage makes your logger's context global but *only within the current thread*\ [*]_.
 In the case of web frameworks this usually means that your context becomes global to the current request.
