@@ -49,11 +49,11 @@ Changes:
   Some classes can only be pickled on Python 3 or using the `dill <https://pypi.org/project/dill/>`_ library though and that is very unlikely to change.
 
   So far, the configuration proxy, ``structlog.processor.TimeStamper``, ``structlog.BoundLogger``, ``structlog.PrintLogger`` and ``structlog.dev.ConsoleRenderer`` have been made pickelable.
-  Please report if you need any another class ported.
+  Please report if you need any another class fixed.
   `#126 <https://github.com/hynek/structlog/issues/126>`_
 - Added a new thread-local API that allows binding values to a thread-local context explicitly without affecting the default behavior of ``bind()``.
   `#222 <https://github.com/hynek/structlog/issues/222>`_,
-  `#225 <https://github.com/hynek/structlog/issues/225>`_,
+  `#225 <https://github.com/hynek/structlog/issues/225>`_
 - Added ``pass_foreign_args`` argument to ``structlog.stdlib.ProcessorFormatter``.
   It allows to pass a foreign log record's ``args`` attribute to the event dictionary under the ``positional_args`` key.
   `#228 <https://github.com/hynek/structlog/issues/228>`_
