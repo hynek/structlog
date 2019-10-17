@@ -1,13 +1,10 @@
-include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py .readthedocs.yml pyproject.toml
+include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py
 include *.rst
-recursive-include .github *.rst
 
-include tox.ini pytest.ini
+include *.ini *.yml *.yaml *.toml
+graft .github
 graft tests
 recursive-exclude tests *.pyc
 
 graft docs
 prune docs/_build
-
-# Don't package GitHub-specific files.
-exclude .github/*.md azure-pipelines.yml .pre-commit-config.yaml codecov.yml
