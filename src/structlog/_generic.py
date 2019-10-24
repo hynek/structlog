@@ -36,13 +36,13 @@ class BoundLogger(BoundLoggerBase):
 
     def __getstate__(self):
         """
-        Out __getattr__ magic makes this necessary.
+        Our __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
     def __setstate__(self, state):
         """
-        Out __getattr__ magic makes this necessary.
+        Our __getattr__ magic makes this necessary.
         """
         for k, v in state.items():
             setattr(self, k, v)

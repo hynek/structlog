@@ -76,7 +76,7 @@ class PrintLogger(object):
 
     def __getstate__(self):
         """
-        Out __getattr__ magic makes this necessary.
+        Our __getattr__ magic makes this necessary.
         """
         if self._file is sys.stdout:
             return "stdout"
@@ -90,7 +90,7 @@ class PrintLogger(object):
 
     def __setstate__(self, state):
         """
-        Out __getattr__ magic makes this necessary.
+        Our __getattr__ magic makes this necessary.
         """
         if state == "stdout":
             self._file = sys.stdout
