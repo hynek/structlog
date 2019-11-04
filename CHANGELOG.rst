@@ -5,7 +5,32 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
-19.2.0 (UNRELEASED)
+19.3.0 (UNRELEASED)
+-------------------
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+*none*
+
+
+----
+
+
+19.2.0 (2019-10-16)
 -------------------
 
 
@@ -48,12 +73,17 @@ Changes:
 - A best effort has been made to make as much of ``structlog`` pickleable as possible to make it friendlier with ``multiprocessing`` and similar libraries.
   Some classes can only be pickled on Python 3 or using the `dill <https://pypi.org/project/dill/>`_ library though and that is very unlikely to change.
 
-  So far, the configuration proxy, ``structlog.processor.TimeStamper``, ``structlog.BoundLogger``, ``structlog.PrintLogger`` and ``structlog.dev.ConsoleLogger`` have been made pickelable.
-  Please report if you need any another class ported.
+  So far, the configuration proxy, ``structlog.processor.TimeStamper``, ``structlog.BoundLogger``, ``structlog.PrintLogger`` and ``structlog.dev.ConsoleRenderer`` have been made pickelable.
+  Please report if you need any another class fixed.
   `#126 <https://github.com/hynek/structlog/issues/126>`_
 - Added a new thread-local API that allows binding values to a thread-local context explicitly without affecting the default behavior of ``bind()``.
   `#222 <https://github.com/hynek/structlog/issues/222>`_,
-  `#225 <https://github.com/hynek/structlog/issues/225>`_,
+  `#225 <https://github.com/hynek/structlog/issues/225>`_
+- Added ``pass_foreign_args`` argument to ``structlog.stdlib.ProcessorFormatter``.
+  It allows to pass a foreign log record's ``args`` attribute to the event dictionary under the ``positional_args`` key.
+  `#228 <https://github.com/hynek/structlog/issues/228>`_
+- ``structlog.dev.ConsoleRenderer`` now calls ``str()`` on the event value.
+  `#221 <https://github.com/hynek/structlog/issues/221>`_
 
 
 ----
@@ -288,7 +318,7 @@ Changes:
 - Be more more lenient about missing ``__name__``\ s.
   `#62 <https://github.com/hynek/structlog/pull/62>`_
 - Add ``structlog.dev.ConsoleRenderer`` that renders the event dictionary aligned and with colors.
-- Use `six <https://pythonhosted.org/six/>`_ for compatibility.
+- Use `six <https://six.readthedocs.io/>`_ for compatibility.
 - Add ``structlog.processors.UnicodeDecoder`` that will decode all byte string values in an event dictionary to Unicode.
 - Add ``serializer`` parameter to ``structlog.processors.JSONRenderer`` which allows for using different (possibly faster) JSON encoders than the standard library.
 

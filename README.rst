@@ -24,7 +24,7 @@
    :alt: Test Coverage
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/ambv/black
+   :target: https://github.com/psf/black
    :alt: Code style: black
 
 .. -begin-short-
@@ -35,7 +35,7 @@ It's up to you whether you want ``structlog`` to take care about the **output** 
 
 .. -end-short-
 
-Once you feel inspired to try it out, check out our friendly `Getting Started tutorial <http://www.structlog.org/en/stable/getting-started.html>`_ that also contains detailed installation instructions!
+Once you feel inspired to try it out, check out our friendly `Getting Started tutorial <https://www.structlog.org/en/stable/getting-started.html>`_ that also contains detailed installation instructions!
 
 .. -begin-spiel-
 

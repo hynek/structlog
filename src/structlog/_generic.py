@@ -43,14 +43,14 @@ class BoundLogger(BoundLoggerBase):
     def __getstate__(self):
         # type: () -> EventDict
         """
-        Out __getattr__ magic makes this necessary.
+        Our __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
     def __setstate__(self, state):
         # type: (EventDict) -> None
         """
-        Out __getattr__ magic makes this necessary.
+        Our __getattr__ magic makes this necessary.
         """
         for k, v in state.items():
             setattr(self, k, v)

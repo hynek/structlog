@@ -159,7 +159,7 @@ If you use standard library's logging, it makes sense to configure them next to 
    See `Third-Party Extensions <https://github.com/hynek/structlog/wiki/Third-Party-Extensions/>`_ in the wiki.
 
 **Flask**
-   See `Logging <http://flask.pocoo.org/docs/dev/logging/>`_.
+   See `Logging <https://flask.palletsprojects.com/en/master/logging/>`_.
 
 **Pyramid**
    `Application constructor <https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
