@@ -15,6 +15,30 @@ from .exceptions import DropEvent
 
 
 class LogCapture(object):
+    """
+    Class for capturing log messages in its entries list.
+    Generally you should use :func:`structlog.testing.capture_logs`,
+    but you can use this class if you want to capture logs with other patterns.
+    For example, using ``pytest`` fixtures::
+
+        @pytest.fixture(scope='function')
+        def log_output():
+            return LogCapture()
+
+
+        @pytest.fixture(scope='function', autouse=True)
+        def configure_structlog(log_output):
+            structlog.configure(
+                processors=[log_output]
+            )
+
+        def test_my_stuff(log_output):
+            do_something()
+            assert log_output.entries == [...]
+
+    .. versionadded:: 19.3.0
+    """
+
     def __init__(self):
         self.entries = []
 
@@ -39,3 +63,6 @@ def capture_logs():
         yield cap.entries
     finally:
         configure(processors=old_processors)
+
+
+__all__ = ["LogCapture", "capture_logs"]
