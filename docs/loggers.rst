@@ -126,11 +126,12 @@ To save you the hassle and slowdown of using standard library's ``logging`` for 
    >>> PrintLogger().info("hello world!")
    hello world!
 
-If you need functionality similar to ``unittest.TestCase.assertLogs``, or you want to capture all logs for some other reason, you can use the ``structlog.capture_logs`` context manager:
+If you need functionality similar to ``unittest.TestCase.assertLogs``, or you want to capture all logs for some other reason, you can use the ``structlog.testing.capture_logs`` context manager:
 
 .. doctest::
 
-   >>> from structlog import get_logger, capture_logs
+   >>> from structlog import get_logger
+   >>> from structlog.testing import capture_logs
    >>> with capture_logs() as logs:
    ...    get_logger().bind(x="y").info("hello")
    >>> logs

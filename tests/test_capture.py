@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 
-from structlog import _capture, _config
+from structlog import _config, testing
 
 
 class TestCaptureLogs(object):
@@ -17,7 +17,7 @@ class TestCaptureLogs(object):
         _config.reset_defaults()
 
     def test_captures_logs(self):
-        with _capture.capture_logs() as logs:
+        with testing.capture_logs() as logs:
             _config.get_logger().bind(x="y").info("hello")
             _config.get_logger().bind(a="b").info("goodbye")
         assert [
@@ -30,13 +30,13 @@ class TestCaptureLogs(object):
 
     def test_restores_processors_on_success(self):
         orig_procs = self.get_active_procs()
-        with _capture.capture_logs():
+        with testing.capture_logs():
             assert orig_procs is not self.get_active_procs()
         assert orig_procs is self.get_active_procs()
 
     def test_restores_processors_on_error(self):
         orig_procs = self.get_active_procs()
         with pytest.raises(NotImplementedError):
-            with _capture.capture_logs():
+            with testing.capture_logs():
                 raise NotImplementedError("from test")
         assert orig_procs is self.get_active_procs()
