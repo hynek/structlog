@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, print_function
 
 from structlog import dev, processors, stdlib, threadlocal
 from structlog._base import BoundLoggerBase
+from structlog._capture import capture_logs
 from structlog._config import (
     configure,
     configure_once,
@@ -57,6 +58,7 @@ __all__ = [
     "PrintLoggerFactory",
     "ReturnLogger",
     "ReturnLoggerFactory",
+    "capture_logs",
     "configure",
     "configure_once",
     "dev",
