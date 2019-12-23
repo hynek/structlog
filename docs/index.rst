@@ -31,6 +31,7 @@ Basics
    loggers
    configuration
    thread-local
+   contextvars
    processors
    examples
    development
