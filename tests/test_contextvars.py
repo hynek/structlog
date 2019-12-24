@@ -4,33 +4,18 @@
 
 import pytest
 
-
-asyncio = pytest.importorskip("asyncio")
-contextvars = pytest.importorskip("contextvars")
-
-
-try:
-    from structlog.contextvars import (
-        bind_context_local,
-        clear_context_local,
-        merge_context_local,
-        unbind_context_local,
-    )
-except ImportError:
-    skip_tests = True
-else:
-    skip_tests = False
-
-    # All test coroutines will be treated as marked.
-    pytestmark = pytest.mark.asyncio
-
-
-supported_python = pytest.mark.skipif(
-    skip_tests, reason="Does not support asyncio or contextvars."
+from structlog.contextvars import (
+    bind_context_local,
+    clear_context_local,
+    merge_context_local,
+    unbind_context_local,
 )
 
 
-@supported_python
+# All test coroutines will be treated as marked.
+pytestmark = pytest.mark.asyncio
+
+
 class TestNewContextvars(object):
     async def test_bind(self, event_loop):
         """
