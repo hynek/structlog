@@ -22,9 +22,6 @@ jobs:
         py27-greenlets:
           tox.env: py27-greenlets
           python.version: '2.7'
-        py27-oldtwisted:
-          tox.env: py27-oldtwisted
-          python.version: '2.7'
         py27-threads:
           tox.env: py27-threads
           python.version: '2.7'
@@ -40,9 +37,6 @@ jobs:
         py37-greenlets:
           tox.env: py37-greenlets
           python.version: '3.7'
-        py37-oldtwisted:
-          tox.env: py37-oldtwisted
-          python.version: '3.7'
         py37-threads:
           tox.env: py37-threads
           python.version: '3.7'
@@ -57,9 +51,6 @@ jobs:
           python.version: pypy2
         pypy-greenlets:
           tox.env: pypy-greenlets
-          python.version: pypy2
-        pypy-oldtwisted:
-          tox.env: pypy-oldtwisted
           python.version: pypy2
         pypy-threads:
           tox.env: pypy-threads
