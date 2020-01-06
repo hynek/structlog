@@ -36,7 +36,7 @@ except ImportError:  # pragma: nocover
     twisted = None
 
 
-__version__ = "19.3.0.dev0"
+__version__ = "20.1.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging for Python"

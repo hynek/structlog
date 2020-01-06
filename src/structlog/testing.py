@@ -36,7 +36,7 @@ class LogCapture(object):
             do_something()
             assert log_output.entries == [...]
 
-    .. versionadded:: 19.3.0
+    .. versionadded:: 20.1.0
     """
 
     def __init__(self):
@@ -54,7 +54,7 @@ def capture_logs():
     Context manager that appends all logging statements to its yielded list
     while it is active.
 
-    .. versionadded:: 19.3.0
+    .. versionadded:: 20.1.0
     """
     cap = LogCapture()
     old_processors = get_config()["processors"]
