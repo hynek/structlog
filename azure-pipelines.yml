@@ -22,9 +22,6 @@ jobs:
         py27-greenlets:
           tox.env: py27-greenlets
           python.version: '2.7'
-        py27-oldtwisted:
-          tox.env: py27-oldtwisted
-          python.version: '2.7'
         py27-threads:
           tox.env: py27-threads
           python.version: '2.7'
@@ -40,24 +37,20 @@ jobs:
         py37-greenlets:
           tox.env: py37-greenlets
           python.version: '3.7'
-        py37-oldtwisted:
-          tox.env: py37-oldtwisted
-          python.version: '3.7'
         py37-threads:
           tox.env: py37-threads
           python.version: '3.7'
-        # Twisted is currently broken on 3.8.
-        # py38-threads:
-        #   tox.env: py38-threads
-        #   python.version: '3.8'
+        py38-threads:
+          tox.env: py38-threads
+          python.version: '3.8'
+        py38-greenlets:
+          tox.env: py38-greenlets
+          python.version: '3.8'
         pypy-colorama:
           tox.env: pypy-colorama
           python.version: pypy2
         pypy-greenlets:
           tox.env: pypy-greenlets
-          python.version: pypy2
-        pypy-oldtwisted:
-          tox.env: pypy-oldtwisted
           python.version: pypy2
         pypy-threads:
           tox.env: pypy-threads
@@ -65,13 +58,6 @@ jobs:
         pypy3-threads:
           tox.env: pypy3-threads
           python.version: pypy3
-
-#        py38-greenlets:
-#          tox.env: py38-greenlets
-#          python.version: 3.8-dev
-#        py38-threads:
-#          tox.env: py38-threads
-#          python.version: 3.8-dev
 
         Docs:
           python.version: '3.7'
@@ -95,15 +81,15 @@ jobs:
         inputs:
           versionSpec: '$(python.version)'
           architecture: 'x64'
-        condition: not(in(variables['python.version'], '3.8'))
+        # condition: not(in(variables['python.version'], '3.8'))
         displayName: Use cached Python $(python.version) for tests.
 
-      - script: |
-          sudo add-apt-repository ppa:deadsnakes
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python$(python.version)-dev python$(python.version)-distutils
-        condition: in(variables['python.version'], '3.8')
-        displayName: Install Python $(python.version) from the deadsnakes PPA for tests.
+      # - script: |
+      #     sudo add-apt-repository ppa:deadsnakes
+      #     sudo apt-get update
+      #     sudo apt-get install -y --no-install-recommends python$(python.version)-dev python$(python.version)-distutils
+      #   condition: in(variables['python.version'], '3.8')
+      #   displayName: Install Python $(python.version) from the deadsnakes PPA for tests.
 
       - script: $(pyTools.pythonLocation)/bin/tox -e $(tox.env)
         env:
