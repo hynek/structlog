@@ -1,4 +1,4 @@
-include LICENSE LICENSE.apache2 LICENSE.mit .coveragerc conftest.py
+include LICENSE LICENSE.apache2 LICENSE.mit conftest.py
 include *.rst
 
 include *.ini *.yml *.yaml *.toml
