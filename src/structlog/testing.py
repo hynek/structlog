@@ -3,15 +3,16 @@
 # repository for complete details.
 
 """
-Thin module holding capture_logs.
-Ended up here since there were circular references
-in other likely places (``dev`` module for example).
+Testing helpers.
 """
 
 from contextlib import contextmanager
 
 from ._config import configure, get_config
 from .exceptions import DropEvent
+
+
+__all__ = ["LogCapture", "capture_logs"]
 
 
 class LogCapture(object):
@@ -54,6 +55,9 @@ def capture_logs():
     Context manager that appends all logging statements to its yielded list
     while it is active.
 
+
+    Attention: this is **not** thread-safe!
+
     .. versionadded:: 20.1.0
     """
     cap = LogCapture()
@@ -63,6 +67,3 @@ def capture_logs():
         yield cap.entries
     finally:
         configure(processors=old_processors)
-
-
-__all__ = ["LogCapture", "capture_logs"]

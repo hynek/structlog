@@ -24,8 +24,10 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Added a context manager for capturing logs, mostly to assist users who want to assert some logging happened during unit tests.
+- Added a new module ``structlog.testing`` for first class testing support.
+  The first entry is the context manager ``capture_logs()`` that allows to make assertions about structured log calls.
   `#14 <https://github.com/hynek/structlog/issues/14>`_
+  `#234 <https://github.com/hynek/structlog/pull/234>`_
 
 
 ----

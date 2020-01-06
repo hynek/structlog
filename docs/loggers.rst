@@ -126,7 +126,7 @@ To save you the hassle and slowdown of using standard library's ``logging`` for 
    >>> PrintLogger().info("hello world!")
    hello world!
 
-If you need functionality similar to ``unittest.TestCase.assertLogs``, or you want to capture all logs for some other reason, you can use the ``structlog.testing.capture_logs`` context manager:
+If you need functionality similar to :meth:`unittest.TestCase.assertLogs`, or you want to capture all logs for some other reason, you can use the :func:`structlog.testing.capture_logs` context manager:
 
 .. doctest::
 

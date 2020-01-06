@@ -72,6 +72,15 @@ API Reference
 .. autofunction:: set_exc_info
 
 
+:mod:`testing` Module
+---------------------
+
+.. automodule:: structlog.testing
+
+.. autofunction:: capture_logs
+.. autoclass:: LogCapture
+
+
 :mod:`threadlocal` Module
 -------------------------
 
