@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Added a context manager for capturing logs, mostly to assist users who want to assert some logging happened during unit tests.
+  `#14 <https://github.com/hynek/structlog/issues/14>`_
 
 
 ----

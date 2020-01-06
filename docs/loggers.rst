@@ -126,7 +126,18 @@ To save you the hassle and slowdown of using standard library's ``logging`` for 
    >>> PrintLogger().info("hello world!")
    hello world!
 
-Additionally -- mostly for unit testing -- ``structlog`` also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
+If you need functionality similar to ``unittest.TestCase.assertLogs``, or you want to capture all logs for some other reason, you can use the ``structlog.testing.capture_logs`` context manager:
+
+.. doctest::
+
+   >>> from structlog import get_logger
+   >>> from structlog.testing import capture_logs
+   >>> with capture_logs() as logs:
+   ...    get_logger().bind(x="y").info("hello")
+   >>> logs
+   [{'x': 'y', 'event': 'hello', 'log_level': 'info'}]
+
+Additionally -- mostly for unit testing within ``structlog`` itself -- ``structlog`` also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
 
 .. doctest::
 
