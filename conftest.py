@@ -6,6 +6,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import sys
+
 import pytest
 
 from six.moves import cStringIO as StringIO
@@ -30,3 +32,8 @@ def event_dict():
             return r"<A(\o/)>"
 
     return {"a": A(), "b": [3, 4], "x": 7, "y": "test", "z": (1, 2)}
+
+
+collect_ignore = []
+if sys.version_info[:2] < (3, 7):
+    collect_ignore.extend(["tests/test_contextvars.py"])
