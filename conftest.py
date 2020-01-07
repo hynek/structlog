@@ -36,4 +36,4 @@ def event_dict():
 
 collect_ignore = []
 if sys.version_info[:2] < (3, 7):
-    collect_ignore.extend(["tests/test_contextvars.py"])
+    collect_ignore.append("tests/test_contextvars.py")

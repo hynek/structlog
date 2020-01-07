@@ -5,10 +5,10 @@
 import pytest
 
 from structlog.contextvars import (
-    bind_context_local,
-    clear_context_local,
-    merge_context_local,
-    unbind_context_local,
+    bind_contextvars,
+    clear_contextvars,
+    merge_contextvars_context,
+    unbind_contextvars,
 )
 
 
@@ -20,25 +20,25 @@ class TestNewContextvars(object):
     async def test_bind(self, event_loop):
         """
         Binding a variable causes it to be included in the result of
-        merge_context_local.
+        merge_contextvars_context.
         """
 
         async def coro():
-            bind_context_local(a=1)
-            return merge_context_local(None, None, {"b": 2})
+            bind_contextvars(a=1)
+            return merge_contextvars_context(None, None, {"b": 2})
 
         assert {"a": 1, "b": 2} == await event_loop.create_task(coro())
 
     async def test_multiple_binds(self, event_loop):
         """
-        Multiple calls to bind_context_local accumulate values instead of
+        Multiple calls to bind_contextvars accumulate values instead of
         replacing them. But they override redefined ones.
         """
 
         async def coro():
-            bind_context_local(a=1, c=3)
-            bind_context_local(c=333, d=4)
-            return merge_context_local(None, None, {"b": 2})
+            bind_contextvars(a=1, c=3)
+            bind_contextvars(c=333, d=4)
+            return merge_contextvars_context(None, None, {"b": 2})
 
         assert {
             "a": 1,
@@ -53,73 +53,73 @@ class TestNewContextvars(object):
         """
 
         async def coro():
-            bind_context_local(a=1)
+            bind_contextvars(a=1)
             await event_loop.create_task(nested_coro())
-            return merge_context_local(None, None, {"b": 2})
+            return merge_contextvars_context(None, None, {"b": 2})
 
         async def nested_coro():
-            bind_context_local(c=3)
+            bind_contextvars(c=3)
 
         assert {"a": 1, "b": 2, "c": 3} == await event_loop.create_task(coro())
 
     async def test_merge_works_without_bind(self, event_loop):
         """
-        merge_context_local returns values as normal even when there has
-        been no previous calls to bind_context_local.
+        merge_contextvars_context returns values as normal even when there has
+        been no previous calls to bind_contextvars.
         """
 
         async def coro():
-            return merge_context_local(None, None, {"b": 2})
+            return merge_contextvars_context(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
     async def test_merge_overrides_bind(self, event_loop):
         """
-        Variables included in merge_context_local override previously bound
-        variables.
+        Variables included in merge_contextvars_context override previously
+        bound variables.
         """
 
         async def coro():
-            bind_context_local(a=1)
-            return merge_context_local(None, None, {"a": 111, "b": 2})
+            bind_contextvars(a=1)
+            return merge_contextvars_context(None, None, {"a": 111, "b": 2})
 
         assert {"a": 111, "b": 2} == await event_loop.create_task(coro())
 
     async def test_clear(self, event_loop):
         """
         The context-local context can be cleared, causing any previously bound
-        variables to not be included in merge_context_local's result.
+        variables to not be included in merge_contextvars_context's result.
         """
 
         async def coro():
-            bind_context_local(a=1)
-            clear_context_local()
-            return merge_context_local(None, None, {"b": 2})
+            bind_contextvars(a=1)
+            clear_contextvars()
+            return merge_contextvars_context(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
     async def test_clear_without_bind(self, event_loop):
         """
         The context-local context can be cleared, causing any previously bound
-        variables to not be included in merge_context_local's result.
+        variables to not be included in merge_contextvars_context's result.
         """
 
         async def coro():
-            clear_context_local()
-            return merge_context_local(None, None, {})
+            clear_contextvars()
+            return merge_contextvars_context(None, None, {})
 
         assert {} == await event_loop.create_task(coro())
 
     async def test_undbind(self, event_loop):
         """
         Unbinding a previously bound variable causes it to be removed from the
-        result of merge_context_local.
+        result of merge_contextvars_context.
         """
 
         async def coro():
-            bind_context_local(a=1)
-            unbind_context_local("a")
-            return merge_context_local(None, None, {"b": 2})
+            bind_contextvars(a=1)
+            unbind_contextvars("a")
+            return merge_contextvars_context(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
@@ -129,7 +129,7 @@ class TestNewContextvars(object):
         """
 
         async def coro():
-            unbind_context_local("a")
-            return merge_context_local(None, None, {"b": 2})
+            unbind_contextvars("a")
+            return merge_contextvars_context(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())

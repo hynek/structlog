@@ -110,6 +110,17 @@ API Reference
 .. autofunction:: as_immutable
 
 
+:mod:`contextvars` Module
+-------------------------
+
+.. automodule:: structlog.contextvars
+
+.. autofunction:: merge_contextvars_context
+.. autofunction:: clear_contextvars
+.. autofunction:: bind_contextvars
+.. autofunction:: unbind_contextvars
+
+
 .. _procs:
 
 :mod:`processors` Module
