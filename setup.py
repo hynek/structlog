@@ -35,7 +35,7 @@ CLASSIFIERS = [
 INSTALL_REQUIRES = ["six"]
 EXTRAS_REQUIRE = {
     "tests": [
-        "coverage",
+        "coverage[toml]",
         "freezegun>=0.2.8",
         "pretend",
         "pytest>=3.3.0",

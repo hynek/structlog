@@ -8,7 +8,7 @@ Structured logging for Python.
 
 from __future__ import absolute_import, division, print_function
 
-from structlog import dev, processors, stdlib, threadlocal
+from structlog import dev, processors, stdlib, testing, threadlocal
 from structlog._base import BoundLoggerBase
 from structlog._config import (
     configure,
@@ -36,7 +36,7 @@ except ImportError:  # pragma: nocover
     twisted = None
 
 
-__version__ = "19.3.0.dev0"
+__version__ = "20.1.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging for Python"
@@ -67,6 +67,7 @@ __all__ = [
     "processors",
     "reset_defaults",
     "stdlib",
+    "testing",
     "threadlocal",
     "twisted",
     "wrap_logger",

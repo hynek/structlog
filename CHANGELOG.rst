@@ -5,7 +5,7 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
-19.3.0 (UNRELEASED)
+20.1.0 (UNRELEASED)
 -------------------
 
 
@@ -24,7 +24,10 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Added a new module ``structlog.testing`` for first class testing support.
+  The first entry is the context manager ``capture_logs()`` that allows to make assertions about structured log calls.
+  `#14 <https://github.com/hynek/structlog/issues/14>`_
+  `#234 <https://github.com/hynek/structlog/pull/234>`_
 
 
 ----
