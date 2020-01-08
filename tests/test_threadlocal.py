@@ -12,7 +12,7 @@ import pytest
 
 from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
-from structlog._loggers import ReturnLogger
+from structlog.testing import ReturnLogger
 from structlog.threadlocal import (
     as_immutable,
     bind_threadlocal,

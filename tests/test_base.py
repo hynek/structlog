@@ -10,9 +10,9 @@ from pretend import raiser, stub
 
 from structlog._base import BoundLoggerBase
 from structlog._config import _CONFIG
-from structlog._loggers import ReturnLogger
 from structlog.exceptions import DropEvent
 from structlog.processors import KeyValueRenderer
+from structlog.testing import ReturnLogger
 
 
 def build_bl(logger=None, processors=None, context=None):

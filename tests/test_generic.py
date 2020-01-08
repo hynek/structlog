@@ -11,7 +11,7 @@ import six
 
 from structlog._config import _CONFIG
 from structlog._generic import BoundLogger
-from structlog._loggers import ReturnLogger
+from structlog.testing import ReturnLogger
 
 
 class TestLogger(object):

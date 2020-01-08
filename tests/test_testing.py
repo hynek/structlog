@@ -9,6 +9,7 @@ from __future__ import absolute_import, division, print_function
 import pytest
 
 from structlog import get_config, get_logger, reset_defaults, testing
+from structlog.testing import ReturnLogger, ReturnLoggerFactory
 
 
 class TestCaptureLogs(object):
@@ -59,3 +60,45 @@ class TestCaptureLogs(object):
                 raise NotImplementedError("from test")
 
         assert orig_procs is self.get_active_procs()
+
+
+class TestReturnLogger(object):
+    # @pytest.mark.parametrize("method", stdlib_log_methods)
+    def test_stdlib_methods_support(self, stdlib_log_method):
+        """
+        ReturnLogger implements methods of stdlib loggers.
+        """
+        v = getattr(ReturnLogger(), stdlib_log_method)("hello")
+
+        assert "hello" == v
+
+    def test_return_logger(self):
+        """
+        Return logger returns exactly what's sent in.
+        """
+        obj = ["hello"]
+
+        assert obj is ReturnLogger().msg(obj)
+
+
+class TestReturnLoggerFactory(object):
+    def test_builds_returnloggers(self):
+        f = ReturnLoggerFactory()
+
+        assert isinstance(f(), ReturnLogger)
+
+    def test_caches(self):
+        """
+        There's no need to have several loggers so we return the same one on
+        each call.
+        """
+        f = ReturnLoggerFactory()
+
+        assert f() is f()
+
+    def test_ignores_args(self):
+        """
+        ReturnLogger doesn't take positional arguments.  If any are passed to
+        the factory, they are not passed to the logger.
+        """
+        ReturnLoggerFactory()(1, 2, 3)

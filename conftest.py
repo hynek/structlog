@@ -12,6 +12,8 @@ import pytest
 
 from six.moves import cStringIO as StringIO
 
+from structlog.stdlib import _NAME_TO_LEVEL
+
 
 @pytest.fixture
 def sio():
@@ -32,6 +34,14 @@ def event_dict():
             return r"<A(\o/)>"
 
     return {"a": A(), "b": [3, 4], "x": 7, "y": "test", "z": (1, 2)}
+
+
+@pytest.fixture(
+    name="stdlib_log_method",
+    params=[m for m in _NAME_TO_LEVEL if m != "notset"],
+)
+def fixture_stdlib_log_methods(request):
+    return request.param
 
 
 collect_ignore = []

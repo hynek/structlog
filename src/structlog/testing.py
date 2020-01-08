@@ -67,3 +67,51 @@ def capture_logs():
         yield cap.entries
     finally:
         configure(processors=old_processors)
+
+
+class ReturnLoggerFactory(object):
+    r"""
+    Produce and cache :class:`ReturnLogger`\ s.
+
+    To be used with :func:`structlog.configure`\ 's `logger_factory`.
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 0.4.0
+    """
+
+    def __init__(self):
+        self._logger = ReturnLogger()
+
+    def __call__(self, *args):
+        return self._logger
+
+
+class ReturnLogger(object):
+    """
+    Return the arguments that it's called with.
+
+    >>> from structlog import ReturnLogger
+    >>> ReturnLogger().msg("hello")
+    'hello'
+    >>> ReturnLogger().msg("hello", when="again")
+    (('hello',), {'when': 'again'})
+
+    Useful for testing.
+
+    .. versionchanged:: 0.3.0
+        Allow for arbitrary arguments and keyword arguments to be passed in.
+    """
+
+    def msg(self, *args, **kw):
+        """
+        Return tuple of ``args, kw`` or just ``args[0]`` if only one arg passed
+        """
+        # Slightly convoluted for backwards compatibility.
+        if len(args) == 1 and not kw:
+            return args[0]
+        else:
+            return args, kw
+
+    log = debug = info = warn = warning = msg
+    fatal = failure = err = error = critical = exception = msg

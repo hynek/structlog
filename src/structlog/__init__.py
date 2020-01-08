@@ -21,13 +21,9 @@ from structlog._config import (
     wrap_logger,
 )
 from structlog._generic import BoundLogger
-from structlog._loggers import (
-    PrintLogger,
-    PrintLoggerFactory,
-    ReturnLogger,
-    ReturnLoggerFactory,
-)
+from structlog._loggers import PrintLogger, PrintLoggerFactory
 from structlog.exceptions import DropEvent
+from structlog.testing import ReturnLogger, ReturnLoggerFactory
 
 
 try:
@@ -46,7 +42,7 @@ __author__ = "Hynek Schlawack"
 __email__ = "hs@ox.cx"
 
 __license__ = "MIT or Apache License, Version 2.0"
-__copyright__ = "Copyright (c) 2013 {0}".format(__author__)
+__copyright__ = "Copyright (c) 2013 " + __author__
 
 
 __all__ = [

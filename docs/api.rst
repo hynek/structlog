@@ -50,11 +50,6 @@ API Reference
 
 .. autoclass:: PrintLoggerFactory
 
-.. autoclass:: ReturnLogger
-   :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
-
-.. autoclass:: ReturnLoggerFactory
-
 .. autoexception:: DropEvent
 
 .. autoclass:: BoundLoggerBase
@@ -79,6 +74,10 @@ API Reference
 
 .. autofunction:: capture_logs
 .. autoclass:: LogCapture
+.. autoclass:: ReturnLogger
+   :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
+
+.. autoclass:: ReturnLoggerFactory
 
 
 :mod:`threadlocal` Module

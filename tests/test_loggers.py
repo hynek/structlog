@@ -11,22 +11,9 @@ import pytest
 
 from six.moves import cStringIO as StringIO
 
-from structlog._loggers import (
-    WRITE_LOCKS,
-    PrintLogger,
-    PrintLoggerFactory,
-    ReturnLogger,
-    ReturnLoggerFactory,
-)
-from structlog.stdlib import _NAME_TO_LEVEL
+from structlog._loggers import WRITE_LOCKS, PrintLogger, PrintLoggerFactory
 
-
-def test_return_logger():
-    obj = ["hello"]
-    assert obj is ReturnLogger().msg(obj)
-
-
-STDLIB_MSG_METHODS = [m for m in _NAME_TO_LEVEL if m != "notset"]
+from .utils import stdlib_log_methods
 
 
 class TestPrintLogger(object):
@@ -72,7 +59,7 @@ class TestPrintLogger(object):
 
         assert sio in WRITE_LOCKS
 
-    @pytest.mark.parametrize("method", STDLIB_MSG_METHODS)
+    @pytest.mark.parametrize("method", stdlib_log_methods)
     def test_stdlib_methods_support(self, method):
         """
         PrintLogger implements methods of stdlib loggers.
@@ -135,37 +122,3 @@ class TestPrintLoggerFactory(object):
         the factory, they are not passed to the logger.
         """
         PrintLoggerFactory()(1, 2, 3)
-
-
-class ReturnLoggerTest(object):
-    @pytest.mark.parametrize("method", STDLIB_MSG_METHODS)
-    def test_stdlib_methods_support(self, method):
-        """
-        ReturnLogger implements methods of stdlib loggers.
-        """
-        v = getattr(ReturnLogger(), method)("hello")
-
-        assert "hello" == v
-
-
-class TestReturnLoggerFactory(object):
-    def test_builds_returnloggers(self):
-        f = ReturnLoggerFactory()
-
-        assert isinstance(f(), ReturnLogger)
-
-    def test_caches(self):
-        """
-        There's no need to have several loggers so we return the same one on
-        each call.
-        """
-        f = ReturnLoggerFactory()
-
-        assert f() is f()
-
-    def test_ignores_args(self):
-        """
-        ReturnLogger doesn't take positional arguments.  If any are passed to
-        the factory, they are not passed to the logger.
-        """
-        ReturnLoggerFactory()(1, 2, 3)
