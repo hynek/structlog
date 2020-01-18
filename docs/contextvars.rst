@@ -19,31 +19,31 @@ For that ``structlog`` provides a set of functions to bind variables to a contex
 This context is safe to be used in asynchronous code.
 The functions are:
 
-- :func:`structlog.contextvars.merge_contextvars_context`,
+- :func:`structlog.contextvars.merge_contextvars`,
 - :func:`structlog.contextvars.clear_contextvars`,
 - :func:`structlog.contextvars.bind_contextvars`,
 - :func:`structlog.contextvars.unbind_contextvars`,
 
 The general flow of using these functions is:
 
-- Use :func:`structlog.configure` with :func:`structlog.contextvars.merge_contextvars_context` as your first processor.
+- Use :func:`structlog.configure` with :func:`structlog.contextvars.merge_contextvars` as your first processor.
 - Call :func:`structlog.contextvars.clear_contextvars` at the beginning of your request handler (or whenever you want to reset the context-local context).
 - Call :func:`structlog.contextvars.bind_contextvars` and :func:`structlog.contextvars.unbind_contextvars` instead of :func:`structlog.BoundLogger.bind` and :func:`structlog.BoundLogger.unbind` when you want to (un)bind a particular variable to the context-local context.
 - Use ``structlog`` as normal.
-  Loggers act as the always do, but the :func:`structlog.contextvars.merge_contextvars_context` processor ensures that any context-local binds get included in all of your log messages.
+  Loggers act as the always do, but the :func:`structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
 
 .. doctest::
 
    >>> from structlog.contextvars import (
    ...     bind_contextvars,
    ...     clear_contextvars,
-   ...     merge_contextvars_context,
+   ...     merge_contextvars,
    ...     unbind_contextvars,
    ... )
    >>> from structlog import configure
    >>> configure(
    ...     processors=[
-   ...         merge_contextvars_context,
+   ...         merge_contextvars,
    ...         structlog.processors.KeyValueRenderer(),
    ...     ]
    ... )

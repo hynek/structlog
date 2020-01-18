@@ -85,7 +85,7 @@ API Reference
 
 .. automodule:: structlog.threadlocal
 
-.. autofunction:: merge_threadlocal_context
+.. autofunction:: merge_threadlocal
 
 .. autofunction:: clear_threadlocal
 
@@ -114,7 +114,7 @@ API Reference
 
 .. automodule:: structlog.contextvars
 
-.. autofunction:: merge_contextvars_context
+.. autofunction:: merge_contextvars
 .. autofunction:: clear_contextvars
 .. autofunction:: bind_contextvars
 .. autofunction:: unbind_contextvars

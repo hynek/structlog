@@ -170,16 +170,26 @@ class _ThreadLocalDictWrapper(object):
 _CONTEXT = threading.local()
 
 
-def merge_threadlocal_context(logger, method_name, event_dict):
+def merge_threadlocal(logger, method_name, event_dict):
     """
     A processor that merges in a global (thread-local) context.
 
     Use this as your first processor in :func:`structlog.configure` to ensure
     thread-local context is included in all log calls.
+
+    .. versionadded:: 19.2.0
+
+    .. versionchanged:: 20.1.0
+       This function used to be called ``merge_threalocal_context`` and that
+       name is still kept around for backward compatability.
     """
     context = _get_context().copy()
     context.update(event_dict)
     return context
+
+
+# Alias that shouldn't be used anymore.
+merge_threadlocal_context = merge_threadlocal
 
 
 def clear_threadlocal():
@@ -188,6 +198,8 @@ def clear_threadlocal():
 
     The typical use-case for this function is to invoke it early in
     request-handling code.
+
+    .. versionadded:: 19.2.0
     """
     _CONTEXT.context = {}
 
@@ -198,6 +210,8 @@ def bind_threadlocal(**kwargs):
 
     Use this instead of :func:`~structlog.BoundLogger.bind` when you want some
     context to be global (thread-local).
+
+    .. versionadded:: 19.2.0
     """
     _get_context().update(kwargs)
 

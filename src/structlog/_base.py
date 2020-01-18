@@ -86,7 +86,7 @@ class BoundLoggerBase(object):
 
     def try_unbind(self, *keys):
         """
-        Like :meth:`unbind`, but best effort:  missing keys are ignored.
+        Like :meth:`unbind`, but best effort: missing keys are ignored.
 
         :rtype: `self.__class__`
 
@@ -94,10 +94,8 @@ class BoundLoggerBase(object):
         """
         bl = self.bind()
         for key in keys:
-            try:
-                del bl._context[key]
-            except KeyError:
-                pass
+            bl._context.pop(key, None)
+
         return bl
 
     def new(self, **new_values):

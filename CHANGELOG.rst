@@ -25,7 +25,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Added a new module ``structlog.contextvars`` that allows to have a global but context-local ``structlog`` context the same way as with ``structlog.threalocal`` since 19.2.0.
+- Added a new module ``structlog.contextvars`` that allows to have a global but context-local ``structlog`` context the same way as with ``structlog.threadlocal`` since 19.2.0.
   `#201 <https://github.com/hynek/structlog/issues/201>`_
   `#236 <https://github.com/hynek/structlog/pull/236>`_
 - Added a new module ``structlog.testing`` for first class testing support.
