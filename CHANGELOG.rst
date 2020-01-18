@@ -18,7 +18,8 @@ Backward-incompatible changes:
 Deprecations:
 ^^^^^^^^^^^^^
 
-*none*
+- This is the last version to support Python 2.7 (including PyPy) and 3.5.
+  All following versions will only support Python 3.6 or later.
 
 
 Changes:
