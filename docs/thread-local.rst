@@ -33,31 +33,31 @@ However, in the case of conventional web development, we realize that passing lo
 And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a couple of mechanisms to help here.
 
 
-The ``merge_threadlocal_context`` Processor
--------------------------------------------
+The ``merge_threadlocal`` Processor
+-----------------------------------
 
 ``structlog`` provides a simple set of functions that allow explicitly binding certain fields to a global (thread-local) context.
-These functions are :func:`structlog.threadlocal.merge_threadlocal_context`, :func:`structlog.threadlocal.clear_threadlocal`, and :func:`structlog.threadlocal.bind_threadlocal`.
+These functions are :func:`structlog.threadlocal.merge_threadlocal`, :func:`structlog.threadlocal.clear_threadlocal`, and :func:`structlog.threadlocal.bind_threadlocal`.
 
 The general flow of using these functions is:
 
-- Use :func:`structlog.configure` with :func:`structlog.threadlocal.merge_threadlocal_context` as your first processor.
+- Use :func:`structlog.configure` with :func:`structlog.threadlocal.merge_threadlocal` as your first processor.
 - Call :func:`structlog.threadlocal.clear_threadlocal` at the beginning of your request handler (or whenever you want to reset the thread-local context).
 - Call :func:`structlog.threadlocal.bind_threadlocal` as an alternative to :func:`structlog.BoundLogger.bind` when you want to bind a particular variable to the thread-local context.
 - Use ``structlog`` as normal.
-  Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal_context` processor ensures that any thread-local binds get included in all of your log messages.
+  Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal` processor ensures that any thread-local binds get included in all of your log messages.
 
 .. doctest::
 
    >>> from structlog.threadlocal import (
    ...     bind_threadlocal,
    ...     clear_threadlocal,
-   ...     merge_threadlocal_context,
+   ...     merge_threadlocal,
    ... )
    >>> from structlog import configure
    >>> configure(
    ...     processors=[
-   ...         merge_threadlocal_context,
+   ...         merge_threadlocal,
    ...         structlog.processors.KeyValueRenderer(),
    ...     ]
    ... )

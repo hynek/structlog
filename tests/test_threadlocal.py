@@ -17,6 +17,7 @@ from structlog.threadlocal import (
     as_immutable,
     bind_threadlocal,
     clear_threadlocal,
+    merge_threadlocal,
     merge_threadlocal_context,
     tmp_bind,
     wrap_dict,
@@ -272,33 +273,37 @@ class TestThreadLocalDict(object):
 
 
 class TestNewThreadLocal(object):
+    def test_alias(self):
+        """
+        We're keeping the old alias around.
+        """
+        assert merge_threadlocal_context is merge_threadlocal
+
     def test_bind_and_merge(self):
         """
         Binding a variable causes it to be included in the result of
-        merge_threadlocal_context.
+        merge_threadlocal.
         """
         bind_threadlocal(a=1)
 
-        assert {"a": 1, "b": 2} == merge_threadlocal_context(
-            None, None, {"b": 2}
-        )
+        assert {"a": 1, "b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_clear(self):
         """
         The thread-local context can be cleared, causing any previously bound
-        variables to not be included in merge_threadlocal_context's result.
+        variables to not be included in merge_threadlocal's result.
         """
         bind_threadlocal(a=1)
         clear_threadlocal()
 
-        assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
+        assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_merge_works_without_bind(self):
         """
-        merge_threadlocal_context returns values as normal even when there has
+        merge_threadlocal returns values as normal even when there has
         been no previous calls to bind_threadlocal.
         """
-        assert {"b": 2} == merge_threadlocal_context(None, None, {"b": 2})
+        assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_multiple_binds(self):
         """
@@ -308,6 +313,6 @@ class TestNewThreadLocal(object):
         bind_threadlocal(a=1, b=2)
         bind_threadlocal(c=3)
 
-        assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal_context(
+        assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal(
             None, None, {"b": 2}
         )
