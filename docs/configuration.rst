@@ -1,5 +1,3 @@
-.. _configuration:
-
 Configuration
 =============
 
@@ -90,7 +88,7 @@ At any time, you can check whether and how ``structlog`` is configured:
 
 .. note::
 
-   Since you will call :func:`structlog.get_logger` most likely in module scope, they run at import time before you had a chance to configure ``structlog``.
+   Since you will call `structlog.get_logger` most likely in module scope, they run at import time before you had a chance to configure ``structlog``.
    Therefore they return a **lazy proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
 
    Thus, you must never call ``new()`` or ``bind()`` in module or class scope because otherwise you will receive a logger configured with ``structlog``'s default values.
@@ -98,7 +96,7 @@ At any time, you can check whether and how ``structlog`` is configured:
 
    To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
    Therefore if you have nothing to bind but intend to do lots of log calls in a function, it makes sense performance-wise to create a local logger by calling ``bind()`` or ``new()`` without any parameters.
-   See also :doc:`performance`.
+   See also `performance`.
 
 
 .. _logger-factories:
@@ -106,14 +104,14 @@ At any time, you can check whether and how ``structlog`` is configured:
 Logger Factories
 ----------------
 
-To make :func:`structlog.get_logger` work, one needs one more option that hasn't been discussed yet: ``logger_factory``.
+To make `structlog.get_logger` work, one needs one more option that hasn't been discussed yet: ``logger_factory``.
 
 It is a callable that returns the logger that gets wrapped and returned.
 In the simplest case, it's a function that returns a logger -- or just a class.
 But you can also pass in an instance of a class with a ``__call__`` method for more complicated setups.
 
 .. versionadded:: 0.4.0
-   :func:`structlog.get_logger` can optionally take positional parameters.
+   `structlog.get_logger` can optionally take positional parameters.
 
 These will be passed to the logger factories.
 For example, if you use run ``structlog.get_logger("a name")`` and configure ``structlog`` to use the standard library :class:`~structlog.stdlib.LoggerFactory` which has support for positional parameters, the returned logger will have the name ``"a name"``.
@@ -123,8 +121,8 @@ That makes sure that loggers are interchangeable.
 
 For the common cases of standard library logging and Twisted logging, ``structlog`` comes with two factories built right in:
 
-- :class:`structlog.stdlib.LoggerFactory`
-- :class:`structlog.twisted.LoggerFactory`
+- `structlog.stdlib.LoggerFactory`
+- `structlog.twisted.LoggerFactory`
 
 So all it takes to use ``structlog`` with standard library logging is this::
 
@@ -135,7 +133,7 @@ So all it takes to use ``structlog`` with standard library logging is this::
    >>> log.critical("this is too easy!")
    event='this is too easy!'
 
-By using ``structlog``'s :class:`structlog.stdlib.LoggerFactory`, it is also ensured that variables like function names and line numbers are expanded correctly in your log format.
+By using ``structlog``'s `structlog.stdlib.LoggerFactory`, it is also ensured that variables like function names and line numbers are expanded correctly in your log format.
 
 The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
 
@@ -144,7 +142,7 @@ The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
    ``LoggerFactory``-style factories always need to get passed as *instances* like in the examples above.
    While neither allows for customization using parameters yet, they may do so in the future.
 
-Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger`.
+Calling `structlog.get_logger` without configuration gives you a perfectly useful `structlog.PrintLogger`.
 We don't believe silent loggers are a sensible default.
 
 
@@ -168,4 +166,4 @@ If you use standard library's logging, it makes sense to configure them next to 
    The `plugin definition <https://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
    If your app is not a plugin, put it into your `tac file <https://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
 
-If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your :func:`structlog.configure` gets called more than once, ``structlog`` offers :func:`structlog.configure_once` that raises a warning if ``structlog`` has been configured before (no matter whether using :func:`structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.
+If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your `structlog.configure` gets called more than once, ``structlog`` offers `structlog.configure_once` that raises a warning if ``structlog`` has been configured before (no matter whether using `structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.

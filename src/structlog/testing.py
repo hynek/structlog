@@ -22,7 +22,7 @@ __all__ = ["LogCapture", "capture_logs"]
 class LogCapture(object):
     """
     Class for capturing log messages in its entries list.
-    Generally you should use :func:`structlog.testing.capture_logs`,
+    Generally you should use `structlog.testing.capture_logs`,
     but you can use this class if you want to capture logs with other patterns.
 
     .. versionadded:: 20.1.0
@@ -58,9 +58,9 @@ def capture_logs():
 
 class ReturnLoggerFactory(object):
     r"""
-    Produce and cache :class:`ReturnLogger`\ s.
+    Produce and cache `ReturnLogger`\ s.
 
-    To be used with :func:`structlog.configure`\ 's `logger_factory`.
+    To be used with `structlog.configure`\ 's *logger_factory*.
 
     Positional arguments are silently ignored.
 

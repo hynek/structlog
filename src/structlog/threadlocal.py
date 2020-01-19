@@ -5,7 +5,7 @@
 """
 Primitives to keep context global but thread (and greenlet) local.
 
-See :doc:`thread-local`.
+See `thread-local`.
 """
 
 from __future__ import absolute_import, division, print_function

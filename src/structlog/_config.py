@@ -23,7 +23,7 @@ from .processors import StackInfoRenderer, TimeStamper, format_exc_info
 """
 .. note::
 
-   Any changes to these defaults must be reflected in :doc:`getting-started`.
+   Any changes to these defaults must be reflected in `getting-started`.
 """
 _BUILTIN_DEFAULT_PROCESSORS = [
     StackInfoRenderer(),
@@ -60,7 +60,7 @@ class _Configuration(object):
 
 _CONFIG = _Configuration()
 """
-Global defaults used when arguments to :func:`wrap_logger` are omitted.
+Global defaults used when arguments to `wrap_logger` are omitted.
 """
 
 
@@ -68,7 +68,7 @@ def is_configured():
     """
     Return whether ``structlog`` has been configured.
 
-    If ``False``, ``structlog`` is running with builtin defaults.
+    If `False`, ``structlog`` is running with builtin defaults.
 
     :rtype: bool
 
@@ -115,20 +115,20 @@ def get_logger(*args, **initial_values):
     :rtype: A proxy that creates a correctly configured bound logger when
         necessary.
 
-    See :ref:`configuration` for details.
+    See `configuration` for details.
 
     If you prefer CamelCase, there's an alias for your reading pleasure:
-    :func:`structlog.getLogger`.
+    `structlog.getLogger`.
 
     .. versionadded:: 0.4.0
-        `args`
+        *args*
     """
     return wrap_logger(None, logger_factory_args=args, **initial_values)
 
 
 getLogger = get_logger
 """
-CamelCase alias for :func:`structlog.get_logger`.
+CamelCase alias for `structlog.get_logger`.
 
 This function is supposed to be in every source file -- we don't want it to
 stick out like a sore thumb in frameworks like Twisted or Zope.
@@ -148,9 +148,9 @@ def wrap_logger(
     Create a new bound logger for an arbitrary *logger*.
 
     Default values for *processors*, *wrapper_class*, and *context_class* can
-    be set using :func:`configure`.
+    be set using `configure`.
 
-    If you set an attribute here, :func:`configure` calls have *no* effect for
+    If you set an attribute here, `configure` calls have *no* effect for
     the *respective* attribute.
 
     In other words: selective overwriting of the defaults while keeping some
@@ -163,10 +163,10 @@ def wrap_logger(
     :rtype: A proxy that creates a correctly configured bound logger when
         necessary.
 
-    See :func:`configure` for the meaning of the rest of the arguments.
+    See `configure` for the meaning of the rest of the arguments.
 
     .. versionadded:: 0.4.0
-        `logger_factory_args`
+        *logger_factory_args*
     """
     return BoundLoggerLazyProxy(
         logger,
@@ -189,30 +189,31 @@ def configure(
     """
     Configures the **global** defaults.
 
-    They are used if :func:`wrap_logger` has been called without arguments.
+    They are used if `wrap_logger` or `get_logger` are called without
+    arguments.
 
-    Can be called several times, keeping an argument at `None` leaves is
+    Can be called several times, keeping an argument at `None` leaves it
     unchanged from the current setting.
 
-    After calling for the first time, :func:`is_configured` starts returning
-    ``True``.
+    After calling for the first time, `is_configured` starts returning
+    `True`.
 
-    Use :func:`reset_defaults` to undo your changes.
+    Use `reset_defaults` to undo your changes.
 
     :param list processors: List of processors.
     :param type wrapper_class: Class to use for wrapping loggers instead of
-        :class:`structlog.BoundLogger`.  See :doc:`standard-library`,
-        :doc:`twisted`, and :doc:`custom-wrappers`.
+        `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`, and
+        `custom-wrappers`.
     :param type context_class: Class to be used for internal context keeping.
     :param callable logger_factory: Factory to be called to create a new
         logger that shall be wrapped.
     :param bool cache_logger_on_first_use: `wrap_logger` doesn't return an
         actual wrapped logger but a proxy that assembles one when it's first
         used.  If this option is set to `True`, this assembled logger is
-        cached.  See :doc:`performance`.
+        cached.  See `performance`.
 
     .. versionadded:: 0.3.0
-        `cache_logger_on_first_use`
+        *cache_logger_on_first_use*
     """
     _CONFIG.is_configured = True
     if processors is not None:
@@ -231,10 +232,10 @@ def configure_once(*args, **kw):
     """
     Configures iff structlog isn't configured yet.
 
-    It does *not* matter whether is was configured using :func:`configure`
-    or :func:`configure_once` before.
+    It does *not* matter whether is was configured using `configure` or
+    `configure_once` before.
 
-    Raises a :class:`RuntimeWarning` if repeated configuration is attempted.
+    Raises a `RuntimeWarning` if repeated configuration is attempted.
     """
     if not _CONFIG.is_configured:
         configure(*args, **kw)
@@ -246,7 +247,7 @@ def reset_defaults():
     """
     Resets global default values to builtin defaults.
 
-    :func:`is_configured` starts returning ``False`` afterwards.
+    `is_configured` starts returning `False` afterwards.
     """
     _CONFIG.is_configured = False
     _CONFIG.default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
@@ -258,18 +259,18 @@ def reset_defaults():
 
 class BoundLoggerLazyProxy(object):
     """
-    Instantiates a BoundLogger on first usage.
+    Instantiates a ``BoundLogger`` on first usage.
 
     Takes both configuration and instantiation parameters into account.
 
-    The only points where a BoundLogger changes state are bind(), unbind(), and
-    new() and that return the actual BoundLogger.
+    The only points where a BoundLogger changes state are ``bind()``,
+    ``unbind()``, and ``new()`` and that return the actual ``BoundLogger``.
 
-    If and only if configuration says so, that actual BoundLogger is cached on
-    first usage.
+    If and only if configuration says so, that actual ``BoundLogger`` is
+    cached on first usage.
 
     .. versionchanged:: 0.4.0
-        Added support for `logger_factory_args`.
+        Added support for *logger_factory_args*.
     """
 
     def __init__(

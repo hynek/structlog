@@ -12,9 +12,9 @@ The center of ``structlog`` is the immutable log wrapper :class:`~structlog.Boun
 What it does is:
 
 - Store a *context dictionary* with key-value pairs that should be part of every log entry,
-- store a list of :ref:`processors <processors>` that are called on every log entry,
+- store a list of :doc:`processors <processors>` that are called on every log entry,
 - and store a *logger* that it's wrapping.
-  This *can* be standard library's :class:`logging.Logger` but absolutely doesn't have to.
+  This *can* be standard library's `logging.Logger` but absolutely doesn't have to.
 
 To manipulate the context dictionary, it offers to:
 
@@ -34,7 +34,7 @@ Finally, if you call *any other* method on :class:`~structlog.BoundLogger`, it w
    For flexibility, the final processor can return either a string that is passed directly as a positional parameter, or a tuple ``(args, kwargs)`` that are passed as ``wrapped_logger.log_method(*args, **kwargs)``.
 
 
-.. [1] Since this is slightly magicy, ``structlog`` comes with concrete loggers for the :doc:`standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
+.. [1] Since this is slightly magicy, ``structlog`` comes with concrete loggers for the `standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
        Of course, you are free to implement your own bound loggers too.
 
 
@@ -42,11 +42,11 @@ Creation
 --------
 
 You won't be instantiating it yourself though.
-In practice you will configure ``structlog`` as explained in the :doc:`next chapter <configuration>`  and then just call :func:`structlog.get_logger`.
+In practice you will configure ``structlog`` as explained in the `next chapter <configuration>`  and then just call `structlog.get_logger`.
 
 
 In some rare cases you may not want to do that.
-For that times there is the :func:`structlog.wrap_logger` function that can be used to wrap a logger without any global state (i.e. configuration):
+For that times there is the `structlog.wrap_logger` function that can be used to wrap a logger without any global state (i.e. configuration):
 
 .. _proc:
 
@@ -83,16 +83,16 @@ As you can see, it accepts one mandatory and a few optional arguments:
    If you wish to use a :ref:`configured logger factory <logger-factories>`, set it to `None`.
 
 **processors**
-   A list of callables that can :ref:`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
+   A list of callables that can :doc:`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
 
    Default is ``[``:class:`~structlog.processors.StackInfoRenderer`, :func:`~structlog.processors.format_exc_info`, :class:`~structlog.processors.TimeStamper`, :class:`~structlog.dev.ConsoleRenderer`\ ``]``.
 
 **context_class**
    The class to save your context in.
-   Particularly useful for :ref:`thread local context storage <threadlocal>`.
+   Particularly useful for `thread local context storage <thread-local>`.
 
-   On Python versions that have ordered dictionaries (Python 3.6+, PyPy) the default is a plain :class:`dict`.
-   For everything else it's :class:`collections.OrderedDict`.
+   On Python versions that have ordered dictionaries (Python 3.6+, PyPy) the default is a plain `dict`.
+   For everything else it's `collections.OrderedDict`.
 
 Additionally, the following arguments are allowed too:
 

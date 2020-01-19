@@ -23,7 +23,7 @@ class BoundLoggerBase(object):
         - :class:`structlog.twisted.BoundLogger`,
         - and :class:`structlog.stdlib.BoundLogger`.
 
-    See also :doc:`custom-wrappers`.
+    See also `custom-wrappers`.
     """
 
     _logger = None
@@ -34,7 +34,7 @@ class BoundLoggerBase(object):
 
         Despite underscore available **read-only** to custom wrapper classes.
 
-        See also :doc:`custom-wrappers`.
+        See also `custom-wrappers`.
     """
 
     def __init__(self, logger, processors, context):
@@ -63,7 +63,7 @@ class BoundLoggerBase(object):
         """
         Return a new logger with *new_values* added to the existing ones.
 
-        :rtype: `self.__class__`
+        :rtype: ``self.__class__``
         """
         return self.__class__(
             self._logger,
@@ -77,7 +77,7 @@ class BoundLoggerBase(object):
 
         :raises KeyError: If the key is not part of the context.
 
-        :rtype: `self.__class__`
+        :rtype: ``self.__class__``
         """
         bl = self.bind()
         for key in keys:
@@ -88,7 +88,7 @@ class BoundLoggerBase(object):
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
-        :rtype: `self.__class__`
+        :rtype: ``self.__class__``
 
         .. versionadded:: 18.2.0
         """
@@ -103,10 +103,10 @@ class BoundLoggerBase(object):
         Clear context and binds *initial_values* using :func:`bind`.
 
         Only necessary with dict implementations that keep global state like
-        those wrapped by :func:`structlog.threadlocal.wrap_dict` when threads
+        those wrapped by `structlog.threadlocal.wrap_dict` when threads
         are re-used.
 
-        :rtype: `self.__class__`
+        :rtype: ``self.__class__``
         """
         self._context.clear()
         return self.bind(**new_values)
@@ -115,7 +115,7 @@ class BoundLoggerBase(object):
 
     def _process_event(self, method_name, event, event_kw):
         """
-        Combines creates an `event_dict` and runs the chain.
+        Combines creates an ``event_dict`` and runs the chain.
 
         Call it to combine your *event* and *context* into an event_dict and
         process using the processor chain.
@@ -127,16 +127,16 @@ class BoundLoggerBase(object):
         :param event_kw: Additional event keywords.  For example if someone
             calls ``log.msg("foo", bar=42)``, *event* would to be ``"foo"``
             and *event_kw* ``{"bar": 42}``.
-        :raises: :class:`structlog.DropEvent` if log entry should be dropped.
-        :raises: :class:`ValueError` if the final processor doesn't return a
+        :raises: `structlog.DropEvent` if log entry should be dropped.
+        :raises: `ValueError` if the final processor doesn't return a
             string, tuple, or a dict.
-        :rtype: `tuple` of `(*args, **kw)`
+        :rtype: `tuple` of ``(*args, **kw)``
 
         .. note::
 
             Despite underscore available to custom wrapper classes.
 
-            See also :doc:`custom-wrappers`.
+            See also `custom-wrappers`.
 
         .. versionchanged:: 14.0.0
             Allow final processor to return a `dict`.
@@ -183,7 +183,7 @@ class BoundLoggerBase(object):
 
             Despite underscore available to custom wrapper classes.
 
-            See also :doc:`custom-wrappers`.
+            See also `custom-wrappers`.
         """
         try:
             args, kw = self._process_event(method_name, event, event_kw)

@@ -2,7 +2,7 @@
 Structured Logging for Python
 =============================
 
-Release v\ |version| (:doc:`What's new? <changelog>`).
+Release v\ |version| (`What's new? <changelog>`).
 
 .. include:: ../README.rst
    :start-after: -begin-short-
@@ -11,8 +11,8 @@ Release v\ |version| (:doc:`What's new? <changelog>`).
 
 First steps:
 
-- If you're not sure whether ``structlog`` is for you, have a look at :doc:`why`.
-- If you can't wait to log your first entry, start at :doc:`getting-started` and then work yourself through the basic docs.
+- If you're not sure whether ``structlog`` is for you, have a look at `why`.
+- If you can't wait to log your first entry, start at `getting-started` and then work yourself through the basic docs.
 - Once you have basic grasp of how ``structlog`` works, acquaint yourself with the `integrations <#integration-with-existing-systems>`_ ``structlog`` is shipping with.
 
 
@@ -86,6 +86,6 @@ API Reference
 Indices and tables
 ==================
 
-- :ref:`genindex`
-- :ref:`modindex`
-- :ref:`search`
+- `genindex`
+- `modindex`
+- `search`

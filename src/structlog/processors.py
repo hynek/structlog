@@ -25,7 +25,7 @@ from structlog._frames import (
 
 class KeyValueRenderer(object):
     """
-    Render `event_dict` as a list of ``Key=repr(Value)`` pairs.
+    Render ``event_dict`` as a list of ``Key=repr(Value)`` pairs.
 
     :param bool sort_keys: Whether to sort keys when formatting.
     :param list key_order: List of keys that should be rendered in this exact
@@ -103,7 +103,7 @@ class KeyValueRenderer(object):
 
 class UnicodeEncoder(object):
     """
-    Encode unicode values in `event_dict`.
+    Encode unicode values in ``event_dict``.
 
     :param str encoding: Encoding to encode to (default: ``"utf-8"``).
     :param str errors: How to cope with encoding errors (default
@@ -128,7 +128,7 @@ class UnicodeEncoder(object):
 
 class UnicodeDecoder(object):
     """
-    Decode byte string values in `event_dict`.
+    Decode byte string values in ``event_dict``.
 
     :param str encoding: Encoding to decode from (default: ``"utf-8"``).
     :param str errors: How to cope with encoding errors (default:
@@ -155,7 +155,7 @@ class UnicodeDecoder(object):
 
 class JSONRenderer(object):
     """
-    Render the `event_dict` using ``serializer(event_dict, **json_kw)``.
+    Render the ``event_dict`` using ``serializer(event_dict, **json_kw)``.
 
     :param dict json_kw: Are passed unmodified to *serializer*.  If *default*
         is passed, it will disable support for ``__structlog__``-based
@@ -205,7 +205,7 @@ def _json_fallback_handler(obj):
 
 def format_exc_info(logger, name, event_dict):
     """
-    Replace an `exc_info` field by an `exception` string field:
+    Replace an ``exc_info`` field by an ``exception`` string field:
 
     If *event_dict* contains the key ``exc_info``, there are two possible
     behaviors:
@@ -229,12 +229,12 @@ def format_exc_info(logger, name, event_dict):
 
 class TimeStamper(object):
     """
-    Add a timestamp to `event_dict`.
+    Add a timestamp to ``event_dict``.
 
     .. note::
 
         You should let OS tools take care of timestamping.  See also
-        :doc:`logging-best-practices`.
+        `logging-best-practices`.
 
     :param str fmt: strftime format string, or ``"iso"`` for `ISO 8601
         <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
@@ -323,19 +323,19 @@ def _figure_out_exc_info(v):
 
 class ExceptionPrettyPrinter(object):
     """
-    Pretty print exceptions and remove them from the `event_dict`.
+    Pretty print exceptions and remove them from the ``event_dict``.
 
     :param file file: Target file for output (default: ``sys.stdout``).
 
     This processor is mostly for development and testing so you can read
     exceptions properly formatted.
 
-    It behaves like :func:`format_exc_info` except it removes the exception
+    It behaves like `format_exc_info` except it removes the exception
     data from the event dictionary after printing it.
 
     It's tolerant to having `format_exc_info` in front of itself in the
     processor chain but doesn't require it.  In other words, it handles both
-    `exception` as well as `exc_info` keys.
+    ``exception`` as well as ``exc_info`` keys.
 
     .. versionadded:: 0.4.0
 
@@ -362,12 +362,12 @@ class ExceptionPrettyPrinter(object):
 
 class StackInfoRenderer(object):
     """
-    Add stack information with key `stack` if `stack_info` is true.
+    Add stack information with key ``stack`` if ``stack_info`` is `True`.
 
     Useful when you want to attach a stack dump to a log entry without
     involving an exception.
 
-    It works analogously to the `stack_info` argument of the Python 3 standard
+    It works analogously to the *stack_info* argument of the Python 3 standard
     library logging but works on both 2 and 3.
 
     .. versionadded:: 0.4.0

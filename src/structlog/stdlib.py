@@ -22,13 +22,15 @@ from structlog.exceptions import DropEvent
 
 class _FixedFindCallerLogger(logging.Logger):
     """
-    Change the behavior of findCaller to cope with structlog's extra frames.
+    Change the behavior of `logging.Logger.findCaller` to cope with
+    ``structlog``'s extra frames.
     """
 
     def findCaller(self, stack_info=False, stacklevel=1):
         """
         Finds the first caller frame outside of structlog so that the caller
         info is populated for wrapping stdlib.
+
         This logger gets set as the default one when using LoggerFactory.
         """
         f, name = _find_first_app_frame_and_name(["logging"])
@@ -44,7 +46,8 @@ class _FixedFindCallerLogger(logging.Logger):
 
 class BoundLogger(BoundLoggerBase):
     """
-    Python Standard Library version of :class:`structlog.BoundLogger`.
+    Python Standard Library version of `structlog.BoundLogger`.
+
     Works exactly like the generic one except that it takes advantage of
     knowing the logging methods in advance.
 
@@ -55,25 +58,24 @@ class BoundLogger(BoundLoggerBase):
         )
 
     It also contains a bunch of properties that pass-through to the wrapped
-    :class:`logging.Logger` which should make it work as a drop-in
-    replacement.
+    `logging.Logger` which should make it work as a drop-in replacement.
     """
 
     def debug(self, event=None, *args, **kw):
         """
-        Process event and call :meth:`logging.Logger.debug` with the result.
+        Process event and call `logging.Logger.debug` with the result.
         """
         return self._proxy_to_logger("debug", event, *args, **kw)
 
     def info(self, event=None, *args, **kw):
         """
-        Process event and call :meth:`logging.Logger.info` with the result.
+        Process event and call `logging.Logger.info` with the result.
         """
         return self._proxy_to_logger("info", event, *args, **kw)
 
     def warning(self, event=None, *args, **kw):
         """
-        Process event and call :meth:`logging.Logger.warning` with the result.
+        Process event and call `logging.Logger.warning` with the result.
         """
         return self._proxy_to_logger("warning", event, *args, **kw)
 
@@ -81,19 +83,19 @@ class BoundLogger(BoundLoggerBase):
 
     def error(self, event=None, *args, **kw):
         """
-        Process event and call :meth:`logging.Logger.error` with the result.
+        Process event and call `logging.Logger.error` with the result.
         """
         return self._proxy_to_logger("error", event, *args, **kw)
 
     def critical(self, event=None, *args, **kw):
         """
-        Process event and call :meth:`logging.Logger.critical` with the result.
+        Process event and call `logging.Logger.critical` with the result.
         """
         return self._proxy_to_logger("critical", event, *args, **kw)
 
     def exception(self, event=None, *args, **kw):
         """
-        Process event and call :meth:`logging.Logger.error` with the result,
+        Process event and call `logging.Logger.error` with the result,
         after setting ``exc_info`` to `True`.
         """
         kw.setdefault("exc_info", True)
@@ -101,8 +103,8 @@ class BoundLogger(BoundLoggerBase):
 
     def log(self, level, event, *args, **kw):
         """
-        Process event and call the appropriate logging method depending on
-        `level`.
+        Process *event* and call the appropriate logging method depending on
+        *level*.
         """
         return self._proxy_to_logger(_LEVEL_TO_NAME[level], event, *args, **kw)
 
@@ -113,7 +115,7 @@ class BoundLogger(BoundLoggerBase):
         Propagate a method call to the wrapped logger.
 
         This is the same as the superclass implementation, except that
-        it also preserves positional arguments in the `event_dict` so
+        it also preserves positional arguments in the ``event_dict`` so
         that the stdblib's support for format strings can be used.
         """
         if event_args:
@@ -292,21 +294,21 @@ class LoggerFactory(object):
 
 class PositionalArgumentsFormatter(object):
     """
-    Apply stdlib-like string formatting to the `event` key.
+    Apply stdlib-like string formatting to the ``event`` key.
 
-    If the `positional_args` key in the event dict is set, it must
-    contain a tuple that is used for formatting (using the `%s` string
-    formatting operator) of the value from the `event` key. This works
+    If the ``positional_args`` key in the event dict is set, it must
+    contain a tuple that is used for formatting (using the ``%s`` string
+    formatting operator) of the value from the ``event`` key.  This works
     in the same way as the stdlib handles arguments to the various log
     methods: if the tuple contains only a single `dict` argument it is
-    used for keyword placeholders in the `event` string, otherwise it
+    used for keyword placeholders in the ``event`` string, otherwise it
     will be used for positional placeholders.
 
-    `positional_args` is populated by :class:`structlog.stdlib.BoundLogger` or
+    ``positional_args`` is populated by `structlog.stdlib.BoundLogger` or
     can be set manually.
 
-    The `remove_positional_args` flag can be set to `False` to keep the
-    `positional_args` key in the event dict; by default it will be
+    The *remove_positional_args* flag can be set to `False` to keep the
+    ``positional_args`` key in the event dict; by default it will be
     removed from the event dict after formatting a message.
     """
 
@@ -428,12 +430,12 @@ def add_logger_name(logger, method_name, event_dict):
 
 def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
     """
-    Render `event_dict` into keyword arguments for :func:`logging.log`.
+    Render ``event_dict`` into keyword arguments for `logging.log`.
 
-    The `event` field is translated into `msg` and the rest of the `event_dict`
-    is added as `extra`.
+    The ``event`` field is translated into ``msg`` and the rest of the
+    *event_dict* is added as ``extra``.
 
-    This allows you to defer formatting to :mod:`logging`.
+    This allows you to defer formatting to `logging`.
 
     .. versionadded:: 17.1.0
     """
@@ -442,17 +444,17 @@ def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
 
 class ProcessorFormatter(logging.Formatter):
     r"""
-    Call ``structlog`` processors on :class:`logging.LogRecord`\ s.
+    Call ``structlog`` processors on :`logging.LogRecord`\ s.
 
-    This :class:`logging.Formatter` allows to configure :mod:`logging` to call
+    This `logging.Formatter` allows to configure :mod:`logging` to call
     *processor* on ``structlog``-borne log entries (origin is determined solely
-    on the fact whether the ``msg`` field on the :class:`logging.LogRecord` is
+    on the fact whether the ``msg`` field on the `logging.LogRecord` is
     a dict or not).
 
     This allows for two interesting use cases:
 
     #. You can format non-``structlog`` log entries.
-    #. You can multiplex log records into multiple :class:`logging.Handler`\ s.
+    #. You can multiplex log records into multiple `logging.Handler`\ s.
 
     Please refer to :doc:`standard-library` for examples.
 
@@ -461,9 +463,9 @@ class ProcessorFormatter(logging.Formatter):
         If not `None`, it is used as an iterable of processors that is applied
         to non-``structlog`` log entries before *processor*.  If `None`,
         formatting is left to :mod:`logging`. (default: `None`)
-    :param bool keep_exc_info: ``exc_info`` on :class:`logging.LogRecord`\ s is
+    :param bool keep_exc_info: ``exc_info`` on `logging.LogRecord`\ s is
         added to the ``event_dict`` and removed afterwards. Set this to
-        ``True`` to keep it on the :class:`logging.LogRecord`. (default: False)
+        ``True`` to keep it on the `logging.LogRecord`. (default: False)
     :param bool keep_stack_info: Same as *keep_exc_info* except for Python 3's
         ``stack_info``. (default: False)
     :param logger: Logger which we want to push through the ``structlog``
@@ -556,11 +558,10 @@ class ProcessorFormatter(logging.Formatter):
         """
         Wrap *logger*, *name*, and *event_dict*.
 
-        The result is later unpacked by :class:`ProcessorFormatter` when
+        The result is later unpacked by `ProcessorFormatter` when
         formatting log entries.
 
         Use this static method as the renderer (i.e. final processor) if you
-        want to use :class:`ProcessorFormatter` in your :mod:`logging`
-        configuration.
+        want to use `ProcessorFormatter` in your `logging` configuration.
         """
         return (event_dict,), {"extra": {"_logger": logger, "_name": name}}

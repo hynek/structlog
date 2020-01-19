@@ -3,7 +3,7 @@ Testing
 
 ``structlog`` comes with tools for testing the logging behavior of your application.
 
-If you need functionality similar to :meth:`unittest.TestCase.assertLogs`, or you want to capture all logs for some other reason, you can use the :func:`structlog.testing.capture_logs` context manager:
+If you need functionality similar to `unittest.TestCase.assertLogs`, or you want to capture all logs for some other reason, you can use the `structlog.testing.capture_logs` context manager:
 
 .. doctest::
 
@@ -14,7 +14,7 @@ If you need functionality similar to :meth:`unittest.TestCase.assertLogs`, or yo
    >>> cap_logs
    [{'x': 'y', 'event': 'hello', 'log_level': 'info'}]
 
-You can build your own helpers using :class:`structlog.testing.LogCapture`.
+You can build your own helpers using `structlog.testing.LogCapture`.
 For example a `pytest <https://docs.pytest.org/>`_ fixture to capture log output could look like this::
 
     @pytest.fixture(name="log_output")
@@ -33,7 +33,7 @@ For example a `pytest <https://docs.pytest.org/>`_ fixture to capture log output
 
 ----
 
-Additionally -- mostly for unit testing within ``structlog`` itself -- ``structlog`` also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
+Additionally ``structlog`` also ships with a logger that just returns whatever it gets passed into it: `structlog.testing.ReturnLogger`.
 
 .. doctest::
 

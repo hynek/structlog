@@ -4,8 +4,8 @@ API Reference
 =============
 
 .. note::
-   The examples here use a very simplified configuration using the minimalistic :class:`structlog.processors.KeyValueRenderer` for brevity and to enable doctests.
-   The output is going to be different (nicer!) with default configuration.
+   The examples here use a very simplified configuration using the minimalistic `structlog.processors.KeyValueRenderer` for brevity and to enable doctests.
+   The output is going to be different (nicer!) with the default configuration.
 
 
 .. testsetup:: *

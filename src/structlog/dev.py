@@ -91,9 +91,9 @@ class _PlainStyles(object):
 
 class ConsoleRenderer(object):
     """
-    Render `event_dict` nicely aligned, possibly in colors, and ordered.
+    Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
-    If `event_dict` contains an ``exception`` key (for example from
+    If ``event_dict`` contains an ``exception`` key (for example from
     :func:`~structlog.processors.format_exc_info`), it will be rendered *after*
     the log line.
 
@@ -102,17 +102,17 @@ class ConsoleRenderer(object):
     :param bool force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
         to be streamed to the console.
-    :param bool repr_native_str: When ``True``, :func:`repr()` is also applied
+    :param bool repr_native_str: When `True`, `repr` is also applied
         to native strings (i.e. unicode on Python 3 and bytes on Python 2).
-        Setting this to ``False`` is useful if you want to have human-readable
-        non-ASCII output on Python 2.  The `event` key is *never*
-        :func:`repr()` -ed.
+        Setting this to `False` is useful if you want to have human-readable
+        non-ASCII output on Python 2.  The ``event`` key is *never*
+        `repr` -ed.
     :param dict level_styles: When present, use these styles for colors. This
         must be a dict from level names (strings) to colorama styles. The
         default can be obtained by calling
-        :meth:`ConsoleRenderer.get_default_level_styles`
+        `ConsoleRenderer.get_default_level_styles`
 
-    Requires the colorama_ package if *colors* is ``True``.
+    Requires the colorama_ package if *colors* is `True`.
 
     .. _colorama: https://pypi.org/project/colorama/
 
@@ -264,17 +264,16 @@ class ConsoleRenderer(object):
         """
         Get the default styles for log levels
 
-        This is intended to be used with :class:`ConsoleRenderer`'s
-        ``level_styles`` parameter.  For example, if you are adding
-        custom levels in your home-grown
-        :func:`~structlog.stdlib.add_log_level` you could do::
+        This is intended to be used with `ConsoleRenderer`'s ``level_styles``
+        parameter.  For example, if you are adding custom levels in your
+        home-grown :func:`~structlog.stdlib.add_log_level` you could do::
 
             my_styles = ConsoleRenderer.get_default_level_styles()
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
             renderer = ConsoleRenderer(level_styles=my_styles)
 
         :param bool colors: Whether to use colorful styles. This must match the
-            `colors` parameter to :class:`ConsoleRenderer`. Default: True.
+            *colors* parameter to `ConsoleRenderer`. Default: `True`.
         """
         if colors:
             styles = _ColorfulStyles

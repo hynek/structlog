@@ -18,9 +18,9 @@ from structlog._utils import until_not_interrupted
 
 class PrintLoggerFactory(object):
     r"""
-    Produce :class:`PrintLogger`\ s.
+    Produce `PrintLogger`\ s.
 
-    To be used with :func:`structlog.configure`\ 's `logger_factory`.
+    To be used with `structlog.configure`\ 's ``logger_factory``.
 
     :param file file: File to print to. (default: stdout)
 
@@ -61,7 +61,7 @@ class PrintLogger(object):
     hello
 
     Useful if you follow
-    :doc:`current logging best practices <logging-best-practices>`.
+    `current logging best practices <logging-best-practices>`.
 
     Also very useful for testing and examples since logging is finicky in
     doctests.

@@ -1,5 +1,3 @@
-.. _threadlocal:
-
 Thread Local Context
 ====================
 
@@ -24,28 +22,27 @@ Immutability
    ---David Reid
 
 The behavior of copying itself, adding new values, and returning the result is useful for applications that keep somehow their own context using classes or closures.
-Twisted is a :ref:`fine example <twisted-example>` for that.
+Twisted is a `fine example <twisted-example>` for that.
 Another possible approach is passing wrapped loggers around or log only within your view where you gather errors and events using return codes and exceptions.
 If you are willing to do that, you should stick to it because `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
 Sooner or later, global state and mutable data lead to unpleasant surprises.
 
 However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
-And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains a couple of mechanisms to help here.
+And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains ships with the `structlog.threadlocal` module and a couple of mechanisms to help here.
 
 
 The ``merge_threadlocal`` Processor
 -----------------------------------
 
-``structlog`` provides a simple set of functions that allow explicitly binding certain fields to a global (thread-local) context.
-These functions are :func:`structlog.threadlocal.merge_threadlocal`, :func:`structlog.threadlocal.clear_threadlocal`, and :func:`structlog.threadlocal.bind_threadlocal`.
+``structlog`` provides a simple set of functions that allow explicitly binding certain fields to a global (thread-local) context and merge them later using a processor into the event dict.
 
 The general flow of using these functions is:
 
-- Use :func:`structlog.configure` with :func:`structlog.threadlocal.merge_threadlocal` as your first processor.
-- Call :func:`structlog.threadlocal.clear_threadlocal` at the beginning of your request handler (or whenever you want to reset the thread-local context).
-- Call :func:`structlog.threadlocal.bind_threadlocal` as an alternative to :func:`structlog.BoundLogger.bind` when you want to bind a particular variable to the thread-local context.
+- Use `structlog.configure` with `structlog.threadlocal.merge_threadlocal` as your first processor.
+- Call `structlog.threadlocal.clear_threadlocal` at the beginning of your request handler (or whenever you want to reset the thread-local context).
+- Call `structlog.threadlocal.bind_threadlocal` as an alternative to your bound logger's ``bind()`` when you want to bind a particular variable to the thread-local context.
 - Use ``structlog`` as normal.
-  Loggers act as the always do, but the :func:`structlog.threadlocal.merge_threadlocal` processor ensures that any thread-local binds get included in all of your log messages.
+  Loggers act as they always do, but the `structlog.threadlocal.merge_threadlocal` processor ensures that any thread-local binds get included in all of your log messages.
 
 .. doctest::
 
@@ -80,18 +77,15 @@ The general flow of using these functions is:
 Thread-local Contexts
 ---------------------
 
-``structlog`` also provides thread local context storage which you may already know from `Flask <https://flask.palletsprojects.com/en/master/design/#thread-locals>`_:
+``structlog`` also provides thread-local context storage in a form that you may already know from `Flask <https://flask.palletsprojects.com/en/master/design/#thread-locals>`_ and that makes the *entire context* global to your thread or greenlet.
 
-Thread local storage makes your logger's context global but *only within the current thread*\ [*]_.
-In the case of web frameworks this usually means that your context becomes global to the current request.
-
-The following explanations may sound a bit confusing at first but the :ref:`Flask example <flask-example>` illustrates how simple and elegant this works in practice.
+This makes its behavior more difficult to reason about which is why we generally recomment to use the `merge_threadlocal` route.
 
 
 Wrapped Dicts
--------------
+^^^^^^^^^^^^^
 
-In order to make your context thread local, ``structlog`` ships with a function that can wrap any dict-like class to make it usable for thread local storage: :func:`structlog.threadlocal.wrap_dict`.
+In order to make your context thread-local, ``structlog`` ships with a function that can wrap any dict-like class to make it usable for thread-local storage: `structlog.threadlocal.wrap_dict`.
 
 Within one thread, every instance of the returned class will have a *common* instance of the wrapped dict-like class:
 
@@ -119,7 +113,7 @@ To enable thread local context use the generated class as the context class::
    Creation of a new ``BoundLogger`` initializes the logger's context as ``context_class(initial_values)``, and then adds any values passed via ``.bind()``.
    As all instances of a wrapped dict-like class share the same data, in the case above, the new logger's context will contain all previously bound values in addition to the new ones.
 
-:func:`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
+`structlog.threadlocal.wrap_dict` returns always a completely *new* wrapped class:
 
 .. doctest::
 
@@ -134,7 +128,7 @@ To enable thread local context use the generated class as the context class::
    WrappedDict-e0fc330e-e5eb-42ee-bcec-ffd7bd09ad09
 
 
-In order to be able to bind values temporarily to a logger, :mod:`structlog.threadlocal` comes with a `context manager <https://docs.python.org/2/library/stdtypes.html#context-manager-types>`_: :func:`~structlog.threadlocal.tmp_bind`\ :
+In order to be able to bind values temporarily to a logger, `structlog.threadlocal` comes with a `context manager <https://docs.python.org/2/library/stdtypes.html#context-manager-types>`_: `structlog.threadlocal.tmp_bind`\ :
 
 .. testsetup:: ctx
 
@@ -157,13 +151,13 @@ In order to be able to bind values temporarily to a logger, :mod:`structlog.thre
 
 The state before the ``with`` statement is saved and restored once it's left.
 
-If you want to detach a logger from thread local data, there's :func:`structlog.threadlocal.as_immutable`.
+If you want to detach a logger from thread local data, there's `structlog.threadlocal.as_immutable`.
 
 
 Downsides & Caveats
--------------------
+~~~~~~~~~~~~~~~~~~~
 
-The convenience of having a thread local context comes at a price though:
+The convenience of having a thread-local context comes at a price though:
 
 .. warning::
    - If you can't rule out that your application re-uses threads, you *must* remember to **initialize your thread local context** at the start of each request using :func:`~structlog.BoundLogger.new` (instead of :func:`~structlog.BoundLogger.bind`).
@@ -182,9 +176,10 @@ The convenience of having a thread local context comes at a price though:
 
      Although the state is saved in a global data structure, you still need the global wrapped logger produce a real bound logger.
      Otherwise each log call will result in an instantiation of a temporary BoundLogger.
-     See :ref:`configuration` for more details.
 
-The general sentiment against thread locals is that they're hard to test.
+     See `configuration` for more details.
+
+The general sentiment against threadn-locals is that they're hard to test.
 In this case we feel like this is an acceptable trade-off.
 You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
 
@@ -193,5 +188,3 @@ This big red box is also what separates immutable local from mutable global data
 
 .. [*] In the spirit of Python's 'consenting adults', ``structlog`` doesn't enforce the immutability with technical means.
    However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
-
-.. [*] Special care has been taken to detect and support greenlets properly.

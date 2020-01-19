@@ -28,7 +28,7 @@ from .processors import JSONRenderer as GenericJSONRenderer
 
 class BoundLogger(BoundLoggerBase):
     """
-    Twisted-specific version of :class:`structlog.BoundLogger`.
+    Twisted-specific version of `structlog.BoundLogger`.
 
     Works exactly like the generic one except that it takes advantage of
     knowing the logging methods in advance.
@@ -81,7 +81,7 @@ _FAIL_TYPES = (BaseException, Failure)
 def _extractStuffAndWhy(eventDict):
     """
     Removes all possible *_why*s and *_stuff*s, analyzes exc_info and returns
-    a tuple of `(_stuff, _why, eventDict)`.
+    a tuple of ``(_stuff, _why, eventDict)``.
 
     **Modifies** *eventDict*!
     """
@@ -112,9 +112,10 @@ def _extractStuffAndWhy(eventDict):
 
 class ReprWrapper(object):
     """
-    Wrap a string and return it as the __repr__.
+    Wrap a string and return it as the ``__repr__``.
 
-    This is needed for log.err() that calls repr() on _stuff:
+    This is needed for ``twisted.python.log.err`` that calls `repr` on
+    ``_stuff``:
 
     >>> repr("foo")
     "'foo'"
@@ -129,7 +130,7 @@ class ReprWrapper(object):
 
     def __eq__(self, other):
         """
-        Check for equality, actually just for tests.
+        Check for equality, just for tests.
         """
         return (
             isinstance(other, self.__class__) and self.string == other.string
@@ -141,24 +142,24 @@ class ReprWrapper(object):
 
 class JSONRenderer(GenericJSONRenderer):
     """
-    Behaves like :class:`structlog.processors.JSONRenderer` except that it
-    formats tracebacks and failures itself if called with `err()`.
+    Behaves like `structlog.processors.JSONRenderer` except that it
+    formats tracebacks and failures itself if called with ``err()``.
 
     .. note::
 
-        This ultimately means that the messages get logged out using `msg()`,
-        and *not* `err()` which renders failures in separate lines.
+        This ultimately means that the messages get logged out using ``msg()``,
+        and *not* ``err()`` which renders failures in separate lines.
 
         Therefore it will break your tests that contain assertions using
         `flushLoggedErrors <https://twistedmatrix.com/documents/
         current/api/twisted.trial.unittest.SynchronousTestCase.html
         #flushLoggedErrors>`_.
 
-    *Not* an adapter like :class:`EventAdapter` but a real formatter.  Nor does
-    it require to be adapted using it.
+    *Not* an adapter like `EventAdapter` but a real formatter.  Also does *not*
+    require to be adapted using it.
 
-    Use together with a :class:`JSONLogObserverWrapper`-wrapped Twisted logger
-    like :func:`plainJSONStdOutLogger` for pure-JSON logs.
+    Use together with a `JSONLogObserverWrapper`-wrapped Twisted logger like
+    `plainJSONStdOutLogger` for pure-JSON logs.
     """
 
     def __call__(self, logger, name, eventDict):
@@ -206,7 +207,7 @@ class PlainFileLogObserver(object):
 @implementer(ILogObserver)
 class JSONLogObserverWrapper(object):
     """
-    Wrap a log *observer* and render non-:class:`JSONRenderer` entries to JSON.
+    Wrap a log *observer* and render non-`JSONRenderer` entries to JSON.
 
     :param ILogObserver observer: Twisted log observer to wrap.  For example
         :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
@@ -237,7 +238,7 @@ def plainJSONStdOutLogger():
     """
     Return a logger that writes only the message to stdout.
 
-    Transforms non-:class:`~structlog.twisted.JSONRenderer` messages to JSON.
+    Transforms non-`JSONRenderer` messages to JSON.
 
     Ideal for JSONifying log entries from Twisted plugins and libraries that
     are outside of your control::
@@ -250,8 +251,8 @@ def plainJSONStdOutLogger():
         {"event": "Starting factory <twisted.web.server.Site ...>", ...}
         ...
 
-    Composes :class:`PlainFileLogObserver` and :class:`JSONLogObserverWrapper`
-    to a usable logger.
+    Composes `PlainFileLogObserver` and `JSONLogObserverWrapper` to a usable
+    logger.
 
     .. versionadded:: 0.2.0
     """
@@ -270,7 +271,7 @@ class EventAdapter(object):
         log message.  Please note that structlog comes with a dedicated
         :class:`JSONRenderer`.
 
-    **Must** be the last processor in the chain and requires a `dictRenderer`
+    **Must** be the last processor in the chain and requires a *dictRenderer*
     for the actual formatting as an constructor argument in order to be able to
     fully support the original behaviors of ``log.msg()`` and ``log.err()``.
     """
