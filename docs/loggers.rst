@@ -14,7 +14,7 @@ What it does is:
 - Store a *context dictionary* with key-value pairs that should be part of every log entry,
 - store a list of :ref:`processors <processors>` that are called on every log entry,
 - and store a *logger* that it's wrapping.
-  This *can* be :class:`logging.Logger` but absolutely doesn't have to.
+  This *can* be standard library's :class:`logging.Logger` but absolutely doesn't have to.
 
 To manipulate the context dictionary, it offers to:
 
