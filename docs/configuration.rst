@@ -46,7 +46,7 @@ Thus the :ref:`example <proc>` from the previous chapter could have been written
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
 
-because :class:`~structlog.processors.PrintLogger` is the default ``LoggerFactory`` used (see :ref:`logger-factories`).
+because :class:`~structlog.PrintLogger` is the default ``LoggerFactory`` (see :ref:`logger-factories`).
 
 Configuration also applies to :func:`~structlog.wrap_logger` because that's what's used internally:
 
@@ -91,9 +91,9 @@ At any time, you can check whether and how ``structlog`` is configured:
 .. note::
 
    Since you will call :func:`structlog.get_logger` most likely in module scope, they run at import time before you had a chance to configure ``structlog``.
-   Hence they return a **lazy proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
+   Therefore they return a **lazy proxy** that returns a correct wrapped logger on first ``bind()``/``new()``.
 
-   Therefore, you must never call ``new()`` or ``bind()`` in module or class scope because otherwise you will receive a logger configured with ``structlog``'s default values.
+   Thus, you must never call ``new()`` or ``bind()`` in module or class scope because otherwise you will receive a logger configured with ``structlog``'s default values.
    Use :func:`~structlog.get_logger`\ 's ``initial_values`` to achieve pre-populated contexts.
 
    To enable you to log with the module-global logger, it will create a temporary BoundLogger and relay the log calls to it on *each call*.
@@ -141,7 +141,7 @@ The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
 
 .. note::
 
-   `LoggerFactory()`-style factories always need to get passed as *instances* like in the examples above.
+   ``LoggerFactory``-style factories always need to get passed as *instances* like in the examples above.
    While neither allows for customization using parameters yet, they may do so in the future.
 
 Calling :func:`structlog.get_logger` without configuration gives you a perfectly useful :class:`structlog.PrintLogger`.

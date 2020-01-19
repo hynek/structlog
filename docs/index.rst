@@ -30,6 +30,7 @@ Basics
    getting-started
    loggers
    configuration
+   testing
    thread-local
    contextvars
    processors

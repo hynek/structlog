@@ -104,7 +104,7 @@ Additionally, the following arguments are allowed too:
 
 **initial_values**
    The values that new wrapped loggers are automatically constructed with.
-   Useful for example if you want to have the module name as part of the context.
+   Useful, for example, if you want to have the module name as part of the context.
 
 .. note::
 
@@ -113,39 +113,3 @@ Additionally, the following arguments are allowed too:
    What happens to it depends on the logger you wrap and your processors alone.
 
    This gives you the power to log directly to databases, log aggregation servers, web services, and whatnot.
-
-
-Printing and Testing
---------------------
-
-To save you the hassle and slowdown of using standard library's ``logging`` for standard out logging, ``structlog`` ships a :class:`~structlog.PrintLogger` that can log into arbitrary files -- including standard out (which is the default if no file is passed into the constructor):
-
-.. doctest::
-
-   >>> from structlog import PrintLogger
-   >>> PrintLogger().info("hello world!")
-   hello world!
-
-If you need functionality similar to :meth:`unittest.TestCase.assertLogs`, or you want to capture all logs for some other reason, you can use the :func:`structlog.testing.capture_logs` context manager:
-
-.. doctest::
-
-   >>> from structlog import get_logger
-   >>> from structlog.testing import capture_logs
-   >>> with capture_logs() as logs:
-   ...    get_logger().bind(x="y").info("hello")
-   >>> logs
-   [{'x': 'y', 'event': 'hello', 'log_level': 'info'}]
-
-Additionally -- mostly for unit testing within ``structlog`` itself -- ``structlog`` also ships with a logger that just returns whatever it gets passed into it: :class:`~structlog.ReturnLogger`.
-
-.. doctest::
-
-   >>> from structlog import ReturnLogger
-   >>> ReturnLogger().msg(42) == 42
-   True
-   >>> obj = ["hi"]
-   >>> ReturnLogger().msg(obj) is obj
-   True
-   >>> ReturnLogger().msg("hello", when="again")
-   (('hello',), {'when': 'again'})
