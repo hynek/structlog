@@ -407,8 +407,7 @@ def add_log_level_number(logger, method_name, event_dict):
        level in ("warning", "error", "critical")
        level_number >= 30
 
-    The mapping of names to numbers is in
-    :data:`~structlog.stdlib._NAME_TO_LEVEL`.
+    The mapping of names to numbers is in ``structlog.stdlib._NAME_TO_LEVEL``.
 
     .. versionadded:: 18.2.0
     """

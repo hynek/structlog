@@ -325,12 +325,13 @@ class ExceptionPrettyPrinter(object):
     """
     Pretty print exceptions and remove them from the ``event_dict``.
 
-    :param file file: Target file for output (default: ``sys.stdout``).
+    :param file: Target file for output (default: ``sys.stdout``).
+    :type file: file object
 
     This processor is mostly for development and testing so you can read
     exceptions properly formatted.
 
-    It behaves like `format_exc_info` except it removes the exception
+    It behaves like format_exc_info` except it removes the exception
     data from the event dictionary after printing it.
 
     It's tolerant to having `format_exc_info` in front of itself in the

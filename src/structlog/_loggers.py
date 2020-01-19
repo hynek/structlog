@@ -22,7 +22,8 @@ class PrintLoggerFactory(object):
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    :param file file: File to print to. (default: stdout)
+    :param file: File to print to. (default: stdout)
+    :type file: file object
 
     Positional arguments are silently ignored.
 
@@ -54,7 +55,8 @@ class PrintLogger(object):
     """
     Print events into a file.
 
-    :param file file: File to print to. (default: stdout)
+    :param file: File to print to. (default: stdout)
+    :type file: file object
 
     >>> from structlog import PrintLogger
     >>> PrintLogger().msg("hello")

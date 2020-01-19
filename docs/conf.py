@@ -101,6 +101,13 @@ exclude_patterns = ["_build"]
 # documents.
 default_role = "any"
 
+nitpick_ignore = [
+    ("py:class", "callable"),
+    ("py:class", "file object"),
+    ("py:class", "ILogObserver"),
+    ("py:class", "PlainFileObserver"),
+]
+
 # If true, '()' will be appended to :func: etc. cross-reference text.
 # add_function_parentheses = True
 

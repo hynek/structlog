@@ -112,7 +112,7 @@ def get_logger(*args, **initial_values):
         mean.
     :param initial_values: Values that are used to pre-populate your contexts.
 
-    :rtype: A proxy that creates a correctly configured bound logger when
+    :returns: A proxy that creates a correctly configured bound logger when
         necessary.
 
     See `configuration` for details.
@@ -160,7 +160,7 @@ def wrap_logger(
     :param tuple logger_factory_args: Values that are passed unmodified as
         ``*logger_factory_args`` to the logger factory if not `None`.
 
-    :rtype: A proxy that creates a correctly configured bound logger when
+    :returns: A proxy that creates a correctly configured bound logger when
         necessary.
 
     See `configure` for the meaning of the rest of the arguments.

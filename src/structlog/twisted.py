@@ -189,8 +189,8 @@ class PlainFileLogObserver(object):
     Great to just print JSON to stdout where you catch it with something like
     runit.
 
-    :param file file: File to print to.
-
+    :param file: File to print to.
+    :type file: file object
 
     .. versionadded:: 0.2.0
     """
