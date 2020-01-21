@@ -19,7 +19,7 @@ import contextvars
 _CONTEXT = contextvars.ContextVar("structlog_context")
 
 
-def merge_contextvars_context(logger, method_name, event_dict):
+def merge_contextvars(logger, method_name, event_dict):
     """
     A processor that merges in a global (context-local) context.
 
@@ -58,9 +58,9 @@ def bind_contextvars(**kwargs):
     _get_context().update(kwargs)
 
 
-def unbind_contextvars(*args):
+def unbind_contextvars(*keys):
     """
-    Remove keys from the context-local context.
+    Remove *keys* from the context-local context if they are present.
 
     Use this instead of :func:`~structlog.BoundLogger.unbind` when you want to
     remove keys from a global (context-local) context.
@@ -68,7 +68,7 @@ def unbind_contextvars(*args):
     .. versionadded:: 20.1.0
     """
     ctx = _get_context()
-    for key in args:
+    for key in keys:
         ctx.pop(key, None)
 
 

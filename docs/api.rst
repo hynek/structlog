@@ -4,8 +4,8 @@ API Reference
 =============
 
 .. note::
-   The examples here use a very simplified configuration using the minimalistic :class:`structlog.processors.KeyValueRenderer` for brevity and to enable doctests.
-   The output is going to be different (nicer!) with default configuration.
+   The examples here use a very simplified configuration using the minimalistic `structlog.processors.KeyValueRenderer` for brevity and to enable doctests.
+   The output is going to be different (nicer!) with the default configuration.
 
 
 .. testsetup:: *
@@ -23,8 +23,8 @@ API Reference
 
 .. module:: structlog
 
-:mod:`structlog` Package
-------------------------
+`structlog` Package
+-------------------
 
 .. autofunction:: get_logger
 
@@ -56,8 +56,8 @@ API Reference
    :members: new, bind, unbind, _logger, _process_event, _proxy_to_logger
 
 
-:mod:`dev` Module
------------------
+`structlog.dev` Module
+----------------------
 
 .. automodule:: structlog.dev
 
@@ -67,8 +67,8 @@ API Reference
 .. autofunction:: set_exc_info
 
 
-:mod:`testing` Module
----------------------
+`structlog.testing` Module
+--------------------------
 
 .. automodule:: structlog.testing
 
@@ -80,12 +80,12 @@ API Reference
 .. autoclass:: ReturnLoggerFactory
 
 
-:mod:`threadlocal` Module
--------------------------
+`structlog.threadlocal` Module
+------------------------------
 
 .. automodule:: structlog.threadlocal
 
-.. autofunction:: merge_threadlocal_context
+.. autofunction:: merge_threadlocal
 
 .. autofunction:: clear_threadlocal
 
@@ -109,12 +109,12 @@ API Reference
 .. autofunction:: as_immutable
 
 
-:mod:`contextvars` Module
--------------------------
+`structlog.contextvars` Module
+------------------------------
 
 .. automodule:: structlog.contextvars
 
-.. autofunction:: merge_contextvars_context
+.. autofunction:: merge_contextvars
 .. autofunction:: clear_contextvars
 .. autofunction:: bind_contextvars
 .. autofunction:: unbind_contextvars
@@ -122,8 +122,8 @@ API Reference
 
 .. _procs:
 
-:mod:`processors` Module
-------------------------
+`structlog.processors` Module
+-----------------------------
 
 .. automodule:: structlog.processors
 
@@ -201,8 +201,8 @@ API Reference
       {'year': '2013'}
 
 
-:mod:`stdlib` Module
---------------------
+`structlog.stdlib` Module
+-------------------------
 
 .. automodule:: structlog.stdlib
 
@@ -228,8 +228,8 @@ API Reference
    :members: wrap_for_formatter
 
 
-:mod:`twisted` Module
----------------------
+`structlog.twisted` Module
+--------------------------
 
 .. automodule:: structlog.twisted
 

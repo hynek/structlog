@@ -1,5 +1,3 @@
-.. _getting-started:
-
 Getting Started
 ===============
 
@@ -33,12 +31,12 @@ And indeed, the simplest possible usage looks like this:
 Here, ``structlog`` takes full advantage of its hopefully useful default settings:
 
 - Output is sent to `standard out`_ instead of exploding into the user's face or doing nothing.
-- All keywords are formatted using :class:`structlog.dev.ConsoleRenderer`.
-  That in turn uses `repr()`_ to serialize all values to strings.
+- All keywords are formatted using `structlog.dev.ConsoleRenderer`.
+  That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
-- If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice :doc:`colors <development>`.
+- If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice `colors <development>`.
 
-It should be noted that even in most complex logging setups the example would still look just like that thanks to :ref:`configuration`.
+It should be noted that even in most complex logging setups the example would still look just like that thanks to `configuration`.
 Using the defaults, as above, is equivalent to::
 
    import structlog
@@ -58,7 +56,7 @@ Using the defaults, as above, is equivalent to::
    log = structlog.get_logger()
 
 .. note::
-   For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic :class:`structlog.processors.KeyValueRenderer()` without timestamps.
+   For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic `structlog.processors.KeyValueRenderer()` without timestamps.
 
 There you go, structured logging!
 However, this alone wouldn't warrant its own package.
@@ -102,9 +100,9 @@ For ``structlog``, a log entry is just a dictionary called *event dict[ionary]*:
 - As soon as an *event* happens -- which is a dictionary too -- it is merged together with the *context* to an *event dict* and logged out.
 - If you don't like the concept of pre-building a context: just don't!
   Convenient key-value-based logging is great to have on its own.
-- To keep as much order of the keys as possible, an :class:`collections.OrderedDict` is used for the context by default for Pythons that do not have ordered dictionaries by default (notably all versions of CPython before 3.6).
+- To keep as much order of the keys as possible, an `collections.OrderedDict` is used for the context by default for Pythons that do not have ordered dictionaries by default (notably all versions of CPython before 3.6).
 - The recommended way of binding values is the one in these examples: creating new loggers with a new context.
-  If you're okay with giving up immutable local state for convenience, you can also use :ref:`thread/greenlet local storage <threadlocal>` for the context.
+  If you're okay with giving up immutable local state for convenience, you can also use `thread/greenlet local storage <thread-local>` or :doc:`context variables <contextvars>` for the context.
 
 
 Manipulating Log Entries in Flight
@@ -127,7 +125,7 @@ The processor would look like this:
   ...     return event_dict
 
 Plain Python, plain dictionaries.
-Now you have to tell ``structlog`` about your processor by :doc:`configuring <configuration>` it:
+Now you have to tell ``structlog`` about your processor by `configuring <configuration>` it:
 
 .. doctest::
 
@@ -147,7 +145,7 @@ It depends on the *logger* that is wrapped by ``structlog`` what kind of input i
 
 However, in most cases it's gonna be strings.
 
-So assuming you want to follow :doc:`best practices <logging-best-practices>` and render your event dictionary to JSON that is picked up by a log aggregation system like ELK or Graylog, ``structlog`` comes with batteries included -- you just have to tell it to use its :class:`~structlog.processors.JSONRenderer`:
+So assuming you want to follow `best practices <logging-best-practices>` and render your event dictionary to JSON that is picked up by a log aggregation system like ELK or Graylog, ``structlog`` comes with batteries included -- you just have to tell it to use its :class:`~structlog.processors.JSONRenderer`:
 
 .. doctest::
 
@@ -155,8 +153,6 @@ So assuming you want to follow :doc:`best practices <logging-best-practices>` an
   >>> structlog.get_logger().msg("hi")
   {"event": "hi"}
 
-
-.. _standard-library-lite:
 
 ``structlog`` and Standard Library's ``logging``
 ------------------------------------------------
@@ -180,18 +176,17 @@ To make this common case as simple as possible, ``structlog`` comes with some to
 
 In other words, you tell ``structlog`` that you would like to use the standard library logger factory and keep calling :func:`~structlog.get_logger` like before.
 
-Since ``structlog`` is mainly used together with standard library's logging, there's :doc:`more <standard-library>` goodness to make it as fast and convenient as possible.
+Since ``structlog`` is mainly used together with standard library's logging, there's `more <standard-library>` goodness to make it as fast and convenient as possible.
 
 
 Liked what you saw?
 -------------------
 
 Now you're all set for the rest of the user's guide and can start reading about :doc:`bound loggers <loggers>` -- the heart of ``structlog``.
-If you want to see more code, make sure to check out the :ref:`examples`!
+If you want to see more code, make sure to check out the `examples`!
 
 .. [*] In production, you're more likely to use :class:`~structlog.processors.JSONRenderer` that can also be customized using a ``__structlog__`` method so you don't have to change your repr methods to something they weren't originally intended for.
 
 
 .. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
-.. _`repr()`: https://docs.python.org/2/reference/datamodel.html#object.__repr__
 .. _recipe: https://docs.python.org/2/howto/logging-cookbook.html

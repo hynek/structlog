@@ -11,7 +11,7 @@ Here are a few hints how to get most out of ``structlog`` in production:
 
       configure(context_class=dict)
 
-   If you don't use automated parsing (you should!) and need predictable order of your keys for some reason, use the `key_order` argument of :class:`~structlog.processors.KeyValueRenderer`.
+   If you don't use automated parsing (you should!) and need predictable order of your keys for some reason, use the *key_order* argument of :class:`~structlog.processors.KeyValueRenderer`.
 #. Use a specific wrapper class instead of the generic one.
    ``structlog`` comes with ones for the :doc:`standard-library` and for :doc:`twisted`::
 
@@ -30,7 +30,7 @@ Here are a few hints how to get most out of ``structlog`` in production:
             log.info("iterated", i=i)
 
 
-#. Set the `cache_logger_on_first_use` option to `True` so the aforementioned on-demand loggers will be assembled only once and cached for future uses::
+#. Set the *cache_logger_on_first_use* option to `True` so the aforementioned on-demand loggers will be assembled only once and cached for future uses::
 
       configure(cache_logger_on_first_use=True)
 

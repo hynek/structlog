@@ -3,7 +3,7 @@ Twisted
 
 .. warning::
 
-   Since :func:`sys.exc_clear` has been dropped in Python 3, there is currently no way to avoid multiple tracebacks in your log files if using ``structlog`` together with Twisted on Python 3.
+   Since ``sys.exc_clear`` has been dropped in Python 3, there is currently no way to avoid multiple tracebacks in your log files if using ``structlog`` together with Twisted on Python 3.
 
 .. note::
 
@@ -13,14 +13,14 @@ Twisted
 Concrete Bound Logger
 ---------------------
 
-To make ``structlog``'s behavior less magicy, it ships with a Twisted-specific wrapper class that has an explicit API instead of improvising: :class:`structlog.twisted.BoundLogger`.
-It behaves exactly like the generic :class:`structlog.BoundLogger` except:
+To make ``structlog``'s behavior less magicy, it ships with a Twisted-specific wrapper class that has an explicit API instead of improvising: `structlog.twisted.BoundLogger`.
+It behaves exactly like the generic `structlog.BoundLogger` except:
 
 - it's slightly faster due to less overhead,
 - has an explicit API (:func:`~structlog.twisted.BoundLogger.msg` and :func:`~structlog.twisted.BoundLogger.err`),
 - hence causing less cryptic error messages if you get method names wrong.
 
-In order to avoid that ``structlog`` disturbs your CamelCase harmony, it comes with an alias for :func:`structlog.get_logger` called :func:`structlog.getLogger`.
+In order to avoid that ``structlog`` disturbs your CamelCase harmony, it comes with an alias for `structlog.get_logger` called `structlog.getLogger`.
 
 
 Processors
@@ -28,7 +28,7 @@ Processors
 
 ``structlog`` comes with two Twisted-specific processors:
 
-:class:`~structlog.twisted.EventAdapter`
+`structlog.twisted.EventAdapter`
    This is useful if you have an existing Twisted application and just want to wrap your loggers for now.
    It takes care of transforming your event dictionary into something `twisted.python.log.err <https://twistedmatrix.com/documents/current/api/twisted.python.log.html#err>`_ can digest.
 
@@ -49,7 +49,7 @@ Processors
    Therefore ``structlog`` comes with:
 
 
-:class:`~structlog.twisted.JSONRenderer`
+`structlog.twisted.JSONRenderer`
    Goes a step further and circumvents Twisted logger's Exception/Failure handling and renders it itself as JSON strings.
    That gives you regular and simple-to-parse single-line JSON log entries no matter what happens.
 
@@ -57,9 +57,9 @@ Processors
 Bending Foreign Logging To Your Will
 ------------------------------------
 
-``structlog`` comes with a wrapper for Twisted's log observers to ensure the rest of your logs are in JSON too: :func:`~structlog.twisted.JSONLogObserverWrapper`.
+``structlog`` comes with a wrapper for Twisted's log observers to ensure the rest of your logs are in JSON too: `structlog.twisted.JSONLogObserverWrapper`.
 
-What it does is determining whether a log entry has been formatted by :class:`~structlog.twisted.JSONRenderer`  and if not, converts the log entry to JSON with `event` being the log message and putting Twisted's `system` into a second key.
+What it does is determining whether a log entry has been formatted by `structlog.twisted.JSONRenderer`  and if not, converts the log entry to JSON with ``event`` being the log message and putting Twisted's ``system`` into a second key.
 
 So for example::
 
@@ -72,7 +72,7 @@ becomes::
 There is obviously some redundancy here.
 Also, I'm presuming that if you write out JSON logs, you're going to let something else parse them which makes the human-readable date entries more trouble than they're worth.
 
-To get a clean log without timestamps and additional system fields (``[-]``), ``structlog`` comes with :class:`~structlog.twisted.PlainFileLogObserver` that writes only the plain message to a file and :func:`~structlog.twisted.plainJSONStdOutLogger` that composes it with the aforementioned :func:`~structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise straight to `standard out`_::
+To get a clean log without timestamps and additional system fields (``[-]``), ``structlog`` comes with `structlog.twisted.PlainFileLogObserver` that writes only the plain message to a file and `structlog.twisted.plainJSONStdOutLogger` that composes it with the aforementioned `structlog.twisted.JSONLogObserverWrapper` and gives you a pure JSON log without any timestamps or other noise straight to `standard out`_::
 
 
    $ twistd -n --logger structlog.twisted.plainJSONStdOutLogger web

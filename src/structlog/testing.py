@@ -3,7 +3,11 @@
 # repository for complete details.
 
 """
-Testing helpers.
+Helpers to test your application's logging behavior.
+
+.. versionadded:: 20.1.0
+
+See :doc:`testing`.
 """
 
 from contextlib import contextmanager
@@ -18,24 +22,8 @@ __all__ = ["LogCapture", "capture_logs"]
 class LogCapture(object):
     """
     Class for capturing log messages in its entries list.
-    Generally you should use :func:`structlog.testing.capture_logs`,
+    Generally you should use `structlog.testing.capture_logs`,
     but you can use this class if you want to capture logs with other patterns.
-    For example, using ``pytest`` fixtures::
-
-        @pytest.fixture(scope='function')
-        def log_output():
-            return LogCapture()
-
-
-        @pytest.fixture(scope='function', autouse=True)
-        def configure_structlog(log_output):
-            structlog.configure(
-                processors=[log_output]
-            )
-
-        def test_my_stuff(log_output):
-            do_something()
-            assert log_output.entries == [...]
 
     .. versionadded:: 20.1.0
     """
@@ -55,7 +43,6 @@ def capture_logs():
     Context manager that appends all logging statements to its yielded list
     while it is active.
 
-
     Attention: this is **not** thread-safe!
 
     .. versionadded:: 20.1.0
@@ -71,9 +58,9 @@ def capture_logs():
 
 class ReturnLoggerFactory(object):
     r"""
-    Produce and cache :class:`ReturnLogger`\ s.
+    Produce and cache `ReturnLogger`\ s.
 
-    To be used with :func:`structlog.configure`\ 's `logger_factory`.
+    To be used with `structlog.configure`\ 's *logger_factory*.
 
     Positional arguments are silently ignored.
 
@@ -96,8 +83,6 @@ class ReturnLogger(object):
     'hello'
     >>> ReturnLogger().msg("hello", when="again")
     (('hello',), {'when': 'again'})
-
-    Useful for testing.
 
     .. versionchanged:: 0.3.0
         Allow for arbitrary arguments and keyword arguments to be passed in.

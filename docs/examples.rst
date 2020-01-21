@@ -1,5 +1,3 @@
-.. _examples:
-
 Examples
 ========
 
@@ -21,11 +19,11 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 .. literalinclude:: code_examples/flask_/some_module.py
    :language: python
 
-While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using `new()` for re-initializing the logger).
+While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using ``new()`` for re-initializing the logger).
 
-Please note that :class:`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a :func:`logging.getLogger` with it.
-It's used by :func:`structlog.get_logger` to rid you of logging boilerplate in application code.
-If you prefer to name your standard library loggers explicitly, a positional argument to :func:`~structlog.get_logger` gets passed to the factory and used as the name.
+Please note that `structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger` with it.
+It's used by `structlog.get_logger` to rid you of logging boilerplate in application code.
+If you prefer to name your standard library loggers explicitly, a positional argument to `get_logger` gets passed to the factory and used as the name.
 
 
 .. _twisted-example:
@@ -60,7 +58,7 @@ This shows off the strength of keeping a dict of objects for context instead of 
 Processors
 ----------
 
-:ref:`Processors` are a both simple and powerful feature of ``structlog``.
+:doc:`processors` are a both simple and powerful feature of ``structlog``.
 
 So you want timestamps as part of the structure of the log entry, censor passwords, filter out log entries below your log level before they even get rendered, and get your output as JSON for convenient parsing?
 Here you go:
