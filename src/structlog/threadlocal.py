@@ -219,6 +219,8 @@ def bind_threadlocal(**kwargs):
 def unbind_threadlocal(*keys):
     """
     Tries to remove bound *keys* from threadlocal logging context if present.
+
+    .. versionadded:: 20.1.0
     """
     context = _get_context()
     for key in keys:

@@ -322,7 +322,6 @@ class TestNewThreadLocal(object):
         """
         Test that unbinding from threadlocal works for keys that exist
         and does not raise error when they do not exist.
-
         """
 
         clear_threadlocal()
@@ -334,4 +333,5 @@ class TestNewThreadLocal(object):
         assert {"b": 34} == merge_threadlocal_context(None, None, {})
 
         unbind_threadlocal("non-existing-key")
+
         assert {"b": 34} == merge_threadlocal_context(None, None, {})
