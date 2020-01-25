@@ -38,6 +38,7 @@ Changes:
   `#229 <https://github.com/hynek/structlog/issues/229>`_
 - ``colorama`` isn't initialized lazily on Windows anymore because it breaks rendering.
   `#232 <https://github.com/hynek/structlog/issues/232>`_,
+  `#242 <https://github.com/hynek/structlog/pull/242>`_
 
 
 ----
