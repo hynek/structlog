@@ -20,6 +20,7 @@ from structlog.threadlocal import (
     merge_threadlocal,
     merge_threadlocal_context,
     tmp_bind,
+    unbind_threadlocal,
     wrap_dict,
 )
 
@@ -316,3 +317,21 @@ class TestNewThreadLocal(object):
         assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal(
             None, None, {"b": 2}
         )
+
+    def test_unbind_threadlocal(self):
+        """
+        Test that unbinding from threadlocal works for keys that exist
+        and does not raise error when they do not exist.
+
+        """
+
+        clear_threadlocal()
+        bind_threadlocal(a=234, b=34)
+        assert {"a": 234, "b": 34} == merge_threadlocal_context(None, None, {})
+
+        unbind_threadlocal("a")
+
+        assert {"b": 34} == merge_threadlocal_context(None, None, {})
+
+        unbind_threadlocal("non-existing-key")
+        assert {"b": 34} == merge_threadlocal_context(None, None, {})
