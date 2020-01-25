@@ -34,7 +34,7 @@ Changes:
   `#234 <https://github.com/hynek/structlog/pull/234>`_
 - Added ``structlog.threadlocal.unbind_threadlocal()``.
   `#239 <https://github.com/hynek/structlog/pull/239>`_
-- The logger created by ``structlog.get_logger()`` is not detected as an abstract method anymore when attached to an abstract base class.
+- The logger created by ``structlog.get_logger()`` is not detected as an abstract method anymore, when attached to an abstract base class.
   `#229 <https://github.com/hynek/structlog/issues/229>`_,
 
 
