@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import abc
 import pickle
 import platform
 import sys
@@ -14,7 +15,7 @@ from collections import OrderedDict
 import pytest
 
 from pretend import call, call_recorder, stub
-from six import PY3
+from six import PY3, add_metaclass
 
 import structlog
 
@@ -45,6 +46,21 @@ class Wrapper(BoundLoggerBase):
     """
     Custom wrapper class for testing.
     """
+
+
+def test_lazy_logger_is_not_detected_as_abstract_method():
+    """
+    If someone defines an attribute on an ABC with a logger, that logger is not
+    detected as an abstract method.
+
+    See https://github.com/hynek/structlog/issues/229
+    """
+
+    @add_metaclass(abc.ABCMeta)
+    class Foo(object):
+        log = structlog.get_logger()
+
+    Foo()
 
 
 def test_default_context_class():

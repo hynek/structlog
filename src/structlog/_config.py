@@ -359,6 +359,8 @@ class BoundLoggerLazyProxy(object):
         If a logging method if called on a lazy proxy, we have to create an
         ephemeral BoundLogger first.
         """
+        if name == "__isabstractmethod__":
+            raise AttributeError
         bl = self.bind()
         return getattr(bl, name)
 
