@@ -8,6 +8,8 @@ Helpers that make development with ``structlog`` more pleasant.
 
 from __future__ import absolute_import, division, print_function
 
+import sys
+
 from six import PY2, StringIO, string_types
 
 
@@ -19,6 +21,7 @@ except ImportError:
 
 __all__ = ["ConsoleRenderer"]
 
+_IS_WINDOWS = sys.platform == "win32"
 
 _MISSING = "{who} requires the {package} package installed.  "
 _EVENT_WIDTH = 30  # pad the event name to so many characters
@@ -125,6 +128,8 @@ class ConsoleRenderer(object):
        ``colorama`` now initializes lazily to avoid unwanted initializations as
        ``ConsoleRenderer`` is used by default.
     .. versionchanged:: 19.2 Can be pickled now.
+    .. versionchanged:: 20.1 ``colorama`` does not initialize lazily on Windows
+       anymore because it breaks rendering.
     """
 
     def __init__(
@@ -145,9 +150,12 @@ class ConsoleRenderer(object):
                     )
                 )
 
-            self._init_colorama = True
-            if force_colors:
-                self._force_colors = True
+            if _IS_WINDOWS:  # pragma: no cover
+                _init_colorama(self._force_colors)
+            else:
+                self._init_colorama = True
+                if force_colors:
+                    self._force_colors = True
 
             styles = _ColorfulStyles
         else:
@@ -185,12 +193,7 @@ class ConsoleRenderer(object):
     def __call__(self, _, __, event_dict):
         # Initialize lazily to prevent import side-effects.
         if self._init_colorama:
-            if self._force_colors:
-                colorama.deinit()
-                colorama.init(strip=False)
-            else:
-                colorama.init()
-
+            _init_colorama(self._force_colors)
             self._init_colorama = False
         sio = StringIO()
 
@@ -289,6 +292,14 @@ class ConsoleRenderer(object):
             "debug": styles.level_debug,
             "notset": styles.level_notset,
         }
+
+
+def _init_colorama(force):
+    if force:
+        colorama.deinit()
+        colorama.init(strip=False)
+    else:
+        colorama.init()
 
 
 _SENTINEL = object()
