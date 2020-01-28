@@ -53,7 +53,7 @@ For that times there is the `structlog.wrap_logger` function that can be used to
 .. doctest::
 
    >>> from structlog import wrap_logger
-   >>> class PrintLogger(object):
+   >>> class PrintLogger:
    ...     def msg(self, message):
    ...         print(message)
    >>> def proc(logger, method_name, event_dict):

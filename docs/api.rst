@@ -140,12 +140,12 @@ API Reference
 
    .. doctest::
 
-      >>> class C1(object):
+      >>> class C1:
       ...     def __structlog__(self):
       ...         return ["C1!"]
       ...     def __repr__(self):
       ...         return "__structlog__ took precedence"
-      >>> class C2(object):
+      >>> class C2:
       ...     def __repr__(self):
       ...         return "No __structlog__, so this is used."
       >>> from structlog.processors import JSONRenderer
