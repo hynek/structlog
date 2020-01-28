@@ -6,15 +6,11 @@
 Processors useful regardless of the logging framework.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import datetime
 import json
 import operator
 import sys
 import time
-
-import six
 
 from structlog._frames import (
     _find_first_app_frame_and_name,
@@ -23,7 +19,7 @@ from structlog._frames import (
 )
 
 
-class KeyValueRenderer(object):
+class KeyValueRenderer:
     """
     Render ``event_dict`` as a list of ``Key=repr(Value)`` pairs.
 
@@ -101,7 +97,7 @@ class KeyValueRenderer(object):
         )
 
 
-class UnicodeEncoder(object):
+class UnicodeEncoder:
     """
     Encode unicode values in ``event_dict``.
 
@@ -121,12 +117,12 @@ class UnicodeEncoder(object):
 
     def __call__(self, logger, name, event_dict):
         for key, value in event_dict.items():
-            if isinstance(value, six.text_type):
+            if isinstance(value, str):
                 event_dict[key] = value.encode(self._encoding, self._errors)
         return event_dict
 
 
-class UnicodeDecoder(object):
+class UnicodeDecoder:
     """
     Decode byte string values in ``event_dict``.
 
@@ -153,7 +149,7 @@ class UnicodeDecoder(object):
         return event_dict
 
 
-class JSONRenderer(object):
+class JSONRenderer:
     """
     Render the ``event_dict`` using ``serializer(event_dict, **json_kw)``.
 
@@ -227,7 +223,7 @@ def format_exc_info(logger, name, event_dict):
     return event_dict
 
 
-class TimeStamper(object):
+class TimeStamper:
     """
     Add a timestamp to ``event_dict``.
 
@@ -311,7 +307,7 @@ def _figure_out_exc_info(v):
 
     :rtype: tuple
     """
-    if six.PY3 and isinstance(v, BaseException):
+    if isinstance(v, BaseException):
         return (v.__class__, v, v.__traceback__)
     elif isinstance(v, tuple):
         return v
@@ -321,7 +317,7 @@ def _figure_out_exc_info(v):
     return v
 
 
-class ExceptionPrettyPrinter(object):
+class ExceptionPrettyPrinter:
     """
     Pretty print exceptions and remove them from the ``event_dict``.
 
@@ -361,7 +357,7 @@ class ExceptionPrettyPrinter(object):
         return event_dict
 
 
-class StackInfoRenderer(object):
+class StackInfoRenderer:
     """
     Add stack information with key ``stack`` if ``stack_info`` is `True`.
 

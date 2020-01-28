@@ -9,12 +9,10 @@ networking engine.
 See also :doc:`structlog's Twisted support <twisted>`.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import json
 import sys
 
-from six import PY2, string_types
 from twisted.python import log
 from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver, textFromEventDict
@@ -54,7 +52,7 @@ class BoundLogger(BoundLoggerBase):
         return self._proxy_to_logger("err", event, **kw)
 
 
-class LoggerFactory(object):
+class LoggerFactory:
     """
     Build a Twisted logger when an *instance* is called.
 
@@ -91,13 +89,13 @@ def _extractStuffAndWhy(eventDict):
     if isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
         raise ValueError("Both _stuff and event contain an Exception/Failure.")
     # `log.err('event', _why='alsoEvent')` is ambiguous.
-    if _why and isinstance(event, string_types):
+    if _why and isinstance(event, str):
         raise ValueError("Both `_why` and `event` supplied.")
     # Two failures are ambiguous too.
     if not isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
         _why = _why or "error"
         _stuff = event
-    if isinstance(event, string_types):
+    if isinstance(event, str):
         _why = event
     if not _stuff and sys.exc_info() != (None, None, None):
         _stuff = Failure()
@@ -105,12 +103,11 @@ def _extractStuffAndWhy(eventDict):
     # formatting.  Avoid log.err() to dump another traceback into the log.
     if isinstance(_stuff, BaseException) and not isinstance(_stuff, Failure):
         _stuff = Failure(_stuff)
-    if PY2:
-        sys.exc_clear()
+
     return _stuff, _why, eventDict
 
 
-class ReprWrapper(object):
+class ReprWrapper:
     """
     Wrap a string and return it as the ``__repr__``.
 
@@ -182,7 +179,7 @@ class JSONRenderer(GenericJSONRenderer):
 
 
 @implementer(ILogObserver)
-class PlainFileLogObserver(object):
+class PlainFileLogObserver:
     """
     Write only the the plain message without timestamps or anything else.
 
@@ -205,7 +202,7 @@ class PlainFileLogObserver(object):
 
 
 @implementer(ILogObserver)
-class JSONLogObserverWrapper(object):
+class JSONLogObserverWrapper:
     """
     Wrap a log *observer* and render non-`JSONRenderer` entries to JSON.
 
@@ -259,7 +256,7 @@ def plainJSONStdOutLogger():
     return JSONLogObserverWrapper(PlainFileLogObserver(sys.stdout))
 
 
-class EventAdapter(object):
+class EventAdapter:
     """
     Adapt an ``event_dict`` to Twisted logging system.
 

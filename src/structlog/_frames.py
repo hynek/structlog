@@ -2,12 +2,10 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
-
 import sys
 import traceback
 
-from six.moves import cStringIO as StringIO
+from io import StringIO
 
 
 def _format_exception(exc_info):

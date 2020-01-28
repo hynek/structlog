@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
@@ -70,9 +68,9 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"structlog"
-author = u"Hynek Schlawack"
-copyright = u"2013, {author}".format(author=author)
+project = "structlog"
+author = "Hynek Schlawack"
+copyright = f"2013, {author}"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -229,7 +227,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ("index", "structlog.tex", u"structlog Documentation", u"Author", "manual")
+    ("index", "structlog.tex", "structlog Documentation", "Author", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -257,9 +255,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ("index", "structlog", u"structlog Documentation", [u"Author"], 1)
-]
+man_pages = [("index", "structlog", "structlog Documentation", ["Author"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -274,8 +270,8 @@ texinfo_documents = [
     (
         "index",
         "structlog",
-        u"structlog Documentation",
-        u"Author",
+        "structlog Documentation",
+        "Author",
         "structlog",
         "One line description of project.",
         "Miscellaneous",

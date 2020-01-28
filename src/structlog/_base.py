@@ -6,14 +6,11 @@
 Logger wrapper and helper class.
 """
 
-from __future__ import absolute_import, division, print_function
-
-from six import string_types
 
 from structlog.exceptions import DropEvent
 
 
-class BoundLoggerBase(object):
+class BoundLoggerBase:
     """
     Immutable context carrier.
 
@@ -43,7 +40,7 @@ class BoundLoggerBase(object):
         self._context = context
 
     def __repr__(self):
-        return "<{0}(context={1!r}, processors={2!r})>".format(
+        return "<{}(context={!r}, processors={!r})>".format(
             self.__class__.__name__, self._context, self._processors
         )
 
@@ -147,7 +144,7 @@ class BoundLoggerBase(object):
             event_dict["event"] = event
         for proc in self._processors:
             event_dict = proc(self._logger, method_name, event_dict)
-        if isinstance(event_dict, string_types):
+        if isinstance(event_dict, str):
             return (event_dict,), {}
         elif isinstance(event_dict, tuple):
             # In this case we assume that the last processor returned a tuple

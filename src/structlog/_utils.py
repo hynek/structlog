@@ -6,7 +6,6 @@
 Generic utilities.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import errno
 
@@ -22,7 +21,7 @@ def until_not_interrupted(f, *args, **kw):
     while True:
         try:
             return f(*args, **kw)
-        except (IOError, OSError) as e:
+        except OSError as e:
             if e.args[0] == errno.EINTR:
                 continue
             raise

@@ -2,7 +2,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import abc
 import pickle
@@ -15,7 +14,6 @@ from collections import OrderedDict
 import pytest
 
 from pretend import call, call_recorder, stub
-from six import PY3, add_metaclass
 
 import structlog
 
@@ -56,8 +54,7 @@ def test_lazy_logger_is_not_detected_as_abstract_method():
     See https://github.com/hynek/structlog/issues/229
     """
 
-    @add_metaclass(abc.ABCMeta)
-    class Foo(object):
+    class Foo(metaclass=abc.ABCMeta):
         log = structlog.get_logger()
 
     Foo()
@@ -79,7 +76,7 @@ def test_default_context_class():
     assert cls is _BUILTIN_DEFAULT_CONTEXT_CLASS
 
 
-class TestConfigure(object):
+class TestConfigure:
     def teardown_method(self, method):
         structlog.reset_defaults()
 
@@ -146,7 +143,7 @@ class TestConfigure(object):
         assert f is _CONFIG.logger_factory
 
 
-class TestBoundLoggerLazyProxy(object):
+class TestBoundLoggerLazyProxy:
     def teardown_method(self, method):
         structlog.reset_defaults()
 
@@ -161,9 +158,9 @@ class TestBoundLoggerLazyProxy(object):
         assert (
             "<BoundLoggerLazyProxy(logger=None, wrapper_class=None, "
             "processors=[1, 2, 3], "
-            "context_class=<%s 'dict'>, "
+            "context_class=<class 'dict'>, "
             "initial_values={'foo': 42}, "
-            "logger_factory_args=(4, 5))>" % ("class" if PY3 else "type",)
+            "logger_factory_args=(4, 5))>"
         ) == repr(p)
 
     def test_returns_bound_logger_on_bind(self, proxy):
@@ -180,7 +177,7 @@ class TestBoundLoggerLazyProxy(object):
         assert isinstance(b._context, dict)
         assert [1, 2, 3] == b._processors
 
-        class Class(object):
+        class Class:
             def __init__(self, *args, **kw):
                 pass
 
@@ -273,7 +270,7 @@ class TestBoundLoggerLazyProxy(object):
         Previous uses of the BoundLoggerLazyProxy don't interfere.
         """
 
-        class F(object):
+        class F:
             "New logger factory with a new attribute"
 
             def a(self, *args):
@@ -311,7 +308,7 @@ class TestBoundLoggerLazyProxy(object):
         assert repr(bllp) == repr(pickle.loads(pickle.dumps(bllp, proto)))
 
 
-class TestFunctions(object):
+class TestFunctions:
     def teardown_method(self, method):
         structlog.reset_defaults()
 

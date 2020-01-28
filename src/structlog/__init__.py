@@ -6,7 +6,6 @@
 Structured logging for Python.
 """
 
-from __future__ import absolute_import, division, print_function
 
 from structlog import dev, processors, stdlib, testing, threadlocal
 from structlog._base import BoundLoggerBase

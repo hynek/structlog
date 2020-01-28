@@ -11,7 +11,6 @@ Python 3.7 as :mod:`contextvars`.
 See :doc:`contextvars`.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import contextvars
 

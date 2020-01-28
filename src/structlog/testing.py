@@ -19,7 +19,7 @@ from .exceptions import DropEvent
 __all__ = ["LogCapture", "capture_logs"]
 
 
-class LogCapture(object):
+class LogCapture:
     """
     Class for capturing log messages in its entries list.
     Generally you should use `structlog.testing.capture_logs`,
@@ -56,7 +56,7 @@ def capture_logs():
         configure(processors=old_processors)
 
 
-class ReturnLoggerFactory(object):
+class ReturnLoggerFactory:
     r"""
     Produce and cache `ReturnLogger`\ s.
 
@@ -74,7 +74,7 @@ class ReturnLoggerFactory(object):
         return self._logger
 
 
-class ReturnLogger(object):
+class ReturnLogger:
     """
     Return the arguments that it's called with.
 

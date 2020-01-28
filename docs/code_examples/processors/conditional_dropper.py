@@ -1,7 +1,7 @@
 from structlog import DropEvent
 
 
-class ConditionalDropper(object):
+class ConditionalDropper:
     def __init__(self, peer_to_ignore):
         self._peer_to_ignore = peer_to_ignore
 

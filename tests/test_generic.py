@@ -2,19 +2,17 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import pickle
 
 import pytest
-import six
 
 from structlog._config import _CONFIG
 from structlog._generic import BoundLogger
 from structlog.testing import ReturnLogger
 
 
-class TestLogger(object):
+class TestLogger:
     def log(self, msg):
         return "log", msg
 
@@ -22,7 +20,7 @@ class TestLogger(object):
         return "gol", msg
 
 
-class TestGenericBoundLogger(object):
+class TestGenericBoundLogger:
     def test_caches(self):
         """
         __getattr__() gets called only once per logger method.
@@ -53,7 +51,6 @@ class TestGenericBoundLogger(object):
         assert "log", "foo" == b.log("foo")
         assert "gol", "bar" == b.gol("bar")
 
-    @pytest.mark.skipif(six.PY2, reason="Needs Py3 or dill.")
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
     def test_pickle(self, proto):
         """

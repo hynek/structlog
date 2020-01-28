@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import pytest
 
@@ -12,7 +9,7 @@ from structlog import get_config, get_logger, reset_defaults, testing
 from structlog.testing import ReturnLogger, ReturnLoggerFactory
 
 
-class TestCaptureLogs(object):
+class TestCaptureLogs:
     @classmethod
     def teardown_class(cls):
         reset_defaults()
@@ -62,7 +59,7 @@ class TestCaptureLogs(object):
         assert orig_procs is self.get_active_procs()
 
 
-class TestReturnLogger(object):
+class TestReturnLogger:
     # @pytest.mark.parametrize("method", stdlib_log_methods)
     def test_stdlib_methods_support(self, stdlib_log_method):
         """
@@ -81,7 +78,7 @@ class TestReturnLogger(object):
         assert obj is ReturnLogger().msg(obj)
 
 
-class TestReturnLoggerFactory(object):
+class TestReturnLoggerFactory:
     def test_builds_returnloggers(self):
         f = ReturnLoggerFactory()
 
