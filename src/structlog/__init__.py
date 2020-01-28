@@ -27,8 +27,13 @@ from structlog.testing import ReturnLogger, ReturnLoggerFactory
 
 try:
     from structlog import twisted
-except ImportError:  # pragma: nocover
+except ImportError:
     twisted = None
+
+try:
+    from structlog import contextvars
+except ImportError:
+    contextvars = None
 
 
 __version__ = "20.2.0.dev0"
@@ -54,6 +59,7 @@ __all__ = [
     "ReturnLoggerFactory",
     "configure",
     "configure_once",
+    "contextvars",
     "dev",
     "getLogger",
     "get_config",
