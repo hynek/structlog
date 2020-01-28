@@ -2,7 +2,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import sys
 
@@ -19,7 +18,7 @@ from structlog._frames import (
 )
 
 
-class TestFindFirstAppFrameAndName(object):
+class TestFindFirstAppFrameAndName:
     def test_ignores_structlog_by_default(self, monkeypatch):
         """
         No matter what you pass in, structlog frames get always ignored.
@@ -97,7 +96,7 @@ def exc_info():
         return sys.exc_info()
 
 
-class TestFormatException(object):
+class TestFormatException:
     def test_returns_str(self, exc_info):
         """
         Always returns a native string.
@@ -126,7 +125,7 @@ class TestFormatException(object):
         assert "foo" == _format_exception(exc_info)
 
 
-class TestFormatStack(object):
+class TestFormatStack:
     def test_returns_str(self):
         """
         Always returns a native string.

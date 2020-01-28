@@ -2,7 +2,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import threading
 
@@ -56,7 +55,7 @@ def logger():
     return ReturnLogger()
 
 
-class TestTmpBind(object):
+class TestTmpBind:
     def test_bind(self, log):
         """
         tmp_bind does not modify the thread-local state.
@@ -87,7 +86,7 @@ class TestTmpBind(object):
         assert {"y": 23} == log._context._dict
 
 
-class TestAsImmutable(object):
+class TestAsImmutable:
     def test_does_not_affect_global(self, log):
         """
         A logger from as_mutable is independent from thread local state.
@@ -121,7 +120,7 @@ class TestAsImmutable(object):
         assert isinstance(as_immutable(il), BoundLoggerBase)
 
 
-class TestThreadLocalDict(object):
+class TestThreadLocalDict:
     def test_wrap_returns_distinct_classes(self):
         """
         Each call to wrap_dict returns a distinct new class whose context is
@@ -273,7 +272,7 @@ class TestThreadLocalDict(object):
         assert 0 == len(D())
 
 
-class TestNewThreadLocal(object):
+class TestNewThreadLocal:
     def test_alias(self):
         """
         We're keeping the old alias around.

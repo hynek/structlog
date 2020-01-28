@@ -2,7 +2,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import collections
 import logging
@@ -34,7 +33,6 @@ from structlog.stdlib import (
 )
 
 from .additional_frame import additional_frame
-from .utils import py3_only
 
 
 def build_bl(logger=None, processors=None, context=None):
@@ -51,7 +49,7 @@ def return_method_name(_, method_name, __):
     return method_name
 
 
-class TestLoggerFactory(object):
+class TestLoggerFactory:
     def setup_method(self, method):
         """
         The stdlib logger factory modifies global state to fix caller
@@ -93,14 +91,15 @@ class TestLoggerFactory(object):
         assert file_name == os.path.realpath(__file__)
         assert func_name == "test_deduces_correct_caller"
 
-    @py3_only
     def test_stack_info(self):
+        """
+        If we ask for stack_info, it will returned.
+        """
         logger = _FixedFindCallerLogger("test")
         testing, is_, fun, stack_info = logger.findCaller(stack_info=True)
 
         assert "testing, is_, fun" in stack_info
 
-    @py3_only
     def test_no_stack_info_by_default(self):
         logger = _FixedFindCallerLogger("test")
         testing, is_, fun, stack_info = logger.findCaller()
@@ -135,7 +134,7 @@ class TestLoggerFactory(object):
         assert "foo" == lf.name
 
 
-class TestFilterByLevel(object):
+class TestFilterByLevel:
     def test_filters_lower_levels(self):
         logger = logging.Logger(__name__)
         logger.setLevel(CRITICAL)
@@ -152,7 +151,7 @@ class TestFilterByLevel(object):
         assert event_dict is filter_by_level(logger, "exception", event_dict)
 
 
-class TestBoundLogger(object):
+class TestBoundLogger:
     @pytest.mark.parametrize(
         ("method_name"), ["debug", "info", "warning", "error", "critical"]
     )
@@ -279,7 +278,7 @@ class TestBoundLogger(object):
         )
 
 
-class TestPositionalArgumentsFormatter(object):
+class TestPositionalArgumentsFormatter:
     def test_formats_tuple(self):
         """
         Positional arguments as simple types are rendered.
@@ -344,7 +343,7 @@ class TestPositionalArgumentsFormatter(object):
         assert {} == formatter(None, None, {"positional_args": ()})
 
 
-class TestAddLogLevelNumber(object):
+class TestAddLogLevelNumber:
     @pytest.mark.parametrize("level, number", _NAME_TO_LEVEL.items())
     def test_log_level_number_added(self, level, number):
         """
@@ -355,7 +354,7 @@ class TestAddLogLevelNumber(object):
         assert number == event_dict["level_number"]
 
 
-class TestAddLogLevel(object):
+class TestAddLogLevel:
     def test_log_level_added(self):
         """
         The log level is added to the event dict.
@@ -395,7 +394,7 @@ def log_record():
     return create_log_record
 
 
-class TestAddLoggerName(object):
+class TestAddLoggerName:
     def test_logger_name_added(self):
         """
         The logger name is added to the event dict.
@@ -417,7 +416,7 @@ class TestAddLoggerName(object):
         assert name == event_dict["logger"]
 
 
-class TestRenderToLogKW(object):
+class TestRenderToLogKW:
     def test_default(self):
         """
         Translates `event` to `msg` and handles otherwise empty `event_dict`s.
@@ -491,7 +490,7 @@ def configure_logging(pre_chain, logger=None, pass_foreign_args=False):
     )
 
 
-class TestProcessorFormatter(object):
+class TestProcessorFormatter:
     """
     These are all integration tests because they're all about integration.
     """
@@ -713,7 +712,6 @@ class TestProcessorFormatter(object):
             assert "Traceback (most recent call last):" in err
 
     @pytest.mark.parametrize("keep", [True, False])
-    @py3_only
     def test_formatter_unsets_stack_info(self, configure_for_pf, capsys, keep):
         """
         Stack traces doesn't get printed outside of the json document when

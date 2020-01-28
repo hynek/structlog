@@ -20,10 +20,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -32,7 +29,8 @@ CLASSIFIERS = [
     "Programming Language :: Python",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-INSTALL_REQUIRES = ["six"]
+PYTHON_REQUIRES = ">=3.6"
+INSTALL_REQUIRES = []
 EXTRAS_REQUIRE = {
     "tests": [
         "coverage[toml]",
@@ -40,7 +38,7 @@ EXTRAS_REQUIRE = {
         "pretend",
         "pytest>=3.3.0",
         "pytest-asyncio; python_version>='3.7'",
-        "python-rapidjson; python_version>='3.6'",
+        "python-rapidjson",
         "simplejson",
     ],
     "docs": ["sphinx", "twisted"],
@@ -84,11 +82,11 @@ def find_meta(meta):
     Extract __*meta*__ from META_FILE.
     """
     meta_match = re.search(
-        r"^__{meta}__ = ['\"]([^'\"]*)['\"]".format(meta=meta), META_FILE, re.M
+        fr"^__{meta}__ = ['\"]([^'\"]*)['\"]", META_FILE, re.M
     )
     if meta_match:
         return meta_match.group(1)
-    raise RuntimeError("Unable to find __{meta}__ string.".format(meta=meta))
+    raise RuntimeError(f"Unable to find __{meta}__ string.")
 
 
 VERSION = find_meta("version")
@@ -124,6 +122,7 @@ if __name__ == "__main__":
         packages=PACKAGES,
         package_dir={"": "src"},
         classifiers=CLASSIFIERS,
+        python_requires=PYTHON_REQUIRES,
         install_requires=INSTALL_REQUIRES,
         extras_require=EXTRAS_REQUIRE,
         zip_safe=False,

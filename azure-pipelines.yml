@@ -1,4 +1,4 @@
-
+---
 # Don't have two build jobs for each pull request.
 trigger:
 - master
@@ -16,48 +16,27 @@ jobs:
           tox.env: manifest
           python.version: '3.7'
 
-        py27-colorama:
-          tox.env: py27-colorama
-          python.version: '2.7'
-        py27-greenlets:
-          tox.env: py27-greenlets
-          python.version: '2.7'
-        py27-threads:
-          tox.env: py27-threads
-          python.version: '2.7'
-        py35-threads:
-          tox.env: py35-threads
-          python.version: '3.5'
         py36-threads:
           tox.env: py36-threads
           python.version: '3.6'
-        py37-colorama:
-          tox.env: py37-colorama
-          python.version: '3.7'
-        py37-greenlets:
-          tox.env: py37-greenlets
-          python.version: '3.7'
         py37-threads:
           tox.env: py37-threads
           python.version: '3.7'
         py38-threads:
           tox.env: py38-threads
           python.version: '3.8'
-        py38-greenlets:
-          tox.env: py38-greenlets
-          python.version: '3.8'
-        pypy-colorama:
-          tox.env: pypy-colorama
-          python.version: pypy2
-        pypy-greenlets:
-          tox.env: pypy-greenlets
-          python.version: pypy2
-        pypy-threads:
-          tox.env: pypy-threads
-          python.version: pypy2
         pypy3-threads:
           tox.env: pypy3-threads
           python.version: pypy3
+        py38-greenlets:
+          tox.env: py38-greenlets
+          python.version: '3.8'
+        pypy3-greenlets:
+          tox.env: pypy3-greenlets
+          python.version: pypy3
+        py38-colorama:
+          tox.env: py38-colorama
+          python.version: '3.8'
 
         Docs:
           python.version: '3.7'
@@ -107,7 +86,6 @@ jobs:
           PATH=$HOME/.local/bin:$PATH
 
           case "$(python.version)" in
-          "pypy2") PY=pypy ;;
           "pypy3") PY=pypy3 ;;
           *) PY=python$(python.version) ;;
           esac

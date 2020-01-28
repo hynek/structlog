@@ -9,11 +9,7 @@ standard library <https://docs.python.org/>`_.
 See also :doc:`structlog's standard library support <standard-library>`.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import logging
-
-from six import PY3
 
 from structlog._base import BoundLoggerBase
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
@@ -34,14 +30,11 @@ class _FixedFindCallerLogger(logging.Logger):
         This logger gets set as the default one when using LoggerFactory.
         """
         f, name = _find_first_app_frame_and_name(["logging"])
-        if PY3:
-            if stack_info:
-                sinfo = _format_stack(f)
-            else:
-                sinfo = None
-            return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
+        if stack_info:
+            sinfo = _format_stack(f)
         else:
-            return f.f_code.co_filename, f.f_lineno, f.f_code.co_name
+            sinfo = None
+        return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
 
 
 class BoundLogger(BoundLoggerBase):
@@ -120,9 +113,7 @@ class BoundLogger(BoundLoggerBase):
         """
         if event_args:
             event_kw["positional_args"] = event_args
-        return super(BoundLogger, self)._proxy_to_logger(
-            method_name, event=event, **event_kw
-        )
+        return super()._proxy_to_logger(method_name, event=event, **event_kw)
 
     #
     # Pass-through attributes and methods to mimick the stdlib's logger
@@ -245,7 +236,7 @@ class BoundLogger(BoundLoggerBase):
         return self._logger.getChild(suffix)
 
 
-class LoggerFactory(object):
+class LoggerFactory:
     """
     Build a standard library logger when an *instance* is called.
 
@@ -292,7 +283,7 @@ class LoggerFactory(object):
         return logging.getLogger(name)
 
 
-class PositionalArgumentsFormatter(object):
+class PositionalArgumentsFormatter:
     """
     Apply stdlib-like string formatting to the ``event`` key.
 
@@ -352,11 +343,11 @@ _NAME_TO_LEVEL = {
     "notset": NOTSET,
 }
 
-_LEVEL_TO_NAME = dict(
-    (v, k)
+_LEVEL_TO_NAME = {
+    v: k
     for k, v in _NAME_TO_LEVEL.items()
     if k not in ("warn", "exception", "notset")
-)
+}
 
 
 def filter_by_level(logger, name, event_dict):
@@ -493,12 +484,11 @@ class ProcessorFormatter(logging.Formatter):
         **kwargs
     ):
         fmt = kwargs.pop("fmt", "%(message)s")
-        super(ProcessorFormatter, self).__init__(*args, fmt=fmt, **kwargs)
+        super().__init__(*args, fmt=fmt, **kwargs)
         self.processor = processor
         self.foreign_pre_chain = foreign_pre_chain
         self.keep_exc_info = keep_exc_info
-        # The and clause saves us checking for PY3 in the formatter.
-        self.keep_stack_info = keep_stack_info and PY3
+        self.keep_stack_info = keep_stack_info
         self.logger = logger
         self.pass_foreign_args = pass_foreign_args
 
@@ -533,7 +523,7 @@ class ProcessorFormatter(logging.Formatter):
             # append stacktraces to the output.
             if record.exc_info:
                 ed["exc_info"] = record.exc_info
-            if PY3 and record.stack_info:
+            if record.stack_info:
                 ed["stack_info"] = record.stack_info
 
             if not self.keep_exc_info:
@@ -550,7 +540,7 @@ class ProcessorFormatter(logging.Formatter):
             del ed["_record"]
 
         record.msg = self.processor(logger, meth_name, ed)
-        return super(ProcessorFormatter, self).format(record)
+        return super().format(record)
 
     @staticmethod
     def wrap_for_formatter(logger, name, event_dict):

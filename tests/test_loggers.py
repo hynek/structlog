@@ -2,21 +2,20 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import pickle
 import sys
 
-import pytest
+from io import StringIO
 
-from six.moves import cStringIO as StringIO
+import pytest
 
 from structlog._loggers import WRITE_LOCKS, PrintLogger, PrintLoggerFactory
 
 from .utils import stdlib_log_methods
 
 
-class TestPrintLogger(object):
+class TestPrintLogger:
     def test_prints_to_stdout_by_default(self, capsys):
         """
         Instantiating without arguments gives conveniently a logger to standard
@@ -99,7 +98,7 @@ class TestPrintLogger(object):
             pickle.dumps(pl, proto)
 
 
-class TestPrintLoggerFactory(object):
+class TestPrintLoggerFactory:
     def test_does_not_cache(self):
         """
         Due to doctest weirdness, we must not re-use PrintLoggers.

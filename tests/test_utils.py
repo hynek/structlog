@@ -2,7 +2,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import errno
 
@@ -13,7 +12,7 @@ from pretend import raiser
 from structlog._utils import until_not_interrupted
 
 
-class TestUntilNotInterrupted(object):
+class TestUntilNotInterrupted:
     def test_passes_arguments_and_returns_return_value(self):
         def returner(*args, **kw):
             return args, kw
@@ -31,7 +30,7 @@ class TestUntilNotInterrupted(object):
         def raise_on_first_three():
             if calls[0] < 3:
                 calls[0] += 1
-                raise IOError(errno.EINTR)
+                raise OSError(errno.EINTR)
 
         until_not_interrupted(raise_on_first_three)
 

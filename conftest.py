@@ -1,18 +1,21 @@
-# -*- coding: utf-8 -*-
-
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import sys
 
+from io import StringIO
+
 import pytest
 
-from six.moves import cStringIO as StringIO
-
 from structlog.stdlib import _NAME_TO_LEVEL
+
+
+try:
+    import twisted
+except ImportError:
+    twisted = None
 
 
 @pytest.fixture
@@ -29,7 +32,7 @@ def event_dict():
     An example event dictionary with multiple value types w/o the event itself.
     """
 
-    class A(object):
+    class A:
         def __repr__(self):
             return r"<A(\o/)>"
 
@@ -47,3 +50,5 @@ def fixture_stdlib_log_methods(request):
 collect_ignore = []
 if sys.version_info[:2] < (3, 7):
     collect_ignore.append("tests/test_contextvars.py")
+if twisted is None:
+    collect_ignore.append("tests/test_twisted.py")

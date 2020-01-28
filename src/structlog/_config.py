@@ -6,13 +6,8 @@
 Global state department.  Don't reload this module or everything breaks.
 """
 
-from __future__ import absolute_import, division, print_function
 
-import platform
-import sys
 import warnings
-
-from collections import OrderedDict
 
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
@@ -32,20 +27,13 @@ _BUILTIN_DEFAULT_PROCESSORS = [
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
     ConsoleRenderer(colors=_has_colorama),
 ]
-if (
-    sys.version_info[:2] >= (3, 6)
-    or platform.python_implementation() == "PyPy"
-):
-    # Python 3.6+ and PyPy have ordered dicts.
-    _BUILTIN_DEFAULT_CONTEXT_CLASS = dict
-else:
-    _BUILTIN_DEFAULT_CONTEXT_CLASS = OrderedDict
+_BUILTIN_DEFAULT_CONTEXT_CLASS = dict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
 _BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLoggerFactory()
 _BUILTIN_CACHE_LOGGER_ON_FIRST_USE = False
 
 
-class _Configuration(object):
+class _Configuration:
     """
     Global defaults.
     """
@@ -257,7 +245,7 @@ def reset_defaults():
     _CONFIG.cache_logger_on_first_use = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
 
 
-class BoundLoggerLazyProxy(object):
+class BoundLoggerLazyProxy:
     """
     Instantiates a ``BoundLogger`` on first usage.
 

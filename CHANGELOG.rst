@@ -12,7 +12,8 @@ The third digit is only for regressions.
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- Python 2.7 and 3.5 aren't supported anymore.
+  The package meta data should ensure that you keep getting 20.1.0 on those versions.
 
 
 Deprecations:

@@ -8,7 +8,6 @@ Primitives to keep context global but thread (and greenlet) local.
 See `thread-local`.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import contextlib
 import threading
@@ -24,7 +23,7 @@ except ImportError:
 else:
     from weakref import WeakKeyDictionary
 
-    class ThreadLocal(object):
+    class ThreadLocal:
         """
         threading.local() replacement for greenlets.
         """
@@ -104,7 +103,7 @@ def tmp_bind(logger, **tmp_values):
         logger._context.update(saved)
 
 
-class _ThreadLocalDictWrapper(object):
+class _ThreadLocalDictWrapper:
     """
     Wrap a dict-like class and keep the state *global* but *thread-local*.
 
@@ -139,7 +138,7 @@ class _ThreadLocalDictWrapper(object):
             return self.__class__._tl.dict_
 
     def __repr__(self):
-        return "<{0}({1!r})>".format(self.__class__.__name__, self._dict)
+        return f"<{self.__class__.__name__}({self._dict!r})>"
 
     def __eq__(self, other):
         # Same class == same dictionary

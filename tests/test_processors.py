@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import datetime
 import json
@@ -12,7 +9,6 @@ import pickle
 import sys
 
 import pytest
-import six
 
 from freezegun import freeze_time
 
@@ -32,8 +28,6 @@ from structlog.processors import (
 )
 from structlog.threadlocal import wrap_dict
 
-from .utils import py3_only
-
 
 try:
     import simplejson
@@ -46,7 +40,7 @@ except ImportError:
     rapidjson = None
 
 
-class TestKeyValueRenderer(object):
+class TestKeyValueRenderer:
     def test_sort_keys(self, event_dict):
         """
         Keys are sorted if sort_keys is set.
@@ -133,13 +127,10 @@ class TestKeyValueRenderer(object):
         )
 
         cnt = rv.count("哈")
-        if rns and six.PY2:
-            assert 0 == cnt
-        else:
-            assert 2 == cnt
+        assert 2 == cnt
 
 
-class TestJSONRenderer(object):
+class TestJSONRenderer:
     def test_renders_json(self, event_dict):
         """
         Renders a predictable JSON string.
@@ -224,7 +215,7 @@ class TestJSONRenderer(object):
         } == json.loads(jr(None, None, event_dict))
 
 
-class TestTimeStamper(object):
+class TestTimeStamper:
     def test_disallows_non_utc_unix_timestamps(self):
         """
         A asking for a UNIX timestamp with a timezone that's not UTC raises a
@@ -306,7 +297,7 @@ class TestTimeStamper(object):
         )
 
 
-class TestFormatExcInfo(object):
+class TestFormatExcInfo:
     def test_formats_tuple(self, monkeypatch):
         """
         If exc_info is a tuple, it is used.
@@ -334,10 +325,9 @@ class TestFormatExcInfo(object):
         assert "exc_info" not in d
         assert 'raise ValueError("test")\nValueError: test' in d["exception"]
 
-    @py3_only
     def test_exception_on_py3(self, monkeypatch):
         """
-        Passing excetions as exc_info is valid on Python 3.
+        Passing exceptions as exc_info is valid on Python 3.
         """
         monkeypatch.setattr(
             structlog.processors,
@@ -348,11 +338,11 @@ class TestFormatExcInfo(object):
             raise ValueError("test")
         except ValueError as e:
             d = format_exc_info(None, None, {"exc_info": e})
+
             assert {"exception": (ValueError, e, e.__traceback__)} == d
         else:
             pytest.fail("Exception not raised.")
 
-    @py3_only
     def test_exception_without_traceback(self):
         """
         If an Exception is missing a traceback, render it anyway.
@@ -364,14 +354,14 @@ class TestFormatExcInfo(object):
         assert {"exception": "Exception: no traceback!"} == rv
 
 
-class TestUnicodeEncoder(object):
+class TestUnicodeEncoder:
     def test_encodes(self):
         """
         Unicode strings get encoded (as UTF-8 by default).
         """
         ue = UnicodeEncoder()
 
-        assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": u"b\xe4r"})
+        assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": "b\xe4r"})
 
     def test_passes_arguments(self):
         """
@@ -379,7 +369,7 @@ class TestUnicodeEncoder(object):
         """
         ue = UnicodeEncoder("latin1", "xmlcharrefreplace")
 
-        assert {"foo": b"&#8211;"} == ue(None, None, {"foo": u"\u2013"})
+        assert {"foo": b"&#8211;"} == ue(None, None, {"foo": "\u2013"})
 
     def test_bytes_nop(self):
         """
@@ -390,14 +380,14 @@ class TestUnicodeEncoder(object):
         assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": b"b\xc3\xa4r"})
 
 
-class TestUnicodeDecoder(object):
+class TestUnicodeDecoder:
     def test_decodes(self):
         """
         Byte strings get decoded (as UTF-8 by default).
         """
         ud = UnicodeDecoder()
 
-        assert {"foo": u"b\xe4r"} == ud(None, None, {"foo": b"b\xc3\xa4r"})
+        assert {"foo": "b\xe4r"} == ud(None, None, {"foo": b"b\xc3\xa4r"})
 
     def test_passes_arguments(self):
         """
@@ -405,7 +395,7 @@ class TestUnicodeDecoder(object):
         """
         ud = UnicodeDecoder("utf-8", "ignore")
 
-        assert {"foo": u""} == ud(None, None, {"foo": b"\xa1\xa4"})
+        assert {"foo": ""} == ud(None, None, {"foo": b"\xa1\xa4"})
 
     def test_bytes_nop(self):
         """
@@ -413,10 +403,10 @@ class TestUnicodeDecoder(object):
         """
         ud = UnicodeDecoder()
 
-        assert {"foo": u"b\u2013r"} == ud(None, None, {"foo": u"b\u2013r"})
+        assert {"foo": "b\u2013r"} == ud(None, None, {"foo": "b\u2013r"})
 
 
-class TestExceptionPrettyPrinter(object):
+class TestExceptionPrettyPrinter:
     def test_stdout_by_default(self):
         """
         If no file is supplied, use stdout.
@@ -508,7 +498,6 @@ class TestExceptionPrettyPrinter(object):
 
         assert "XXX" in sio.getvalue()
 
-    @py3_only
     def test_exception_on_py3(self, sio):
         """
         On Python 3, it's also legal to pass an Exception.
@@ -527,7 +516,7 @@ def sir():
     return StackInfoRenderer()
 
 
-class TestStackInfoRenderer(object):
+class TestStackInfoRenderer:
     def test_removes_stack_info(self, sir):
         """
         The `stack_info` key is removed from `event_dict`.
@@ -550,7 +539,7 @@ class TestStackInfoRenderer(object):
         assert 'ed = sir(None, None, {"stack_info": True})' in ed["stack"]
 
 
-class TestFigureOutExcInfo(object):
+class TestFigureOutExcInfo:
     @pytest.mark.parametrize("true_value", [True, 1, 1.1])
     def test_obtains_exc_info_on_True(self, true_value):
         """
@@ -563,7 +552,6 @@ class TestFigureOutExcInfo(object):
         else:
             pytest.fail("Exception not raised.")
 
-    @py3_only
     def test_py3_exception_no_traceback(self):
         """
         Exceptions without tracebacks are simply returned with None for

@@ -1,20 +1,15 @@
-# -*- coding: utf-8 -*-
-
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
-
 import pickle
 
 import pytest
-import six
 
 from structlog import dev
 
 
-class TestPad(object):
+class TestPad:
     def test_normal(self):
         """
         If chars are missing, adequate number of " " are added.
@@ -50,7 +45,7 @@ def unpadded(styles):
     return styles.bright + "test" + styles.reset
 
 
-class TestConsoleRenderer(object):
+class TestConsoleRenderer:
     @pytest.mark.skipif(dev._has_colorama, reason="Colorama must be missing.")
     def test_missing_colorama(self):
         """
@@ -90,17 +85,6 @@ class TestConsoleRenderer(object):
         rv = cr(None, None, {"event": not_a_string})
 
         assert unpadded == rv
-
-    @pytest.mark.skipif(not six.PY2, reason="Problem only exists on Python 2.")
-    @pytest.mark.parametrize("s", [u"\xc3\xa4".encode("utf-8"), u"ä", "ä"])
-    def test_event_py2_only_stringify_non_strings(self, cr, s, styles):
-        """
-        If event is a string type already, leave it be on Python 2. Running
-        str() on unicode strings with non-ascii characters raises an error.
-        """
-        rv = cr(None, None, {"event": s})
-
-        assert styles.bright + s + styles.reset == rv
 
     def test_level(self, cr, styles, padded):
         """
@@ -311,10 +295,8 @@ class TestConsoleRenderer(object):
         )
 
         cnt = rv.count("哈")
-        if rns and six.PY2:
-            assert 1 == cnt
-        else:
-            assert 2 == cnt
+
+        assert 2 == cnt
 
     @pytest.mark.parametrize("repr_native_str", [True, False])
     @pytest.mark.parametrize("force_colors", [True, False])
@@ -332,7 +314,7 @@ class TestConsoleRenderer(object):
         )(None, None, {"event": "foo"})
 
 
-class TestSetExcInfo(object):
+class TestSetExcInfo:
     def test_wrong_name(self):
         """
         Do nothing if name is not exception.

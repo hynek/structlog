@@ -16,7 +16,7 @@ from structlog.contextvars import (
 pytestmark = pytest.mark.asyncio
 
 
-class TestNewContextvars(object):
+class TestNewContextvars:
     async def test_bind(self, event_loop):
         """
         Binding a variable causes it to be included in the result of

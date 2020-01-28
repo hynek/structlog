@@ -2,18 +2,16 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import json
 
 from collections import OrderedDict
+from io import StringIO
 
 import pytest
 
 from pretend import call_recorder
-from six import PY3
-from six.moves import cStringIO as StringIO
-from twisted.python.failure import Failure, NoCurrentExceptionError
+from twisted.python.failure import Failure
 from twisted.python.log import ILogObserver
 
 from structlog import ReturnLogger
@@ -53,7 +51,7 @@ def build_bl(logger=None, processors=None, context=None):
     )
 
 
-class TestBoundLogger(object):
+class TestBoundLogger:
     def test_msg(self):
         """
         log.msg renders correctly.
@@ -93,7 +91,7 @@ class TestBoundLogger(object):
             ) == str(bl.err("event", foo=42))
 
 
-class TestExtractStuffAndWhy(object):
+class TestExtractStuffAndWhy:
     def test_extractFailsOnTwoFailures(self):
         """
         Raise ValueError if both _stuff and event contain exceptions.
@@ -139,26 +137,8 @@ class TestExtractStuffAndWhy(object):
         """
         assert (None, "foo", {}) == _extractStuffAndWhy({"event": "foo"})
 
-    @pytest.mark.xfail(PY3, reason="Py3 does not allow for cleaning exc_info")
-    def test_recognizesErrorsAndCleansThem(self):
-        """
-        If no error is supplied, the environment is checked for one.  If one is
-        found, it's used and cleared afterwards so log.err doesn't add it as
-        well.
-        """
-        try:
-            raise ValueError
-        except ValueError:
-            f = Failure()
-            _stuff, _why, ed = _extractStuffAndWhy({"event": "foo"})
 
-            assert _stuff.value is f.value
-
-            with pytest.raises(NoCurrentExceptionError):
-                Failure()
-
-
-class TestEventAdapter(object):
+class TestEventAdapter:
     """
     Some tests here are redundant because they predate _extractStuffAndWhy.
     """
@@ -244,7 +224,7 @@ def jr():
     return JSONRenderer()
 
 
-class TestJSONRenderer(object):
+class TestJSONRenderer:
     def test_dumpsKWsAreHandedThrough(self, jr):
         """
         JSONRenderer allows for setting arguments that are passed to
@@ -282,12 +262,7 @@ class TestJSONRenderer(object):
     def test_handlesFailure(self, jr):
         rv = jr(None, "err", {"event": Failure(ValueError())})[0][0].string
 
-        assert (
-            "Failure: {0}.ValueError".format(
-                "builtins" if PY3 else "exceptions"
-            )
-            in rv
-        )
+        assert "Failure: builtins.ValueError" in rv
         assert '"event": "error"' in rv
 
     def test_setsStructLogField(self, jr):
@@ -298,7 +273,7 @@ class TestJSONRenderer(object):
         assert {"_structlog": True} == jr(None, "msg", {"_why": "foo"})[1]
 
 
-class TestReprWrapper(object):
+class TestReprWrapper:
     def test_repr(self):
         """
         The repr of the wrapped string is the vanilla string without quotes.
@@ -306,7 +281,7 @@ class TestReprWrapper(object):
         assert "foo" == repr(ReprWrapper("foo"))
 
 
-class TestPlainFileLogObserver(object):
+class TestPlainFileLogObserver:
     def test_isLogObserver(self):
         assert ILogObserver.providedBy(PlainFileLogObserver(StringIO()))
 
@@ -319,7 +294,7 @@ class TestPlainFileLogObserver(object):
         assert "hello\n" == sio.getvalue()
 
 
-class TestJSONObserverWrapper(object):
+class TestJSONObserverWrapper:
     def test_IsAnObserver(self):
         assert ILogObserver.implementedBy(JSONLogObserverWrapper)
 
@@ -355,6 +330,6 @@ class TestJSONObserverWrapper(object):
         JSONLogObserverWrapper(verify)(d)
 
 
-class TestPlainJSONStdOutLogger(object):
+class TestPlainJSONStdOutLogger:
     def test_isLogObserver(self):
         assert ILogObserver.providedBy(plainJSONStdOutLogger())

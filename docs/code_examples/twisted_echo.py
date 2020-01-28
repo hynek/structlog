@@ -11,7 +11,7 @@ import structlog
 logger = structlog.getLogger()
 
 
-class Counter(object):
+class Counter:
     i = 0
 
     def inc(self):

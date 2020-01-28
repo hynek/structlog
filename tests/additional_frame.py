@@ -9,8 +9,6 @@ Since the logger factories are called from within structlog._config, they have
 to skip a frame.  Calling them here emulates that.
 """
 
-from __future__ import absolute_import, division, print_function
-
 
 def additional_frame(callable):
     return callable()

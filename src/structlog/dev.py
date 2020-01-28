@@ -6,11 +6,9 @@
 Helpers that make development with ``structlog`` more pleasant.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import sys
 
-from six import PY2, StringIO, string_types
+from io import StringIO
 
 
 try:
@@ -56,7 +54,7 @@ else:
     ) = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = RED_BACK = ""
 
 
-class _ColorfulStyles(object):
+class _ColorfulStyles:
     reset = RESET_ALL
     bright = BRIGHT
 
@@ -74,7 +72,7 @@ class _ColorfulStyles(object):
     kv_value = MAGENTA
 
 
-class _PlainStyles(object):
+class _PlainStyles:
     reset = ""
     bright = ""
 
@@ -92,7 +90,7 @@ class _PlainStyles(object):
     kv_value = ""
 
 
-class ConsoleRenderer(object):
+class ConsoleRenderer:
     """
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
@@ -218,7 +216,7 @@ class ConsoleRenderer(object):
 
         # force event to str for compatibility with standard library
         event = event_dict.pop("event")
-        if not PY2 or not isinstance(event, string_types):
+        if not isinstance(event, str):
             event = str(event)
 
         if event_dict:

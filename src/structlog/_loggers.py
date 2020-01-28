@@ -6,7 +6,6 @@
 Logger wrapper and helper class.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import sys
 import threading
@@ -16,7 +15,7 @@ from pickle import PicklingError
 from structlog._utils import until_not_interrupted
 
 
-class PrintLoggerFactory(object):
+class PrintLoggerFactory:
     r"""
     Produce `PrintLogger`\ s.
 
@@ -51,7 +50,7 @@ def _get_lock_for_file(file):
     return lock
 
 
-class PrintLogger(object):
+class PrintLogger:
     """
     Print events into a file.
 
@@ -104,7 +103,7 @@ class PrintLogger(object):
         self._lock = _get_lock_for_file(self._file)
 
     def __repr__(self):
-        return "<PrintLogger(file={0!r})>".format(self._file)
+        return f"<PrintLogger(file={self._file!r})>"
 
     def msg(self, message):
         """

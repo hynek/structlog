@@ -2,7 +2,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from __future__ import absolute_import, division, print_function
 
 import pytest
 
@@ -26,7 +25,7 @@ def build_bl(logger=None, processors=None, context=None):
     )
 
 
-class TestBinding(object):
+class TestBinding:
     def test_repr(self):
         bl = build_bl(processors=[1, 2, 3], context={})
 
@@ -115,7 +114,7 @@ class TestBinding(object):
         assert {"y": 23} == b._context
 
 
-class TestProcessing(object):
+class TestProcessing:
     def test_event_empty_string(self):
         """
         Empty strings are a valid event.
@@ -190,7 +189,7 @@ class TestProcessing(object):
         assert exc.value.args[0].startswith("Last processor didn't return")
 
 
-class TestProxying(object):
+class TestProxying:
     def test_processor_raising_DropEvent_silently_aborts_chain(self, capsys):
         """
         If a processor raises DropEvent, the chain is aborted and nothing is
