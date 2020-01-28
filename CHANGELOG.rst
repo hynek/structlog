@@ -36,6 +36,9 @@ Changes:
   `#239 <https://github.com/hynek/structlog/pull/239>`_
 - The logger created by ``structlog.get_logger()`` is not detected as an abstract method anymore, when attached to an abstract base class.
   `#229 <https://github.com/hynek/structlog/issues/229>`_
+- ``colorama`` isn't initialized lazily on Windows anymore because it breaks rendering.
+  `#232 <https://github.com/hynek/structlog/issues/232>`_,
+  `#242 <https://github.com/hynek/structlog/pull/242>`_
 
 
 ----
