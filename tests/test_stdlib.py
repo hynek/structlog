@@ -3,6 +3,8 @@
 # repository for complete details.
 
 
+import collections
+import json
 import logging
 import logging.config
 import os
@@ -14,10 +16,25 @@ from pretend import call_recorder
 
 from structlog import ReturnLogger, configure, get_context, reset_defaults
 from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
+from structlog import ReturnLogger, configure, get_logger, reset_defaults
+from structlog import (
+    PrintLogger,
+    ReturnLogger,
+    configure,
+    get_logger,
+    reset_defaults,
+)
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer
 from structlog.stdlib import (
+    _NAME_TO_LEVEL,
+    CRITICAL,
+    WARN,
+    _NAME_TO_LEVEL,
+    CRITICAL,
+    WARN,
+    AsyncBoundLogger,
     BoundLogger,
     LoggerFactory,
     PositionalArgumentsFormatter,
@@ -822,3 +839,97 @@ class TestProcessorFormatter:
             "",
             "foo [in test_foreign_pre_chain_filter_by_level]\n",
         ) == capsys.readouterr()
+
+
+@pytest.mark.skipif(
+    sys.version_info[:2] < (3, 7),
+    reason="AsyncBoundLogger is only for Python 3.7 and later.",
+)
+class TestAsyncBoundLogger:
+    @pytest.mark.parametrize(
+        "level_name",
+        ["debug", "info", "warning", "error", "critical", "exception"],
+    )
+    @pytest.mark.asyncio
+    async def test_correct_levels(self, level_name):
+        """
+        The proxy methods call the correct upstream methods.
+        """
+        _, ed = await getattr(
+            AsyncBoundLogger(
+                ReturnLogger(), context={}, processors=[add_log_level]
+            ).bind(foo="bar"),
+            level_name,
+        )("42")
+
+        if level_name == "exception":
+            expect = "error"
+        else:
+            expect = level_name
+
+        assert expect == ed["level"]
+
+    @pytest.mark.asyncio
+    async def test_log_method(self):
+        """
+        The `log` method is proxied too.
+        """
+        _, ed = (
+            await AsyncBoundLogger(
+                ReturnLogger(), context={}, processors=[add_log_level]
+            )
+            .bind(foo="bar")
+            .log(logging.ERROR, "42")
+        )
+
+        assert "error" == ed["level"]
+
+    @pytest.mark.asyncio
+    async def test_bind_unbind(self):
+        """
+        new/bind/unbind are correctly propagated.
+
+        Unbind is actually try_unbind and therefore ignores extra keys.
+        """
+        l1 = AsyncBoundLogger(ReturnLogger(), context={}, processors=[])
+
+        l2 = l1.bind(x=42)
+
+        assert {"x": 42} == l1.sync_bl._context
+
+        l3 = l2.new(y=23)
+
+        assert {"y": 23} == l1.sync_bl._context
+
+        # N.B. x isn't bound anymore.
+        l4 = l3.unbind("x", "y")
+
+        assert {} == l1.sync_bl._context
+
+        assert l1 is l2 is l3 is l4
+
+    @pytest.mark.asyncio
+    async def test_integration(self, capsys):
+        """
+        Configure and log an actual entry.
+        """
+
+        configure(
+            processors=[add_log_level, JSONRenderer()],
+            logger_factory=PrintLogger,
+            wrapper_class=AsyncBoundLogger,
+            cache_logger_on_first_use=True,
+        )
+
+        logger = get_logger()
+
+        await logger.bind(foo="bar").info("baz", x="42")
+
+        assert {
+            "foo": "bar",
+            "x": "42",
+            "event": "baz",
+            "level": "info",
+        } == json.loads(capsys.readouterr().out)
+
+        reset_defaults()
