@@ -342,12 +342,17 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 
 class AsyncBoundLogger:
     """
-    Wraps a `BoundLogger` and runs its logging methods asynchronously in
-    a thread executor.
+    Wrap a `BoundLogger` and run its logging methods asynchronously in a thread
+    executor.
+
+    .. note::
+        This means more computational overhead per log call. But it also means
+        that the processor chain (e.g. JSON serialization) and I/O won't block
+        your whole application.
 
     Only available for Python 3.7 and later.
 
-    .. versionadded:: 20.2
+    .. versionadded:: 20.2.0
     """
 
     __slots__ = ["sync_bl", "_loop"]
