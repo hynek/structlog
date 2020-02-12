@@ -422,6 +422,9 @@ class TestAddFunctionName:
         """
         The calling function name is added to the event dict.
         """
+        event_dict = add_function_name(None, None, {})
+        assert "funcName" not in event_dict
+
         name = "calling_function"
         record = log_record()
         record.funcName = name
