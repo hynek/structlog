@@ -25,6 +25,7 @@ from structlog.stdlib import (
     PositionalArgumentsFormatter,
     ProcessorFormatter,
     _FixedFindCallerLogger,
+    add_function_name,
     add_log_level,
     add_log_level_number,
     add_logger_name,
@@ -414,6 +415,19 @@ class TestAddLoggerName:
         event_dict = add_logger_name(None, None, {"_record": record})
 
         assert name == event_dict["logger"]
+
+
+class TestAddFunctionName:
+    def test_function_name_added(self, log_record):
+        """
+        The calling function name is added to the event dict.
+        """
+        name = "calling_function"
+        record = log_record()
+        record.funcName = name
+        event_dict = add_function_name(None, None, {"_record": record})
+
+        assert name == event_dict["funcName"]
 
 
 class TestRenderToLogKW:

@@ -26,7 +26,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Added ``structlog.stdlib.add_function_name()`` processor that adds the name of function containing the logging call to the event dictionary.
+  `#246 <https://github.com/hynek/structlog/pull/246>`_
 
 
 ----

@@ -418,6 +418,18 @@ def add_logger_name(logger, method_name, event_dict):
     return event_dict
 
 
+def add_function_name(logger, method_name, event_dict):
+    """
+    Add the name of function containing the logging call to the event dict.
+
+    .. versionadded:: 20.2.0
+    """
+    record = event_dict.get("_record")
+    if record is not None:
+        event_dict["funcName"] = record.funcName
+    return event_dict
+
+
 def render_to_log_kwargs(wrapped_logger, method_name, event_dict):
     """
     Render ``event_dict`` into keyword arguments for `logging.log`.

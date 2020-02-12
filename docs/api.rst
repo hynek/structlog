@@ -222,6 +222,8 @@ API Reference
 
 .. autofunction:: add_logger_name
 
+.. autofunction:: add_function_name
+
 .. autoclass:: PositionalArgumentsFormatter
 
 .. autoclass:: ProcessorFormatter
