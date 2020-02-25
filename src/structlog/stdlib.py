@@ -11,9 +11,11 @@ See also :doc:`structlog's standard library support <standard-library>`.
 
 import asyncio
 import logging
+import sys
 
 from functools import partial
 from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, List, Mapping, Sequence
 
 from ._base import BoundLoggerBase
 from ._config import get_logger as _generic_get_logger
@@ -343,12 +345,12 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 class AsyncBoundLogger:
     """
     Wrap a `BoundLogger` and run its logging methods asynchronously in a thread
-    executor.
+    pool executor.
 
     .. note::
-        This means more computational overhead per log call. But it also means
-        that the processor chain (e.g. JSON serialization) and I/O won't block
-        your whole application.
+       This means more computational overhead per log call. But it also means
+       that the processor chain (e.g. JSON serialization) and I/O won't block
+       your whole application.
 
     Only available for Python 3.7 and later.
 
@@ -360,58 +362,72 @@ class AsyncBoundLogger:
     _executor = None
     _bound_logger_factory = BoundLogger
 
-    def __init__(self, *args, **kw):
-        self.sync_bl = self._bound_logger_factory(*args, **kw)
+    def __init__(
+        self,
+        logger: logging.Logger,
+        processors: List[Callable],
+        context: Mapping,
+    ):
+        self.sync_bl = self._bound_logger_factory(
+            logger=logger, processors=processors, context=context
+        )
         self._loop = asyncio.get_running_loop()
 
-    def bind(self, **new_values) -> "AsyncBoundLogger":
+    def bind(self, **new_values: Any) -> "AsyncBoundLogger":
         self.sync_bl = self.sync_bl.bind(**new_values)
         return self
 
-    def new(self, **new_values) -> "AsyncBoundLogger":
+    def new(self, **new_values: Any) -> "AsyncBoundLogger":
         self.sync_bl = self.sync_bl.new(**new_values)
         return self
 
-    def unbind(self, *keys) -> "AsyncBoundLogger":
+    def unbind(self, *keys: Sequence[str]) -> "AsyncBoundLogger":
         self.sync_bl = self.sync_bl.try_unbind(*keys)
         return self
 
-    async def debug(self, event, *args, **kw):
-        return await self._loop.run_in_executor(
+    async def debug(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._loop.run_in_executor(
             self._executor, partial(self.sync_bl.debug, event, *args, **kw)
         )
 
-    async def info(self, event, *args, **kw):
-        return await self._loop.run_in_executor(
+    async def info(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._loop.run_in_executor(
             self._executor, partial(self.sync_bl.info, event, *args, **kw)
         )
 
-    async def warning(self, event, *args, **kw):
-        return await self._loop.run_in_executor(
+    async def warning(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._loop.run_in_executor(
             self._executor, partial(self.sync_bl.warning, event, *args, **kw)
         )
 
     warn = warning
 
-    async def error(self, event, *args, **kw):
-        return await self._loop.run_in_executor(
+    async def error(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._loop.run_in_executor(
             self._executor, partial(self.sync_bl.error, event, *args, **kw)
         )
 
-    async def critical(self, event, *args, **kw):
-        return await self._loop.run_in_executor(
+    async def critical(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._loop.run_in_executor(
             self._executor, partial(self.sync_bl.critical, event, *args, **kw)
         )
 
     fatal = critical
 
-    async def exception(self, event, *args, **kw):
-        return await self._loop.run_in_executor(
-            self._executor, partial(self.sync_bl.exception, event, *args, **kw)
+    async def exception(self, event: str, *args: Any, **kw: Any) -> None:
+        # To make `log.exception("foo") work, we have to check if the user
+        # passed an explicit exc_info and if not, supply our own.
+        ei = kw.pop("exc_info", None)
+        if ei is None and kw.get("exception") is None:
+            ei = sys.exc_info()
+
+        await self._loop.run_in_executor(
+            self._executor,
+            partial(self.sync_bl.exception, event, *args, exc_info=ei, **kw),
         )
 
-    async def log(self, level, event, *args, **kw):
-        return await self._loop.run_in_executor(
+    async def log(self, level: Any, event: str, *args: Any, **kw: Any) -> None:
+        await self._loop.run_in_executor(
             self._executor,
             partial(self.sync_bl.log, level, event, *args, **kw),
         )
