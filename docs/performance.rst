@@ -36,10 +36,11 @@ Here are a few hints how to get most out of ``structlog`` in production:
 
    This has the only drawback is that later calls on :func:`~structlog.configure` don't have any effect on already cached loggers -- that shouldn't matter outside of testing though.
 #. Use a faster JSON serializer than the standard library.
-   Possible alternatives are among others simplejson_ or RapidJSON_ (Python 3 only)::
+   Possible alternatives are among others simplejson_, orjson_, or RapidJSON_::
 
       structlog.processors.JSONRenderer(serializer=rapidjson.dumps)
 
 
 .. _simplejson: https://simplejson.readthedocs.io/
+.. _orjson: https://github.com/ijl/orjson
 .. _RapidJSON: https://pypi.org/project/python-rapidjson/
