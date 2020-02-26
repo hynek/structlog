@@ -27,6 +27,10 @@
    :target: https://github.com/psf/black
    :alt: Code style: black
 
+.. image:: https://www.ko-fi.com/img/githubbutton_sm.svg
+   :target: https://ko-fi.com/the_hynek
+   :alt: Support this project by buying me a coffee!
+
 .. -begin-short-
 
 ``structlog`` makes logging in Python less painful and more powerful by adding structure to your log entries.
