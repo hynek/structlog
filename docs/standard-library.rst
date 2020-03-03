@@ -146,7 +146,7 @@ Rendering Using ``structlog``-based Formatters Within `logging`
 The `ProcessorFormatter` has two parts to its API:
 
 #. The `structlog.stdlib.ProcessorFormatter.wrap_for_formatter` method must be used as the last processor in `structlog.configure`,
-   it converts the the processed event dict to something that the ``ProcessorFormatter`` understands.
+   it converts the processed event dict to something that the ``ProcessorFormatter`` understands.
 #. The `ProcessorFormatter` itself,
    which can wrap any ``structlog`` renderer to handle the output of both ``structlog`` and standard library events.
 
