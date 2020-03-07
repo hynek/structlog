@@ -118,8 +118,9 @@ class TestLoggerFactory:
         assert log_record.filename == os.path.basename(__file__)
 
     def test_sets_correct_logger(self):
-        assert logging.getLoggerClass() is logging.Logger
-
+        """
+        Calling LoggerFactory ensures that Logger.findCaller gets patched.
+        """
         LoggerFactory()
 
         assert logging.getLoggerClass() is _FixedFindCallerLogger
