@@ -1,0 +1,40 @@
+---
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  tests:
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        python-version: ["2.7", "3.5", "3.6", "3.7", "3.8", "pypy2", "pypy3"]
+    name: "Python ${{ matrix.python-version }}"
+
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "actions/setup-python@v1"
+        with:
+          python-version: "${{ matrix.python-version }}"
+      - name: "Install dependencies"
+        run: |
+          set -xe
+          python --version
+          python -m pip install --upgrade pip setuptools
+          python -m pip install --upgrade coverage[toml] virtualenv tox tox-gh-actions
+      - name: "Run tox targets for ${{ matrix.python-version }}"
+        run: "python -m tox"
+      - name: "Get coverage"
+        run: |
+          set -xe
+          if compgen -G ".coverage.*" >/dev/null; then
+            python -m coverage combine
+            python -m coverage xml
+          fi
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
