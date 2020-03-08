@@ -18,7 +18,7 @@
 .. image:: https://github.com/hynek/structlog/workflows/CI/badge.svg?branch=master
    :target: https://github.com/hynek/structlog/actions?workflow=CI
    :alt: CI Status
-   
+
 .. image:: https://codecov.io/github/hynek/structlog/branch/master/graph/badge.svg
    :target: https://codecov.io/github/hynek/structlog
    :alt: Test Coverage
