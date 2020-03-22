@@ -102,10 +102,10 @@ Documentation
 
      - Added ``structlog.func()`` that does foo.
        It's pretty cool.
-       [`#1 <https://github.com/hynek/structlog/pull/1>`_]
+       `#1 <https://github.com/hynek/structlog/pull/1>`_
      - ``structlog.func()`` now doesn't crash the Large Hadron Collider anymore.
        That was a nasty bug!
-       [`#2 <https://github.com/hynek/structlog/pull/2>`_]
+       `#2 <https://github.com/hynek/structlog/pull/2>`_
 
 
 Local Development Environment
