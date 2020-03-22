@@ -14,7 +14,7 @@ Support
 In case you'd like to help out but don't want to deal with GitHub, there's a great opportunity:
 help your fellow developers on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_!
 
-The offical tag is ``structlog`` and helping out in support frees us up to improve ``structlog`` instead!
+The official tag is ``structlog`` and helping out in support frees us up to improve ``structlog`` instead!
 
 
 Workflow
