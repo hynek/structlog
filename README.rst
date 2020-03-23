@@ -7,10 +7,6 @@
 ``structlog``: Structured Logging for Python
 ============================================
 
-.. image:: https://img.shields.io/pypi/v/structlog.svg
-   :target: https://pypi.org/project/structlog/
-   :alt: PyPI
-
 .. image:: https://readthedocs.org/projects/structlog/badge/?version=stable
    :target: https://www.structlog.org/en/stable/?badge=stable
    :alt: Documentation Status
