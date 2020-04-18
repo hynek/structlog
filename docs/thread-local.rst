@@ -179,7 +179,7 @@ The convenience of having a thread-local context comes at a price though:
 
      See `configuration` for more details.
 
-The general sentiment against threadn-locals is that they're hard to test.
+The general sentiment against thread-locals is that they're hard to test.
 In this case we feel like this is an acceptable trade-off.
 You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
 
