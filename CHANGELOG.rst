@@ -211,7 +211,7 @@ Deprecations:
 
 - The meaning of the ``structlog[dev]`` installation target will change from "colorful output" to "dependencies to develop ``structlog``" in 19.1.0.
 
-  The main reason behind this decision is that it's impossible to have a ``structlog`` in your normal dependencies and additionally a ``structlog[dev]`` for developement (``pip`` will report an error).
+  The main reason behind this decision is that it's impossible to have a ``structlog`` in your normal dependencies and additionally a ``structlog[dev]`` for development (``pip`` will report an error).
 
 
 Changes:

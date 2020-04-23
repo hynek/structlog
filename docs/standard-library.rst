@@ -337,7 +337,7 @@ A basic configuration to output structured logs in JSON format looks like this:
         cache_logger_on_first_use=True,
     )
 
-(If you're still runnning Python 2, replace `UnicodeDecoder` through `UnicodeEncoder`.)
+(If you're still running Python 2, replace `UnicodeDecoder` through `UnicodeEncoder`.)
 
 To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the `logging` module like this::
 

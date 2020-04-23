@@ -87,7 +87,7 @@ class TestPrintLogger:
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
     def test_pickle_not_stdout_stderr(self, tmpdir, proto):
         """
-        PrintLoggers with differnt files than stdout/stderr raise a
+        PrintLoggers with different files than stdout/stderr raise a
         PickingError.
         """
         f = tmpdir.join("file.log")
