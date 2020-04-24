@@ -35,7 +35,7 @@ from structlog._config import (
 @pytest.fixture
 def proxy():
     """
-    Returns a BoundLoggerLazyProxy constructed w/o paramaters & None as logger.
+    Returns a BoundLoggerLazyProxy constructed w/o parameters & None as logger.
     """
     return BoundLoggerLazyProxy(None)
 

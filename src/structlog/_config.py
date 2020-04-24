@@ -218,9 +218,9 @@ def configure(
 
 def configure_once(*args, **kw):
     """
-    Configures iff structlog isn't configured yet.
+    Configures if structlog isn't configured yet.
 
-    It does *not* matter whether is was configured using `configure` or
+    It does *not* matter whether it was configured using `configure` or
     `configure_once` before.
 
     Raises a `RuntimeWarning` if repeated configuration is attempted.

@@ -180,7 +180,7 @@ def merge_threadlocal(logger, method_name, event_dict):
 
     .. versionchanged:: 20.1.0
        This function used to be called ``merge_threalocal_context`` and that
-       name is still kept around for backward compatability.
+       name is still kept around for backward compatibility.
     """
     context = _get_context().copy()
     context.update(event_dict)
