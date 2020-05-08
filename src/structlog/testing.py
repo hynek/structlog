@@ -41,7 +41,8 @@ class LogCapture:
 def capture_logs():
     """
     Context manager that appends all logging statements to its yielded list
-    while it is active.
+    while it is active. Disables all configured processors for the duration
+    of the context manager.
 
     Attention: this is **not** thread-safe!
 

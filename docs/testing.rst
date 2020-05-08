@@ -14,6 +14,8 @@ If you need functionality similar to `unittest.TestCase.assertLogs`, or you want
    >>> cap_logs
    [{'x': 'y', 'event': 'hello', 'log_level': 'info'}]
 
+Note that inside the context manager all configured processors are disabled.
+
 You can build your own helpers using `structlog.testing.LogCapture`.
 For example a `pytest <https://docs.pytest.org/>`_ fixture to capture log output could look like this::
 
