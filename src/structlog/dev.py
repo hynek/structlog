@@ -25,11 +25,11 @@ _MISSING = "{who} requires the {package} package installed.  "
 _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 
-def _pad(s, l):
+def _pad(s, length):
     """
-    Pads *s* to length *l*.
+    Pads *s* to length *lenght*.
     """
-    missing = l - len(s)
+    missing = length - len(s)
     return s + " " * (missing if missing > 0 else 0)
 
 
