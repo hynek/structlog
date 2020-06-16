@@ -26,6 +26,9 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
+- Added better error messages for PrintLogger when the processor chain doesn't return a string.
+  `#263 <https://github.com/hynek/structlog/pull/263>`_
+
 *none*
 
 
