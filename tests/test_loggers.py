@@ -97,6 +97,16 @@ class TestPrintLogger:
         with pytest.raises(pickle.PicklingError, match="Only PrintLoggers to"):
             pickle.dumps(pl, proto)
 
+    def test_extra_args(self):
+        """
+        PrintLogger only takes a single string arg, no args or kwargs,
+        but supports args/kwargs for better error messages.
+        """
+        with pytest.raises(TypeError):
+            PrintLogger().msg("hello", "foo")
+        with pytest.raises(TypeError):
+            PrintLogger().msg("hello", foo="foo")
+
 
 class TestPrintLoggerFactory:
     def test_does_not_cache(self):
