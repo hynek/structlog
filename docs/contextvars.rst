@@ -22,7 +22,7 @@ The general flow is:
 
 - Use `structlog.configure` with `structlog.contextvars.merge_contextvars` as your first processor.
 - Call `structlog.contextvars.clear_contextvars` at the beginning of your request handler (or whenever you want to reset the context-local context).
-- Call `structlog.contextvars.bind_contextvars` and `structlog.contextvars.unbind_contextvars` instead of you bound logger's ``bind()`` and ``unbind()`` when you want to bind and unbind key-value pairs to the context-local context.
+- Call `structlog.contextvars.bind_contextvars` and `structlog.contextvars.unbind_contextvars` instead of your bound logger's ``bind()`` and ``unbind()`` when you want to bind and unbind key-value pairs to the context-local context.
 - Use ``structlog`` as normal.
   Loggers act as the always do, but the `structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
 
