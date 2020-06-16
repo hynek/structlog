@@ -105,10 +105,13 @@ class PrintLogger:
     def __repr__(self):
         return f"<PrintLogger(file={self._file!r})>"
 
-    def msg(self, message):
+    def msg(self, message, *args, **kwargs):
         """
         Print *message*.
         """
+        if args or kwargs:
+            raise TypeError("PrintLogger can only take a string as argument. "
+                            "Check that the last processor returns a string.")
         with self._lock:
             until_not_interrupted(self._write, message + "\n")
             until_not_interrupted(self._flush)
