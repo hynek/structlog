@@ -110,8 +110,10 @@ class PrintLogger:
         Print *message*.
         """
         if args or kwargs:
-            raise TypeError("PrintLogger can only take a string as argument. "
-                            "Check that the last processor returns a string.")
+            raise TypeError(
+                "PrintLogger can only take a string as argument. "
+                "Check that the last processor returns a string."
+            )
         with self._lock:
             until_not_interrupted(self._write, message + "\n")
             until_not_interrupted(self._flush)
