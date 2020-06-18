@@ -7,6 +7,7 @@ Global state department.  Don't reload this module or everything breaks.
 """
 
 
+import sys
 import warnings
 
 from ._generic import BoundLogger
@@ -25,7 +26,7 @@ _BUILTIN_DEFAULT_PROCESSORS = [
     set_exc_info,
     format_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
-    ConsoleRenderer(colors=_has_colorama),
+    ConsoleRenderer(colors=_has_colorama and sys.stdout.isatty()),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = dict
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
