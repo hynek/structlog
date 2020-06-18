@@ -39,7 +39,6 @@ EXTRAS_REQUIRE = {
         "pytest-asyncio; python_version>='3.7'",
         "pytest-randomly",
         "pytest>=3.3.0",
-        "python-rapidjson",
         "simplejson",
     ],
     "docs": ["sphinx", "twisted"],

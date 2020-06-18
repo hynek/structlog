@@ -34,11 +34,6 @@ try:
 except ImportError:
     simplejson = None
 
-try:
-    import rapidjson
-except ImportError:
-    rapidjson = None
-
 
 class TestKeyValueRenderer:
     def test_sort_keys(self, event_dict):
@@ -188,23 +183,6 @@ class TestJSONRenderer:
         Integration test with simplejson.
         """
         jr = JSONRenderer(serializer=simplejson.dumps)
-
-        assert {
-            "a": "<A(\\o/)>",
-            "b": [3, 4],
-            "x": 7,
-            "y": "test",
-            "z": [1, 2],
-        } == json.loads(jr(None, None, event_dict))
-
-    @pytest.mark.skipif(
-        rapidjson is None, reason="python-rapidjson is missing."
-    )
-    def test_rapidjson(self, event_dict):
-        """
-        Integration test with python-rapidjson.
-        """
-        jr = JSONRenderer(serializer=rapidjson.dumps)
 
         assert {
             "a": "<A(\\o/)>",
