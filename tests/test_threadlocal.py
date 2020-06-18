@@ -13,6 +13,8 @@ from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
 from structlog.testing import ReturnLogger
 from structlog.threadlocal import (
+    _CONTEXT,
+    _get_context,
     as_immutable,
     bind_threadlocal,
     clear_threadlocal,
@@ -339,3 +341,16 @@ class TestNewThreadLocal:
         unbind_threadlocal("non-existing-key")
 
         assert {"b": 34} == merge_threadlocal_context(None, None, {})
+
+    def test_get_context_no_context(self):
+        """
+        If there is no context yet, _get_context will add it.
+        """
+        # Don't rely on test order.
+        if hasattr(_CONTEXT, "context"):
+            del _CONTEXT.context
+
+        with pytest.raises(AttributeError):
+            _CONTEXT.context
+
+        assert {} == _get_context()
