@@ -47,7 +47,7 @@ class TestBinding:
 
     def test_new_clears_state(self):
         """
-        Calling clear() on a logger clears the context.
+        Calling new() on a logger clears the context.
         """
         b = build_bl()
         b = b.bind(x=42)
@@ -60,10 +60,12 @@ class TestBinding:
 
         b = b.new()
 
-        assert "x" not in get_context(b)
         assert {} == dict(get_context(b))
 
     def test_comparison(self):
+        """
+        Two bound loggers are equal if their context is equal.
+        """
         b = build_bl()
 
         assert b == b.bind()
@@ -72,6 +74,10 @@ class TestBinding:
         assert b != "test"
 
     def test_bind_keeps_class(self):
+        """
+        Binding values does not change the type of the bound logger.
+        """
+
         class Wrapper(BoundLoggerBase):
             pass
 
@@ -80,6 +86,10 @@ class TestBinding:
         assert isinstance(b.bind(), Wrapper)
 
     def test_new_keeps_class(self):
+        """
+        Clearing context does not change the type of the bound logger.
+        """
+
         class Wrapper(BoundLoggerBase):
             pass
 
