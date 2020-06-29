@@ -7,6 +7,7 @@ import pytest
 
 from pretend import raiser, stub
 
+from structlog import get_context
 from structlog._base import BoundLoggerBase
 from structlog._config import _CONFIG
 from structlog.exceptions import DropEvent
@@ -45,18 +46,22 @@ class TestBinding:
         assert b._context != b1._context != b2._context
 
     def test_new_clears_state(self):
+        """
+        Calling clear() on a logger clears the context.
+        """
         b = build_bl()
         b = b.bind(x=42)
 
-        assert 42 == b._context["x"]
+        assert 42 == get_context(b)["x"]
 
         b = b.bind()
 
-        assert 42 == b._context["x"]
+        assert 42 == get_context(b)["x"]
 
         b = b.new()
 
-        assert "x" not in b._context
+        assert "x" not in get_context(b)
+        assert {} == dict(get_context(b))
 
     def test_comparison(self):
         b = build_bl()

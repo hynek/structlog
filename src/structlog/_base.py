@@ -10,6 +10,24 @@ Logger wrapper and helper class.
 from structlog.exceptions import DropEvent
 
 
+def get_context(bound_logger):
+    """
+    Return *bound_logger*'s context.
+
+    The type of *bound_logger* and the typed returned depend on your
+    configuration.
+
+    :param bound_logger: The bound logger whose context you want.
+
+    :returns: The *actual* context from *bound_logger*. It is *not* copied
+        first.
+
+    .. versionadded:: 20.2
+    """
+    # This probably will get more complicated in the future.
+    return bound_logger._context
+
+
 class BoundLoggerBase:
     """
     Immutable context carrier.

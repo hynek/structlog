@@ -20,13 +20,15 @@ Backward-incompatible changes:
 Deprecations:
 ^^^^^^^^^^^^^
 
-*none*
+- Accessing the ``_context`` attribute of a bound logger is now deprecated.
+  Please use the new ``structlog.get_context()``.
 
 
 Changes:
 ^^^^^^^^
 
-*none*
+- ``structlog.get_context()`` allows you to retrieve the original context of a bound logger.
+  `#266 <https://github.com/hynek/structlog/issues/266>`_,
 
 
 ----

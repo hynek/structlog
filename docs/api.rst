@@ -42,6 +42,8 @@ API Reference
 
 .. autofunction:: get_config
 
+.. autofunction:: get_context
+
 .. autoclass:: BoundLogger
    :members: new, bind, unbind
 

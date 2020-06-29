@@ -8,7 +8,7 @@ Structured logging for Python.
 
 
 from structlog import dev, processors, stdlib, testing, threadlocal
-from structlog._base import BoundLoggerBase
+from structlog._base import BoundLoggerBase, get_context
 from structlog._config import (
     configure,
     configure_once,
@@ -63,6 +63,7 @@ __all__ = [
     "dev",
     "getLogger",
     "get_config",
+    "get_context",
     "get_logger",
     "is_configured",
     "processors",
