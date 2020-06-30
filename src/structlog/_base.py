@@ -14,7 +14,7 @@ def get_context(bound_logger):
     """
     Return *bound_logger*'s context.
 
-    The type of *bound_logger* and the typed returned depend on your
+    The type of *bound_logger* and the type returned depend on your
     configuration.
 
     :param bound_logger: The bound logger whose context you want.

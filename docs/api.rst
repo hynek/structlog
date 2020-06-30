@@ -42,10 +42,10 @@ API Reference
 
 .. autofunction:: get_config
 
-.. autofunction:: get_context
-
 .. autoclass:: BoundLogger
    :members: new, bind, unbind
+
+.. autofunction:: get_context
 
 .. autoclass:: PrintLogger
    :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
