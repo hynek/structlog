@@ -31,6 +31,7 @@ class BoundLogger(BoundLoggerBase):
         """
         if method_name == '__deepcopy__':
             return None
+
         wrapped = partial(self._proxy_to_logger, method_name)
         setattr(self, method_name, wrapped)
         return wrapped

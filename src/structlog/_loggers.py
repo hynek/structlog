@@ -110,6 +110,7 @@ class PrintLogger:
         if self._file not in (sys.stdout, sys.stderr):
             raise copy.error("Only PrintLoggers to sys.stdout and sys.stderr "
                              "can be deepcopied.")
+
         newself = self.__class__(self._file)
         newself._write = newself._file.write
         newself._flush = newself._file.flush

@@ -5,6 +5,7 @@
 
 import pickle
 import sys
+from copy import deepcopy
 
 from io import StringIO
 
@@ -96,6 +97,17 @@ class TestPrintLogger:
 
         with pytest.raises(pickle.PicklingError, match="Only PrintLoggers to"):
             pickle.dumps(pl, proto)
+
+    def test_deepcopy(self, capsys):
+        """
+        Deepcopied PrintLogger works.
+        """
+        copied_logger = deepcopy(PrintLogger())
+        copied_logger.msg("hello")
+        
+        out, err = capsys.readouterr()
+        assert "hello\n" == out
+        assert "" == err
 
 
 class TestPrintLoggerFactory:
