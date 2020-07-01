@@ -29,7 +29,8 @@ Changes:
 
 - ``structlog.get_context()`` allows you to retrieve the original context of a bound logger.
   `#266 <https://github.com/hynek/structlog/issues/266>`_,
-
+- ``PrintLogger`` now supports ``deepcopy``.
+  `#268 <https://github.com/hynek/structlog/issues/268>`_
 
 ----
 
