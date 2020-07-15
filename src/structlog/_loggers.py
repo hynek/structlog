@@ -106,6 +106,8 @@ class PrintLogger:
     def __deepcopy__(self, memodict={}):
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
+
+        .. versionadded:: 20.2.0
         """
         if self._file not in (sys.stdout, sys.stderr):
             raise copy.error("Only PrintLoggers to sys.stdout and sys.stderr "
