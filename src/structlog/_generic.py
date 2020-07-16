@@ -28,9 +28,6 @@ class BoundLogger(BoundLoggerBase):
     def __getattr__(self, method_name):
         """
         If not done so yet, wrap the desired logger method & cache the result.
-
-        .. versionchanged:: 20.2.0
-            Support deepcopy by returning None for '__deepcopy__'.
         """
         if method_name == '__deepcopy__':
             return None
