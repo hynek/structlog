@@ -5,8 +5,8 @@
 
 import pickle
 import sys
-from copy import deepcopy, error
 
+from copy import deepcopy, error
 from io import StringIO
 
 import pytest
@@ -104,7 +104,7 @@ class TestPrintLogger:
         """
         copied_logger = deepcopy(PrintLogger())
         copied_logger.msg("hello")
-        
+
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err

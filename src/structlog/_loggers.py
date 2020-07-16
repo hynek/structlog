@@ -7,10 +7,10 @@ Logger wrapper and helper class.
 """
 
 
+import copy
 import sys
 import threading
 
-import copy
 from pickle import PicklingError
 
 from structlog._utils import until_not_interrupted
@@ -108,8 +108,10 @@ class PrintLogger:
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
         if self._file not in (sys.stdout, sys.stderr):
-            raise copy.error("Only PrintLoggers to sys.stdout and sys.stderr "
-                             "can be deepcopied.")
+            raise copy.error(
+                "Only PrintLoggers to sys.stdout and sys.stderr "
+                "can be deepcopied."
+            )
 
         newself = self.__class__(self._file)
         newself._write = newself._file.write
