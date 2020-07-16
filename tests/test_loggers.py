@@ -100,7 +100,7 @@ class TestPrintLogger:
 
     def test_deepcopy(self, capsys):
         """
-        Deepcopied PrintLogger works. But not for _file other than stdout or err
+        Deepcopied PrintLogger works. But only with stdout or stderr.
         """
         copied_logger = deepcopy(PrintLogger())
         copied_logger.msg("hello")
