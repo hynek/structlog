@@ -5,7 +5,7 @@
 
 import pickle
 import sys
-from copy import deepcopy
+from copy import deepcopy, error
 
 from io import StringIO
 
@@ -100,7 +100,7 @@ class TestPrintLogger:
 
     def test_deepcopy(self, capsys):
         """
-        Deepcopied PrintLogger works.
+        Deepcopied PrintLogger works. But not for _file other than stdout or err
         """
         copied_logger = deepcopy(PrintLogger())
         copied_logger.msg("hello")
@@ -108,6 +108,12 @@ class TestPrintLogger:
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err
+
+        # this should raise an exception because _file is not stdout or stderr
+        copied_logger._file = "abc"
+        with pytest.raises(error):
+            copied_logger2 = deepcopy(copied_logger)
+            copied_logger2.msg("hello")
 
 
 class TestPrintLoggerFactory:
