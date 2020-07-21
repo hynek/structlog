@@ -13,6 +13,11 @@ from setuptools import find_packages, setup
 
 NAME = "structlog"
 KEYWORDS = ["logging", "structured", "structure", "log"]
+PROJECT_URLS = {
+    "Documentation": "https://www.structlog.org/",
+    "Bug Tracker": "https://github.com/hynek/structlog/issues",
+    "Source Code": "https://github.com/hynek/structlog",
+}
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -108,6 +113,7 @@ if __name__ == "__main__":
         description=find_meta("description"),
         license=find_meta("license"),
         url=find_meta("uri"),
+        project_urls=PROJECT_URLS,
         version=VERSION,
         author=find_meta("author"),
         author_email=find_meta("email"),
