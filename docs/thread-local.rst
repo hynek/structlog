@@ -28,7 +28,7 @@ If you are willing to do that, you should stick to it because `immutable state <
 Sooner or later, global state and mutable data lead to unpleasant surprises.
 
 However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
-And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` contains ships with the `structlog.threadlocal` module and a couple of mechanisms to help here.
+And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` ships with the `structlog.threadlocal` module and a couple of mechanisms to help here.
 
 
 The ``merge_threadlocal`` Processor
