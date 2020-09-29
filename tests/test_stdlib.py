@@ -7,6 +7,7 @@ import collections
 import logging
 import logging.config
 import os
+import sys
 
 import pytest
 
@@ -646,6 +647,36 @@ class TestProcessorFormatter:
 
         assert "exc_info" in event_dict
         assert isinstance(event_dict["exc_info"], tuple)
+
+    def test_foreign_pre_chain_sys_exc_info(self, configure_for_pf, capsys):
+        """
+        If a foreign_pre_chain function accesses sys.exc_info(),
+        ProcessorFormatter should not have changed it.
+        """
+
+        class MyException(Exception):
+            pass
+
+        def add_excinfo(logger, log_method, event_dict):
+            event_dict["exc_info"] = sys.exc_info()
+            return event_dict
+
+        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        configure_logging((add_excinfo, test_processor))
+        configure(
+            processors=[ProcessorFormatter.wrap_for_formatter],
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+        )
+
+        try:
+            raise MyException("oh noo")
+        except Exception:
+            logging.getLogger().error("okay")
+
+        event_dict = test_processor.calls[0].args[2]
+
+        assert MyException == event_dict["exc_info"][0]
 
     def test_other_handlers_get_original_record(
         self, configure_for_pf, capsys

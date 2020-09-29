@@ -499,7 +499,7 @@ class ProcessorFormatter(logging.Formatter):
         # Make a shallow copy of the record to let other handlers/formatters
         # process the original one
         record = logging.makeLogRecord(record.__dict__)
-        try:
+        if hasattr(record, "_logger") and hasattr(record, "_name"):
             # Both attached by wrap_for_formatter
             logger = self.logger if self.logger is not None else record._logger
             meth_name = record._name
@@ -508,7 +508,7 @@ class ProcessorFormatter(logging.Formatter):
             # processed by multiple logging formatters.  LogRecord.getMessage
             # would transform our dict into a str.
             ed = record.msg.copy()
-        except AttributeError:
+        else:
             logger = self.logger
             meth_name = record.levelname.lower()
             ed = {"event": record.getMessage(), "_record": record}
