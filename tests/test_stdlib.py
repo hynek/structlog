@@ -503,11 +503,6 @@ class TestProcessorFormatter:
         to logging.
         """
         configure_logging(None)
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         logging.getLogger().warning("foo")
 
@@ -538,11 +533,6 @@ class TestProcessorFormatter:
         """
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((test_processor,), pass_foreign_args=True)
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         positional_args = {"foo": "bar"}
         logging.getLogger().info("okay %(foo)s", positional_args)
@@ -571,11 +561,6 @@ class TestProcessorFormatter:
         non-structlog log entries.
         """
         configure_logging((add_log_level,))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         logging.getLogger().warning("foo")
 
@@ -589,11 +574,6 @@ class TestProcessorFormatter:
         foreign_pre_chain works with add_logger_name processor.
         """
         configure_logging((add_logger_name,))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         logging.getLogger("sample-name").warning("foo")
 
@@ -632,11 +612,6 @@ class TestProcessorFormatter:
         """
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((test_processor,))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         try:
             raise RuntimeError("oh noo")
@@ -663,11 +638,6 @@ class TestProcessorFormatter:
 
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((add_excinfo, test_processor))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         try:
             raise MyException("oh noo")
