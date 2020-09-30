@@ -676,7 +676,7 @@ class TestProcessorFormatter:
 
         event_dict = test_processor.calls[0].args[2]
 
-        assert MyException == event_dict["exc_info"][0]
+        assert MyException is event_dict["exc_info"][0]
 
     def test_other_handlers_get_original_record(
         self, configure_for_pf, capsys

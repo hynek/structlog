@@ -15,6 +15,8 @@ from structlog._base import BoundLoggerBase
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
 
+_SENTINEL = object()
+
 
 class _FixedFindCallerLogger(logging.Logger):
     """
@@ -499,9 +501,14 @@ class ProcessorFormatter(logging.Formatter):
         # Make a shallow copy of the record to let other handlers/formatters
         # process the original one
         record = logging.makeLogRecord(record.__dict__)
-        if hasattr(record, "_logger") and hasattr(record, "_name"):
+
+        logger = getattr(record, '_logger', _SENTINEL)
+        meth_name = getattr(record, '_name', _SENTINEL)
+
+        if logger is not _SENTINEL and meth_name is not _SENTINEL:
             # Both attached by wrap_for_formatter
-            logger = self.logger if self.logger is not None else record._logger
+            if self.logger is not None:
+                logger = self.logger
             meth_name = record._name
 
             # We need to copy because it's possible that the same record gets
