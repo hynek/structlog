@@ -784,6 +784,20 @@ class TestProcessorFormatter:
             "[warning  ] foo [in test_native]\n",
         ) == capsys.readouterr()
 
+    def test_native_logger(self, configure_for_pf, capsys):
+        """
+        If the log entry comes from structlog, it's unpackaged and processed.
+        """
+        logger = logging.getLogger()
+        configure_logging(None, logger=logger)
+
+        get_logger().warning("foo")
+
+        assert (
+            "",
+            "[warning  ] foo [in test_native_logger]\n",
+        ) == capsys.readouterr()
+
     def test_foreign_pre_chain_filter_by_level(self, configure_for_pf, capsys):
         """
         foreign_pre_chain works with filter_by_level processor.
