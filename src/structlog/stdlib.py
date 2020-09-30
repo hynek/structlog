@@ -15,6 +15,7 @@ from structlog._base import BoundLoggerBase
 from structlog._frames import _find_first_app_frame_and_name, _format_stack
 from structlog.exceptions import DropEvent
 
+
 _SENTINEL = object()
 
 
