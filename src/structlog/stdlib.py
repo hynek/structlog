@@ -502,8 +502,8 @@ class ProcessorFormatter(logging.Formatter):
         # process the original one
         record = logging.makeLogRecord(record.__dict__)
 
-        logger = getattr(record, '_logger', _SENTINEL)
-        meth_name = getattr(record, '_name', _SENTINEL)
+        logger = getattr(record, "_logger", _SENTINEL)
+        meth_name = getattr(record, "_name", _SENTINEL)
 
         if logger is not _SENTINEL and meth_name is not _SENTINEL:
             # Both attached by wrap_for_formatter
