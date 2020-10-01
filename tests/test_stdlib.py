@@ -7,6 +7,7 @@ import collections
 import logging
 import logging.config
 import os
+import sys
 
 import pytest
 
@@ -502,11 +503,6 @@ class TestProcessorFormatter:
         to logging.
         """
         configure_logging(None)
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         logging.getLogger().warning("foo")
 
@@ -537,11 +533,6 @@ class TestProcessorFormatter:
         """
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((test_processor,), pass_foreign_args=True)
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         positional_args = {"foo": "bar"}
         logging.getLogger().info("okay %(foo)s", positional_args)
@@ -570,11 +561,6 @@ class TestProcessorFormatter:
         non-structlog log entries.
         """
         configure_logging((add_log_level,))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         logging.getLogger().warning("foo")
 
@@ -588,11 +574,6 @@ class TestProcessorFormatter:
         foreign_pre_chain works with add_logger_name processor.
         """
         configure_logging((add_logger_name,))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         logging.getLogger("sample-name").warning("foo")
 
@@ -631,11 +612,6 @@ class TestProcessorFormatter:
         """
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
         configure_logging((test_processor,))
-        configure(
-            processors=[ProcessorFormatter.wrap_for_formatter],
-            logger_factory=LoggerFactory(),
-            wrapper_class=BoundLogger,
-        )
 
         try:
             raise RuntimeError("oh noo")
@@ -646,6 +622,31 @@ class TestProcessorFormatter:
 
         assert "exc_info" in event_dict
         assert isinstance(event_dict["exc_info"], tuple)
+
+    def test_foreign_pre_chain_sys_exc_info(self, configure_for_pf, capsys):
+        """
+        If a foreign_pre_chain function accesses sys.exc_info(),
+        ProcessorFormatter should not have changed it.
+        """
+
+        class MyException(Exception):
+            pass
+
+        def add_excinfo(logger, log_method, event_dict):
+            event_dict["exc_info"] = sys.exc_info()
+            return event_dict
+
+        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        configure_logging((add_excinfo, test_processor))
+
+        try:
+            raise MyException("oh noo")
+        except Exception:
+            logging.getLogger().error("okay")
+
+        event_dict = test_processor.calls[0].args[2]
+
+        assert MyException is event_dict["exc_info"][0]
 
     def test_other_handlers_get_original_record(
         self, configure_for_pf, capsys
@@ -751,6 +752,20 @@ class TestProcessorFormatter:
         assert (
             "",
             "[warning  ] foo [in test_native]\n",
+        ) == capsys.readouterr()
+
+    def test_native_logger(self, configure_for_pf, capsys):
+        """
+        If the log entry comes from structlog, it's unpackaged and processed.
+        """
+        logger = logging.getLogger()
+        configure_logging(None, logger=logger)
+
+        get_logger().warning("foo")
+
+        assert (
+            "",
+            "[warning  ] foo [in test_native_logger]\n",
         ) == capsys.readouterr()
 
     def test_foreign_pre_chain_filter_by_level(self, configure_for_pf, capsys):
