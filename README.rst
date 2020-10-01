@@ -27,7 +27,7 @@
 
 ``structlog`` makes logging in Python less painful and more powerful by adding structure to your log entries.
 
-It's up to you whether you want ``structlog`` to take care about the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's ``logging`` module.
+It's up to you whether you want ``structlog`` to take care of the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's ``logging`` module.
 
 .. -end-short-
 
@@ -110,10 +110,10 @@ Output
 - A **built-in** lightweight printer like in the examples above.
   Easy to use and fast.
 - Use the **standard library**'s or **Twisted**'s logging modules for compatibility.
-  In this case ``structlog`` works like a wrapper that formats a string and passes them off into existing systems that won't ever know that ``structlog`` even exists.
+  In this case, ``structlog`` works like a wrapper that formats a string and passes them off into existing systems that won't ever know that ``structlog`` even exists.
   Or the other way round: ``structlog`` comes with a ``logging`` formatter that allows for processing third party log records.
 - Don't format it to a string at all!
-  ``structlog`` passes you a dictionary and you can do with it whatever you want.
+  ``structlog`` passes you a dictionary, and you can do with it whatever you want.
   Reported uses cases are sending them out via network or saving them in a database.
 
 .. -end-spiel-
@@ -123,9 +123,9 @@ Output
 Getting Help
 ============
 
-Please use the ``structlog`` tag on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_ to get help.
+<https://stackoverflow.com/questions/tagged/structlog>`_ to get help.
 
-Answering questions of your fellow developers is also great way to help the project!
+Answering questions of your fellow developers is also a great way to help the project!
 
 
 Project Information
@@ -138,11 +138,11 @@ We collect useful third party extension in `our wiki <https://github.com/hynek/s
 ``structlog`` targets Python 3.6 and newer, and PyPy3.
 
 If you need support for older Python versions, the last release with support for Python 2.7 and 3.5 was `20.1.0 <https://pypi.org/project/structlog/20.1.0/>`_.
-The package meta data should ensure that you get the correct version.
+The package metadata should ensure that you get the correct version.
 
 ``structlog`` for Enterprise
 ----------------------------
 
 Available as part of the Tidelift Subscription.
 
-The maintainers of structlog and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. `Learn more. <https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme>`_
+The maintainers of structlog and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open-source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. `Learn more. <https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme>`_
