@@ -16,6 +16,11 @@ If you need functionality similar to `unittest.TestCase.assertLogs`, or you want
 
 Note that inside the context manager all configured processors are disabled.
 
+.. note::
+
+  ``capture_logs()`` relies on changing the configuration.
+  If you have *cache_logger_on_first_use* enabled for :doc:`performance <performance>`, any cached loggers will not be affected, so it’s recommended you do not enable it during tests.
+
 You can build your own helpers using `structlog.testing.LogCapture`.
 For example a `pytest <https://docs.pytest.org/>`_ fixture to capture log output could look like this::
 
