@@ -128,13 +128,9 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "alabaster"
+html_theme = "furo"
 html_theme_options = {
-    "font_family": '"Avenir Next", Calibri, "PT Sans", sans-serif',
-    "head_font_family": '"Avenir Next", Calibri, "PT Sans", sans-serif',
-    "font_size": "18px",
-    "page_width": "980px",
-    "show_relbars": True,
+    "sidebar_hide_name": True,
 }
 html_logo = "_static/structlog_logo_small.png"
 
