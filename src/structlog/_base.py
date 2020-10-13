@@ -205,3 +205,50 @@ class BoundLoggerBase:
             return getattr(self._logger, method_name)(*args, **kw)
         except DropEvent:
             return
+
+
+def register_log_level(level_name, level_value):
+    # type: (str, str) -> None
+    """
+    Register and add new custom log level with structlog and Python logging module.
+    """
+    import logging
+    import structlog.stdlib
+
+    level_name_lower = level_name.lower()
+    level_name_upper = level_name.upper()
+
+    # Check if the requested log level is already registered with stdlib
+    stdlib_log_level_value = getattr(logging, level_name.upper(), None)
+
+    if stdlib_log_level_value is not None:
+        raise ValueError("%s log level is already registered with stdlib logging and "
+                         "structlog" % (level_name.upper()))
+
+    # Check if the requested log level numeric value is already registed with stdlib
+    stdlib_log_level_name = logging.getLevelName(level_value)
+
+    if not stdlib_log_level_value.startswith("Level "):
+        raise ValueError("Log level with numeric value %s is already "
+                         "registered with stdlib with the following name: %s" %
+                         (level_value, stdlib_log_level_name))
+
+    # Register constants with structlog
+    setattr(structlog.stdlib, level_value, level_value)
+    structlog.stdlib._NAME_TO_LEVEL[level_name_lower] = level_value
+    structlog.stdlib._LEVEL_TO_NAME[level_value] = level_name_lower
+
+    # For convenience, add new log.<level name> method
+    def make_logger_function(name):
+        def log_method(self, msg, *args, **kwargs):
+            return self.log(level_value, msg, *args, **kwargs)
+        log_method.__name__ = name
+        return log_method
+
+    log_method = make_logger_function(level_name_lower)
+
+    setattr(structlog.stdlib._FixedFindCallerLogger, level_name_lower, log_method)
+    setattr(structlog.stdlib.BoundLogger, level_name_lower, log_method)
+
+    # Register it with stdlib logging module
+    logging.addLevelName(level_value, level_name_upper)
