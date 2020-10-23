@@ -5,7 +5,6 @@
 
 import json
 
-from collections import OrderedDict
 from io import StringIO
 
 import pytest
@@ -230,7 +229,7 @@ class TestJSONRenderer:
         JSONRenderer allows for setting arguments that are passed to
         json.dumps().  Make sure they are passed.
         """
-        d = OrderedDict(x="foo")
+        d = {"x": "foo"}
         d.update(a="bar")
         jr_sorted = JSONRenderer(sort_keys=True)
 
