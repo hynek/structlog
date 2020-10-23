@@ -3,7 +3,6 @@
 # repository for complete details.
 
 
-import collections
 import logging
 import logging.config
 import os
@@ -684,7 +683,6 @@ class TestProcessorFormatter:
         logger = logging.getLogger()
 
         def format_exc_info_fake(logger, name, event_dict):
-            event_dict = collections.OrderedDict(event_dict)
             del event_dict["exc_info"]
             event_dict["exception"] = "Exception!"
             return event_dict
