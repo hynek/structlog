@@ -215,7 +215,7 @@ class ConsoleRenderer:
             )
 
         # force event to str for compatibility with standard library
-        event = event_dict.pop("event")
+        event = event_dict.pop("event", None)
         if not isinstance(event, str):
             event = str(event)
 
