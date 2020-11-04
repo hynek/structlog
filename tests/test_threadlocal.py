@@ -5,8 +5,6 @@
 
 import threading
 
-from collections import OrderedDict
-
 import pytest
 
 from structlog._base import BoundLoggerBase
@@ -43,9 +41,9 @@ def D():
 @pytest.fixture
 def log(logger):
     """
-    Returns a ReturnLogger with a freshly wrapped OrderedDict.
+    Returns a ReturnLogger with a freshly wrapped dict.
     """
-    return wrap_logger(logger, context_class=wrap_dict(OrderedDict))
+    return wrap_logger(logger, context_class=wrap_dict(dict))
 
 
 @pytest.fixture

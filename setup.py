@@ -29,6 +29,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python",
@@ -46,7 +47,7 @@ EXTRAS_REQUIRE = {
         "pytest>=6.0",
         "simplejson",
     ],
-    "docs": ["sphinx", "twisted"],
+    "docs": ["furo", "sphinx", "twisted"],
 }
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit"]
@@ -88,7 +89,7 @@ def find_meta(meta):
     )
     if meta_match:
         return meta_match.group(1)
-    raise RuntimeError(f"Unable to find __{meta}__ string.")
+    raise RuntimeError(f"Unable to find __{ meta }__ string.")
 
 
 VERSION = find_meta("version")

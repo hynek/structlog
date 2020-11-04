@@ -28,11 +28,4 @@ line-length = 79
 
 
 [tool.isort]
-atomic=true
-include_trailing_comma=true
-lines_after_imports=2
-lines_between_types=1
-multi_line_output=3
-
-known_first_party="structlog"
-known_third_party=["flask", "freezegun", "pretend", "pytest", "setuptools", "some_module", "structlog", "twisted", "zope"]
+profile = "attrs"

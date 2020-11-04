@@ -30,6 +30,7 @@ Changes:
 - ``structlog.get_context()`` allows you to retrieve the original context of a bound logger.
   `#266 <https://github.com/hynek/structlog/issues/266>`_,
 
+- ``structlog.stdlib.ProcessorFormatter`` no longer uses exceptions for control flow, allowing ``foreign_pre_chain`` processors to use ``sys.exc_info()`` to access the real exception.
 
 ----
 

@@ -5,7 +5,6 @@
 
 import json
 
-from collections import OrderedDict
 from io import StringIO
 
 import pytest
@@ -80,15 +79,18 @@ class TestBoundLogger:
         except ValueError:
             # Use str() for comparison to avoid tricky
             # deep-compares of Failures.
-            assert str(
-                (
-                    (),
-                    {
-                        "_stuff": Failure(ValueError()),
-                        "_why": "foo=42 event='event'",
-                    },
+            assert (
+                str(
+                    (
+                        (),
+                        {
+                            "_stuff": Failure(ValueError()),
+                            "_why": "foo=42 event='event'",
+                        },
+                    )
                 )
-            ) == str(bl.err("event", foo=42))
+                == str(bl.err("event", foo=42))
+            )
 
 
 class TestExtractStuffAndWhy:
@@ -230,7 +232,7 @@ class TestJSONRenderer:
         JSONRenderer allows for setting arguments that are passed to
         json.dumps().  Make sure they are passed.
         """
-        d = OrderedDict(x="foo")
+        d = {"x": "foo"}
         d.update(a="bar")
         jr_sorted = JSONRenderer(sort_keys=True)
 

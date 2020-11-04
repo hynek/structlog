@@ -5,11 +5,7 @@
 
 import abc
 import pickle
-import platform
-import sys
 import warnings
-
-from collections import OrderedDict
 
 import pytest
 
@@ -62,18 +58,9 @@ def test_lazy_logger_is_not_detected_as_abstract_method():
 
 def test_default_context_class():
     """
-    Default context class is dict on Python 3.6+ and PyPy, OrderedDict
-    otherwise.
+    Default context class is dict on Python 3.6+ and PyPy
     """
-    if platform.python_implementation() == "PyPy" or sys.version_info[:2] >= (
-        3,
-        6,
-    ):
-        cls = dict
-    else:
-        cls = OrderedDict
-
-    assert cls is _BUILTIN_DEFAULT_CONTEXT_CLASS
+    assert dict is _BUILTIN_DEFAULT_CONTEXT_CLASS
 
 
 class TestConfigure:
