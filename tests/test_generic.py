@@ -65,3 +65,15 @@ class TestGenericBoundLogger:
         ).bind(x=1)
 
         assert b.info("hi") == pickle.loads(pickle.dumps(b, proto)).info("hi")
+
+    def test_deepcopy(self):
+        """
+        __getattr__ returns None for '__deepcopy__'
+        """
+        b = BoundLogger(
+            ReturnLogger(),
+            _CONFIG.default_processors,
+            _CONFIG.default_context_class(),
+        )
+
+        assert b.__deepcopy__ is None

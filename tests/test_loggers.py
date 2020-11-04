@@ -6,6 +6,7 @@
 import pickle
 import sys
 
+from copy import deepcopy, error
 from io import StringIO
 
 import pytest
@@ -96,6 +97,23 @@ class TestPrintLogger:
 
         with pytest.raises(pickle.PicklingError, match="Only PrintLoggers to"):
             pickle.dumps(pl, proto)
+
+    def test_deepcopy(self, capsys):
+        """
+        Deepcopied PrintLogger works. But only with stdout or stderr.
+        """
+        copied_logger = deepcopy(PrintLogger())
+        copied_logger.msg("hello")
+
+        out, err = capsys.readouterr()
+        assert "hello\n" == out
+        assert "" == err
+
+        # this should raise an exception because _file is not stdout or stderr
+        copied_logger._file = "abc"
+        with pytest.raises(error):
+            copied_logger2 = deepcopy(copied_logger)
+            copied_logger2.msg("hello")
 
 
 class TestPrintLoggerFactory:

@@ -7,6 +7,7 @@ Logger wrapper and helper class.
 """
 
 
+import copy
 import sys
 import threading
 
@@ -101,6 +102,22 @@ class PrintLogger:
         self._write = self._file.write
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
+
+    def __deepcopy__(self, memodict={}):
+        """
+        Create a new PrintLogger with the same attributes. Similar to pickling.
+        """
+        if self._file not in (sys.stdout, sys.stderr):
+            raise copy.error(
+                "Only PrintLoggers to sys.stdout and sys.stderr "
+                "can be deepcopied."
+            )
+
+        newself = self.__class__(self._file)
+        newself._write = newself._file.write
+        newself._flush = newself._file.flush
+        newself._lock = _get_lock_for_file(newself._file)
+        return newself
 
     def __repr__(self):
         return f"<PrintLogger(file={self._file!r})>"
