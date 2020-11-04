@@ -3,10 +3,10 @@
 # repository for complete details.
 
 
+import copy
 import pickle
 import sys
 
-from copy import deepcopy, error
 from io import StringIO
 
 import pytest
@@ -100,20 +100,28 @@ class TestPrintLogger:
 
     def test_deepcopy(self, capsys):
         """
-        Deepcopied PrintLogger works. But only with stdout or stderr.
+        Deepcopied PrintLogger works.
         """
-        copied_logger = deepcopy(PrintLogger())
+        copied_logger = copy.deepcopy(PrintLogger())
         copied_logger.msg("hello")
 
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err
 
-        # this should raise an exception because _file is not stdout or stderr
-        copied_logger._file = "abc"
-        with pytest.raises(error):
-            copied_logger2 = deepcopy(copied_logger)
-            copied_logger2.msg("hello")
+    def test_deepcopy_no_stdout(self, tmp_path):
+        """
+        Only PrintLoggers that log to stdout or stderr can be deepcopy-ed.
+        """
+        p = tmp_path / "log.txt"
+        with p.open(mode="w") as f:
+            logger = PrintLogger(f)
+            logger.msg("hello")
+
+            with pytest.raises(copy.error):
+                copy.deepcopy(logger)
+
+        assert "hello\n" == p.read_text()
 
 
 class TestPrintLoggerFactory:

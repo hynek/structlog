@@ -114,9 +114,11 @@ class PrintLogger:
             )
 
         newself = self.__class__(self._file)
+
         newself._write = newself._file.write
         newself._flush = newself._file.flush
         newself._lock = _get_lock_for_file(newself._file)
+
         return newself
 
     def __repr__(self):
