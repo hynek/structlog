@@ -91,8 +91,7 @@ As you can see, it accepts one mandatory and a few optional arguments:
    The class to save your context in.
    Particularly useful for `thread local context storage <thread-local>`.
 
-   On Python versions that have ordered dictionaries (Python 3.6+, PyPy) the default is a plain `dict`.
-   For everything else it's `collections.OrderedDict`.
+   Since Python 3.6+ and PyPy have ordered dictionaries, the default is a plain `dict`.
 
 Additionally, the following arguments are allowed too:
 
