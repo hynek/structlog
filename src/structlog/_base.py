@@ -34,9 +34,9 @@ class BoundLoggerBase:
 
     Doesn't do any actual logging; examples for useful subclasses are:
 
-        - the generic :class:`BoundLogger` that can wrap anything,
-        - :class:`structlog.twisted.BoundLogger`,
-        - and :class:`structlog.stdlib.BoundLogger`.
+    - the generic `BoundLogger` that can wrap anything,
+    - `structlog.stdlib.BoundLogger`.
+    - `structlog.twisted.BoundLogger`,
 
     See also `custom-wrappers`.
     """

@@ -32,6 +32,9 @@ Changes:
 - ``structlog.PrintLogger`` now supports ``copy.deepcopy()``.
   `#268 <https://github.com/hynek/structlog/issues/268>`_
 - ``structlog.stdlib.ProcessorFormatter`` no longer uses exceptions for control flow, allowing ``foreign_pre_chain`` processors to use ``sys.exc_info()`` to access the real exception.
+- Added ``structlog.BytesLogger`` to avoid unnecessary encoding round trips.
+  Concretely this is useful with *orjson* which returns bytes.
+  `#271 <https://github.com/hynek/structlog/issues/271>`_
 
 
 ----

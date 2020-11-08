@@ -6,7 +6,6 @@
 Logger wrapper and helper class.
 """
 
-
 import copy
 import sys
 import threading
@@ -22,7 +21,7 @@ class PrintLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    :param file: File to print to. (default: stdout)
+    :param file: File to print to. (default: `sys.stdout`)
     :type file: file object
 
     Positional arguments are silently ignored.
@@ -55,7 +54,7 @@ class PrintLogger:
     """
     Print events into a file.
 
-    :param file: File to print to. (default: stdout)
+    :param file: File to print to. (default: `sys.stdout`)
     :type file: file object
 
     >>> from structlog import PrintLogger
@@ -134,3 +133,108 @@ class PrintLogger:
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg
+
+
+class BytesLogger:
+    r"""
+    Writes bytes into a file.
+
+    :param typing.BinaryIO file: File to print to. (default:
+        `sys.stdout`\ ``.buffer``)
+
+    Useful if you follow
+    `current logging best practices <logging-best-practices>` together with
+    a formatter that returns bytes (e.g. `orjson
+    <https://github.com/ijl/orjson>`_).
+
+    .. versionadded:: 20.2.0
+    """
+    __slots__ = ("_file", "_write", "_flush", "_lock")
+
+    def __init__(self, file=None):
+        self._file = file or sys.stdout.buffer
+        self._write = self._file.write
+        self._flush = self._file.flush
+
+        self._lock = _get_lock_for_file(self._file)
+
+    def __getstate__(self) -> str:
+        """
+        Our __getattr__ magic makes this necessary.
+        """
+        if self._file is sys.stdout.buffer:
+            return "stdout"
+
+        elif self._file is sys.stderr.buffer:
+            return "stderr"
+
+        raise PicklingError(
+            "Only BytesLoggers to sys.stdout and sys.stderr can be pickled."
+        )
+
+    def __setstate__(self, state) -> None:
+        """
+        Our __getattr__ magic makes this necessary.
+        """
+        if state == "stdout":
+            self._file = sys.stdout.buffer
+        else:
+            self._file = sys.stderr.buffer
+
+        self._write = self._file.write
+        self._flush = self._file.flush
+        self._lock = _get_lock_for_file(self._file)
+
+    def __deepcopy__(self, memodict={}) -> "BytesLogger":
+        """
+        Create a new BytesLogger with the same attributes. Similar to pickling.
+        """
+        if self._file not in (sys.stdout.buffer, sys.stderr.buffer):
+            raise copy.error(
+                "Only BytesLoggers to sys.stdout and sys.stderr "
+                "can be deepcopied."
+            )
+
+        newself = self.__class__(self._file)
+
+        newself._write = newself._file.write
+        newself._flush = newself._file.flush
+        newself._lock = _get_lock_for_file(newself._file)
+
+        return newself
+
+    def __repr__(self) -> str:
+        return f"<BytesLogger(file={self._file!r})>"
+
+    def msg(self, message: bytes) -> None:
+        """
+        Write *message*.
+        """
+        with self._lock:
+            until_not_interrupted(self._write, message + b"\n")
+            until_not_interrupted(self._flush)
+
+    log = debug = info = warn = warning = msg
+    fatal = failure = err = error = critical = exception = msg
+
+
+class BytesLoggerFactory:
+    r"""
+    Produce `BytesLogger`\ s.
+
+    To be used with `structlog.configure`\ 's ``logger_factory``.
+
+    :param typing.BinaryIO file: File to print to. (default:
+        `sys.stdout`\ ``.buffer``)
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 20.2.0
+    """
+    __slots__ = ("_file",)
+
+    def __init__(self, file=None):
+        self._file = file
+
+    def __call__(self, *args):
+        return BytesLogger(self._file)

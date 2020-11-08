@@ -20,7 +20,12 @@ from structlog._config import (
     wrap_logger,
 )
 from structlog._generic import BoundLogger
-from structlog._loggers import PrintLogger, PrintLoggerFactory
+from structlog._loggers import (
+    BytesLogger,
+    BytesLoggerFactory,
+    PrintLogger,
+    PrintLoggerFactory,
+)
 from structlog.exceptions import DropEvent
 from structlog.testing import ReturnLogger, ReturnLoggerFactory
 
@@ -52,6 +57,8 @@ __copyright__ = "Copyright (c) 2013 " + __author__
 __all__ = [
     "BoundLogger",
     "BoundLoggerBase",
+    "BytesLogger",
+    "BytesLoggerFactory",
     "DropEvent",
     "PrintLogger",
     "PrintLoggerFactory",

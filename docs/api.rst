@@ -52,6 +52,11 @@ API Reference
 
 .. autoclass:: PrintLoggerFactory
 
+.. autoclass:: BytesLogger
+   :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
+
+.. autoclass:: BytesLoggerFactory
+
 .. autoexception:: DropEvent
 
 .. autoclass:: BoundLoggerBase

@@ -40,6 +40,11 @@ Here are a few hints how to get most out of ``structlog`` in production:
 
       structlog.processors.JSONRenderer(serializer=rapidjson.dumps)
 
+#. Avoid sending your log entries through the standard library if you can: it's a major bottleneck.
+   Instead use `structlog.PrintLoggerFactory` or -- if your serializer returns bytes (e.g. orjson_) -- `structlog.BytesLoggerFactory`.
+
+   You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
+
 
 .. _simplejson: https://simplejson.readthedocs.io/
 .. _orjson: https://github.com/ijl/orjson
