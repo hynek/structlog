@@ -12,7 +12,7 @@ import pytest
 
 from pretend import call_recorder
 
-from structlog import ReturnLogger, configure, get_logger, reset_defaults
+from structlog import ReturnLogger, configure, get_context, reset_defaults
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer
@@ -29,6 +29,7 @@ from structlog.stdlib import (
     add_log_level_number,
     add_logger_name,
     filter_by_level,
+    get_logger,
     render_to_log_kwargs,
 )
 
@@ -284,6 +285,38 @@ class TestBoundLogger:
         assert ((), {"exc_info": 42, "event": "event"}) == bl.exception(
             "event", exc_info=42
         )
+
+    def test_proxies_bind(self):
+        """
+        Bind calls the correct bind.
+        """
+        bl = build_bl().bind(a=42)
+
+        assert {"a": 42} == get_context(bl)
+
+    def test_proxies_new(self):
+        """
+        Newcalls the correct new.
+        """
+        bl = build_bl().bind(a=42).new(b=23)
+
+        assert {"b": 23} == get_context(bl)
+
+    def test_proxies_unbind(self):
+        """
+        Unbind calls the correct unbind.
+        """
+        bl = build_bl().bind(a=42).unbind("a")
+
+        assert {} == get_context(bl)
+
+    def test_proxies_try_unbind(self):
+        """
+        try_unbind calls the correct try_unbind.
+        """
+        bl = build_bl().bind(a=42).try_unbind("a", "b")
+
+        assert {} == get_context(bl)
 
 
 class TestPositionalArgumentsFormatter:
