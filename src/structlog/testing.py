@@ -11,15 +11,11 @@ See :doc:`testing`.
 """
 
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Generator, List
+from typing import Any, Generator, List, NoReturn
 
 from ._config import configure, get_config
 from .exceptions import DropEvent
 from .types import EventDict, WrappedLogger
-
-
-if TYPE_CHECKING:
-    from typing import NoReturn
 
 
 __all__ = ["LogCapture", "capture_logs"]
@@ -41,7 +37,7 @@ class LogCapture:
 
     def __call__(
         self, _: WrappedLogger, method_name: str, event_dict: EventDict
-    ) -> "NoReturn":
+    ) -> NoReturn:
         event_dict["log_level"] = method_name
         self.entries.append(event_dict)
 
