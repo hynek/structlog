@@ -7,7 +7,7 @@ Structured logging for Python.
 """
 
 
-from structlog import dev, processors, stdlib, testing, threadlocal
+from structlog import dev, processors, stdlib, testing, threadlocal, types
 from structlog._base import BoundLoggerBase, get_context
 from structlog._config import (
     configure,
@@ -33,12 +33,12 @@ from structlog.testing import ReturnLogger, ReturnLoggerFactory
 try:
     from structlog import twisted
 except ImportError:
-    twisted = None
+    twisted = None  # type: ignore
 
 try:
     from structlog import contextvars
 except ImportError:
-    contextvars = None
+    contextvars = None  # type: ignore
 
 
 __version__ = "20.2.0.dev0"
@@ -79,5 +79,6 @@ __all__ = [
     "testing",
     "threadlocal",
     "twisted",
+    "types",
     "wrap_logger",
 ]

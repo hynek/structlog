@@ -10,10 +10,13 @@ Global state department.  Don't reload this module or everything breaks.
 import sys
 import warnings
 
+from typing import Any, Callable, Dict, List, Optional, Type
+
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
 from .dev import ConsoleRenderer, _has_colorama, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, format_exc_info
+from .types import BindableLogger, Processor, WrappedLogger
 
 
 """
@@ -21,7 +24,7 @@ from .processors import StackInfoRenderer, TimeStamper, format_exc_info
 
    Any changes to these defaults must be reflected in `getting-started`.
 """
-_BUILTIN_DEFAULT_PROCESSORS = [
+_BUILTIN_DEFAULT_PROCESSORS: List[Processor] = [
     StackInfoRenderer(),
     set_exc_info,
     format_exc_info,
@@ -39,12 +42,12 @@ class _Configuration:
     Global defaults.
     """
 
-    is_configured = False
-    default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
-    default_context_class = _BUILTIN_DEFAULT_CONTEXT_CLASS
-    default_wrapper_class = _BUILTIN_DEFAULT_WRAPPER_CLASS
-    logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY
-    cache_logger_on_first_use = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
+    is_configured: bool = False
+    default_processors: List[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
+    default_context_class: Type[Dict] = _BUILTIN_DEFAULT_CONTEXT_CLASS
+    default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
+    logger_factory: Callable = _BUILTIN_DEFAULT_LOGGER_FACTORY
+    cache_logger_on_first_use: bool = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
 
 
 _CONFIG = _Configuration()
@@ -53,7 +56,7 @@ Global defaults used when arguments to `wrap_logger` are omitted.
 """
 
 
-def is_configured():
+def is_configured() -> bool:
     """
     Return whether ``structlog`` has been configured.
 
@@ -66,7 +69,7 @@ def is_configured():
     return _CONFIG.is_configured
 
 
-def get_config():
+def get_config() -> Dict[str, Any]:
     """
     Get a dictionary with the current configuration.
 
@@ -87,7 +90,7 @@ def get_config():
     }
 
 
-def get_logger(*args, **initial_values):
+def get_logger(*args: Any, **initial_values: Any) -> BindableLogger:
     """
     Convenience function that returns a logger according to configuration.
 
@@ -125,14 +128,14 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 
 
 def wrap_logger(
-    logger,
-    processors=None,
-    wrapper_class=None,
-    context_class=None,
-    cache_logger_on_first_use=None,
-    logger_factory_args=None,
-    **initial_values
-):
+    logger: WrappedLogger,
+    processors: Optional[List[Processor]] = None,
+    wrapper_class: Optional[Type[BindableLogger]] = None,
+    context_class: Optional[Type[Dict]] = None,
+    cache_logger_on_first_use: bool = None,
+    logger_factory_args: Any = None,
+    **initial_values: Any
+) -> BindableLogger:
     """
     Create a new bound logger for an arbitrary *logger*.
 
@@ -169,12 +172,12 @@ def wrap_logger(
 
 
 def configure(
-    processors=None,
-    wrapper_class=None,
-    context_class=None,
-    logger_factory=None,
-    cache_logger_on_first_use=None,
-):
+    processors: Optional[List[Processor]] = None,
+    wrapper_class: Optional[Type[BindableLogger]] = None,
+    context_class: Optional[Type[Dict]] = None,
+    logger_factory: Optional[Callable] = None,
+    cache_logger_on_first_use: bool = None,
+) -> None:
     """
     Configures the **global** defaults.
 
@@ -189,14 +192,14 @@ def configure(
 
     Use `reset_defaults` to undo your changes.
 
-    :param list processors: List of processors.
-    :param type wrapper_class: Class to use for wrapping loggers instead of
+    :param processors: List of processors.
+    :param wrapper_class: Class to use for wrapping loggers instead of
         `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`, and
         `custom-wrappers`.
-    :param type context_class: Class to be used for internal context keeping.
-    :param callable logger_factory: Factory to be called to create a new
+    :param context_class: Class to be used for internal context keeping.
+    :param logger_factory: Factory to be called to create a new
         logger that shall be wrapped.
-    :param bool cache_logger_on_first_use: `wrap_logger` doesn't return an
+    :param cache_logger_on_first_use: `wrap_logger` doesn't return an
         actual wrapped logger but a proxy that assembles one when it's first
         used.  If this option is set to `True`, this assembled logger is
         cached.  See `performance`.
@@ -212,12 +215,18 @@ def configure(
     if context_class is not None:
         _CONFIG.default_context_class = context_class
     if logger_factory is not None:
-        _CONFIG.logger_factory = logger_factory
+        _CONFIG.logger_factory = logger_factory  # type: ignore
     if cache_logger_on_first_use is not None:
         _CONFIG.cache_logger_on_first_use = cache_logger_on_first_use
 
 
-def configure_once(*args, **kw):
+def configure_once(
+    processors: Optional[List[Processor]] = None,
+    wrapper_class: Optional[Type[BindableLogger]] = None,
+    context_class: Optional[Type[Dict]] = None,
+    logger_factory: Optional[Callable] = None,
+    cache_logger_on_first_use: bool = None,
+) -> None:
     """
     Configures if structlog isn't configured yet.
 
@@ -227,12 +236,18 @@ def configure_once(*args, **kw):
     Raises a `RuntimeWarning` if repeated configuration is attempted.
     """
     if not _CONFIG.is_configured:
-        configure(*args, **kw)
+        configure(
+            processors=processors,
+            wrapper_class=wrapper_class,
+            context_class=context_class,
+            logger_factory=logger_factory,
+            cache_logger_on_first_use=cache_logger_on_first_use,
+        )
     else:
         warnings.warn("Repeated configuration attempted.", RuntimeWarning)
 
 
-def reset_defaults():
+def reset_defaults() -> None:
     """
     Resets global default values to builtin defaults.
 
@@ -242,7 +257,7 @@ def reset_defaults():
     _CONFIG.default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
     _CONFIG.default_wrapper_class = _BUILTIN_DEFAULT_WRAPPER_CLASS
     _CONFIG.default_context_class = _BUILTIN_DEFAULT_CONTEXT_CLASS
-    _CONFIG.logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY
+    _CONFIG.logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY  # type: ignore
     _CONFIG.cache_logger_on_first_use = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
 
 
@@ -264,14 +279,14 @@ class BoundLoggerLazyProxy:
 
     def __init__(
         self,
-        logger,
-        wrapper_class=None,
-        processors=None,
-        context_class=None,
-        cache_logger_on_first_use=None,
-        initial_values=None,
-        logger_factory_args=None,
-    ):
+        logger: WrappedLogger,
+        wrapper_class: Optional[Type[BindableLogger]] = None,
+        processors: Optional[List[Processor]] = None,
+        context_class: Optional[Type[Dict]] = None,
+        cache_logger_on_first_use: bool = None,
+        initial_values: Dict[str, Any] = None,
+        logger_factory_args: Any = None,
+    ) -> None:
         self._logger = logger
         self._wrapper_class = wrapper_class
         self._processors = processors
@@ -280,7 +295,7 @@ class BoundLoggerLazyProxy:
         self._initial_values = initial_values or {}
         self._logger_factory_args = logger_factory_args or ()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             "<BoundLoggerLazyProxy(logger={0._logger!r}, wrapper_class="
             "{0._wrapper_class!r}, processors={0._processors!r}, "
@@ -289,7 +304,7 @@ class BoundLoggerLazyProxy:
             "logger_factory_args={0._logger_factory_args!r})>".format(self)
         )
 
-    def bind(self, **new_values):
+    def bind(self, **new_values: Any) -> BindableLogger:
         """
         Assemble a new BoundLogger from arguments and configuration.
         """
@@ -297,7 +312,7 @@ class BoundLoggerLazyProxy:
             ctx = self._context_class(self._initial_values)
         else:
             ctx = _CONFIG.default_context_class(self._initial_values)
-        cls = self._wrapper_class or _CONFIG.default_wrapper_class
+
         _logger = self._logger
         if not _logger:
             _logger = _CONFIG.logger_factory(*self._logger_factory_args)
@@ -306,9 +321,13 @@ class BoundLoggerLazyProxy:
             procs = _CONFIG.default_processors
         else:
             procs = self._processors
-        logger = cls(_logger, processors=procs, context=ctx)
 
-        def finalized_bind(**new_values):
+        cls = self._wrapper_class or _CONFIG.default_wrapper_class
+        # Looks like Protocols ignore definitions of __init__ so we have to
+        # silence mypy here.
+        logger = cls(_logger, processors=procs, context=ctx)  # type: ignore
+
+        def finalized_bind(**new_values: Any) -> BindableLogger:
             """
             Use cached assembled logger to bind potentially new values.
             """
@@ -321,10 +340,11 @@ class BoundLoggerLazyProxy:
             self._cache_logger_on_first_use is None
             and _CONFIG.cache_logger_on_first_use is True
         ):
-            self.bind = finalized_bind
+            self.bind = finalized_bind  # type: ignore
+
         return finalized_bind(**new_values)
 
-    def unbind(self, *keys):
+    def unbind(self, *keys: str) -> BindableLogger:
         """
         Same as bind, except unbind *keys* first.
 
@@ -332,7 +352,10 @@ class BoundLoggerLazyProxy:
         """
         return self.bind().unbind(*keys)
 
-    def new(self, **new_values):
+    def try_unbind(self, *keys: str) -> BindableLogger:
+        return self.bind().try_unbind(*keys)
+
+    def new(self, **new_values: Any) -> BindableLogger:
         """
         Clear context, then bind.
         """
@@ -340,26 +363,30 @@ class BoundLoggerLazyProxy:
             self._context_class().clear()
         else:
             _CONFIG.default_context_class().clear()
+
         bl = self.bind(**new_values)
+
         return bl
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         """
         If a logging method if called on a lazy proxy, we have to create an
         ephemeral BoundLogger first.
         """
         if name == "__isabstractmethod__":
             raise AttributeError
+
         bl = self.bind()
+
         return getattr(bl, name)
 
-    def __getstate__(self):
+    def __getstate__(self) -> dict:
         """
         Our __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: dict) -> None:
         """
         Our __getattr__ magic makes this necessary.
         """

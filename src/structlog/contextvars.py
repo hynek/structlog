@@ -11,14 +11,21 @@ Python 3.7 as :mod:`contextvars`.
 See :doc:`contextvars`.
 """
 
-
 import contextvars
 
+from typing import Any, Dict
 
-_CONTEXT = contextvars.ContextVar("structlog_context")
+from .types import Context, WrappedLogger
 
 
-def merge_contextvars(logger, method_name, event_dict):
+_CONTEXT: contextvars.ContextVar[Dict[str, Any]] = contextvars.ContextVar(
+    "structlog_context"
+)
+
+
+def merge_contextvars(
+    logger: WrappedLogger, method_name: str, event_dict: Dict[str, Any]
+) -> Context:
     """
     A processor that merges in a global (context-local) context.
 
@@ -29,10 +36,11 @@ def merge_contextvars(logger, method_name, event_dict):
     """
     ctx = _get_context().copy()
     ctx.update(event_dict)
+
     return ctx
 
 
-def clear_contextvars():
+def clear_contextvars() -> None:
     """
     Clear the context-local context.
 
@@ -45,7 +53,7 @@ def clear_contextvars():
     ctx.clear()
 
 
-def bind_contextvars(**kwargs):
+def bind_contextvars(**kw: Any) -> None:
     """
     Put keys and values into the context-local context.
 
@@ -54,10 +62,10 @@ def bind_contextvars(**kwargs):
 
     .. versionadded:: 20.1.0
     """
-    _get_context().update(kwargs)
+    _get_context().update(kw)
 
 
-def unbind_contextvars(*keys):
+def unbind_contextvars(*keys: str) -> None:
     """
     Remove *keys* from the context-local context if they are present.
 
@@ -71,7 +79,7 @@ def unbind_contextvars(*keys):
         ctx.pop(key, None)
 
 
-def _get_context():
+def _get_context() -> Context:
     try:
         return _CONTEXT.get()
     except LookupError:
