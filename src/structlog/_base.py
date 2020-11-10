@@ -66,8 +66,6 @@ class BoundLoggerBase:
     def bind(self, **new_values: Any) -> "BoundLoggerBase":
         """
         Return a new logger with *new_values* added to the existing ones.
-
-        :rtype: ``self.__class__``
         """
         return self.__class__(
             self._logger,
@@ -80,8 +78,6 @@ class BoundLoggerBase:
         Return a new logger with *keys* removed from the context.
 
         :raises KeyError: If the key is not part of the context.
-
-        :rtype: ``self.__class__``
         """
         bl = self.bind()
         for key in keys:
@@ -92,8 +88,6 @@ class BoundLoggerBase:
     def try_unbind(self, *keys: str) -> "BoundLoggerBase":
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
-
-        :rtype: ``self.__class__``
 
         .. versionadded:: 18.2.0
         """
@@ -110,8 +104,6 @@ class BoundLoggerBase:
         Only necessary with dict implementations that keep global state like
         those wrapped by `structlog.threadlocal.wrap_dict` when threads
         are re-used.
-
-        :rtype: ``self.__class__``
         """
         self._context.clear()
 
@@ -128,16 +120,18 @@ class BoundLoggerBase:
         Call it to combine your *event* and *context* into an event_dict and
         process using the processor chain.
 
-        :param str method_name: The name of the logger method.  Is passed into
+        :param method_name: The name of the logger method.  Is passed into
             the processors.
         :param event: The event -- usually the first positional argument to a
             logger.
         :param event_kw: Additional event keywords.  For example if someone
             calls ``log.msg("foo", bar=42)``, *event* would to be ``"foo"``
             and *event_kw* ``{"bar": 42}``.
+
         :raises: `structlog.DropEvent` if log entry should be dropped.
         :raises: `ValueError` if the final processor doesn't return a
             string, tuple, or a dict.
+
         :returns: `tuple` of ``(*args, **kw)``
 
         .. note::
@@ -184,7 +178,7 @@ class BoundLoggerBase:
         handling :exc:`structlog.DropEvent`, and finally calls *method_name* on
         :attr:`_logger` with the result.
 
-        :param str method_name: The name of the method that's going to get
+        :param method_name: The name of the method that's going to get
             called.  Technically it should be identical to the method the
             user called because it also get passed into processors.
         :param event: The event -- usually the first positional argument to a

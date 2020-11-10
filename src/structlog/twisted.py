@@ -201,7 +201,7 @@ class PlainFileLogObserver:
     Great to just print JSON to stdout where you catch it with something like
     runit.
 
-    :param typing.TextIO file: File to print to.
+    :param file: File to print to.
 
     .. versionadded:: 0.2.0
     """
@@ -279,9 +279,8 @@ class EventAdapter:
     <https://twistedmatrix.com/documents/current/
     api/twisted.python.log.html#err>`_ behave as expected.
 
-    :param typing.Callable dictRenderer: Renderer that is used for the actual
-        log message.  Please note that structlog comes with a dedicated
-        :class:`JSONRenderer`.
+    :param dictRenderer: Renderer that is used for the actual log message.
+        Please note that structlog comes with a dedicated `JSONRenderer`.
 
     **Must** be the last processor in the chain and requires a *dictRenderer*
     for the actual formatting as an constructor argument in order to be able to

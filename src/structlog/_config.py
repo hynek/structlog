@@ -62,8 +62,6 @@ def is_configured() -> bool:
 
     If `False`, ``structlog`` is running with builtin defaults.
 
-    :rtype: bool
-
     .. versionadded: 18.1
     """
     return _CONFIG.is_configured
@@ -76,8 +74,6 @@ def get_config() -> Dict[str, Any]:
     .. note::
 
        Changes to the returned dictionary do *not* affect ``structlog``.
-
-    :rtype: dict
 
     .. versionadded: 18.1
     """
@@ -149,7 +145,7 @@ def wrap_logger(
     *is* possible.
 
     :param initial_values: Values that are used to pre-populate your contexts.
-    :param tuple logger_factory_args: Values that are passed unmodified as
+    :param logger_factory_args: Values that are passed unmodified as
         ``*logger_factory_args`` to the logger factory if not `None`.
 
     :returns: A proxy that creates a correctly configured bound logger when

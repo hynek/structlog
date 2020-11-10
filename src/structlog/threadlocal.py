@@ -41,9 +41,7 @@ def wrap_dict(dict_class: Type[dict]) -> Type[dict]:
 
     The wrapped class and used to keep global in the current thread.
 
-    :param type dict_class: Class used for keeping context.
-
-    :rtype: `type`
+    :param dict_class: Class used for keeping context.
     """
     Wrapped = type(
         "WrappedDict-" + str(uuid.uuid4()), (_ThreadLocalDictWrapper,), {}
@@ -63,7 +61,8 @@ def as_immutable(logger: TLLogger) -> TLLogger:
 
     :param structlog.types.BindableLogger logger: A logger with *possibly*
       thread local state.
-    :rtype: :class:`~structlog.BoundLogger` with an immutable context.
+
+    :returns: :class:`~structlog.BoundLogger` with an immutable context.
     """
     if isinstance(logger, BoundLoggerLazyProxy):
         logger = logger.bind()  # type: ignore

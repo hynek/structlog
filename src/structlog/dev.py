@@ -122,17 +122,17 @@ class ConsoleRenderer:
     :func:`~structlog.processors.format_exc_info`), it will be rendered *after*
     the log line.
 
-    :param int pad_event: Pad the event to this many characters.
-    :param bool colors: Use colors for a nicer output.
-    :param bool force_colors: Force colors even for non-tty destinations.
+    :param pad_event: Pad the event to this many characters.
+    :param colors: Use colors for a nicer output.
+    :param force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
         to be streamed to the console.
-    :param bool repr_native_str: When `True`, `repr` is also applied
+    :param repr_native_str: When `True`, `repr` is also applied
         to native strings (i.e. unicode on Python 3 and bytes on Python 2).
         Setting this to `False` is useful if you want to have human-readable
         non-ASCII output on Python 2.  The ``event`` key is *never*
         `repr` -ed.
-    :param dict level_styles: When present, use these styles for colors. This
+    :param level_styles: When present, use these styles for colors. This
         must be a dict from level names (strings) to colorama styles. The
         default can be obtained by calling
         `ConsoleRenderer.get_default_level_styles`
@@ -301,7 +301,7 @@ class ConsoleRenderer:
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
             renderer = ConsoleRenderer(level_styles=my_styles)
 
-        :param bool colors: Whether to use colorful styles. This must match the
+        :param colors: Whether to use colorful styles. This must match the
             *colors* parameter to `ConsoleRenderer`. Default: `True`.
         """
         styles: Styles
