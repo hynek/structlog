@@ -137,12 +137,19 @@ class TestLoggerFactory:
 
 class TestFilterByLevel:
     def test_filters_lower_levels(self):
+        """
+        Log entries below the current level raise a DropEvent.
+        """
         logger = logging.Logger(__name__)
         logger.setLevel(CRITICAL)
+
         with pytest.raises(DropEvent):
             filter_by_level(logger, "warn", {})
 
     def test_passes_higher_levels(self):
+        """
+        Log entries with higher levels are passed through unchanged.
+        """
         logger = logging.Logger(__name__)
         logger.setLevel(WARN)
         event_dict = {"event": "test"}
