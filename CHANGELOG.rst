@@ -40,7 +40,8 @@ Changes:
 
   We consider them provisional for the time being – i.e. the backward compatibility does not apply to them in its full strength until we feel we got it right.
   Please feel free to provide feedback!
-  `#223 <https://github.com/hynek/structlog/issues/223>`_
+  `#223 <https://github.com/hynek/structlog/issues/223>`_,
+  `#282 <https://github.com/hynek/structlog/issues/282>`_
 
 
 ----
