@@ -7,7 +7,7 @@ And as of 20.2.0, ``structlog`` comes with type hints for all its APIs.
 Since ``structlog`` is highly configurable and tries to give a clean facade to its users, adding types without breaking compatibility while remaining useful was a formidable task.
 
 If you used ``structlog`` and mypy before 20.2.0, you will probably find that mypy is failing now.
-As a quick fix, add the following lines into your ``mypy.ini`` that should be at the root of your project directory (and must start with a ``[mypy]``):
+As a quick fix, add the following lines into your ``mypy.ini`` that should be at the root of your project directory (and must start with a ``[mypy]`` section):
 
 .. code:: ini
 
