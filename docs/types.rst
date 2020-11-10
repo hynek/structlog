@@ -21,7 +21,7 @@ It will ignore ``structlog``'s type stubs until you're ready to adapt your code 
 
 The main problem is that `structlog.get_logger()` returns whatever you've configured the bound logger to be.
 The only commonality are the binding methods like ``bind()``.
-We've extracted that into the `structlog.types.BindableLogger` `typing.Protocol`.
+We've extracted that into the `structlog.types.BindableLogger` :class:`~typing.Protocol`.
 
 The second problem is that said ``bind()`` and its cousins are inherited from a common base class (a `big <https://www.youtube.com/watch?v=3MNVP9-hglc>`_ `mistake <https://python-patterns.guide/gang-of-four/composition-over-inheritance/>`_ in hindsight) and can't know what concrete class subclasses them and therefore what type they are returning.
 
