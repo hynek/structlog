@@ -319,7 +319,7 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 
     .. versionadded:: 20.2.0
     """
-    return _generic_get_logger(*args, **initial_values)  # type: ignore
+    return _generic_get_logger(*args, **initial_values)
 
 
 class LoggerFactory:

@@ -43,7 +43,7 @@ the output of the log entries.
 """
 
 
-Context = Dict[str, Any]
+Context = Union[Dict[str, Any], Dict[Any, Any]]
 """
 A dict-like context carrier.
 
