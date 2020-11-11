@@ -379,7 +379,7 @@ class ExceptionPrettyPrinter:
        Added support for passing exceptions as ``exc_info`` on Python 3.
     """
 
-    def __init__(self, file: TextIO = None) -> None:
+    def __init__(self, file: Optional[TextIO] = None) -> None:
         if file is not None:
             self._file = file
         else:

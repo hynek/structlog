@@ -131,7 +131,7 @@ def wrap_logger(
     processors: Optional[List[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
-    cache_logger_on_first_use: bool = None,
+    cache_logger_on_first_use: Optional[bool] = None,
     logger_factory_args: Optional[Sequence[Any]] = None,
     **initial_values: Any
 ) -> Any:
@@ -175,7 +175,7 @@ def configure(
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
     logger_factory: Optional[Callable[..., WrappedLogger]] = None,
-    cache_logger_on_first_use: bool = None,
+    cache_logger_on_first_use: Optional[bool] = None,
 ) -> None:
     """
     Configures the **global** defaults.
@@ -225,7 +225,7 @@ def configure_once(
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
     logger_factory: Optional[Callable[..., WrappedLogger]] = None,
-    cache_logger_on_first_use: bool = None,
+    cache_logger_on_first_use: Optional[bool] = None,
 ) -> None:
     """
     Configures if structlog isn't configured yet.
@@ -283,8 +283,8 @@ class BoundLoggerLazyProxy:
         wrapper_class: Optional[Type[BindableLogger]] = None,
         processors: Optional[List[Processor]] = None,
         context_class: Optional[Type[Context]] = None,
-        cache_logger_on_first_use: bool = None,
-        initial_values: Dict[str, Any] = None,
+        cache_logger_on_first_use: Optional[bool] = None,
+        initial_values: Optional[Dict[str, Any]] = None,
         logger_factory_args: Any = None,
     ) -> None:
         self._logger = logger
