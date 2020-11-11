@@ -11,7 +11,7 @@ import errno
 from typing import Any, Callable
 
 
-def until_not_interrupted(f: Callable, *args: Any, **kw: Any) -> Any:
+def until_not_interrupted(f: Callable[..., Any], *args: Any, **kw: Any) -> Any:
     """
     Retry until *f* succeeds or an exception that isn't caused by EINTR occurs.
 

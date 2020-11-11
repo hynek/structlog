@@ -199,7 +199,7 @@ class JSONRenderer:
     """
 
     def __init__(
-        self, serializer: Callable = json.dumps, **dumps_kw: Any
+        self, serializer: Callable[..., str] = json.dumps, **dumps_kw: Any
     ) -> None:
         dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw

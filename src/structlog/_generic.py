@@ -6,7 +6,7 @@
 Generic bound logger that can wrap anything.
 """
 from functools import partial
-from typing import Any
+from typing import Any, Dict
 
 from structlog._base import BoundLoggerBase
 
@@ -36,13 +36,13 @@ class BoundLogger(BoundLoggerBase):
 
         return wrapped
 
-    def __getstate__(self) -> dict:
+    def __getstate__(self) -> Dict[str, Any]:
         """
         Our __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
-    def __setstate__(self, state: dict) -> None:
+    def __setstate__(self, state: Dict[str, Any]) -> None:
         """
         Our __getattr__ magic makes this necessary.
         """

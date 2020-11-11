@@ -17,7 +17,7 @@ from ._config import BoundLoggerLazyProxy
 from .types import BindableLogger, Context, EventDict, WrappedLogger
 
 
-def _determine_threadlocal() -> Type:
+def _determine_threadlocal() -> Type[Any]:
     """
     Return a dict-like threadlocal storage depending on whether we run with
     greenlets or not.
@@ -35,7 +35,7 @@ def _determine_threadlocal() -> Type:
 ThreadLocal = _determine_threadlocal()
 
 
-def wrap_dict(dict_class: Type[dict]) -> Type[dict]:
+def wrap_dict(dict_class: Type[EventDict]) -> Type[EventDict]:
     """
     Wrap a dict-like class and return the resulting class.
 
@@ -125,7 +125,7 @@ class _ThreadLocalDictWrapper:
             self._dict.update(*args, **kw)
 
     @property
-    def _dict(self) -> Dict:
+    def _dict(self) -> Context:
         """
         Return or create and return the current context.
         """
@@ -148,7 +148,7 @@ class _ThreadLocalDictWrapper:
 
     # Proxy methods necessary for structlog.
     # Dunder methods don't trigger __getattr__ so we need to proxy by hand.
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[str]:
         return self._dict.__iter__()
 
     def __setitem__(self, key: str, value: Any) -> None:

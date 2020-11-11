@@ -16,10 +16,10 @@ from typing import IO, Any, BinaryIO, Dict, Optional, TextIO
 from structlog._utils import until_not_interrupted
 
 
-WRITE_LOCKS: Dict[IO, threading.Lock] = {}
+WRITE_LOCKS: Dict[IO[Any], threading.Lock] = {}
 
 
-def _get_lock_for_file(file: IO) -> threading.Lock:
+def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
     global WRITE_LOCKS
 
     lock = WRITE_LOCKS.get(file)
@@ -81,7 +81,7 @@ class PrintLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: dict = {}) -> "PrintLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "PrintLogger":
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
@@ -183,7 +183,7 @@ class BytesLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: dict = {}) -> "BytesLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "BytesLogger":
         """
         Create a new BytesLogger with the same attributes. Similar to pickling.
         """

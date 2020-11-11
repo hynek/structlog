@@ -243,7 +243,7 @@ class BoundLogger(BoundLoggerBase):
         fn: str,
         lno: int,
         msg: str,
-        args: Tuple,
+        args: Tuple[Any],
         exc_info: ExcInfo,
         func: Optional[str] = None,
         extra: Any = None,

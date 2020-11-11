@@ -10,13 +10,13 @@ Global state department.  Don't reload this module or everything breaks.
 import sys
 import warnings
 
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, List, Optional, Type, cast
 
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
 from .dev import ConsoleRenderer, _has_colorama, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, format_exc_info
-from .types import BindableLogger, Processor, WrappedLogger
+from .types import BindableLogger, Context, Processor, WrappedLogger
 
 
 """
@@ -31,7 +31,7 @@ _BUILTIN_DEFAULT_PROCESSORS: List[Processor] = [
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
     ConsoleRenderer(colors=_has_colorama and sys.stdout.isatty()),
 ]
-_BUILTIN_DEFAULT_CONTEXT_CLASS = dict
+_BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)
 _BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
 _BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLoggerFactory()
 _BUILTIN_CACHE_LOGGER_ON_FIRST_USE = False
@@ -44,9 +44,11 @@ class _Configuration:
 
     is_configured: bool = False
     default_processors: List[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
-    default_context_class: Type[Dict] = _BUILTIN_DEFAULT_CONTEXT_CLASS
+    default_context_class: Type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
-    logger_factory: Callable = _BUILTIN_DEFAULT_LOGGER_FACTORY
+    logger_factory: Callable[
+        ..., WrappedLogger
+    ] = _BUILTIN_DEFAULT_LOGGER_FACTORY
     cache_logger_on_first_use: bool = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
 
 
@@ -127,7 +129,7 @@ def wrap_logger(
     logger: WrappedLogger,
     processors: Optional[List[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
-    context_class: Optional[Type[Dict]] = None,
+    context_class: Optional[Type[Context]] = None,
     cache_logger_on_first_use: bool = None,
     logger_factory_args: Any = None,
     **initial_values: Any
@@ -170,8 +172,8 @@ def wrap_logger(
 def configure(
     processors: Optional[List[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
-    context_class: Optional[Type[Dict]] = None,
-    logger_factory: Optional[Callable] = None,
+    context_class: Optional[Type[Context]] = None,
+    logger_factory: Optional[Callable[..., WrappedLogger]] = None,
     cache_logger_on_first_use: bool = None,
 ) -> None:
     """
@@ -204,6 +206,7 @@ def configure(
         *cache_logger_on_first_use*
     """
     _CONFIG.is_configured = True
+
     if processors is not None:
         _CONFIG.default_processors = processors
     if wrapper_class is not None:
@@ -219,8 +222,8 @@ def configure(
 def configure_once(
     processors: Optional[List[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
-    context_class: Optional[Type[Dict]] = None,
-    logger_factory: Optional[Callable] = None,
+    context_class: Optional[Type[Context]] = None,
+    logger_factory: Optional[Callable[..., WrappedLogger]] = None,
     cache_logger_on_first_use: bool = None,
 ) -> None:
     """
@@ -278,7 +281,7 @@ class BoundLoggerLazyProxy:
         logger: WrappedLogger,
         wrapper_class: Optional[Type[BindableLogger]] = None,
         processors: Optional[List[Processor]] = None,
-        context_class: Optional[Type[Dict]] = None,
+        context_class: Optional[Type[Context]] = None,
         cache_logger_on_first_use: bool = None,
         initial_values: Dict[str, Any] = None,
         logger_factory_args: Any = None,
@@ -376,13 +379,13 @@ class BoundLoggerLazyProxy:
 
         return getattr(bl, name)
 
-    def __getstate__(self) -> dict:
+    def __getstate__(self) -> Dict[str, Any]:
         """
         Our __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
-    def __setstate__(self, state: dict) -> None:
+    def __setstate__(self, state: Dict[str, Any]) -> None:
         """
         Our __getattr__ magic makes this necessary.
         """
