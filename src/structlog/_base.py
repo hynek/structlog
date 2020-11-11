@@ -5,7 +5,7 @@
 """
 Logger wrapper and helper class.
 """
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
 
 from structlog.exceptions import DropEvent
 
@@ -39,7 +39,7 @@ class BoundLoggerBase:
     def __init__(
         self,
         logger: WrappedLogger,
-        processors: Sequence[Processor],
+        processors: Iterable[Processor],
         context: Context,
     ):
         self._logger = logger

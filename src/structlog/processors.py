@@ -11,7 +11,7 @@ import operator
 import sys
 import time
 
-from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, TextIO, Tuple
 
 from ._frames import (
     _find_first_app_frame_and_name,
@@ -44,7 +44,7 @@ class KeyValueRenderer:
     def __init__(
         self,
         sort_keys: bool = False,
-        key_order: Optional[List[str]] = None,
+        key_order: Optional[Sequence[str]] = None,
         drop_missing: bool = False,
         repr_native_str: bool = True,
     ):

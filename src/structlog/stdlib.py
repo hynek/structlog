@@ -10,7 +10,7 @@ See also :doc:`structlog's standard library support <standard-library>`.
 """
 import logging
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from ._base import BoundLoggerBase
 from ._config import get_logger as _generic_get_logger
@@ -575,7 +575,7 @@ class ProcessorFormatter(logging.Formatter):
     def __init__(
         self,
         processor: Processor,
-        foreign_pre_chain: Optional[List[Processor]] = None,
+        foreign_pre_chain: Optional[Sequence[Processor]] = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
         logger: Optional[logging.Logger] = None,

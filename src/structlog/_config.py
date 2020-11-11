@@ -10,7 +10,16 @@ Global state department.  Don't reload this module or everything breaks.
 import sys
 import warnings
 
-from typing import Any, Callable, Dict, List, Optional, Sequence, Type, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Sequence,
+    Type,
+    cast,
+)
 
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
@@ -24,7 +33,7 @@ from .types import BindableLogger, Context, Processor, WrappedLogger
 
    Any changes to these defaults must be reflected in `getting-started`.
 """
-_BUILTIN_DEFAULT_PROCESSORS: List[Processor] = [
+_BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     StackInfoRenderer(),
     set_exc_info,
     format_exc_info,
@@ -43,7 +52,7 @@ class _Configuration:
     """
 
     is_configured: bool = False
-    default_processors: List[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
+    default_processors: Iterable[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class: Type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
     logger_factory: Callable[
@@ -128,11 +137,11 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 
 def wrap_logger(
     logger: WrappedLogger,
-    processors: Optional[List[Processor]] = None,
+    processors: Optional[Iterable[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
     cache_logger_on_first_use: Optional[bool] = None,
-    logger_factory_args: Optional[Sequence[Any]] = None,
+    logger_factory_args: Optional[Iterable[Any]] = None,
     **initial_values: Any
 ) -> Any:
     """
@@ -171,7 +180,7 @@ def wrap_logger(
 
 
 def configure(
-    processors: Optional[List[Processor]] = None,
+    processors: Optional[Iterable[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
     logger_factory: Optional[Callable[..., WrappedLogger]] = None,
@@ -191,7 +200,7 @@ def configure(
 
     Use `reset_defaults` to undo your changes.
 
-    :param processors: List of processors.
+    :param processors: The processor chain.
     :param wrapper_class: Class to use for wrapping loggers instead of
         `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`, and
         `custom-wrappers`.
@@ -221,7 +230,7 @@ def configure(
 
 
 def configure_once(
-    processors: Optional[List[Processor]] = None,
+    processors: Optional[Iterable[Processor]] = None,
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
     logger_factory: Optional[Callable[..., WrappedLogger]] = None,
@@ -281,7 +290,7 @@ class BoundLoggerLazyProxy:
         self,
         logger: WrappedLogger,
         wrapper_class: Optional[Type[BindableLogger]] = None,
-        processors: Optional[List[Processor]] = None,
+        processors: Optional[Iterable[Processor]] = None,
         context_class: Optional[Type[Context]] = None,
         cache_logger_on_first_use: Optional[bool] = None,
         initial_values: Optional[Dict[str, Any]] = None,
