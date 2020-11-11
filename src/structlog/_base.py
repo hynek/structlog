@@ -113,7 +113,7 @@ class BoundLoggerBase:
 
     def _process_event(
         self, method_name: str, event: Optional[str], event_kw: Dict[str, Any]
-    ) -> Tuple[Tuple[Any, ...], Mapping[str, Any]]:
+    ) -> Tuple[Sequence[Any], Mapping[str, Any]]:
         """
         Combines creates an ``event_dict`` and runs the chain.
 

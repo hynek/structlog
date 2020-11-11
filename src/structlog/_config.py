@@ -10,7 +10,7 @@ Global state department.  Don't reload this module or everything breaks.
 import sys
 import warnings
 
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, cast
+from typing import Any, Callable, Dict, List, Optional, Sequence, Type, cast
 
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
@@ -132,7 +132,7 @@ def wrap_logger(
     wrapper_class: Optional[Type[BindableLogger]] = None,
     context_class: Optional[Type[Context]] = None,
     cache_logger_on_first_use: bool = None,
-    logger_factory_args: Optional[Tuple[Any, ...]] = None,
+    logger_factory_args: Optional[Sequence[Any]] = None,
     **initial_values: Any
 ) -> Any:
     """

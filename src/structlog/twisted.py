@@ -12,7 +12,7 @@ See also :doc:`structlog's Twisted support <twisted>`.
 import json
 import sys
 
-from typing import Any, Callable, Dict, Optional, TextIO, Tuple
+from typing import Any, Callable, Dict, Optional, Sequence, TextIO, Tuple
 
 from twisted.python import log
 from twisted.python.failure import Failure
@@ -174,7 +174,7 @@ class JSONRenderer(GenericJSONRenderer):
         logger: WrappedLogger,
         name: str,
         eventDict: EventDict,
-    ) -> Tuple[Tuple[Any], Dict[str, Any]]:
+    ) -> Tuple[Sequence[Any], Dict[str, Any]]:
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
         if name == "err":
             eventDict["event"] = _why
