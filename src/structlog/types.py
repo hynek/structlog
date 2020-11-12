@@ -62,7 +62,8 @@ copy itself.
 """
 
 Processor = Callable[
-    [WrappedLogger, str, EventDict], Union[Mapping[str, Any], str, tuple]
+    [WrappedLogger, str, EventDict],
+    Union[Mapping[str, Any], str, Tuple[Any, ...]],
 ]
 """
 A callable that is part of the processor chain.
