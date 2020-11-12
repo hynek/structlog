@@ -43,7 +43,7 @@ It behaves exactly like the generic `structlog.BoundLogger` except:
 
 ----
 
-If you're using static types (e.g. with mypy) you also may want to use `structlog.stdlib.get_logger()` that has the appropriate type hints if you're using `structlog.stdlib.BoundLogger`.
+If you're using static types (e.g. with Mypy) you also may want to use `structlog.stdlib.get_logger()` that has the appropriate type hints if you're using `structlog.stdlib.BoundLogger`.
 Please note though, that it will neither configure nor verify your configuration.
 It will call `structlog.get_logger()` just like if you would've called it -- the only difference are the type hints.
 

@@ -35,7 +35,7 @@ The chosen solution is adding `structlog.stdlib.get_logger()` that just calls `s
 
    logger: structlog.stdlib.BoundLogger = structlog.get_logger()
    logger.info("hi")  # <- ok
-   logger.msg("hi")   # <- mypy: 'error: "BoundLogger" has no attribute "msg"'
+   logger.msg("hi")   # <- Mypy: 'error: "BoundLogger" has no attribute "msg"'
 
 ----
 
