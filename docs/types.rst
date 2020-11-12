@@ -1,7 +1,7 @@
-Types
-=====
+Type Hints
+==========
 
-Static types are an excellent way to make your code more robust, self-documenting, and maintainable in the long run.
+Static type hints are an excellent way to make your code more robust, self-documenting, and maintainable in the long run.
 And as of 20.2.0, ``structlog`` comes with type hints for all its APIs.
 
 Since ``structlog`` is highly configurable and tries to give a clean facade to its users, adding types without breaking compatibility, while remaining useful was a formidable task.
