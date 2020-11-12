@@ -130,7 +130,7 @@ class BoundLoggerBase:
 
         :raises: `structlog.DropEvent` if log entry should be dropped.
         :raises: `ValueError` if the final processor doesn't return a
-            string, tuple, or a dict.
+            str, bytes, tuple, or a dict.
 
         :returns: `tuple` of ``(*args, **kw)``
 
