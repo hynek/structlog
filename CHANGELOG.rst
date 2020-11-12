@@ -16,7 +16,7 @@ Backward-incompatible changes:
   The package meta data should ensure that you keep getting 20.1.0 on those versions.
   `#244 <https://github.com/hynek/structlog/pull/244>`_
 
-- ``structlog`` is now fully typed.
+- ``structlog`` is now fully type-annotated.
   This won't break your applications but if you use mypy, it will most likely break your CI.
 
   Check out the new chapter on typing for details.
