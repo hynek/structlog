@@ -1,12 +1,12 @@
 Type Hints
 ==========
 
-Static type hints are an excellent way to make your code more robust, self-documenting, and maintainable in the long run.
-And as of 20.2.0, ``structlog`` comes with type hints for all its APIs.
+Static type hints -- together with a type checker like `Mypy <https://mypy.readthedocs.io/en/stable/>`_ -- are an excellent way to make your code more robust, self-documenting, and maintainable in the long run.
+And as of 20.2.0, ``structlog`` comes with type hints for all of its APIs.
 
 Since ``structlog`` is highly configurable and tries to give a clean facade to its users, adding types without breaking compatibility, while remaining useful was a formidable task.
 
-If you used ``structlog`` and mypy before 20.2.0, you will probably find that mypy is failing now.
+If you used ``structlog`` and Mypy before 20.2.0, you will probably find that Mypy is failing now.
 As a quick fix, add the following lines into your ``mypy.ini`` that should be at the root of your project directory (and must start with a ``[mypy]`` section):
 
 .. code:: ini
