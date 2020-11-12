@@ -246,7 +246,7 @@ API Reference
 
    Additionally to the methods listed below, bound loggers **must** have a ``__init__`` method with the following signature:
 
-   .. method:: __init__(self, wrapped_logger: WrappedLogger, processors: typing.Iterable[Processor], context: Context) -> None
+   .. method:: __init__(self, wrapped_logger: WrappedLogger, processors: Iterable[Processor], context: Context) -> None
       :noindex:
 
    Unfortunately it's impossible to define initializers using `PEP 544 <https://www.python.org/dev/peps/pep-0544/>`_ Protocols.
