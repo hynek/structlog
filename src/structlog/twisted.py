@@ -186,7 +186,9 @@ class JSONRenderer(GenericJSONRenderer):
         return (
             (
                 ReprWrapper(
-                    GenericJSONRenderer.__call__(self, logger, name, eventDict)
+                    GenericJSONRenderer.__call__(  # type: ignore
+                        self, logger, name, eventDict
+                    )
                 ),
             ),
             {"_structlog": True},

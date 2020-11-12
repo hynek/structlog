@@ -157,7 +157,12 @@ class TestProcessing:
         assert "event" not in b._context
 
     def test_chain_does_not_swallow_all_exceptions(self):
+        """
+        If the chain raises anything else than DropEvent, the error is not
+        swallowed.
+        """
         b = build_bl(processors=[raiser(ValueError)])
+
         with pytest.raises(ValueError):
             b._process_event("", "boom", {})
 
@@ -170,6 +175,16 @@ class TestProcessing:
         b = build_bl(logger, processors=[lambda *_: "foo"])
 
         assert (("foo",), {}) == b._process_event("", "foo", {})
+
+    def test_last_processor_returns_bytes(self):
+        """
+        If the final processor returns bytes, ``(the_bytes,), {}`` is
+        returned.
+        """
+        logger = stub(msg=lambda *args, **kw: (args, kw))
+        b = build_bl(logger, processors=[lambda *_: b"foo"])
+
+        assert ((b"foo",), {}) == b._process_event(None, "name", {})
 
     def test_last_processor_returns_tuple(self):
         """

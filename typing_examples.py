@@ -5,7 +5,7 @@ Make sure our configuration examples actually pass the type checker.
 import logging
 import logging.config
 
-from typing import List
+from typing import Any, Callable, List, Optional
 
 import structlog
 
@@ -15,6 +15,24 @@ bl.msg("hello", whom="world", x=42, y={})
 
 bls: structlog.stdlib.BoundLogger = structlog.get_logger()
 bls.info("hello", whom="world", x=42, y={})
+
+
+def bytes_dumps(
+    __obj: Any,
+    default: Optional[Callable[[Any], Any]] = None,
+    option: Optional[int] = None,
+) -> bytes:
+    """
+    Test with orjson's signature taken from
+    <https://github.com/ijl/orjson/blob/master/orjson.pyi>.
+    """
+    return b"{}"
+
+
+structlog.configure(
+    processors=[structlog.processors.JSONRenderer(serializer=bytes_dumps)]
+)
+
 
 structlog.configure(
     processors=[

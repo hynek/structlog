@@ -11,7 +11,17 @@ import operator
 import sys
 import time
 
-from typing import Any, Callable, Dict, List, Optional, Sequence, TextIO, Tuple
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    TextIO,
+    Tuple,
+    Union,
+)
 
 from ._frames import (
     _find_first_app_frame_and_name,
@@ -199,7 +209,9 @@ class JSONRenderer:
     """
 
     def __init__(
-        self, serializer: Callable[..., str] = json.dumps, **dumps_kw: Any
+        self,
+        serializer: Callable[..., Union[str, bytes]] = json.dumps,
+        **dumps_kw: Any
     ) -> None:
         dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw
@@ -207,7 +219,10 @@ class JSONRenderer:
 
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
-    ) -> str:
+    ) -> Union[str, bytes]:
+        """
+        The return type of this depends on the return type of self._dumps.
+        """
         return self._dumps(event_dict, **self._dumps_kw)
 
 

@@ -40,6 +40,7 @@ Changes:
 - Added ``structlog.BytesLogger`` to avoid unnecessary encoding round trips.
   Concretely this is useful with *orjson* which returns bytes.
   `#271 <https://github.com/hynek/structlog/issues/271>`_
+- The final processor now also may return bytes that are passed untouched to the wrapped logger.
 - ``structlog`` has now type hints for all of its APIs!
   Since ``structlog`` is highly dynamic and configurable, this led to a few concessions like a specialized ``structlog.stdlib.get_logger()`` whose only difference to ``structlog.get_logger()`` is that it has the correct type hints.
 
