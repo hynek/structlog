@@ -176,6 +176,8 @@ API Reference
       'b=[1, 2, 3] a=42'
 
 
+.. autoclass:: LevelFilter
+
 .. autoclass:: UnicodeDecoder
 
 .. autoclass:: UnicodeEncoder

@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from ._base import BoundLoggerBase
 from ._config import get_logger as _generic_get_logger
 from ._frames import _find_first_app_frame_and_name, _format_stack
+from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL
 from .exceptions import DropEvent
 from .types import EventDict, ExcInfo, Processor, WrappedLogger
 
@@ -411,34 +412,6 @@ class PositionalArgumentsFormatter:
         return event_dict
 
 
-# Adapted from the stdlib
-CRITICAL = 50
-FATAL = CRITICAL
-ERROR = 40
-WARNING = 30
-WARN = WARNING
-INFO = 20
-DEBUG = 10
-NOTSET = 0
-
-_NAME_TO_LEVEL = {
-    "critical": CRITICAL,
-    "exception": ERROR,
-    "error": ERROR,
-    "warn": WARNING,
-    "warning": WARNING,
-    "info": INFO,
-    "debug": DEBUG,
-    "notset": NOTSET,
-}
-
-_LEVEL_TO_NAME = {
-    v: k
-    for k, v in _NAME_TO_LEVEL.items()
-    if k not in ("warn", "exception", "notset")
-}
-
-
 def filter_by_level(
     logger: logging.Logger, method_name: str, event_dict: EventDict
 ) -> EventDict:
@@ -471,6 +444,11 @@ def add_log_level(
 ) -> EventDict:
     """
     Add the log level to the event dict.
+
+    Since that's just the log method name, this processor works with non-stdlib
+    logging as well.
+
+    .. versionadded:: 15.0.0
     """
     if method_name == "warn":
         # The stdlib has an alias
@@ -494,7 +472,8 @@ def add_log_level_number(
        level in ("warning", "error", "critical")
        level_number >= 30
 
-    The mapping of names to numbers is in ``structlog.stdlib._NAME_TO_LEVEL``.
+    The mapping of names to numbers is in
+    ``structlog.stdlib._log_levels._NAME_TO_LEVEL``.
 
     .. versionadded:: 18.2.0
     """

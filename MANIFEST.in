@@ -9,3 +9,4 @@ recursive-exclude tests *.pyc
 
 graft docs
 prune docs/_build
+prune tests/.mypy_cache

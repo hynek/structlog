@@ -9,7 +9,7 @@ from io import StringIO
 
 import pytest
 
-from structlog.stdlib import _NAME_TO_LEVEL
+from structlog._log_levels import _NAME_TO_LEVEL
 
 
 try:

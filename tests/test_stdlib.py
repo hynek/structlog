@@ -13,13 +13,11 @@ import pytest
 from pretend import call_recorder
 
 from structlog import ReturnLogger, configure, get_context, reset_defaults
+from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer
 from structlog.stdlib import (
-    _NAME_TO_LEVEL,
-    CRITICAL,
-    WARN,
     BoundLogger,
     LoggerFactory,
     PositionalArgumentsFormatter,

@@ -18,6 +18,7 @@ from structlog.processors import (
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
+    LevelFilter,
     StackInfoRenderer,
     TimeStamper,
     UnicodeDecoder,
@@ -538,3 +539,41 @@ class TestFigureOutExcInfo:
         e = ValueError()
 
         assert (e.__class__, e, None) == _figure_out_exc_info(e)
+
+
+class TestLevelFilter:
+    @pytest.mark.parametrize("min_level", ["notset", 0, "nOtSeT"])
+    def test_passes(self, min_level):
+        """
+        If the log level is higher than the configured one, pass it through.
+        """
+        lf = LevelFilter(min_level, pass_unknown=False)
+
+        assert {"foo": 42} == lf(None, "debug", {"foo": 42})
+
+    @pytest.mark.parametrize("min_level", ["info", 20, "iNfO"])
+    def test_drop(self, min_level):
+        """
+        If the log level is less than the configured one, raise DropEvent.
+        """
+        lf = LevelFilter(min_level, pass_unknown=False)
+
+        with pytest.raises(structlog.DropEvent):
+            lf(None, "debug", {"foo": 42})
+
+    def test_pass_unknown(self):
+        """
+        If pass_unknown is True, unknown log levels always pass.
+        """
+        lf = LevelFilter(0, pass_unknown=True)
+
+        assert {"foo": 42} == lf(None, "unknown", {"foo": 42})
+
+    def test_drop_unknown(self):
+        """
+        If pass_unknown is False, unknown log levels always raise DropEvent.
+        """
+        lf = LevelFilter(0, pass_unknown=False)
+
+        with pytest.raises(structlog.DropEvent):
+            lf(None, "unknown", {"foo": 42})

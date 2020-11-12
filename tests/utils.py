@@ -6,7 +6,7 @@
 Shared test utilities.
 """
 
-from structlog.stdlib import _NAME_TO_LEVEL
+from structlog._log_levels import _NAME_TO_LEVEL
 
 
 stdlib_log_methods = [m for m in _NAME_TO_LEVEL if m != "notset"]
