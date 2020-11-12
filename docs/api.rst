@@ -195,7 +195,7 @@ API Reference
 
 .. autoclass:: ExceptionPrettyPrinter
 
-.. autoclass:: TimeStamper(fmt=None, utc=True, key="timestamp")
+.. autoclass:: TimeStamper
 
    .. doctest::
 
@@ -212,6 +212,8 @@ API Reference
 -------------------------
 
 .. automodule:: structlog.stdlib
+
+.. autofunction:: get_logger
 
 .. autoclass:: BoundLogger
    :members: bind, unbind, new, debug, info, warning, warn, error, critical, exception, log
@@ -233,6 +235,29 @@ API Reference
 
 .. autoclass:: ProcessorFormatter
    :members: wrap_for_formatter
+
+
+`structlog.types` Module
+------------------------
+
+.. automodule:: structlog.types
+
+.. autoprotocol:: BindableLogger
+
+   Additionally to the methods listed below, bound loggers **must** have a ``__init__`` method with the following signature:
+
+   .. method:: __init__(self, wrapped_logger: WrappedLogger, processors: Iterable[Processor], context: Context) -> None
+      :noindex:
+
+   Unfortunately it's impossible to define initializers using `PEP 544 <https://www.python.org/dev/peps/pep-0544/>`_ Protocols.
+
+   They currently also have to carry a `Context` as a ``_context`` attribute.
+
+.. autodata:: EventDict
+.. autodata:: WrappedLogger
+.. autodata:: Processor
+.. autodata:: Context
+.. autodata:: ExcInfo
 
 
 `structlog.twisted` Module

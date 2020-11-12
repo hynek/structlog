@@ -36,6 +36,7 @@ Basics
    processors
    examples
    development
+   types
 
 
 Integration with Existing Systems

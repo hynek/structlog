@@ -36,7 +36,9 @@ CLASSIFIERS = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 PYTHON_REQUIRES = ">=3.6"
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = [
+    "typing-extensions; python_version<'3.8'",
+]
 EXTRAS_REQUIRE = {
     "tests": [
         "coverage[toml]",
@@ -47,7 +49,7 @@ EXTRAS_REQUIRE = {
         "pytest>=6.0",
         "simplejson",
     ],
-    "docs": ["furo", "sphinx", "twisted"],
+    "docs": ["furo", "sphinx", "sphinx-toolbox", "twisted"],
 }
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit"]
@@ -129,6 +131,7 @@ if __name__ == "__main__":
         python_requires=PYTHON_REQUIRES,
         install_requires=INSTALL_REQUIRES,
         extras_require=EXTRAS_REQUIRE,
+        include_package_data=True,
         zip_safe=False,
         options={"bdist_wheel": {"universal": "1"}},
     )

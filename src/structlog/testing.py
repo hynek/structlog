@@ -11,9 +11,11 @@ See :doc:`testing`.
 """
 
 from contextlib import contextmanager
+from typing import Any, Generator, List, NoReturn
 
 from ._config import configure, get_config
 from .exceptions import DropEvent
+from .types import EventDict, WrappedLogger
 
 
 __all__ = ["LogCapture", "capture_logs"]
@@ -28,17 +30,22 @@ class LogCapture:
     .. versionadded:: 20.1.0
     """
 
-    def __init__(self):
+    entries: List[EventDict]
+
+    def __init__(self) -> None:
         self.entries = []
 
-    def __call__(self, _, method_name, event_dict):
+    def __call__(
+        self, _: WrappedLogger, method_name: str, event_dict: EventDict
+    ) -> NoReturn:
         event_dict["log_level"] = method_name
         self.entries.append(event_dict)
+
         raise DropEvent
 
 
 @contextmanager
-def capture_logs():
+def capture_logs() -> Generator[List[EventDict], None, None]:
     """
     Context manager that appends all logging statements to its yielded list
     while it is active. Disables all configured processors for the duration
@@ -57,24 +64,6 @@ def capture_logs():
         configure(processors=old_processors)
 
 
-class ReturnLoggerFactory:
-    r"""
-    Produce and cache `ReturnLogger`\ s.
-
-    To be used with `structlog.configure`\ 's *logger_factory*.
-
-    Positional arguments are silently ignored.
-
-    .. versionadded:: 0.4.0
-    """
-
-    def __init__(self):
-        self._logger = ReturnLogger()
-
-    def __call__(self, *args):
-        return self._logger
-
-
 class ReturnLogger:
     """
     Return the arguments that it's called with.
@@ -89,7 +78,7 @@ class ReturnLogger:
         Allow for arbitrary arguments and keyword arguments to be passed in.
     """
 
-    def msg(self, *args, **kw):
+    def msg(self, *args: Any, **kw: Any) -> Any:
         """
         Return tuple of ``args, kw`` or just ``args[0]`` if only one arg passed
         """
@@ -101,3 +90,21 @@ class ReturnLogger:
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg
+
+
+class ReturnLoggerFactory:
+    r"""
+    Produce and cache `ReturnLogger`\ s.
+
+    To be used with `structlog.configure`\ 's *logger_factory*.
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 0.4.0
+    """
+
+    def __init__(self) -> None:
+        self._logger = ReturnLogger()
+
+    def __call__(self, *args: Any) -> ReturnLogger:
+        return self._logger

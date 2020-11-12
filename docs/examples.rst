@@ -23,7 +23,7 @@ While wrapped loggers are *immutable* by default, this example demonstrates how 
 
 Please note that `structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger` with it.
 It's used by `structlog.get_logger` to rid you of logging boilerplate in application code.
-If you prefer to name your standard library loggers explicitly, a positional argument to `get_logger` gets passed to the factory and used as the name.
+If you prefer to name your standard library loggers explicitly, a positional argument to `structlog.get_logger` gets passed to the factory and used as the name.
 
 
 .. _twisted-example:

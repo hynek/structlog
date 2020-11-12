@@ -9,6 +9,9 @@ Helpers that make development with ``structlog`` more pleasant.
 import sys
 
 from io import StringIO
+from typing import Any, Optional, Type, Union
+
+from .types import EventDict, Protocol, WrappedLogger
 
 
 try:
@@ -25,11 +28,12 @@ _MISSING = "{who} requires the {package} package installed.  "
 _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 
-def _pad(s, length):
+def _pad(s: str, length: int) -> str:
     """
     Pads *s* to length *lenght*.
     """
     missing = length - len(s)
+
     return s + " " * (missing if missing > 0 else 0)
 
 
@@ -52,6 +56,26 @@ else:
     RESET_ALL = (
         BRIGHT
     ) = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = RED_BACK = ""
+
+
+class _Styles(Protocol):
+    reset: str
+    bright: str
+    level_critical: str
+    level_exception: str
+    level_error: str
+    level_warn: str
+    level_info: str
+    level_debug: str
+    level_notset: str
+
+    timestamp: str
+    logger_name: str
+    kv_key: str
+    kv_value: str
+
+
+Styles = Union[_Styles, Type[_Styles]]
 
 
 class _ColorfulStyles:
@@ -98,17 +122,17 @@ class ConsoleRenderer:
     :func:`~structlog.processors.format_exc_info`), it will be rendered *after*
     the log line.
 
-    :param int pad_event: Pad the event to this many characters.
-    :param bool colors: Use colors for a nicer output.
-    :param bool force_colors: Force colors even for non-tty destinations.
+    :param pad_event: Pad the event to this many characters.
+    :param colors: Use colors for a nicer output.
+    :param force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
         to be streamed to the console.
-    :param bool repr_native_str: When `True`, `repr` is also applied
+    :param repr_native_str: When `True`, `repr` is also applied
         to native strings (i.e. unicode on Python 3 and bytes on Python 2).
         Setting this to `False` is useful if you want to have human-readable
         non-ASCII output on Python 2.  The ``event`` key is *never*
         `repr` -ed.
-    :param dict level_styles: When present, use these styles for colors. This
+    :param level_styles: When present, use these styles for colors. This
         must be a dict from level names (strings) to colorama styles. The
         default can be obtained by calling
         `ConsoleRenderer.get_default_level_styles`
@@ -132,13 +156,14 @@ class ConsoleRenderer:
 
     def __init__(
         self,
-        pad_event=_EVENT_WIDTH,
-        colors=_has_colorama,
-        force_colors=False,
-        repr_native_str=False,
-        level_styles=None,
+        pad_event: int = _EVENT_WIDTH,
+        colors: bool = _has_colorama,
+        force_colors: bool = False,
+        repr_native_str: bool = False,
+        level_styles: Optional[Styles] = None,
     ):
         self._force_colors = self._init_colorama = False
+        styles: Styles
         if colors is True:
             if colorama is None:
                 raise SystemError(
@@ -175,7 +200,7 @@ class ConsoleRenderer:
 
         self._repr_native_str = repr_native_str
 
-    def _repr(self, val):
+    def _repr(self, val: Any) -> str:
         """
         Determine representation of *val* depending on its type &
         self._repr_native_str.
@@ -188,7 +213,10 @@ class ConsoleRenderer:
         else:
             return repr(val)
 
-    def __call__(self, _, __, event_dict):
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> str:
+
         # Initialize lazily to prevent import side-effects.
         if self._init_colorama:
             _init_colorama(self._force_colors)
@@ -261,7 +289,7 @@ class ConsoleRenderer:
         return sio.getvalue()
 
     @staticmethod
-    def get_default_level_styles(colors=True):
+    def get_default_level_styles(colors: bool = True) -> Any:
         """
         Get the default styles for log levels
 
@@ -273,9 +301,10 @@ class ConsoleRenderer:
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
             renderer = ConsoleRenderer(level_styles=my_styles)
 
-        :param bool colors: Whether to use colorful styles. This must match the
+        :param colors: Whether to use colorful styles. This must match the
             *colors* parameter to `ConsoleRenderer`. Default: `True`.
         """
+        styles: Styles
         if colors:
             styles = _ColorfulStyles
         else:
@@ -292,7 +321,7 @@ class ConsoleRenderer:
         }
 
 
-def _init_colorama(force):
+def _init_colorama(force: bool) -> None:
     if force:
         colorama.deinit()
         colorama.init(strip=False)
@@ -303,7 +332,10 @@ def _init_colorama(force):
 _SENTINEL = object()
 
 
-def set_exc_info(_, method_name, event_dict):
+def set_exc_info(
+    logger: WrappedLogger, method_name: str, event_dict: EventDict
+) -> EventDict:
+
     """
     Set ``event_dict["exc_info"] = True`` if *method_name* is ``"exception"``.
 

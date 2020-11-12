@@ -38,7 +38,14 @@ It behaves exactly like the generic `structlog.BoundLogger` except:
 
 - it's slightly faster due to less overhead,
 - has an explicit API that mirrors the log methods of standard library's `logging.Logger`,
+- it has correct type hints,
 - hence causing less cryptic error messages if you get method names wrong.
+
+----
+
+If you're using static types (e.g. with mypy) you also may want to use `structlog.stdlib.get_logger()` that has the appropriate type hints if you're using `structlog.stdlib.BoundLogger`.
+Please note though, that it will neither configure nor verify your configuration.
+It will call `structlog.get_logger()` just like if you would've called it -- the only difference are the type hints.
 
 
 Processors

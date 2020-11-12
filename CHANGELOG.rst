@@ -16,6 +16,11 @@ Backward-incompatible changes:
   The package meta data should ensure that you keep getting 20.1.0 on those versions.
   `#244 <https://github.com/hynek/structlog/pull/244>`_
 
+- ``structlog`` is now fully type-annotated.
+  This won't break your applications but if you use mypy, it will most likely break your CI.
+
+  Check out the new chapter on typing for details.
+
 
 Deprecations:
 ^^^^^^^^^^^^^
@@ -35,6 +40,13 @@ Changes:
 - Added ``structlog.BytesLogger`` to avoid unnecessary encoding round trips.
   Concretely this is useful with *orjson* which returns bytes.
   `#271 <https://github.com/hynek/structlog/issues/271>`_
+- ``structlog`` has now type hints for all of its APIs!
+  Since ``structlog`` is highly dynamic and configurable, this led to a few concessions like a specialized ``structlog.stdlib.get_logger()`` whose only difference to ``structlog.get_logger()`` is that it has the correct type hints.
+
+  We consider them provisional for the time being – i.e. the backward compatibility does not apply to them in its full strength until we feel we got it right.
+  Please feel free to provide feedback!
+  `#223 <https://github.com/hynek/structlog/issues/223>`_,
+  `#282 <https://github.com/hynek/structlog/issues/282>`_
 
 
 ----

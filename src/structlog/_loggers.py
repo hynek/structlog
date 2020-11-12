@@ -11,35 +11,15 @@ import sys
 import threading
 
 from pickle import PicklingError
+from typing import IO, Any, BinaryIO, Dict, Optional, TextIO
 
 from structlog._utils import until_not_interrupted
 
 
-class PrintLoggerFactory:
-    r"""
-    Produce `PrintLogger`\ s.
-
-    To be used with `structlog.configure`\ 's ``logger_factory``.
-
-    :param file: File to print to. (default: `sys.stdout`)
-    :type file: file object
-
-    Positional arguments are silently ignored.
-
-    .. versionadded:: 0.4.0
-    """
-
-    def __init__(self, file=None):
-        self._file = file
-
-    def __call__(self, *args):
-        return PrintLogger(self._file)
+WRITE_LOCKS: Dict[IO[Any], threading.Lock] = {}
 
 
-WRITE_LOCKS = {}
-
-
-def _get_lock_for_file(file):
+def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
     global WRITE_LOCKS
 
     lock = WRITE_LOCKS.get(file)
@@ -55,7 +35,6 @@ class PrintLogger:
     Print events into a file.
 
     :param file: File to print to. (default: `sys.stdout`)
-    :type file: file object
 
     >>> from structlog import PrintLogger
     >>> PrintLogger().msg("hello")
@@ -68,14 +47,14 @@ class PrintLogger:
     doctests.
     """
 
-    def __init__(self, file=None):
+    def __init__(self, file: Optional[TextIO] = None):
         self._file = file or sys.stdout
         self._write = self._file.write
         self._flush = self._file.flush
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __getstate__(self):
+    def __getstate__(self) -> str:
         """
         Our __getattr__ magic makes this necessary.
         """
@@ -89,7 +68,7 @@ class PrintLogger:
             "Only PrintLoggers to sys.stdout and sys.stderr can be pickled."
         )
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: Any) -> None:
         """
         Our __getattr__ magic makes this necessary.
         """
@@ -102,7 +81,7 @@ class PrintLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "PrintLogger":
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
@@ -120,10 +99,10 @@ class PrintLogger:
 
         return newself
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<PrintLogger(file={self._file!r})>"
 
-    def msg(self, message):
+    def msg(self, message: str) -> None:
         """
         Print *message*.
         """
@@ -135,12 +114,31 @@ class PrintLogger:
     fatal = failure = err = error = critical = exception = msg
 
 
+class PrintLoggerFactory:
+    r"""
+    Produce `PrintLogger`\ s.
+
+    To be used with `structlog.configure`\ 's ``logger_factory``.
+
+    :param file: File to print to. (default: `sys.stdout`)
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 0.4.0
+    """
+
+    def __init__(self, file: Optional[TextIO] = None):
+        self._file = file
+
+    def __call__(self, *args: Any) -> PrintLogger:
+        return PrintLogger(self._file)
+
+
 class BytesLogger:
     r"""
     Writes bytes into a file.
 
-    :param typing.BinaryIO file: File to print to. (default:
-        `sys.stdout`\ ``.buffer``)
+    :param file: File to print to. (default: `sys.stdout`\ ``.buffer``)
 
     Useful if you follow
     `current logging best practices <logging-best-practices>` together with
@@ -151,7 +149,7 @@ class BytesLogger:
     """
     __slots__ = ("_file", "_write", "_flush", "_lock")
 
-    def __init__(self, file=None):
+    def __init__(self, file: Optional[BinaryIO] = None):
         self._file = file or sys.stdout.buffer
         self._write = self._file.write
         self._flush = self._file.flush
@@ -172,7 +170,7 @@ class BytesLogger:
             "Only BytesLoggers to sys.stdout and sys.stderr can be pickled."
         )
 
-    def __setstate__(self, state) -> None:
+    def __setstate__(self, state: Any) -> None:
         """
         Our __getattr__ magic makes this necessary.
         """
@@ -185,7 +183,7 @@ class BytesLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict={}) -> "BytesLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "BytesLogger":
         """
         Create a new BytesLogger with the same attributes. Similar to pickling.
         """
@@ -224,8 +222,7 @@ class BytesLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    :param typing.BinaryIO file: File to print to. (default:
-        `sys.stdout`\ ``.buffer``)
+    :param file: File to print to. (default: `sys.stdout`\ ``.buffer``)
 
     Positional arguments are silently ignored.
 
@@ -233,8 +230,8 @@ class BytesLoggerFactory:
     """
     __slots__ = ("_file",)
 
-    def __init__(self, file=None):
+    def __init__(self, file: Optional[BinaryIO] = None):
         self._file = file
 
-    def __call__(self, *args):
+    def __call__(self, *args: Any) -> BytesLogger:
         return BytesLogger(self._file)

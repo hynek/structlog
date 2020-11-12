@@ -1,5 +1,6 @@
 include LICENSE LICENSE.apache2 LICENSE.mit conftest.py
 include *.rst
+include src/structlog/py.typed typing_examples.py
 
 include *.ini *.yml *.yaml *.toml
 graft .github
