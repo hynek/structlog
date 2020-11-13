@@ -466,6 +466,17 @@ class LevelFilter:
     This means that you can use it along with any `BindableLogger`, as long as
     the levels have the same names.
 
+    Since ``logging.INFO`` et al are just (undocumented) int constants, you can
+    use them too, regardless whether you use stdlib logging or not:
+
+    .. code::
+
+       LevelFilter(logging.INFO, False)
+
+    will leave through log entries with log level INFO or higher (i.e. the log
+    method's name is ``info``, or ``warn``, ...) and works both with standard
+    library's `logging` as well as without.
+
     :param min_level: The minimal level a log entry has to have to be not
         dropped. You can pass either an integer or a level string. Check out
         the `logging docs
