@@ -236,7 +236,7 @@ class ConsoleRenderer:
         if level is not None:
             sio.write(
                 "["
-                + self._level_to_color[level]
+                + self._level_to_color.get(level, "")
                 + _pad(level, self._longest_level)
                 + self._styles.reset
                 + "] "

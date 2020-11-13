@@ -24,7 +24,12 @@ from typing import (
 from ._generic import BoundLogger
 from ._loggers import PrintLoggerFactory
 from .dev import ConsoleRenderer, _has_colorama, set_exc_info
-from .processors import StackInfoRenderer, TimeStamper, format_exc_info
+from .processors import (
+    StackInfoRenderer,
+    TimeStamper,
+    add_log_level,
+    format_exc_info,
+)
 from .types import BindableLogger, Context, Processor, WrappedLogger
 
 
@@ -34,6 +39,7 @@ from .types import BindableLogger, Context, Processor, WrappedLogger
    Any changes to these defaults must be reflected in `getting-started`.
 """
 _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
+    add_log_level,
     StackInfoRenderer(),
     set_exc_info,
     format_exc_info,

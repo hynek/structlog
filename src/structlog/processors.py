@@ -29,8 +29,22 @@ from ._frames import (
     _format_exception,
     _format_stack,
 )
-from ._log_levels import _NAME_TO_LEVEL
+from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from .types import EventDict, ExcInfo, WrappedLogger
+
+
+__all__ = [
+    "KeyValueRenderer",
+    "TimeStamper",
+    "add_log_level",
+    "UnicodeEncoder",
+    "UnicodeDecoder",
+    "JSONRenderer",
+    "format_exc_info",
+    "ExceptionPrettyPrinter",
+    "StackInfoRenderer",
+    "LevelFilter",
+]
 
 
 class KeyValueRenderer:

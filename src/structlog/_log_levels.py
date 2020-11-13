@@ -1,6 +1,10 @@
 """
 Extracted log level data used by both stdlib and native log level filters.
 """
+import logging
+
+from .types import EventDict
+
 
 # Adapted from the stdlib
 CRITICAL = 50
@@ -28,3 +32,27 @@ _LEVEL_TO_NAME = {
     for k, v in _NAME_TO_LEVEL.items()
     if k not in ("warn", "exception", "notset")
 }
+
+
+def add_log_level(
+    logger: logging.Logger, method_name: str, event_dict: EventDict
+) -> EventDict:
+    """
+    Add the log level to the event dict under the ``level`` key.
+
+    Since that's just the log method name, this processor works with non-stdlib
+    logging as well. Therefore it's importable both from `structlog.processors`
+    as well as from `structlog.stdlib`.
+
+    .. versionadded:: 15.0.0
+    .. versionchanged:: 20.2.0
+       Importable from `structlog.processors` (additionally to
+       `structlog.stdlib`).
+    """
+    if method_name == "warn":
+        # The stdlib has an alias
+        method_name = "warning"
+
+    event_dict["level"] = method_name
+
+    return event_dict

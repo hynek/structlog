@@ -41,6 +41,8 @@ Changes:
   `#282 <https://github.com/hynek/structlog/issues/282>`_
 - Added ``structlog.processors.LevelFilter`` that can filter log entries based on the names of the log methods (and uses the same order as standard library's logging).
   `#283 <https://github.com/hynek/structlog/issues/283>`_
+- As a complement, ``structlog.stdlib.add_log_level()`` can now also be imported as ``structlog.processors.add_log_level`` since it just adds the method name to the event dict.
+- ``structlog.processors.add_log_level()`` is now part of the default configuration.
 - ``structlog.stdlib.ProcessorFormatter`` no longer uses exceptions for control flow, allowing ``foreign_pre_chain`` processors to use ``sys.exc_info()`` to access the real exception.
 - Added ``structlog.BytesLogger`` to avoid unnecessary encoding round trips.
   Concretely this is useful with *orjson* which returns bytes.

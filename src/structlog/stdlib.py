@@ -15,9 +15,23 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from ._base import BoundLoggerBase
 from ._config import get_logger as _generic_get_logger
 from ._frames import _find_first_app_frame_and_name, _format_stack
-from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL
+from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .exceptions import DropEvent
 from .types import EventDict, ExcInfo, Processor, WrappedLogger
+
+
+__all__ = [
+    "BoundLogger",
+    "get_logger",
+    "LoggerFactory",
+    "PositionalArgumentsFormatter",
+    "filter_by_level",
+    "add_log_level_number",
+    "add_log_level",
+    "add_logger_name",
+    "render_to_log_kwargs",
+    "ProcessorFormatter",
+]
 
 
 _SENTINEL = object()
@@ -437,26 +451,6 @@ def filter_by_level(
         return event_dict
     else:
         raise DropEvent
-
-
-def add_log_level(
-    logger: logging.Logger, method_name: str, event_dict: EventDict
-) -> EventDict:
-    """
-    Add the log level to the event dict.
-
-    Since that's just the log method name, this processor works with non-stdlib
-    logging as well.
-
-    .. versionadded:: 15.0.0
-    """
-    if method_name == "warn":
-        # The stdlib has an alias
-        method_name = "warning"
-
-    event_dict["level"] = method_name
-
-    return event_dict
 
 
 def add_log_level_number(

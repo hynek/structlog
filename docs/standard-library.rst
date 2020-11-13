@@ -65,7 +65,7 @@ Processors
 `add_logger_name`:
    Adds the name of the logger to the event dictionary under the key ``logger``.
 
-`add_log_level`:
+:func:`~structlog.stdlib.add_log_level`:
    Adds the log level to the event dictionary under the key ``level``.
 
 `add_log_level_number`:
@@ -297,7 +297,7 @@ For example, to use the standard library's `logging.config.dictConfig` to log co
 
 This defines two formatters: one plain and one colored.
 Both are run for each log entry.
-Log entries that do not originate from ``structlog``, are additionally pre-processed using a cached ``timestamper`` and `add_log_level`.
+Log entries that do not originate from ``structlog``, are additionally pre-processed using a cached ``timestamper`` and :func:`~structlog.stdlib.add_log_level`.
 
 .. code-block:: pycon
 

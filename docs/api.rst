@@ -178,6 +178,8 @@ API Reference
 
 .. autoclass:: LevelFilter
 
+.. autofunction:: add_log_level
+
 .. autoclass:: UnicodeDecoder
 
 .. autoclass:: UnicodeEncoder
