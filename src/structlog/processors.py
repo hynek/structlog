@@ -23,11 +23,13 @@ from typing import (
     Union,
 )
 
+from ._base import DropEvent
 from ._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
     _format_stack,
 )
+from ._log_levels import _NAME_TO_LEVEL
 from .types import EventDict, ExcInfo, WrappedLogger
 
 
@@ -435,5 +437,51 @@ class StackInfoRenderer:
             event_dict["stack"] = _format_stack(
                 _find_first_app_frame_and_name()[0]
             )
+
+        return event_dict
+
+
+class LevelFilter:
+    """
+    A framework-agnostic level filter.
+
+    Uses standard library's order of levels, but relies solely on the *names*
+    of the levels. If a log entry doesn't have the minimum log level,
+    `DropEvent` is raised.
+
+    This means that you can use it along with any `BindableLogger`, as long as
+    the levels have the same names.
+
+    :param min_level: The minimal level a log entry has to have to be not
+        dropped. You can pass either an integer or a level string. Check out
+        the `logging docs
+        <https://docs.python.org/3/library/logging.html#levels>`_ for possible
+        values.
+    :param pass_unknown: If True and `LevelFilter` encounters an unknown level
+        name (i.e. log method name), the log entry is passed through. If False,
+        it's dropped.
+
+    .. versionadded:: 20.2.0
+    """
+
+    min_level: int
+    unknown_default: int
+
+    def __init__(self, min_level: Union[str, int], pass_unknown: bool) -> None:
+        if isinstance(min_level, str):
+            min_level = _NAME_TO_LEVEL[min_level.lower()]
+
+        self.min_level = min_level
+
+        if pass_unknown:
+            self.unknown_default = 10000
+        else:
+            self.unknown_default = -1
+
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        if _NAME_TO_LEVEL.get(name, self.unknown_default) < self.min_level:
+            raise DropEvent
 
         return event_dict
