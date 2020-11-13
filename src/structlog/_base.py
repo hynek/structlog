@@ -5,6 +5,7 @@
 """
 Logger wrapper and helper class.
 """
+
 from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
 
 from structlog.exceptions import DropEvent

@@ -200,7 +200,7 @@ def configure(
 
     Use `reset_defaults` to undo your changes.
 
-    :param processors: The processor chain.
+    :param processors: The processor chain. See :doc:`processors` for details.
     :param wrapper_class: Class to use for wrapping loggers instead of
         `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`, and
         `custom-wrappers`.
