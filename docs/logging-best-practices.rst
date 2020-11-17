@@ -24,7 +24,8 @@ Centralized Logging
 -------------------
 
 Nowadays you usually don't want your logfiles in compressed archives distributed over dozens -- if not thousands -- of servers or cluster nodes.
-You want them in a single location; parsed, indexed, and easy to search.
+You want them in a single location.
+Parsed, indexed, and easy to search.
 
 
 ELK
@@ -33,11 +34,11 @@ ELK
 The ELK stack (Elasticsearch_, Logstash_, Kibana_) from Elastic is a great way to store, parse, and search your logs.
 
 The way it works is that you have local log shippers like Filebeat_ that parse your log files and forward the log entries to your Logstash_ server.
-Logstash parses the log entries and stores them in in Elasticsearch_.
+Logstash parses the log entries and stores them in Elasticsearch_.
 Finally, you can view and search them in Kibana_.
 
 If your log entries consist of a JSON dictionary, this is fairly easy and efficient.
-All you have to do is to tell Logstash_ the name of your timestamp field.
+All you have to do is to tell Logstash_ either that your log entries are prepended with a timestamp from `TimeStamper` or the name of your timestamp field.
 
 
 Graylog

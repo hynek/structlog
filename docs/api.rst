@@ -45,6 +45,8 @@ API Reference
 .. autoclass:: BoundLogger
    :members: new, bind, unbind
 
+.. autofunction:: make_filtering_bound_logger
+
 .. autofunction:: get_context
 
 .. autoclass:: PrintLogger
@@ -81,10 +83,25 @@ API Reference
 
 .. autofunction:: capture_logs
 .. autoclass:: LogCapture
+
+.. autoclass:: CapturingLogger
+
+   >>> from pprint import pprint
+   >>> cl = structlog.testing.CapturingLogger()
+   >>> cl.msg("hello")
+   >>> cl.msg("hello", when="again")
+   >>> pprint(cl.calls)
+   [CapturedCall(method_name='msg', args=('hello',), kwargs={}),
+    CapturedCall(method_name='msg', args=('hello',), kwargs={'when': 'again'})]
+
+.. autoclass:: CapturingLoggerFactory
+.. autoclass:: CapturedCall
+
 .. autoclass:: ReturnLogger
    :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
 
 .. autoclass:: ReturnLoggerFactory
+
 
 
 `structlog.threadlocal` Module
@@ -176,8 +193,6 @@ API Reference
       'b=[1, 2, 3] a=42'
 
 
-.. autoclass:: LevelFilter
-
 .. autofunction:: add_log_level
 
 .. autoclass:: UnicodeDecoder
@@ -256,6 +271,8 @@ API Reference
    Unfortunately it's impossible to define initializers using `PEP 544 <https://www.python.org/dev/peps/pep-0544/>`_ Protocols.
 
    They currently also have to carry a `Context` as a ``_context`` attribute.
+
+.. autoprotocol:: FilteringBoundLogger
 
 .. autodata:: EventDict
 .. autodata:: WrappedLogger

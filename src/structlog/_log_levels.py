@@ -3,7 +3,10 @@ Extracted log level data used by both stdlib and native log level filters.
 """
 import logging
 
-from .types import EventDict
+from typing import Any, Callable, Type
+
+from ._base import BoundLoggerBase
+from .types import EventDict, FilteringBoundLogger
 
 
 # Adapted from the stdlib
@@ -56,3 +59,68 @@ def add_log_level(
     event_dict["level"] = method_name
 
     return event_dict
+
+
+def _nop(*args: Any, **kw: Any) -> Any:
+    return None
+
+
+def exception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
+    kw.setdefault("exc_info", True)
+
+    return self.error(event, **kw)
+
+
+def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
+    """
+    Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
+
+    The logger is optimized such that log levels below *min_level* only consist
+    of a ``return None``.
+
+    Compared to using ``structlog``'s standard library integration and the
+    `structlog.stdlib.filter_by_level` processor:
+
+    - It's faster because once the logger is built at program start, it's a
+      static class.
+    - For the same reason you can't change the log level once configured.
+      Use the dynamic approach of `standard-library` instead, if you need this
+      feature.
+
+    :param min_level: The log level as an integer. You can use the constants
+        from `logging` like ``logging.INFO`` or pass the values directly. See
+        `this table from the logging docs
+        <https://docs.python.org/3/library/logging.html#levels>`_ for possible
+        values.
+
+    .. versionadded:: 20.2.0
+    """
+
+    def make_method(level: int) -> Callable[..., Any]:
+        if level < min_level:
+            return _nop
+
+        name = _LEVEL_TO_NAME[level]
+
+        def meth(self: Any, event: str, **kw: Any) -> Any:
+            return self._proxy_to_logger(name, event, **kw)
+
+        meth.__name__ = name
+
+        return meth
+
+    meths = {}
+    for lvl, name in _LEVEL_TO_NAME.items():
+        meths[name] = make_method(lvl)
+
+    meths["exception"] = exception
+    meths["fatal"] = meths["error"]
+    meths["warn"] = meths["warning"]
+    meths["msg"] = meths["info"]
+
+    return type(
+        "BoundLoggerFilteringAt%s"
+        % (_LEVEL_TO_NAME.get(min_level, "Notset").capitalize()),
+        (BoundLoggerBase,),
+        meths,
+    )

@@ -23,7 +23,6 @@ from typing import (
     Union,
 )
 
-from ._base import DropEvent
 from ._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
@@ -34,6 +33,7 @@ from .types import EventDict, ExcInfo, WrappedLogger
 
 
 __all__ = [
+    "_NAME_TO_LEVEL",  # some people rely on it being here
     "KeyValueRenderer",
     "TimeStamper",
     "add_log_level",
@@ -43,7 +43,6 @@ __all__ = [
     "format_exc_info",
     "ExceptionPrettyPrinter",
     "StackInfoRenderer",
-    "LevelFilter",
 ]
 
 
@@ -289,11 +288,6 @@ class TimeStamper:
     """
     Add a timestamp to ``event_dict``.
 
-    .. note::
-
-        You should let OS tools take care of timestamping.  See also
-        `logging-best-practices`.
-
     :param fmt: strftime format string, or ``"iso"`` for `ISO 8601
         <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
         timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
@@ -451,62 +445,5 @@ class StackInfoRenderer:
             event_dict["stack"] = _format_stack(
                 _find_first_app_frame_and_name()[0]
             )
-
-        return event_dict
-
-
-class LevelFilter:
-    """
-    A framework-agnostic level filter.
-
-    Uses standard library's order of levels, but relies solely on the *names*
-    of the levels. If a log entry doesn't have the minimum log level,
-    `DropEvent` is raised.
-
-    This means that you can use it along with any `BindableLogger`, as long as
-    the levels have the same names.
-
-    Since ``logging.INFO`` et al are just (undocumented) int constants, you can
-    use them too, regardless whether you use stdlib logging or not:
-
-    .. code::
-
-       LevelFilter(logging.INFO, False)
-
-    will leave through log entries with log level INFO or higher (i.e. the log
-    method's name is ``info``, or ``warn``, ...) and works both with standard
-    library's `logging` as well as without.
-
-    :param min_level: The minimal level a log entry has to have to be not
-        dropped. You can pass either an integer or a level string. Check out
-        the `logging docs
-        <https://docs.python.org/3/library/logging.html#levels>`_ for possible
-        values.
-    :param pass_unknown: If True and `LevelFilter` encounters an unknown level
-        name (i.e. log method name), the log entry is passed through. If False,
-        it's dropped.
-
-    .. versionadded:: 20.2.0
-    """
-
-    min_level: int
-    unknown_default: int
-
-    def __init__(self, min_level: Union[str, int], pass_unknown: bool) -> None:
-        if isinstance(min_level, str):
-            min_level = _NAME_TO_LEVEL[min_level.lower()]
-
-        self.min_level = min_level
-
-        if pass_unknown:
-            self.unknown_default = 10000
-        else:
-            self.unknown_default = -1
-
-    def __call__(
-        self, logger: WrappedLogger, name: str, event_dict: EventDict
-    ) -> EventDict:
-        if _NAME_TO_LEVEL.get(name, self.unknown_default) < self.min_level:
-            raise DropEvent
 
         return event_dict

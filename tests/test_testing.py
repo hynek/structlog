@@ -6,7 +6,13 @@
 import pytest
 
 from structlog import get_config, get_logger, reset_defaults, testing
-from structlog.testing import ReturnLogger, ReturnLoggerFactory
+from structlog.testing import (
+    CapturedCall,
+    CapturingLogger,
+    CapturingLoggerFactory,
+    ReturnLogger,
+    ReturnLoggerFactory,
+)
 
 
 class TestCaptureLogs:
@@ -80,6 +86,9 @@ class TestReturnLogger:
 
 class TestReturnLoggerFactory:
     def test_builds_returnloggers(self):
+        """
+        Factory returns ReturnLoggers.
+        """
         f = ReturnLoggerFactory()
 
         assert isinstance(f(), ReturnLogger)
@@ -99,3 +108,44 @@ class TestReturnLoggerFactory:
         the factory, they are not passed to the logger.
         """
         ReturnLoggerFactory()(1, 2, 3)
+
+
+class TestCapturingLogger:
+    def test_factory_caches(self):
+        """
+        CapturingLoggerFactory returns one CapturingLogger over and over again.
+        """
+        clf = CapturingLoggerFactory()
+        cl1 = clf()
+        cl2 = clf()
+
+        assert cl1 is cl2
+
+    def test_repr(self):
+        """
+        repr says how many calls there were.
+        """
+        cl = CapturingLogger()
+
+        cl.info("hi")
+        cl.error("yolo")
+
+        assert "<CapturingLogger with 2 call(s)>" == repr(cl)
+
+    def test_captures(self):
+        """
+        All calls to all names are captured.
+        """
+        cl = CapturingLogger()
+
+        cl.info("hi", val=42)
+        cl.trololo("yolo", foo={"bar": "baz"})
+
+        assert [
+            CapturedCall(method_name="info", args=("hi",), kwargs={"val": 42}),
+            CapturedCall(
+                method_name="trololo",
+                args=("yolo",),
+                kwargs={"foo": {"bar": "baz"}},
+            ),
+        ] == cl.calls

@@ -11,7 +11,7 @@ See :doc:`testing`.
 """
 
 from contextlib import contextmanager
-from typing import Any, Generator, List, NoReturn
+from typing import Any, Dict, Generator, List, NamedTuple, NoReturn, Tuple
 
 from ._config import configure, get_config
 from .exceptions import DropEvent
@@ -108,3 +108,75 @@ class ReturnLoggerFactory:
 
     def __call__(self, *args: Any) -> ReturnLogger:
         return self._logger
+
+
+class CapturedCall(NamedTuple):
+    """
+    A call as captured by `CapturingLogger`.
+
+    Can also be unpacked like a tuple.
+
+    :param method_name: The method name that got called.
+    :param args: A tuple of the positional arguments.
+    :param kwargs: A dict of the keyword arguments.
+
+    .. versionadded:: 20.2.0
+    """
+
+    method_name: str
+    args: Tuple[Any, ...]
+    kwargs: Dict[str, Any]
+
+
+class CapturingLogger:
+    """
+    Store the method calls that it's been called with.
+
+    This is nicer than `ReturnLogger` for unit tests because the bound logger
+    doesn't have to cooperate.
+
+    **Any** method name is supported.
+
+    .. versionadded:: 20.2.0
+    """
+
+    calls: List[CapturedCall]
+
+    def __init__(self) -> None:
+        self.calls = []
+
+    def __repr__(self) -> str:
+        return f"<CapturingLogger with { len(self.calls) } call(s)>"
+
+    def __getattr__(self, name: str) -> Any:
+        """
+        Capture call to `calls`
+        """
+
+        def log(*args: Any, **kw: Any) -> None:
+            self.calls.append(CapturedCall(name, args, kw))
+
+        return log
+
+
+class CapturingLoggerFactory:
+    r"""
+    Produce and cache `CapturingLogger`\ s.
+
+    Each factory produces and re-uses only **one** logger.
+
+    You can access it via the ``logger`` attribute.
+
+    To be used with `structlog.configure`\ 's *logger_factory*.
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 20.2.0
+    """
+    logger: CapturingLogger
+
+    def __init__(self) -> None:
+        self.logger = CapturingLogger()
+
+    def __call__(self, *args: Any) -> CapturingLogger:
+        return self.logger
