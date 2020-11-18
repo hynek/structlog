@@ -25,7 +25,7 @@
 
 .. -begin-short-
 
-``structlog`` makes logging in Python less painful and more powerful by adding structure to your log entries.
+``structlog`` makes logging in Python faster, less painful, and more powerful by adding structure to your log entries.
 
 It's up to you whether you want ``structlog`` to take care about the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's ``logging`` module.
 

@@ -98,15 +98,20 @@ html_static_path = ["_static"]
 htmlhelp_basename = "structlogdoc"
 
 _logo = "https://www.structlog.org/en/latest/_static/structlog_logo_small.png"
+_descr = (
+    "structlog makes logging in Python faster, less painful, and more "
+    "powerful by adding structure to your log entries."
+)
 rst_epilog = f"""\
 .. meta::
     :property=og:type: website
     :property=og:site_name: structlog – Structured Logging for Python
+    :property=og:description: { _descr }
     :property=og:author: Hynek Schlawack
     :property=og:image: { _logo }
     :twitter:image: { _logo }
     :twitter:creator: @hynek
-"""  # pragma: noqa
+"""
 
 latex_documents = [
     ("index", "structlog.tex", "structlog Documentation", "Author", "manual")
