@@ -48,7 +48,7 @@ You can stop writing prose and start thinking in terms of an event that happens 
    >>> from structlog import get_logger
    >>> log = get_logger()
    >>> log.info("key_value_logging", out_of_the_box=True, effort=0)
-   2016-04-20 16:20.13 key_value_logging              effort=0 out_of_the_box=True
+   2020-11-18 09:17.09 [info     ] key_value_logging              effort=0 out_of_the_box=True
 
 Each log entry is a meaningful dictionary instead of an opaque string now!
 
@@ -63,8 +63,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
    >>> log = log.bind(user="anonymous", some_key=23)
    >>> log = log.bind(user="hynek", another_key=42)
    >>> log.info("user.logged_in", happy=True)
-   2016-04-20 16:20.13 user.logged_in                 another_key=42 happy=True some_key=23 user='hynek'
-
+   2020-11-18 09:18.28 [info     ] user.logged_in                 another_key=42 happy=True some_key=23 user=hynek
 
 Powerful Pipelines
 ==================
