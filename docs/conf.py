@@ -50,7 +50,7 @@ master_doc = "index"
 # General information about the project.
 project = "structlog"
 author = "Hynek Schlawack"
-copyright = f"2013, {author}"
+copyright = f"2013, { author }"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -97,7 +97,10 @@ html_logo = "_static/structlog_logo_small_transparent.png"
 html_static_path = ["_static"]
 htmlhelp_basename = "structlogdoc"
 
-_logo = "https://www.structlog.org/en/latest/_static/structlog_logo_small.png"
+_logo = (
+    "https://www.structlog.org/en/latest/_static/"
+    "structlog_logo_small_transparent.png"
+)
 _descr = (
     "structlog makes logging in Python faster, less painful, and more "
     "powerful by adding structure to your log entries."
