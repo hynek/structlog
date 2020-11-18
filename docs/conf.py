@@ -102,7 +102,7 @@ _descr = (
     "structlog makes logging in Python faster, less painful, and more "
     "powerful by adding structure to your log entries."
 )
-_title = "structlog – Structured Logging for Python"
+_title = "structlog: Structured Logging for Python"
 rst_epilog = f"""\
 .. meta::
     :property=og:type: website
