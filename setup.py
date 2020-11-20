@@ -96,7 +96,10 @@ def find_meta(meta):
 
 VERSION = find_meta("version")
 LONG = (
-    read("README.rst")
+    "==============================================\n"
+    "``structlog``: : Structured Logging for Python\n"
+    "==============================================\n"
+    + read("README.rst").split(".. -begin-short-")[1]
     + "\n\n"
     + "Release Information\n"
     + "===================\n\n"
