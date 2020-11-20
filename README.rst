@@ -2,7 +2,7 @@
 
    <p align="center">
       <a href="https://www.structlog.org/">
-         <img src="./docs/_static/structlog_logo.png" width="40%" alt="structlog" />
+         <img src="./docs/_static/structlog_logo.png" width="35%" alt="structlog" />
       </a>
    </p>
    <p align="center">
