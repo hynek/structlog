@@ -1,27 +1,24 @@
-.. image:: https://www.structlog.org/en/latest/_static/structlog_logo_small.png
-   :alt: structlog Logo
-   :width: 256px
-   :target: https://www.structlog.org/
+.. raw:: html
 
-============================================
-``structlog``: Structured Logging for Python
-============================================
-
-.. image:: https://readthedocs.org/projects/structlog/badge/?version=stable
-   :target: https://www.structlog.org/en/stable/?badge=stable
-   :alt: Documentation Status
-
-.. image:: https://github.com/hynek/structlog/workflows/CI/badge.svg?branch=master
-   :target: https://github.com/hynek/structlog/actions?workflow=CI
-   :alt: CI Status
-
-.. image:: https://codecov.io/github/hynek/structlog/branch/master/graph/badge.svg
-   :target: https://codecov.io/github/hynek/structlog
-   :alt: Test Coverage
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/psf/black
-   :alt: Code style: black
+   <p align="center">
+      <a href="https://www.structlog.org/">
+         <img src="./docs/_static/structlog_logo.png" width="40%" alt="structlog" />
+      </a>
+   </p>
+   <p align="center">
+      <a href="https://www.structlog.org/en/stable/?badge=stable">
+          <img src="https://readthedocs.org/projects/structlog/badge/?version=stable" alt="Documentation Status" />
+      </a>
+      <a href="https://github.com/hynek/structlog/actions?workflow=CI">
+          <img src="https://github.com/hynek/structlog/workflows/CI/badge.svg?branch=master" alt="CI Status" />
+      </a>
+      <a href="https://codecov.io/github/hynek/structlog">
+          <img src="https://codecov.io/github/hynek/structlog/branch/master/graph/badge.svg" alt="Test Coverage" />
+      </a>
+      <a href="https://github.com/psf/black">
+          <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" />
+      </a>
+   </p>
 
 .. -begin-short-
 
