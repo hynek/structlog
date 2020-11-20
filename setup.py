@@ -17,6 +17,9 @@ PROJECT_URLS = {
     "Documentation": "https://www.structlog.org/",
     "Bug Tracker": "https://github.com/hynek/structlog/issues",
     "Source Code": "https://github.com/hynek/structlog",
+    "Funding": "https://github.com/sponsors/hynek",
+    "Tidelift": "https://tidelift.com/subscription/pkg/pypi-structlog?"
+    "utm_source=pypi-structlog&utm_medium=pypi",
 }
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
