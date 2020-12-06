@@ -39,9 +39,10 @@ Changes:
   Please feel free to provide feedback!
   `#223 <https://github.com/hynek/structlog/issues/223>`_,
   `#282 <https://github.com/hynek/structlog/issues/282>`_
-- Added ``structlog.processors.LevelFilter`` that can filter log entries based on the names of the log methods (and uses the same order as standard library's logging).
-  `#283 <https://github.com/hynek/structlog/issues/283>`_
-- As a complement, ``structlog.stdlib.add_log_level()`` can now also be imported as ``structlog.processors.add_log_level`` since it just adds the method name to the event dict.
+- Added ``structlog.make_filtering_logger`` that can be used like ``configure(wrapper_class=make_filtering_bound_logger(logging.INFO))``.
+  It creates a highly optimized bound logger whose inactive methods only consist of a ``return None``.
+  This is now also the default logger.
+- As a complement, ``structlog.stdlib.add_log_level()`` can now additionally be imported as ``structlog.processors.add_log_level`` since it just adds the method name to the event dict.
 - ``structlog.processors.add_log_level()`` is now part of the default configuration.
 - ``structlog.stdlib.ProcessorFormatter`` no longer uses exceptions for control flow, allowing ``foreign_pre_chain`` processors to use ``sys.exc_info()`` to access the real exception.
 - Added ``structlog.BytesLogger`` to avoid unnecessary encoding round trips.
@@ -52,6 +53,7 @@ Changes:
   `#266 <https://github.com/hynek/structlog/issues/266>`_,
 - ``structlog.PrintLogger`` now supports ``copy.deepcopy()``.
   `#268 <https://github.com/hynek/structlog/issues/268>`_
+- Added ``structlog.testing.CapturingLogger`` for more unittesting goodness.
 
 
 ----
@@ -129,7 +131,7 @@ Changes:
   `#215 <https://github.com/hynek/structlog/issues/215>`_
 - ``structlog.dev.ConsoleRenderer`` now initializes ``colorama`` lazily, to prevent accidental side-effects just by importing ``structlog``.
   `#210 <https://github.com/hynek/structlog/issues/210>`_
-- Added new processor ``structlog.dev.set_exc_info()`` that will set ``exc_info=True`` if the method's name is `exception` and ``exc_info`` isn't set at all.
+- Added new processor ``structlog.dev.set_exc_info()`` that will set ``exc_info=True`` if the method's name is ``exception`` and ``exc_info`` isn't set at all.
   *This is only necessary when the standard library integration is not used*.
   It fixes the problem that in the default configuration, ``structlog.get_logger().exception("hi")`` in an ``except`` block would not print the exception without passing ``exc_info=True`` to it explicitly.
   `#130 <https://github.com/hynek/structlog/issues/130>`_,

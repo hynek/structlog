@@ -39,7 +39,9 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 It should be noted that even in most complex logging setups the example would still look just like that thanks to `configuration`.
 Using the defaults, as above, is equivalent to::
 
+   import loggging
    import structlog
+
    structlog.configure(
        processors=[
            structlog.processors.add_log_level,
@@ -49,7 +51,7 @@ Using the defaults, as above, is equivalent to::
            structlog.processors.TimeStamper(),
            structlog.dev.ConsoleRenderer()
        ],
-       wrapper_class=structlog.BoundLogger,
+       wrapper_class=structlog.make_filtering_bound_logger(logging.NOTSET),
        context_class=dict,
        logger_factory=structlog.PrintLoggerFactory(),
        cache_logger_on_first_use=False
@@ -58,6 +60,9 @@ Using the defaults, as above, is equivalent to::
 
 .. note::
    For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic `structlog.processors.KeyValueRenderer()` without timestamps.
+
+   `structlog.make_filtering_bound_logger()` (re-)uses `logging`'s log levels, but doesn't use it at all.
+   The exposed API is `FilteringBoundLogger`.
 
 There you go, structured logging!
 However, this alone wouldn't warrant its own package.

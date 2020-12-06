@@ -40,6 +40,25 @@ For example a `pytest <https://docs.pytest.org/>`_ fixture to capture log output
 
 ----
 
+You can also use `structlog.testing.CapturingLogger` (directly, or via `CapturingLoggerFactory` that always returns the same logger) that is more low-level and great for unit tests:
+
+.. doctest::
+
+   >>> import structlog
+   >>> cf = structlog.testing.CapturingLoggerFactory()
+   >>> structlog.configure(logger_factory=cf, processors=[structlog.processors.JSONRenderer()])
+   >>> log = get_logger()
+   >>> log.info("test!")
+   >>> cf.logger.calls
+   [CapturedCall(method_name='info', args=('{"event": "test!"}',), kwargs={})]
+
+.. testcleanup:: *
+
+   import structlog
+   structlog.reset_defaults()
+
+----
+
 Additionally ``structlog`` also ships with a logger that just returns whatever it gets passed into it: `structlog.testing.ReturnLogger`.
 
 .. doctest::

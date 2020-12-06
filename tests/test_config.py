@@ -326,7 +326,7 @@ class TestBoundLoggerLazyProxy:
         class F:
             "New logger factory with a new attribute"
 
-            def a(self, *args):
+            def info(self, *args):
                 return 5
 
         proxy = BoundLoggerLazyProxy(None)
@@ -334,7 +334,7 @@ class TestBoundLoggerLazyProxy:
         configure(logger_factory=F)
         new_b = proxy.bind()
 
-        assert new_b.a("test") == 5
+        assert new_b.info("test") == 5
 
     def test_emphemeral(self):
         """

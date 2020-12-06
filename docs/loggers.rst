@@ -52,14 +52,18 @@ For that times there is the `structlog.wrap_logger` function that can be used to
 
 .. doctest::
 
-   >>> from structlog import wrap_logger
-   >>> class PrintLogger:
+   >>> import structlog
+   >>> class CustomPrintLogger:
    ...     def msg(self, message):
    ...         print(message)
    >>> def proc(logger, method_name, event_dict):
    ...     print("I got called with", event_dict)
    ...     return repr(event_dict)
-   >>> log = wrap_logger(PrintLogger(), processors=[proc], context_class=dict)
+   >>> log = structlog.wrap_logger(
+   ...     CustomPrintLogger(),
+   ...     wrapper_class=structlog.BoundLogger,
+   ...     processors=[proc],
+   ... )
    >>> log2 = log.bind(x=42)
    >>> log == log2
    False

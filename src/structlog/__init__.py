@@ -20,6 +20,7 @@ from structlog._config import (
     wrap_logger,
 )
 from structlog._generic import BoundLogger
+from structlog._log_levels import make_filtering_bound_logger
 from structlog._loggers import (
     BytesLogger,
     BytesLoggerFactory,
@@ -73,6 +74,7 @@ __all__ = [
     "get_context",
     "get_logger",
     "is_configured",
+    "make_filtering_bound_logger",
     "processors",
     "reset_defaults",
     "stdlib",

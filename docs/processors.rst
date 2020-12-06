@@ -85,7 +85,7 @@ How about dropping only log entries that are marked as coming from a certain pee
    :language: python
 
 
-Since it's so common to filter by the log level, ``structlog`` comes with `structlog.processors.LevelFilter`.
+Since it's so common to filter by the log level, ``structlog`` comes with `structlog.make_filtering_bound_logger` that filters log entries before they even enter the processor chain..
 It does **not** use the standard library, but it does use its names and order of log levels.
 In practice, it only looks up the numeric value of the method name and compares it to the configured minimal level.
 That's fast and usually good enough for applications.

@@ -140,7 +140,7 @@ In order to be able to bind values temporarily to a logger, `structlog.threadloc
 .. doctest:: ctx
 
    >>> log.bind(x=42)  # doctest: +ELLIPSIS
-   <BoundLogger(context=<WrappedDict-...({'x': 42})>, ...)>
+   <BoundLoggerFilteringAtNotset(context=<WrappedDict-...({'x': 42})>, ...)>
    >>> log.msg("event!")
    x=42 event='event!'
    >>> with tmp_bind(log, x=23, y="foo") as tmp_log:

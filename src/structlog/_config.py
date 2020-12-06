@@ -21,7 +21,7 @@ from typing import (
     cast,
 )
 
-from ._generic import BoundLogger
+from ._log_levels import make_filtering_bound_logger
 from ._loggers import PrintLoggerFactory
 from .dev import ConsoleRenderer, _has_colorama, set_exc_info
 from .processors import (
@@ -47,7 +47,7 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     ConsoleRenderer(colors=_has_colorama and sys.stdout.isatty()),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)
-_BUILTIN_DEFAULT_WRAPPER_CLASS = BoundLogger
+_BUILTIN_DEFAULT_WRAPPER_CLASS = make_filtering_bound_logger(0)
 _BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLoggerFactory()
 _BUILTIN_CACHE_LOGGER_ON_FIRST_USE = False
 

@@ -104,3 +104,65 @@ class BindableLogger(Protocol):
 
     def new(self, **new_values: Any) -> "BindableLogger":
         ...
+
+
+class FilteringBoundLogger(BindableLogger, Protocol):
+    """
+    A `BindableLogger` that filters by a level.
+
+    Currently, the only way to instantiate one is using
+    `make_filtering_bound_logger`.
+
+    .. versionadded:: 20.2.0
+    """
+
+    def debug(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **debug** level.
+        """
+
+    def info(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **info** level.
+        """
+
+    def warning(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **warn** level.
+        """
+
+    def warn(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **warn** level.
+        """
+
+    def error(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **error** level.
+        """
+
+    def err(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **error** level.
+        """
+
+    def fatal(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **critical** level.
+        """
+
+    def exception(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **error** level and ensure that ``exc_info``
+        is set in the event dictionary.
+        """
+
+    def critical(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **critical** level.
+        """
+
+    def msg(self, event: str, **kw: Any) -> Any:
+        """
+        Log *event* with **kw** at **info** level.
+        """
