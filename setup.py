@@ -17,6 +17,9 @@ PROJECT_URLS = {
     "Documentation": "https://www.structlog.org/",
     "Bug Tracker": "https://github.com/hynek/structlog/issues",
     "Source Code": "https://github.com/hynek/structlog",
+    "Funding": "https://github.com/sponsors/hynek",
+    "Tidelift": "https://tidelift.com/subscription/pkg/pypi-structlog?"
+    "utm_source=pypi-structlog&utm_medium=pypi",
 }
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
@@ -96,7 +99,10 @@ def find_meta(meta):
 
 VERSION = find_meta("version")
 LONG = (
-    read("README.rst")
+    "==============================================\n"
+    "``structlog``: : Structured Logging for Python\n"
+    "==============================================\n"
+    + read("README.rst").split(".. -begin-short-")[1]
     + "\n\n"
     + "Release Information\n"
     + "===================\n\n"
