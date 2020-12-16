@@ -832,27 +832,29 @@ class TestProcessorFormatter:
         ) == capsys.readouterr()
 
 
+@pytest.fixture(name="abl")
+async def _abl(cl):
+    return AsyncBoundLogger(cl, context={}, processors=[])
+
+
 @pytest.mark.skipif(
     sys.version_info[:2] < (3, 7),
     reason="AsyncBoundLogger is only for Python 3.7 and later.",
 )
 class TestAsyncBoundLogger:
     @pytest.mark.asyncio
-    async def test_protocol(self):
+    async def test_protocol(self, abl):
         """
         AsyncBoundLogger is a proper BindableLogger.
         """
-        assert isinstance(AsyncBoundLogger(None, {}, []), BindableLogger)
+        assert isinstance(abl, BindableLogger)
 
     @pytest.mark.asyncio
-    async def test_correct_levels(self, cl, stdlib_log_method):
+    async def test_correct_levels(self, abl, cl, stdlib_log_method):
         """
         The proxy methods call the correct upstream methods.
         """
-        await getattr(
-            AsyncBoundLogger(cl, context={}, processors=[]).bind(foo="bar"),
-            stdlib_log_method,
-        )("42")
+        await getattr(abl.bind(foo="bar"), stdlib_log_method)("42")
 
         aliases = {"exception": "error", "warn": "warning"}
 
@@ -865,17 +867,45 @@ class TestAsyncBoundLogger:
         assert expect == cl.calls[0].method_name
 
     @pytest.mark.asyncio
-    async def test_log_method(self, cl):
+    async def test_log_method(self, abl, cl):
         """
         The `log` method is proxied too.
         """
-        await (
-            AsyncBoundLogger(cl, context={}, processors=[])
-            .bind(foo="bar")
-            .log(logging.ERROR, "42")
-        )
+        await abl.bind(foo="bar").log(logging.ERROR, "42")
 
         assert "error" == cl.calls[0].method_name
+
+    @pytest.mark.asyncio
+    async def test_exception(self, abl, cl):
+        """
+        `exception` makes sure 'exc_info" is set, if it's not set already.
+        """
+        try:
+            raise ValueError("omg")
+        except ValueError:
+            await abl.exception("oops")
+
+        ei = cl.calls[0].kwargs["exc_info"]
+
+        assert ValueError is ei[0]
+        assert ("omg",) == ei[1].args
+
+    @pytest.mark.asyncio
+    async def test_exception_do_not_overwrite(self, abl, cl):
+        """
+        `exception` leaves exc_info be, if it's set.
+        """
+        o1 = object()
+        o2 = object()
+        o3 = object()
+
+        try:
+            raise ValueError("omg")
+        except ValueError:
+            await abl.exception("oops", exc_info=(o1, o2, o3))
+
+        ei = cl.calls[0].kwargs["exc_info"]
+        assert (o1, o2, o3) == ei
 
     @pytest.mark.asyncio
     async def test_bind_unbind(self, cl):
