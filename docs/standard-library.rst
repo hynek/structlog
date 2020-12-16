@@ -56,7 +56,7 @@ For that use case ``structlog`` comes with `structlog.stdlib.AsyncBoundLogger` t
 
 This means an increased computational cost per log entry but your application will never block because of logging.
 
-To use it, :doc:`configure <configuration>` structlog to use `AsyncBoundLogger` as ``wrapper_class``.
+To use it, :doc:`configure <configuration>` ``structlog`` to use `AsyncBoundLogger` as ``wrapper_class``.
 
 
 Processors
