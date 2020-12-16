@@ -14,30 +14,42 @@ import logging
 import sys
 
 from functools import partial
-from typing import Any, Dict, List, Optional, Sequence, Tuple
-from typing import Any, Callable, List, Mapping, Sequence
-from typing import Any, Callable, List, Mapping, Sequence
-from typing import Any, Callable, Dict, List, Mapping, Sequence, Tuple
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 from ._base import BoundLoggerBase
 from ._config import get_logger as _generic_get_logger
 from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .exceptions import DropEvent
-from .types import EventDict, ExcInfo, Processor, WrappedLogger
+from .types import Context, EventDict, ExcInfo, Processor, WrappedLogger
+
+
+try:
+    from . import contextvars
+except ImportError:
+    contextvars = None  # type: ignore
 
 
 __all__ = [
-    "BoundLogger",
-    "get_logger",
-    "LoggerFactory",
-    "PositionalArgumentsFormatter",
-    "filter_by_level",
     "add_log_level_number",
     "add_log_level",
     "add_logger_name",
-    "render_to_log_kwargs",
+    "BoundLogger",
+    "filter_by_level",
+    "get_logger",
+    "LoggerFactory",
+    "PositionalArgumentsFormatter",
     "ProcessorFormatter",
+    "render_to_log_kwargs",
 ]
 
 
@@ -346,15 +358,16 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 
 class AsyncBoundLogger:
     """
-    Wrap a `BoundLogger` and run its logging methods asynchronously in a thread
+    Wraps a `BoundLogger` & exposes its logging methods as ``async`` versions.
+
+    Instead of blocking the program, they are run asynchronously in a thread
     pool executor.
 
     This means more computational overhead per log call. But it also means that
     the processor chain (e.g. JSON serialization) and I/O won't block your
     whole application.
 
-    .. warning:
-        Since the processor pipeline runs in a separate thread,
+    .. warning: Since the processor pipeline runs in a separate thread,
         `structlog.contextvars.merge_contextvars` does **nothing** and should
         be removed from you processor chain.
 
@@ -363,13 +376,15 @@ class AsyncBoundLogger:
 
     Only available for Python 3.7 and later.
 
-    :ivar sync_bl: The wrapped synchronous logger. It is useful to be able to
-       log synchronously occasionally.
+    :ivar structlog.stdlib.BoundLogger sync_bl: The wrapped synchronous logger.
+       It is useful to be able to log synchronously occasionally.
 
     .. versionadded:: 20.2.0
     """
 
     __slots__ = ["sync_bl", "_loop"]
+
+    sync_bl: BoundLogger
 
     _executor = None
     _bound_logger_factory = BoundLogger
@@ -377,29 +392,73 @@ class AsyncBoundLogger:
     def __init__(
         self,
         logger: logging.Logger,
-        processors: List[Callable],
-        context: Mapping,
+        processors: Iterable[Processor],
+        context: Context,
+        *,
+        # Only as an optimization for binding!
+        _sync_bl: Any = None,  # *vroom vroom* over purity.
+        _loop: Any = None,
     ):
+        if _sync_bl:
+            self.sync_bl = _sync_bl
+            self._loop = _loop
+
+            return
+
         self.sync_bl = self._bound_logger_factory(
             logger=logger, processors=processors, context=context
         )
         self._loop = asyncio.get_running_loop()
 
+    @property
+    def _context(self) -> Context:
+        return self.sync_bl._context
+
     def bind(self, **new_values: Any) -> "AsyncBoundLogger":
-        self.sync_bl = self.sync_bl.bind(**new_values)
-        return self
+        return AsyncBoundLogger(
+            # logger, processors and context are within sync_bl. These
+            # arguments are ignored if _sync_bl is passsed. *vroom vroom* over
+            # purity.
+            logger=None,  # type: ignore
+            processors=(),
+            context={},
+            _sync_bl=self.sync_bl.bind(**new_values),
+            _loop=self._loop,
+        )
 
     def new(self, **new_values: Any) -> "AsyncBoundLogger":
-        self.sync_bl = self.sync_bl.new(**new_values)
-        return self
+        return AsyncBoundLogger(
+            # c.f. comment in bind
+            logger=None,  # type: ignore
+            processors=(),
+            context={},
+            _sync_bl=self.sync_bl.new(**new_values),
+            _loop=self._loop,
+        )
 
-    def unbind(self, *keys: Sequence[str]) -> "AsyncBoundLogger":
-        self.sync_bl = self.sync_bl.try_unbind(*keys)
-        return self
+    def unbind(self, *keys: str) -> "AsyncBoundLogger":
+        return AsyncBoundLogger(
+            # c.f. comment in bind
+            logger=None,  # type: ignore
+            processors=(),
+            context={},
+            _sync_bl=self.sync_bl.unbind(*keys),
+            _loop=self._loop,
+        )
+
+    def try_unbind(self, *keys: str) -> "AsyncBoundLogger":
+        return AsyncBoundLogger(
+            # c.f. comment in bind
+            logger=None,  # type: ignore
+            processors=(),
+            context={},
+            _sync_bl=self.sync_bl.try_unbind(*keys),
+            _loop=self._loop,
+        )
 
     async def _dispatch_to_sync(
         self,
-        meth: Callable,
+        meth: Callable[..., Any],
         event: str,
         args: Tuple[Any, ...],
         kw: Dict[str, Any],
@@ -409,6 +468,7 @@ class AsyncBoundLogger:
         """
         ctx = contextvars._get_context().copy()
         ctx.update(kw)
+
         await self._loop.run_in_executor(
             self._executor, partial(meth, event, *args, **ctx)
         )
@@ -438,6 +498,7 @@ class AsyncBoundLogger:
         ei = kw.pop("exc_info", None)
         if ei is None and kw.get("exception") is None:
             ei = sys.exc_info()
+
         kw["exc_info"] = ei
 
         await self._dispatch_to_sync(self.sync_bl.exception, event, args, kw)

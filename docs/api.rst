@@ -235,10 +235,9 @@ API Reference
 .. autofunction:: get_logger
 
 .. autoclass:: BoundLogger
-   :members: bind, unbind, new, debug, info, warning, warn, error, critical, exception, log
+   :members: bind, unbind, try_unbind, new, debug, info, warning, warn, error, critical, exception, log
 
 .. autoclass:: AsyncBoundLogger
-   :members: bind, unbind, new, debug, info, warning, warn, error, critical, exception, log
 
 .. autoclass:: LoggerFactory
    :members: __call__

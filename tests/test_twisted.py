@@ -5,8 +5,6 @@
 
 import json
 
-from io import StringIO
-
 import pytest
 
 from pretend import call_recorder
@@ -284,11 +282,10 @@ class TestReprWrapper:
 
 
 class TestPlainFileLogObserver:
-    def test_isLogObserver(self):
-        assert ILogObserver.providedBy(PlainFileLogObserver(StringIO()))
+    def test_isLogObserver(self, sio):
+        assert ILogObserver.providedBy(PlainFileLogObserver(sio))
 
-    def test_writesOnlyMessageWithLF(self):
-        sio = StringIO()
+    def test_writesOnlyMessageWithLF(self, sio):
         PlainFileLogObserver(sio)(
             {"system": "some system", "message": ("hello",)}
         )

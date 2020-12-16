@@ -74,6 +74,7 @@ nitpick_ignore = [
     ("py:class", "TextIO"),
     ("py:class", "structlog._base.BoundLoggerBase"),
     ("py:class", "structlog.dev._Styles"),
+    ("py:obj", "sync_bl"),
 ]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
