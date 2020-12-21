@@ -48,6 +48,17 @@ Please note though, that it will neither configure nor verify your configuration
 It will call `structlog.get_logger()` just like if you would've called it -- the only difference are the type hints.
 
 
+``asyncio``
+^^^^^^^^^^^
+
+For ``asyncio`` applications, you may not want your whole application to block while your processor chain is formatting your log entries.
+For that use case ``structlog`` comes with `structlog.stdlib.AsyncBoundLogger` that will do all processing in a thread pool executor.
+
+This means an increased computational cost per log entry but your application will never block because of logging.
+
+To use it, :doc:`configure <configuration>` ``structlog`` to use `AsyncBoundLogger` as ``wrapper_class``.
+
+
 Processors
 ----------
 

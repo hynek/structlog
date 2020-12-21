@@ -53,7 +53,9 @@ Changes:
   `#266 <https://github.com/hynek/structlog/issues/266>`_,
 - ``structlog.PrintLogger`` now supports ``copy.deepcopy()``.
   `#268 <https://github.com/hynek/structlog/issues/268>`_
-- Added ``structlog.testing.CapturingLogger`` for more unittesting goodness.
+- Added ``structlog.testing.CapturingLogger`` for more unit testing goodness.
+- Added ``structlog.stdlib.AsyncBoundLogger`` that executes logging calls in a thread executor and therefore doesn't block.
+  `#245 <https://github.com/hynek/structlog/pull/245>`_
 
 
 ----

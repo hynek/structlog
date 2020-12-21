@@ -2,7 +2,7 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-
+import json
 import logging
 import logging.config
 import os
@@ -12,12 +12,19 @@ import pytest
 
 from pretend import call_recorder
 
-from structlog import ReturnLogger, configure, get_context, reset_defaults
+from structlog import (
+    PrintLogger,
+    ReturnLogger,
+    configure,
+    get_context,
+    reset_defaults,
+)
 from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer
 from structlog.stdlib import (
+    AsyncBoundLogger,
     BoundLogger,
     LoggerFactory,
     PositionalArgumentsFormatter,
@@ -30,6 +37,7 @@ from structlog.stdlib import (
     get_logger,
     render_to_log_kwargs,
 )
+from structlog.types import BindableLogger
 
 from .additional_frame import additional_frame
 
@@ -822,3 +830,136 @@ class TestProcessorFormatter:
             "",
             "foo [in test_foreign_pre_chain_filter_by_level]\n",
         ) == capsys.readouterr()
+
+
+@pytest.fixture(name="abl")
+async def _abl(cl):
+    return AsyncBoundLogger(cl, context={}, processors=[])
+
+
+@pytest.mark.skipif(
+    sys.version_info[:2] < (3, 7),
+    reason="AsyncBoundLogger is only for Python 3.7 and later.",
+)
+class TestAsyncBoundLogger:
+    @pytest.mark.asyncio
+    async def test_protocol(self, abl):
+        """
+        AsyncBoundLogger is a proper BindableLogger.
+        """
+        assert isinstance(abl, BindableLogger)
+
+    @pytest.mark.asyncio
+    async def test_correct_levels(self, abl, cl, stdlib_log_method):
+        """
+        The proxy methods call the correct upstream methods.
+        """
+        await getattr(abl.bind(foo="bar"), stdlib_log_method)("42")
+
+        aliases = {"exception": "error", "warn": "warning"}
+
+        alias = aliases.get(stdlib_log_method)
+        if alias:
+            expect = alias
+        else:
+            expect = stdlib_log_method
+
+        assert expect == cl.calls[0].method_name
+
+    @pytest.mark.asyncio
+    async def test_log_method(self, abl, cl):
+        """
+        The `log` method is proxied too.
+        """
+        await abl.bind(foo="bar").log(logging.ERROR, "42")
+
+        assert "error" == cl.calls[0].method_name
+
+    @pytest.mark.asyncio
+    async def test_exception(self, abl, cl):
+        """
+        `exception` makes sure 'exc_info" is set, if it's not set already.
+        """
+        try:
+            raise ValueError("omg")
+        except ValueError:
+            await abl.exception("oops")
+
+        ei = cl.calls[0].kwargs["exc_info"]
+
+        assert ValueError is ei[0]
+        assert ("omg",) == ei[1].args
+
+    @pytest.mark.asyncio
+    async def test_exception_do_not_overwrite(self, abl, cl):
+        """
+        `exception` leaves exc_info be, if it's set.
+        """
+        o1 = object()
+        o2 = object()
+        o3 = object()
+
+        try:
+            raise ValueError("omg")
+        except ValueError:
+            await abl.exception("oops", exc_info=(o1, o2, o3))
+
+        ei = cl.calls[0].kwargs["exc_info"]
+        assert (o1, o2, o3) == ei
+
+    @pytest.mark.asyncio
+    async def test_bind_unbind(self, cl):
+        """
+        new/bind/unbind/try_unbind are correctly propagated.
+        """
+        l1 = AsyncBoundLogger(cl, context={}, processors=[])
+
+        l2 = l1.bind(x=42)
+
+        assert l1 is not l2
+        assert l1.sync_bl is not l2.sync_bl
+        assert {} == l1._context
+        assert {"x": 42} == l2._context
+
+        l3 = l2.new(y=23)
+
+        assert l2 is not l3
+        assert l2.sync_bl is not l3.sync_bl
+        assert {"y": 23} == l3._context
+
+        l4 = l3.unbind("y")
+
+        assert {} == l4._context
+        assert l3 is not l4
+
+        # N.B. x isn't bound anymore.
+        l5 = l4.try_unbind("x")
+
+        assert {} == l5._context
+        assert l4 is not l5
+
+    @pytest.mark.asyncio
+    async def test_integration(self, capsys):
+        """
+        Configure and log an actual entry.
+        """
+
+        configure(
+            processors=[add_log_level, JSONRenderer()],
+            logger_factory=PrintLogger,
+            wrapper_class=AsyncBoundLogger,
+            cache_logger_on_first_use=True,
+        )
+
+        logger = get_logger()
+
+        await logger.bind(foo="bar").info("baz", x="42")
+
+        assert {
+            "foo": "bar",
+            "x": "42",
+            "event": "baz",
+            "level": "info",
+        } == json.loads(capsys.readouterr().out)
+
+        reset_defaults()

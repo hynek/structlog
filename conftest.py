@@ -3,6 +3,7 @@
 # repository for complete details.
 
 
+import logging
 import sys
 
 from io import StringIO
@@ -10,6 +11,7 @@ from io import StringIO
 import pytest
 
 from structlog._log_levels import _NAME_TO_LEVEL
+from structlog.testing import CapturingLogger
 
 
 try:
@@ -17,11 +19,25 @@ try:
 except ImportError:
     twisted = None
 
+LOGGER = logging.getLogger()
 
-@pytest.fixture
-def sio():
+
+@pytest.fixture(autouse=True)
+def _ensure_logging_framework_not_altered():
     """
-    A StringIO instance.
+    Prevents 'ValueError: I/O operation on closed file.' errors.
+    """
+    before_handlers = list(LOGGER.handlers)
+
+    yield
+
+    LOGGER.handlers = before_handlers
+
+
+@pytest.fixture(name="sio")
+def _sio():
+    """
+    A new StringIO instance.
     """
     return StringIO()
 
@@ -43,8 +59,13 @@ def event_dict():
     name="stdlib_log_method",
     params=[m for m in _NAME_TO_LEVEL if m != "notset"],
 )
-def fixture_stdlib_log_methods(request):
+def _stdlib_log_methods(request):
     return request.param
+
+
+@pytest.fixture(name="cl")
+def _cl():
+    return CapturingLogger()
 
 
 collect_ignore = []

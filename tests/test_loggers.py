@@ -7,7 +7,7 @@ import copy
 import pickle
 import sys
 
-from io import BytesIO, StringIO
+from io import BytesIO
 
 import pytest
 
@@ -53,12 +53,10 @@ class TestPrintLogger:
         """
         assert repr(PrintLogger()).startswith("<PrintLogger(file=")
 
-    def test_lock(self):
+    def test_lock(self, sio):
         """
         Creating a logger adds a lock to WRITE_LOCKS.
         """
-        sio = StringIO()
-
         assert sio not in WRITE_LOCKS
 
         PrintLogger(sio)
@@ -66,12 +64,10 @@ class TestPrintLogger:
         assert sio in WRITE_LOCKS
 
     @pytest.mark.parametrize("method", stdlib_log_methods)
-    def test_stdlib_methods_support(self, method):
+    def test_stdlib_methods_support(self, method, sio):
         """
         PrintLogger implements methods of stdlib loggers.
         """
-        sio = StringIO()
-
         getattr(PrintLogger(sio), method)("hello")
 
         assert "hello" in sio.getvalue()
@@ -186,12 +182,10 @@ class TestBytesLogger:
         """
         assert repr(BytesLogger()).startswith("<BytesLogger(file=")
 
-    def test_lock(self):
+    def test_lock(self, sio):
         """
         Creating a logger adds a lock to WRITE_LOCKS.
         """
-        sio = StringIO()
-
         assert sio not in WRITE_LOCKS
 
         BytesLogger(sio)
