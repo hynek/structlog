@@ -19,9 +19,27 @@ In the simplest case, you bind a unique request ID to every incoming request so 
 .. literalinclude:: code_examples/flask_/some_module.py
    :language: python
 
-While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread local dict implementation for context data for convenience (hence the requirement for using ``new()`` for re-initializing the logger).
+This would result among other the following lines to be printed:
 
-Please note that `structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger` with it.
+.. code:: text
+
+   event='user logged in' view='/login' peer='127.0.0.1' user='test-user' request_id='e08ddf0d-23a5-47ce-b20e-73ab8877d736'
+   event='user did something' view='/login' peer='127.0.0.1' something='shot_in_foot' request_id='e08ddf0d-23a5-47ce-b20e-73ab8877d736'
+
+As you can see, ``view``, ``peer``, and ``request_id`` are present in **both** log entries.
+
+While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread-local storage for request-wide context:
+
+1. `structlog.threadlocal.clear_threadlocal()` ensures the thread-local storage is empty for each request.
+2. `structlog.threadlocal.bind_threadlocal()` puts your key-value pairs into thread-local storage.
+3. The `structlog.threadlocal.merge_threadlocal()` processor merges the thread-local context into the event dict.
+
+Please note that the ``user`` field is only present in the view because it wasn't bound into the thread-local storage.
+See `thread-local` for more details.
+
+----
+
+`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger` with it.
 It's used by `structlog.get_logger` to rid you of logging boilerplate in application code.
 If you prefer to name your standard library loggers explicitly, a positional argument to `structlog.get_logger` gets passed to the factory and used as the name.
 
