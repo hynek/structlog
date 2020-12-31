@@ -42,7 +42,7 @@ except ImportError:
     contextvars = None  # type: ignore
 
 
-__version__ = "20.2.0"
+__version__ = "20.3.0.dev0"
 
 __title__ = "structlog"
 __description__ = "Structured Logging for Python"

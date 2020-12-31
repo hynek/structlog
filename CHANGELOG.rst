@@ -5,6 +5,31 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
+20.3.0 (UNRELEASED)
+-------------------
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+*none*
+
+
+----
+
+
 20.2.0 (2020-12-31)
 -------------------
 
