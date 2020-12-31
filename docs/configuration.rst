@@ -164,6 +164,6 @@ If you use standard library's logging, it makes sense to configure them next to 
 
 **Twisted**
    The `plugin definition <https://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
-   If your app is not a plugin, put it into your `tac file <https://twistedmatrix.com/documents/current/core/howto/application.html>`_ (and then `learn <https://bitbucket.org/jerub/twisted-plugin-example>`_ about plugins).
+   If your app is not a plugin, put it into your `tac file <https://twistedmatrix.com/documents/current/core/howto/application.html>`_.
 
 If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your `structlog.configure` gets called more than once, ``structlog`` offers `structlog.configure_once` that raises a warning if ``structlog`` has been configured before (no matter whether using `structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.
