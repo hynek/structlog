@@ -87,7 +87,6 @@ class BindableLogger(Protocol):
     Methods shared among all bound loggers and that are relied on by
     ``structlog``.
 
-
     .. versionadded:: 20.2
     """
 

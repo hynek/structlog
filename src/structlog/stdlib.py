@@ -386,6 +386,10 @@ class AsyncBoundLogger:
 
     sync_bl: BoundLogger
 
+    # Blantant lie, we use a property for _context. Need this for Protocol
+    # though.
+    _context: Context
+
     _executor = None
     _bound_logger_factory = BoundLogger
 
@@ -410,7 +414,11 @@ class AsyncBoundLogger:
         )
         self._loop = asyncio.get_running_loop()
 
-    @property
+    # We have to ignore the type because we've already declared it to ensure
+    # we're a BindableLogger.
+    # Instances would've been correctly recognized as such, however the class
+    # not and we need the class in `structlog.configure()`.
+    @property  # type: ignore
     def _context(self) -> Context:
         return self.sync_bl._context
 
