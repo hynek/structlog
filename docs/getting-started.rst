@@ -39,7 +39,7 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 It should be noted that even in most complex logging setups the example would still look just like that thanks to `configuration`.
 Using the defaults, as above, is equivalent to::
 
-   import loggging
+   import logging
    import structlog
 
    structlog.configure(
