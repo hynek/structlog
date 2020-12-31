@@ -152,8 +152,11 @@ epub_author = author
 epub_publisher = author
 epub_copyright = copyright
 
-
-linkcheck_ignore = []
+# GitHub has rate limits
+linkcheck_ignore = [
+    r"https://github.com/.*/(issues|pull)/\d+",
+    r"https://twitter.com/.*",
+]
 
 # Twisted's trac tends to be slow
 linkcheck_timeout = 300
