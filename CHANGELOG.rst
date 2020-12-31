@@ -5,7 +5,7 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
-20.2.0 (UNRELEASED)
+20.2.0 (2020-12-31)
 -------------------
 
 
