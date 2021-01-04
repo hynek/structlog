@@ -71,7 +71,7 @@ API Reference
 .. automodule:: structlog.dev
 
 .. autoclass:: ConsoleRenderer
-    :members: get_default_level_styles
+   :members: get_default_level_styles
 
 .. autofunction:: set_exc_info
 

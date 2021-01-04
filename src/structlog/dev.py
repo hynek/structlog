@@ -123,7 +123,8 @@ class ConsoleRenderer:
     the log line.
 
     :param pad_event: Pad the event to this many characters.
-    :param colors: Use colors for a nicer output.
+    :param colors: Use colors for a nicer output. The default is True if
+        colorama is present, otherwise False.
     :param force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
         to be streamed to the console.
