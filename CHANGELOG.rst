@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- ``structlog.threadlocal.wrap_dict()`` now has a correct type annotation.
+  `#290 <https://github.com/hynek/structlog/pull/290>`_
 
 
 ----

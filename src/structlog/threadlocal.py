@@ -35,7 +35,7 @@ def _determine_threadlocal() -> Type[Any]:
 ThreadLocal = _determine_threadlocal()
 
 
-def wrap_dict(dict_class: Type[EventDict]) -> Type[EventDict]:
+def wrap_dict(dict_class: Type[Context]) -> Type[Context]:
     """
     Wrap a dict-like class and return the resulting class.
 
