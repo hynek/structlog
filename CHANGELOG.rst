@@ -47,6 +47,11 @@ Backward-incompatible changes:
 
   Check out the new chapter on typing for details.
 
+- The default bound logger (``wrapper_class``) if you don't configure ``structlog`` has changed.
+  It's mostly compatible with the old one but a few uncommon methods like ``log``, ``failure``, or ``err`` don't exist anymore.
+
+  You can regain the old behavior by using ``structlog.configure(wrapper_class=structlog.BoundLogger)``.
+
 
 Deprecations:
 ^^^^^^^^^^^^^
