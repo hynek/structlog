@@ -23,6 +23,8 @@ Workflow
 - No contribution is too small!
   Please submit as many fixes for typos and grammar bloopers as you can!
 - Try to limit each pull request to *one* change only.
+- Since we squash on merge, it's up to you how you handle updates to the master branch.
+  Whether you prefer to rebase on master or merge master into your branch, do whatever is more comfortable for you.
 - *Always* add tests and docs for your code.
   This is a hard rule; patches with missing tests or documentation can't be merged.
 - Make sure your changes pass our CI_.
@@ -67,7 +69,7 @@ Tests
 
 - To run the test suite, all you need is a recent tox_.
   It will ensure the test suite runs with all dependencies against all Python versions just as it will in our CI.
-  If you lack some Python versions, you can can make it a non-failure using ``tox --skip-missing-interpreters`` (in that case you may want to look into pyenv_ that makes it very easy to install many different Python versions in parallel).
+  If you lack some Python versions, you can can make it a non-failure using ``tox --skip-missing-interpreters`` (in that case you may want to look into asdf_ or pyenv_ that make it very easy to install many different Python versions in parallel).
 - Write `good test docstrings`_.
 
 
@@ -187,6 +189,7 @@ Thank you for considering contributing to ``structlog``!
 .. _`backward compatibility`: https://www.structlog.org/en/latest/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
 .. _pyenv: https://github.com/pyenv/pyenv
+.. _asdf: https://asdf-vm.com/
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _semantic newlines: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
 .. _CI: https://github.com/hynek/structlog/actions?query=workflow%3ACI
