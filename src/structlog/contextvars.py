@@ -15,7 +15,7 @@ import contextvars
 
 from typing import Any, Dict
 
-from .types import Context, WrappedLogger
+from .types import Context, EventDict, WrappedLogger
 
 
 _CONTEXT: contextvars.ContextVar[Dict[str, Any]] = contextvars.ContextVar(
@@ -24,8 +24,8 @@ _CONTEXT: contextvars.ContextVar[Dict[str, Any]] = contextvars.ContextVar(
 
 
 def merge_contextvars(
-    logger: WrappedLogger, method_name: str, event_dict: Dict[str, Any]
-) -> Context:
+    logger: WrappedLogger, method_name: str, event_dict: EventDict
+) -> EventDict:
     """
     A processor that merges in a global (context-local) context.
 
