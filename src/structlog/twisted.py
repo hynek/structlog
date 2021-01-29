@@ -89,9 +89,7 @@ def _extractStuffAndWhy(eventDict: EventDict) -> Tuple[Any, Any, EventDict]:
     _why = eventDict.pop("_why", None)
     event = eventDict.pop("event", None)
 
-    if isinstance(_stuff, _FAIL_TYPES) and isinstance(  # type: ignore
-        event, _FAIL_TYPES
-    ):
+    if isinstance(_stuff, _FAIL_TYPES) and isinstance(event, _FAIL_TYPES):
         raise ValueError("Both _stuff and event contain an Exception/Failure.")
 
     # `log.err('event', _why='alsoEvent')` is ambiguous.
