@@ -50,11 +50,11 @@ The general flow is:
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
    >>> log.msg("hello")
-   a=1 b=2 event='hello'
+   event='hello' a=1 b=2
    >>> # Use unbind_contextvars to remove a variable from the context
    >>> unbind_contextvars("b")
    >>> log.msg("world")
-   a=1 event='world'
+   event='world' a=1
    >>> # And when we clear the threadlocal state again, it goes away.
    >>> clear_contextvars()
    >>> log.msg("hi there")
