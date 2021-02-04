@@ -2,6 +2,8 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+import asyncio
+
 import pytest
 
 from structlog.contextvars import (
@@ -133,3 +135,36 @@ class TestNewContextvars:
             return merge_contextvars(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
+
+    async def test_parallel_binds(self, event_loop):
+        """
+        Binding a variable causes it to be included in the result of
+        merge_contextvars.
+        """
+
+        coro1_bind = asyncio.Event()
+        coro2_bind = asyncio.Event()
+
+        bind_contextvars(c=3)
+
+        async def coro1():
+            bind_contextvars(a=1)
+
+            coro1_bind.set()
+            await coro2_bind.wait()
+
+            return merge_contextvars(None, None, {"b": 2})
+
+        async def coro2():
+            bind_contextvars(a=2)
+
+            await coro1_bind.wait()
+            coro2_bind.set()
+
+            return merge_contextvars(None, None, {"b": 2})
+
+        coro1_task = event_loop.create_task(coro1())
+        coro2_task = event_loop.create_task(coro2())
+
+        assert {"a": 1, "b": 2, "c": 3} == await coro1_task
+        assert {"a": 2, "b": 2, "c": 3} == await coro2_task
