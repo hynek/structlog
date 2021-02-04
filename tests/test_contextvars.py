@@ -56,11 +56,11 @@ class TestNewContextvars:
 
         async def coro():
             bind_contextvars(a=1)
-            await event_loop.create_task(nested_coro())
-            return merge_contextvars(None, None, {"b": 2})
+            return await event_loop.create_task(nested_coro())
 
         async def nested_coro():
             bind_contextvars(c=3)
+            return merge_contextvars(None, None, {"b": 2})
 
         assert {"a": 1, "b": 2, "c": 3} == await event_loop.create_task(coro())
 
