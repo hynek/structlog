@@ -40,7 +40,9 @@ def merge_contextvars(
 
     for k in ctx:
         if k.name.startswith(STRUCTLOG_KEY_PREFIX) and ctx[k] is not Ellipsis:
-            event_dict.setdefault(k.name[len(STRUCTLOG_KEY_PREFIX):], ctx[k])  # noqa
+            event_dict.setdefault(
+                k.name[len(STRUCTLOG_KEY_PREFIX) :], ctx[k]
+            )  # noqa
 
     return event_dict
 
