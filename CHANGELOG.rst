@@ -27,6 +27,8 @@ Changes:
 - ``structlog.threadlocal.wrap_dict()`` now has a correct type annotation.
   `#290 <https://github.com/hynek/structlog/pull/290>`_
 
+- Fixed bug with ``structlog.contextvars`` impl
+
 
 ----
 

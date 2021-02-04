@@ -34,7 +34,7 @@ from .types import Context, EventDict, ExcInfo, Processor, WrappedLogger
 
 
 try:
-    from . import contextvars
+    import contextvars
 except ImportError:
     contextvars = None  # type: ignore
 
@@ -380,6 +380,7 @@ class AsyncBoundLogger:
        It is useful to be able to log synchronously occasionally.
 
     .. versionadded:: 20.2.0
+    .. versionchanged:: 20.2.0 fix _dispatch_to_sync contextvars usage
     """
 
     __slots__ = ["sync_bl", "_loop"]
@@ -474,11 +475,10 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        ctx = contextvars._get_context().copy()
-        ctx.update(kw)
+        ctx = contextvars.copy_context()
 
         await self._loop.run_in_executor(
-            self._executor, partial(meth, event, *args, **ctx)
+            self._executor, partial(ctx.run, partial(meth, event, *args, **kw))
         )
 
     async def debug(self, event: str, *args: Any, **kw: Any) -> None:

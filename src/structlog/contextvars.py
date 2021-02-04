@@ -7,6 +7,8 @@ Primitives to deal with a concurrency supporting context, as introduced in
 Python 3.7 as :mod:`contextvars`.
 
 .. versionadded:: 20.1.0
+.. versionchanged:: 14.0.0
+    Reimplement code without dict
 
 See :doc:`contextvars`.
 """
@@ -15,12 +17,11 @@ import contextvars
 
 from typing import Any, Dict
 
-from .types import Context, EventDict, WrappedLogger
+from .types import EventDict, WrappedLogger
 
 
-_CONTEXT: contextvars.ContextVar[Dict[str, Any]] = contextvars.ContextVar(
-    "structlog_context"
-)
+STRUCTLOG_KEY_PREFIX = "structlog_"
+_CONTEXT_VARS: Dict[str, contextvars.ContextVar[Any]] = {}
 
 
 def merge_contextvars(
@@ -33,11 +34,15 @@ def merge_contextvars(
     context-local context is included in all log calls.
 
     .. versionadded:: 20.1.0
+    .. versionchanged:: 20.2.0 See toplevel note
     """
-    ctx = _get_context().copy()
-    ctx.update(event_dict)
+    ctx = contextvars.copy_context()
 
-    return ctx
+    for k in ctx:
+        if k.name.startswith(STRUCTLOG_KEY_PREFIX) and ctx[k] is not Ellipsis:
+            event_dict.setdefault(k.name[len(STRUCTLOG_KEY_PREFIX):], ctx[k])  # noqa
+
+    return event_dict
 
 
 def clear_contextvars() -> None:
@@ -48,9 +53,12 @@ def clear_contextvars() -> None:
     handling code.
 
     .. versionadded:: 20.1.0
+    .. versionchanged:: 20.2.0 See toplevel note
     """
-    ctx = _get_context()
-    ctx.clear()
+    ctx = contextvars.copy_context()
+    for k in ctx:
+        if k.name.startswith(STRUCTLOG_KEY_PREFIX):
+            k.set(Ellipsis)
 
 
 def bind_contextvars(**kw: Any) -> None:
@@ -61,8 +69,17 @@ def bind_contextvars(**kw: Any) -> None:
     context to be global (context-local).
 
     .. versionadded:: 20.1.0
+    .. versionchanged:: 20.2.0 See toplevel note
     """
-    _get_context().update(kw)
+    for k, v in kw.items():
+        structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
+        try:
+            var = _CONTEXT_VARS[structlog_k]
+        except KeyError:
+            var = contextvars.ContextVar(structlog_k, default=Ellipsis)
+            _CONTEXT_VARS[structlog_k] = var
+
+        var.set(v)
 
 
 def unbind_contextvars(*keys: str) -> None:
@@ -73,15 +90,9 @@ def unbind_contextvars(*keys: str) -> None:
     remove keys from a global (context-local) context.
 
     .. versionadded:: 20.1.0
+    .. versionchanged:: 20.2.0 See toplevel note
     """
-    ctx = _get_context()
-    for key in keys:
-        ctx.pop(key, None)
-
-
-def _get_context() -> Context:
-    try:
-        return _CONTEXT.get()
-    except LookupError:
-        _CONTEXT.set({})
-        return _CONTEXT.get()
+    for k in keys:
+        structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
+        if structlog_k in _CONTEXT_VARS:
+            _CONTEXT_VARS[structlog_k].set(Ellipsis)
