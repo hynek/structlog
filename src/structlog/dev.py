@@ -153,6 +153,8 @@ class ConsoleRenderer:
     .. versionchanged:: 19.2 Can be pickled now.
     .. versionchanged:: 20.1 ``colorama`` does not initialize lazily on Windows
        anymore because it breaks rendering.
+    .. versionchanged: 21.1 It is additionally possible to set the logger name
+       using the ``logger_name`` key in the ``event_dict``.
     """
 
     def __init__(
@@ -255,6 +257,9 @@ class ConsoleRenderer:
         sio.write(self._styles.bright + event)
 
         logger_name = event_dict.pop("logger", None)
+        if logger_name is None:
+            logger_name = event_dict.pop("logger_name", None)
+
         if logger_name is not None:
             sio.write(
                 "["

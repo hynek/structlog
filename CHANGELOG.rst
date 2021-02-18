@@ -30,6 +30,9 @@ Changes:
   `#302 <https://github.com/hynek/structlog/pull/302>`_
 - The default configuration and loggers are pickleable again.
   `#301 <https://github.com/hynek/structlog/pull/301>`_
+- ``structlog.dev.ConsoleRenderer`` will now look for a ``logger_name`` key if no
+  ``logger`` key is set.
+  `#295 <https://github.com/hynek/structlog/pull/295>`_
 
 
 ----

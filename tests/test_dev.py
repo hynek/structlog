@@ -23,25 +23,25 @@ class TestPad:
         assert len("test") == len(dev._pad("test", 2))
 
 
-@pytest.fixture
-def cr():
+@pytest.fixture(name="cr")
+def _cr():
     return dev.ConsoleRenderer(colors=dev._has_colorama)
 
 
-@pytest.fixture
-def styles(cr):
+@pytest.fixture(name="styles")
+def _styles(cr):
     return cr._styles
 
 
-@pytest.fixture
-def padded(styles):
+@pytest.fixture(name="padded")
+def _padded(styles):
     return (
         styles.bright + dev._pad("test", dev._EVENT_WIDTH) + styles.reset + " "
     )
 
 
-@pytest.fixture
-def unpadded(styles):
+@pytest.fixture(name="unpadded")
+def _unpadded(styles):
     return styles.bright + "test" + styles.reset
 
 
@@ -139,14 +139,29 @@ class TestConsoleRenderer:
         """
         rv = cr(None, None, {"event": "test", "logger": "some_module"})
 
-        # fmt: off
         assert (
-            padded +
-            "[" + dev.BLUE + styles.bright +
-            "some_module" +
-            styles.reset + "] "
+            padded
+            + "["
+            + dev.BLUE
+            + styles.bright
+            + "some_module"
+            + styles.reset
+            + "] "
         ) == rv
-        # fmt: on
+
+    def test_logger_name_name(self, cr, padded, styles):
+        """
+        It's possible to set the logger name using a "logger_name" key.
+        """
+        assert (
+            padded
+            + "["
+            + dev.BLUE
+            + styles.bright
+            + "yolo"
+            + styles.reset
+            + "] "
+        ) == cr(None, None, {"event": "test", "logger_name": "yolo"})
 
     def test_key_values(self, cr, styles, padded):
         """

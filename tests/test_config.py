@@ -28,8 +28,8 @@ from structlog._config import (
 )
 
 
-@pytest.fixture
-def proxy():
+@pytest.fixture(name="proxy")
+def _proxy():
     """
     Returns a BoundLoggerLazyProxy constructed w/o parameters & None as logger.
     """
