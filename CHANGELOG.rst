@@ -5,6 +5,31 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
+21.2.0 (UNRELEASED)
+-------------------
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+*none*
+
+
+----
+
+
 21.1.0 (2021-02-18)
 -------------------
 
