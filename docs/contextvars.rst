@@ -46,7 +46,8 @@ The general flow is:
    >>> # middleware), clear the threadlocal context and bind some common
    >>> # values:
    >>> clear_contextvars()
-   >>> bind_contextvars(a=1, b=2)
+   >>> bind_contextvars(a=1)
+   >>> bind_contextvars(b=2)
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
    >>> log.msg("hello")

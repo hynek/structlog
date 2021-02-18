@@ -8,7 +8,8 @@ Python 3.7 as :mod:`contextvars`.
 
 .. versionadded:: 20.1.0
 .. versionchanged:: 21.1.0
-    Reimplement code without dict
+   Reimplemented without using a single dict as context carrier for improved
+   isolation. Every key-value pair is a separate `contextvars.ContextVar` now.
 
 See :doc:`contextvars`.
 """

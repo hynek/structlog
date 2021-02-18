@@ -3,6 +3,7 @@
 # repository for complete details.
 
 import asyncio
+import secrets
 
 import pytest
 
@@ -112,7 +113,7 @@ class TestNewContextvars:
 
         assert {} == await event_loop.create_task(coro())
 
-    async def test_undbind(self, event_loop):
+    async def test_unbind(self, event_loop):
         """
         Unbinding a previously bound variable causes it to be removed from the
         result of merge_contextvars.
@@ -125,13 +126,16 @@ class TestNewContextvars:
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
-    async def test_undbind_not_bound(self, event_loop):
+    async def test_unbind_not_bound(self, event_loop):
         """
         Unbinding a not bound variable causes doesn't raise an exception.
         """
 
         async def coro():
-            unbind_contextvars("a")
+            # Since unbinding means "setting to Ellipsis", we have to make
+            # some effort to ensure that the ContextVar never existed.
+            unbind_contextvars("a" + secrets.token_hex())
+
             return merge_contextvars(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
