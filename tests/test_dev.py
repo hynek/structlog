@@ -94,16 +94,22 @@ class TestConsoleRenderer:
             None, None, {"event": "test", "level": "critical", "foo": "bar"}
         )
 
-        # fmt: off
         assert (
-            "[" + dev.RED + styles.bright +
-            dev._pad("critical", cr._longest_level) +
-            styles.reset + "] " +
-            padded +
-            styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "bar" + styles.reset
+            "["
+            + dev.RED
+            + styles.bright
+            + dev._pad("critical", cr._longest_level)
+            + styles.reset
+            + "] "
+            + padded
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
         ) == rv
-        # fmt: on
 
     def test_init_accepts_overriding_levels(self, styles, padded):
         """
@@ -122,16 +128,22 @@ class TestConsoleRenderer:
             None, None, {"event": "test", "level": "MY_OH_MY", "foo": "bar"}
         )
 
-        # fmt: off
         assert (
-            "[" + dev.RED + styles.bright +
-            dev._pad("MY_OH_MY", cr._longest_level) +
-            styles.reset + "] " +
-            padded +
-            styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "bar" + styles.reset
+            "["
+            + dev.RED
+            + styles.bright
+            + dev._pad("MY_OH_MY", cr._longest_level)
+            + styles.reset
+            + "] "
+            + padded
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
         ) == rv
-        # fmt: on
 
     def test_logger_name(self, cr, styles, padded):
         """
@@ -169,17 +181,24 @@ class TestConsoleRenderer:
         """
         rv = cr(None, None, {"event": "test", "key": "value", "foo": "bar"})
 
-        # fmt: off
         assert (
-            padded +
-            styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "bar" +
-            styles.reset + " " +
-            styles.kv_key + "key" + styles.reset + "=" +
-            styles.kv_value + "value" +
-            styles.reset
+            padded
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
+            + " "
+            + styles.kv_key
+            + "key"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "value"
+            + styles.reset
         ) == rv
-        # fmt: on
 
     def test_exception(self, cr, padded):
         """
@@ -208,15 +227,19 @@ class TestConsoleRenderer:
             None, None, {"event": "test", "foo": "bar"}
         )
 
-        # fmt: off
         assert (
-            styles.bright +
-            dev._pad("test", 42) +
-            styles.reset + " " +
-            styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "bar" + styles.reset
+            styles.bright
+            + dev._pad("test", 42)
+            + styles.reset
+            + " "
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
         ) == rv
-        # fmt: on
 
     def test_everything(self, cr, styles, padded):
         """
@@ -240,26 +263,46 @@ class TestConsoleRenderer:
             },
         )
 
-        # fmt: off
         assert (
-            styles.timestamp + "13:13" + styles.reset +
-            " [" + styles.level_error + styles.bright +
-            dev._pad("error", cr._longest_level) +
-            styles.reset + "] " +
-            padded +
-            "[" + dev.BLUE + styles.bright +
-            "some_module" +
-            styles.reset + "] " +
-            styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "bar" +
-            styles.reset + " " +
-            styles.kv_key + "key" + styles.reset + "=" +
-            styles.kv_value + "value" +
-            styles.reset +
-            "\n" + stack + "\n\n" + "=" * 79 + "\n" +
-            "\n" + exc
+            styles.timestamp
+            + "13:13"
+            + styles.reset
+            + " ["
+            + styles.level_error
+            + styles.bright
+            + dev._pad("error", cr._longest_level)
+            + styles.reset
+            + "] "
+            + padded
+            + "["
+            + dev.BLUE
+            + styles.bright
+            + "some_module"
+            + styles.reset
+            + "] "
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
+            + " "
+            + styles.kv_key
+            + "key"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "value"
+            + styles.reset
+            + "\n"
+            + stack
+            + "\n\n"
+            + "=" * 79
+            + "\n"
+            + "\n"
+            + exc
         ) == rv
-        # fmt: on
 
     def test_colorama_colors_false(self):
         """
@@ -286,16 +329,22 @@ class TestConsoleRenderer:
             None, None, {"event": "test", "level": "critical", "foo": "bar"}
         )
 
-        # fmt: off
         assert (
-            "[" + dev.RED + styles.bright +
-            dev._pad("critical", cr._longest_level) +
-            styles.reset + "] " +
-            padded +
-            styles.kv_key + "foo" + styles.reset + "=" +
-            styles.kv_value + "bar" + styles.reset
+            "["
+            + dev.RED
+            + styles.bright
+            + dev._pad("critical", cr._longest_level)
+            + styles.reset
+            + "] "
+            + padded
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
         ) == rv
-        # fmt: on
 
         assert not dev._has_colorama or dev._ColorfulStyles is cr._styles
 
