@@ -2,6 +2,9 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+import asyncio
+import secrets
+
 import pytest
 
 from structlog.contextvars import (
@@ -54,11 +57,11 @@ class TestNewContextvars:
 
         async def coro():
             bind_contextvars(a=1)
-            await event_loop.create_task(nested_coro())
-            return merge_contextvars(None, None, {"b": 2})
+            return await event_loop.create_task(nested_coro())
 
         async def nested_coro():
             bind_contextvars(c=3)
+            return merge_contextvars(None, None, {"b": 2})
 
         assert {"a": 1, "b": 2, "c": 3} == await event_loop.create_task(coro())
 
@@ -110,7 +113,7 @@ class TestNewContextvars:
 
         assert {} == await event_loop.create_task(coro())
 
-    async def test_undbind(self, event_loop):
+    async def test_unbind(self, event_loop):
         """
         Unbinding a previously bound variable causes it to be removed from the
         result of merge_contextvars.
@@ -123,13 +126,49 @@ class TestNewContextvars:
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
-    async def test_undbind_not_bound(self, event_loop):
+    async def test_unbind_not_bound(self, event_loop):
         """
         Unbinding a not bound variable causes doesn't raise an exception.
         """
 
         async def coro():
-            unbind_contextvars("a")
+            # Since unbinding means "setting to Ellipsis", we have to make
+            # some effort to ensure that the ContextVar never existed.
+            unbind_contextvars("a" + secrets.token_hex())
+
             return merge_contextvars(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
+
+    async def test_parallel_binds(self, event_loop):
+        """
+        Binding a variable causes it to be included in the result of
+        merge_contextvars.
+        """
+
+        coro1_bind = asyncio.Event()
+        coro2_bind = asyncio.Event()
+
+        bind_contextvars(c=3)
+
+        async def coro1():
+            bind_contextvars(a=1)
+
+            coro1_bind.set()
+            await coro2_bind.wait()
+
+            return merge_contextvars(None, None, {"b": 2})
+
+        async def coro2():
+            bind_contextvars(a=2)
+
+            await coro1_bind.wait()
+            coro2_bind.set()
+
+            return merge_contextvars(None, None, {"b": 2})
+
+        coro1_task = event_loop.create_task(coro1())
+        coro2_task = event_loop.create_task(coro2())
+
+        assert {"a": 1, "b": 2, "c": 3} == await coro1_task
+        assert {"a": 2, "b": 2, "c": 3} == await coro2_task
