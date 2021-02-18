@@ -46,7 +46,6 @@ if __name__ == "__main__":
                 key_order=["event", "view", "peer"]
             ),
         ],
-        context_class=structlog.threadlocal.wrap_dict(dict),
         logger_factory=structlog.stdlib.LoggerFactory(),
     )
     app.run()

@@ -27,7 +27,7 @@ exclude_lines = [
     "pragma: no cover",
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
-     # typing-related code
+    # typing-related code
     "^if (False|TYPE_CHECKING):",
     ": \\.\\.\\.$",
     "^ +\\.\\.\\.$",
