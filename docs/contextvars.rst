@@ -38,7 +38,7 @@ The general flow is:
    >>> configure(
    ...     processors=[
    ...         merge_contextvars,
-   ...         structlog.processors.KeyValueRenderer(),
+   ...         structlog.processors.KeyValueRenderer(key_order=["event", "a"]),
    ...     ]
    ... )
    >>> log = structlog.get_logger()
@@ -46,8 +46,7 @@ The general flow is:
    >>> # middleware), clear the threadlocal context and bind some common
    >>> # values:
    >>> clear_contextvars()
-   >>> bind_contextvars(a=1)
-   >>> bind_contextvars(b=2)
+   >>> bind_contextvars(a=1, b=2)
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
    >>> log.msg("hello")
@@ -57,6 +56,8 @@ The general flow is:
    >>> log.msg("world")
    event='world' a=1
    >>> # And when we clear the threadlocal state again, it goes away.
+   >>> # a=None is printed due to the key_order argument passed to
+   >>> # KeyValueRenderer, but it is NOT present anymore.
    >>> clear_contextvars()
    >>> log.msg("hi there")
-   event='hi there'
+   event='hi there' a=None
