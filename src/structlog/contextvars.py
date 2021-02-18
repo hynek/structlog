@@ -7,7 +7,7 @@ Primitives to deal with a concurrency supporting context, as introduced in
 Python 3.7 as :mod:`contextvars`.
 
 .. versionadded:: 20.1.0
-.. versionchanged:: 14.0.0
+.. versionchanged:: 21.1.0
     Reimplement code without dict
 
 See :doc:`contextvars`.
@@ -34,7 +34,7 @@ def merge_contextvars(
     context-local context is included in all log calls.
 
     .. versionadded:: 20.1.0
-    .. versionchanged:: 20.2.0 See toplevel note
+    .. versionchanged:: 21.1.0 See toplevel note.
     """
     ctx = contextvars.copy_context()
 
@@ -55,7 +55,7 @@ def clear_contextvars() -> None:
     handling code.
 
     .. versionadded:: 20.1.0
-    .. versionchanged:: 20.2.0 See toplevel note
+    .. versionchanged:: 21.1.0 See toplevel note.
     """
     ctx = contextvars.copy_context()
     for k in ctx:
@@ -71,7 +71,7 @@ def bind_contextvars(**kw: Any) -> None:
     context to be global (context-local).
 
     .. versionadded:: 20.1.0
-    .. versionchanged:: 20.2.0 See toplevel note
+    .. versionchanged:: 21.1.0 See toplevel note.
     """
     for k, v in kw.items():
         structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
@@ -92,7 +92,7 @@ def unbind_contextvars(*keys: str) -> None:
     remove keys from a global (context-local) context.
 
     .. versionadded:: 20.1.0
-    .. versionchanged:: 20.2.0 See toplevel note
+    .. versionchanged:: 21.1.0 See toplevel note.
     """
     for k in keys:
         structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
