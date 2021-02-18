@@ -3,10 +3,12 @@
 # repository for complete details.
 
 import logging
+import pickle
 
 import pytest
 
 from structlog import make_filtering_bound_logger
+from structlog._log_levels import _LEVEL_TO_NAME
 from structlog.testing import CapturingLogger
 
 
@@ -53,3 +55,12 @@ class TestFilteringLogger:
         bl.exception("boom", exc_info=42)
 
         assert [("error", (), {"event": "boom", "exc_info": 42})]
+
+    @pytest.mark.parametrize("level", tuple(_LEVEL_TO_NAME.keys()))
+    def test_pickle(self, level):
+        """
+        FilteringBoundLogger are pickleable.
+        """
+        bl = make_filtering_bound_logger(level)
+
+        assert bl == pickle.loads(pickle.dumps(bl))

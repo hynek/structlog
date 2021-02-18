@@ -28,6 +28,8 @@ Changes:
   `#290 <https://github.com/hynek/structlog/pull/290>`_
 - Fix isolation in ``structlog.contextvars``.
   `#302 <https://github.com/hynek/structlog/pull/302>`_
+- The default configuration and loggers are pickleable again.
+  `#301 <https://github.com/hynek/structlog/pull/301>`_
 
 
 ----

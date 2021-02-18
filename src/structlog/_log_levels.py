@@ -94,6 +94,18 @@ def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
         values.
 
     .. versionadded:: 20.2.0
+    .. versionchanged:: 21.1.0 The returned loggers are now pickleable.
+    """
+
+    return _LEVEL_TO_FILTERING_LOGGER[min_level]
+
+
+def _make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
+    """
+    Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
+
+    The logger is optimized such that log levels below *min_level* only consist
+    of a ``return None``.
     """
 
     def make_method(level: int) -> Callable[..., Any]:
@@ -124,3 +136,21 @@ def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
         (BoundLoggerBase,),
         meths,
     )
+
+
+# Pre-create all possible filters to make them pickleable.
+BoundLoggerFilteringAtNotset = _make_filtering_bound_logger(NOTSET)
+BoundLoggerFilteringAtDebug = _make_filtering_bound_logger(DEBUG)
+BoundLoggerFilteringAtInfo = _make_filtering_bound_logger(INFO)
+BoundLoggerFilteringAtWarning = _make_filtering_bound_logger(WARNING)
+BoundLoggerFilteringAtError = _make_filtering_bound_logger(ERROR)
+BoundLoggerFilteringAtCritical = _make_filtering_bound_logger(CRITICAL)
+
+_LEVEL_TO_FILTERING_LOGGER = {
+    CRITICAL: BoundLoggerFilteringAtCritical,
+    ERROR: BoundLoggerFilteringAtError,
+    WARNING: BoundLoggerFilteringAtWarning,
+    INFO: BoundLoggerFilteringAtInfo,
+    DEBUG: BoundLoggerFilteringAtDebug,
+    NOTSET: BoundLoggerFilteringAtNotset,
+}
