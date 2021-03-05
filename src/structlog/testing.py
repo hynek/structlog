@@ -27,6 +27,8 @@ class LogCapture:
     Generally you should use `structlog.testing.capture_logs`,
     but you can use this class if you want to capture logs with other patterns.
 
+    :ivar List[structlog.types.EventDict] entries: The captured log entries.
+
     .. versionadded:: 20.1.0
     """
 
