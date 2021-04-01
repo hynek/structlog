@@ -30,7 +30,7 @@ Finally, if you call *any other* method on :class:`~structlog.BoundLogger`, it w
 #. Add a new key ``event`` with the value of the first positional argument of the method call to the event dict.
 #. Run the processors on the event dict.
    Each processor receives the result of its predecessor.
-#. Finally it takes the result of the final processor and calls the method with the same name that got called on the bound logger on ther wrapped logger\ [1]_.
+#. Finally it takes the result of the final processor and calls the method with the same name – that got called on the bound logger – on the wrapped logger\ [1]_.
    For flexibility, the final processor can return either a string that is passed directly as a positional parameter, or a tuple ``(args, kwargs)`` that are passed as ``wrapped_logger.log_method(*args, **kwargs)``.
 
 
