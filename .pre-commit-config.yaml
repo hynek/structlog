@@ -13,7 +13,7 @@ repos:
         additional_dependencies: [toml]
         language_version: python3.8
 
-  - repo: https://gitlab.com/pycqa/flake8
+  - repo: https://github.com/PyCQA/flake8
     rev: 3.9.0
     hooks:
     - id: flake8
