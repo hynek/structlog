@@ -259,7 +259,7 @@ class TestTimeStamper:
     @pytest.mark.parametrize("fmt", [None, "%Y"])
     @pytest.mark.parametrize("utc", [True, False])
     @pytest.mark.parametrize("key", [None, "other-key"])
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, fmt, utc, key, proto):
         """
         TimeStamper is serializable.

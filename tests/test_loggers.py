@@ -73,7 +73,7 @@ class TestPrintLogger:
         assert "hello" in sio.getvalue()
 
     @pytest.mark.parametrize("file", [None, sys.stdout, sys.stderr])
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, file, proto):
         """
         Can be pickled and unpickled for stdout and stderr.
@@ -87,7 +87,7 @@ class TestPrintLogger:
         assert pl._file is rv._file
         assert pl._lock is rv._lock
 
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle_not_stdout_stderr(self, tmpdir, proto):
         """
         PrintLoggers with different files than stdout/stderr raise a
@@ -206,7 +206,7 @@ class TestBytesLogger:
     @pytest.mark.parametrize(
         "file", [None, sys.stdout.buffer, sys.stderr.buffer]
     )
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, file, proto):
         """
         Can be pickled and unpickled for stdout and stderr.
@@ -220,7 +220,7 @@ class TestBytesLogger:
         assert pl._file is rv._file
         assert pl._lock is rv._lock
 
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle_not_stdout_stderr(self, tmpdir, proto):
         """
         BytesLoggers with different files than stdout/stderr raise a

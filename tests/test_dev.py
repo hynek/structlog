@@ -364,7 +364,7 @@ class TestConsoleRenderer:
 
     @pytest.mark.parametrize("repr_native_str", [True, False])
     @pytest.mark.parametrize("force_colors", [True, False])
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, repr_native_str, force_colors, proto):
         """
         ConsoleRenderer can be pickled and unpickled.

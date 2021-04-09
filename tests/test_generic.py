@@ -51,7 +51,7 @@ class TestGenericBoundLogger:
         assert "log", "foo" == b.log("foo")
         assert "gol", "bar" == b.gol("bar")
 
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL))
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, proto):
         """
         Can be pickled and unpickled.
