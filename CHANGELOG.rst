@@ -24,7 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- ``structlog`` is now importable if ``sys.stdout`` is ``None`` (e.g. when running using ``pythonw``).
 
 
 ----

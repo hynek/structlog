@@ -44,7 +44,9 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     format_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
-    ConsoleRenderer(colors=_has_colorama and sys.stdout.isatty()),
+    ConsoleRenderer(
+        colors=_has_colorama and sys.stdout is not None and sys.stdout.isatty()
+    ),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)
 _BUILTIN_DEFAULT_WRAPPER_CLASS = make_filtering_bound_logger(0)
