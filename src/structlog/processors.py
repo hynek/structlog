@@ -391,7 +391,7 @@ class ExceptionPrettyPrinter:
     This processor is mostly for development and testing so you can read
     exceptions properly formatted.
 
-    It behaves like format_exc_info` except it removes the exception
+    It behaves like `format_exc_info` except it removes the exception
     data from the event dictionary after printing it.
 
     It's tolerant to having `format_exc_info` in front of itself in the
