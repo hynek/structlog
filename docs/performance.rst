@@ -33,7 +33,11 @@ Here are a few hints how to get most out of ``structlog`` in production:
 
       configure(cache_logger_on_first_use=True)
 
-   This has the only drawback is that later calls on :func:`~structlog.configure` don't have any effect on already cached loggers -- that shouldn't matter outside of :doc:`testing <testing>` though.
+   This has two drawbacks:
+
+   1. Later calls of :func:`~structlog.configure` don't have any effect on already cached loggers -- that shouldn't matter outside of :doc:`testing <testing>` though.
+   2. The resulting bound logger is not pickleable.
+      Therefore, you can't set this option if you e.g. plan on passing loggers around using `multiprocessing`.
 
 #. Avoid sending your log entries through the standard library if you can: its dynamic nature and flexibiliy make it a major bottleneck.
    Instead use `structlog.PrintLoggerFactory` or -- if your serializer returns bytes (e.g. orjson_) -- `structlog.BytesLoggerFactory`.
