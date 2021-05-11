@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/psf/black
-    rev: 21.4b2
+    rev: 21.5b1
     hooks:
       - id: black
         language_version: python3.8
@@ -14,7 +14,7 @@ repos:
         language_version: python3.8
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 3.9.1
+    rev: 3.9.2
     hooks:
     - id: flake8
       language_version: python3.8
