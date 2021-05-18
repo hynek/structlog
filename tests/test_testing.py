@@ -42,7 +42,7 @@ class TestCaptureLogs:
 
     def test_restores_processors_on_success(self):
         """
-        Processors are patched within the contextmanger and restored on
+        Processors are patched within the contextmanager and restored on
         exit.
         """
         orig_procs = self.get_active_procs()
