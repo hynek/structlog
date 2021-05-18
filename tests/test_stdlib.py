@@ -188,7 +188,7 @@ class TestBoundLogger:
 
     def test_proxies_log(self):
         """
-        BoundLogger.exception.log() is proxied to the apropriate method.
+        BoundLogger.exception.log() is proxied to the appropriate method.
         """
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
 

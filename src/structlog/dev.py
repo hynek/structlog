@@ -30,7 +30,7 @@ _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 def _pad(s: str, length: int) -> str:
     """
-    Pads *s* to length *lenght*.
+    Pads *s* to length *length*.
     """
     missing = length - len(s)
 
