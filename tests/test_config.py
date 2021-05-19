@@ -211,7 +211,7 @@ class TestBoundLoggerLazyProxy:
 
     def test_bind_honors_initial_values(self):
         """
-        Passed initia_values are merged on binds.
+        Passed initial_values are merged on binds.
         """
         p = BoundLoggerLazyProxy(None, initial_values={"a": 1, "b": 2})
         b = p.bind()

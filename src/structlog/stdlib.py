@@ -426,7 +426,7 @@ class AsyncBoundLogger:
     def bind(self, **new_values: Any) -> "AsyncBoundLogger":
         return AsyncBoundLogger(
             # logger, processors and context are within sync_bl. These
-            # arguments are ignored if _sync_bl is passsed. *vroom vroom* over
+            # arguments are ignored if _sync_bl is passed. *vroom vroom* over
             # purity.
             logger=None,  # type: ignore
             processors=(),
