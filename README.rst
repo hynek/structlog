@@ -9,8 +9,11 @@
       <a href="https://www.structlog.org/en/stable/?badge=stable">
           <img src="https://img.shields.io/badge/Docs-Read%20The%20Docs-black" alt="Documentation" />
       </a>
+      <a href="https://github.com/hynek/structlog/blob/main/LICENSE">
+         <img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT/ Apache 2.0" />
+      </a>
       <a href="https://pypi.org/project/structlog/">
-         <img src="https://img.shields.io/pypi/v/structlog" />
+         <img src="https://img.shields.io/pypi/v/structlog" alt="PyPI release" />
       </a>
       <a href="https://pepy.tech/project/structlog">
           <img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=black&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" />
