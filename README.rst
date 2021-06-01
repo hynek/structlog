@@ -10,7 +10,7 @@
           <img src="https://img.shields.io/badge/Docs-Read%20The%20Docs-black" alt="Documentation" />
       </a>
       <a href="https://github.com/hynek/structlog/blob/main/LICENSE">
-         <img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT/ Apache 2.0" />
+         <img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT / Apache 2.0" />
       </a>
       <a href="https://pypi.org/project/structlog/">
          <img src="https://img.shields.io/pypi/v/structlog" alt="PyPI release" />
