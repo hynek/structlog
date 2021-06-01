@@ -2,10 +2,6 @@
 Logging Best Practices
 ======================
 
-
-Servers
-=======
-
 Logging is not a new concept and in no way special to Python.
 Logfiles have existed for decades and there's little reason to reinvent the wheel in our little world.
 
@@ -20,8 +16,20 @@ This is why the popular `twelve-factor app methodology`_ suggests just that.
 .. [*] This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
 
 
+Canonical Log Lines
+===================
+
+Generally speaking, having as few log entries per request as possible is a good thing.
+The less noise, the more insights.
+
+``structlog``'s ability to :ref:`bind data to loggers incrementally <building-ctx>` -- plus :doc:`thread-local context storage <thread-local>` -- can help you to minimize the output to a *single log entry*.
+
+At Stripe, this concept is called `Canonical Log Lines <https://brandur.org/canonical-log-lines>`_.
+
+
+
 Centralized Logging
--------------------
+===================
 
 Nowadays you usually don't want your logfiles in compressed archives distributed over dozens -- if not thousands -- of servers or cluster nodes.
 You want them in a single location.
@@ -29,7 +37,7 @@ Parsed, indexed, and easy to search.
 
 
 ELK
-^^^
+---
 
 The ELK stack (Elasticsearch_, Logstash_, Kibana_) from Elastic is a great way to store, parse, and search your logs.
 
@@ -42,7 +50,7 @@ All you have to do is to tell Logstash_ either that your log entries are prepend
 
 
 Graylog
-^^^^^^^
+-------
 
 Graylog_ goes one step further.
 It not only supports everything those above do (and then some); you can also directly log JSON entries towards it -- optionally even through an AMQP server (like RabbitMQ_) for better reliability.

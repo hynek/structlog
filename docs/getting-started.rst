@@ -70,6 +70,8 @@ After all, there's even a recipe_ on structured logging for the standard library
 So let's go a step further.
 
 
+.. _building-ctx:
+
 Building a Context
 ------------------
 
