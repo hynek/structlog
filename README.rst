@@ -15,9 +15,6 @@
       <a href="https://pepy.tech/project/structlog">
           <img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=black&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" />
       </a>
-      <a href="https://github.com/hynek/structlog/graphs/contributors">
-         <img src="https://img.shields.io/github/contributors/hynek/structlog" alt="Contributors" />
-      </a>
    </p>
 
 .. -begin-short-
