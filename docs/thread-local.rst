@@ -1,4 +1,4 @@
-Thread Local Context
+Thread Local-Context
 ====================
 
 .. testsetup:: *
@@ -105,7 +105,7 @@ Within one thread, every instance of the returned class will have a *common* ins
    <WrappedDict-...({'a': 1, 'b': 2, 'c': 3})>
 
 
-To enable thread local context use the generated class as the context class::
+To enable thread-local context use the generated class as the context class::
 
    configure(context_class=WrappedDictClass)
 
@@ -151,7 +151,7 @@ In order to be able to bind values temporarily to a logger, `structlog.threadloc
 
 The state before the ``with`` statement is saved and restored once it's left.
 
-If you want to detach a logger from thread local data, there's `structlog.threadlocal.as_immutable`.
+If you want to detach a logger from thread-local data, there's `structlog.threadlocal.as_immutable`.
 
 
 Downsides & Caveats
@@ -160,7 +160,7 @@ Downsides & Caveats
 The convenience of having a thread-local context comes at a price though:
 
 .. warning::
-   - If you can't rule out that your application re-uses threads, you *must* remember to **initialize your thread local context** at the start of each request using :func:`~structlog.BoundLogger.new` (instead of :func:`~structlog.BoundLogger.bind`).
+   - If you can't rule out that your application re-uses threads, you *must* remember to **initialize your thread-local context** at the start of each request using :func:`~structlog.BoundLogger.new` (instead of :func:`~structlog.BoundLogger.bind`).
      Otherwise you may start a new request with the context still filled with data from the request before.
    - **Don't** stop assigning the results of your ``bind()``\ s and ``new()``\ s!
 

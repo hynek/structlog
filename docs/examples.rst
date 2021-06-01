@@ -52,7 +52,7 @@ For a list of shipped processors, check out the :ref:`API documentation <procs>`
 
 .. _flask-example:
 
-Flask and Thread Local Data
+Flask and Thread-Local Data
 ---------------------------
 
 In the simplest case, you bind a unique request ID to every incoming request so you can easily see which log entries belong to which request.
