@@ -64,7 +64,7 @@ Here's an example for a production-ready non-asyncio ``structlog`` configuration
           structlog.threadlocal.merge_threadlocal_context,
           structlog.processors.add_log_level,
           structlog.processors.format_exc_info,
-          structlog.processors.TimeStamper(fmt="iso", utc=False),
+          structlog.processors.TimeStamper(fmt="iso", utc=True),
           structlog.processors.JSONRenderer(serializer=orjson.dumps),
       ],
       logger_factory=structlog.BytesLoggerFactory(),
