@@ -59,6 +59,7 @@ EXTRAS_REQUIRE = {
         "twisted",
         # explicitly list sphinx-toolbox dependencies
         "sphinx-toolbox",
+        "apeye<1.0",
         "cachecontrol",
         "lockfile",
     ],
