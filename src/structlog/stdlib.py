@@ -319,7 +319,7 @@ class BoundLogger(BoundLoggerBase):
         """
         Calls :meth:`logging.Logger.callHandlers` with unmodified arguments.
         """
-        self._logger.callHandlers(record)  # type: ignore
+        self._logger.callHandlers(record)
 
     def getEffectiveLevel(self) -> int:
         """

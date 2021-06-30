@@ -93,7 +93,7 @@ def _extractStuffAndWhy(eventDict: EventDict) -> Tuple[Any, Any, EventDict]:
         raise ValueError("Both _stuff and event contain an Exception/Failure.")
 
     # `log.err('event', _why='alsoEvent')` is ambiguous.
-    if _why and isinstance(event, str):  # type: ignore
+    if _why and isinstance(event, str):
         raise ValueError("Both `_why` and `event` supplied.")
 
     # Two failures are ambiguous too.
@@ -105,12 +105,12 @@ def _extractStuffAndWhy(eventDict: EventDict) -> Tuple[Any, Any, EventDict]:
         _why = event
 
     if not _stuff and sys.exc_info() != (None, None, None):
-        _stuff = Failure()
+        _stuff = Failure()  # type: ignore
 
     # Either we used the error ourselves or the user supplied one for
     # formatting.  Avoid log.err() to dump another traceback into the log.
     if isinstance(_stuff, BaseException) and not isinstance(_stuff, Failure):
-        _stuff = Failure(_stuff)
+        _stuff = Failure(_stuff)  # type: ignore
 
     return _stuff, _why, eventDict
 
@@ -178,7 +178,7 @@ class JSONRenderer(GenericJSONRenderer):
             eventDict["event"] = _why
             if isinstance(_stuff, Failure):
                 eventDict["exception"] = _stuff.getTraceback(detail="verbose")
-                _stuff.cleanFailure()
+                _stuff.cleanFailure()  # type: ignore
         else:
             eventDict["event"] = _why
         return (
@@ -211,7 +211,9 @@ class PlainFileLogObserver:
         self._flush = file.flush
 
     def __call__(self, eventDict: EventDict) -> None:
-        until_not_interrupted(self._write, textFromEventDict(eventDict) + "\n")
+        until_not_interrupted(
+            self._write, textFromEventDict(eventDict) + "\n"  # type: ignore
+        )
         until_not_interrupted(self._flush)
 
 
@@ -236,7 +238,7 @@ class JSONLogObserverWrapper:
             eventDict["message"] = (
                 json.dumps(
                     {
-                        "event": textFromEventDict(eventDict),
+                        "event": textFromEventDict(eventDict),  # type: ignore
                         "system": eventDict.get("system"),
                     }
                 ),
