@@ -57,8 +57,9 @@ EXTRAS_REQUIRE = {
         "furo",
         "sphinx",
         "twisted",
-        # explicitly list sphinx-toolbox dependencies
-        "sphinx-toolbox",
+        # Explicitly list sphinx-toolbox dependencies.
+        # Unfortunately they break very frequently.
+        "sphinx-toolbox<2.12",
         "apeye<1.0",
         "cachecontrol",
         "lockfile",
