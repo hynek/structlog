@@ -1,13 +1,13 @@
 ---
 repos:
   - repo: https://github.com/psf/black
-    rev: 21.5b2
+    rev: 21.6b0
     hooks:
       - id: black
         language_version: python3.8
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.8.0
+    rev: 5.9.1
     hooks:
       - id: isort
         additional_dependencies: [toml]
