@@ -106,7 +106,7 @@ class KeyValueRenderer:
                 return sorted(event_dict.items())
 
         else:
-            ordered_items = operator.methodcaller("items")
+            ordered_items = operator.methodcaller("items")  # type: ignore
 
         self._ordered_items = ordered_items
 
