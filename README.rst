@@ -65,6 +65,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
    >>> log.info("user.logged_in", happy=True)
    2020-11-18 09:18.28 [info     ] user.logged_in                 another_key=42 happy=True some_key=23 user=hynek
 
+
 Powerful Pipelines
 ==================
 
@@ -84,7 +85,6 @@ There are `plenty of processors <https://www.structlog.org/en/stable/api.html#mo
 - …and `exceptions <https://www.structlog.org/en/stable/api.html#structlog.processors.format_exc_info>`_ ("What happened‽").
 - Unicode encoders/decoders.
 - Flexible `timestamping <https://www.structlog.org/en/stable/api.html#structlog.processors.TimeStamper>`_.
-
 
 
 Formatting
@@ -114,6 +114,13 @@ Output
 - Don't format it to a string at all!
   ``structlog`` passes you a dictionary and you can do with it whatever you want.
   Reported uses cases are sending them out via network or saving them in a database.
+
+
+Highly Testable
+===============
+
+``structlog`` is thouroughly tested and we see it as our duty to help you to achieve the same in *your* applications.
+That's why it ships with a `bunch of helpers <https://www.structlog.org/en/stable/testing.html>`_ to introspect your application's logging behavior with little-to-no boilerplate.
 
 .. -end-spiel-
 
