@@ -12,7 +12,11 @@ The third digit is only for regressions.
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- To implement pretty exceptions (see Changes below), ``structlog.dev.ConsoleRenderer`` now formats exceptions itself.
+
+  Make sure to remove ``format_exc_info`` from your processor chain if you configure ``structlog`` manually.
+  This change is not really breaking, because the old use-case will keep working as before.
+  However if you pass ``pretty_exceptions=True`` (which is the default if the ``better-exceptions`` package is present), a warning will be raised and the exception will be renderered without prettyfication.
 
 
 Deprecations:
@@ -25,6 +29,9 @@ Changes:
 ^^^^^^^^
 
 - ``structlog`` is now importable if ``sys.stdout`` is ``None`` (e.g. when running using ``pythonw``).
+- If the `better-exceptions <https://github.com/qix-/better-exceptions>`_ package is present, ``structlog.dev.ConsoleRenderer`` will now pretty-print exceptions using it.
+  Pass ``pretty_exceptions=False`` to disable.
+  This only works if ``format_exc_info`` is **absent** in the processor chain.
 
 
 ----

@@ -13,11 +13,11 @@ jobs:
     name: "Python ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
     env:
-      USING_COVERAGE: "3.6,3.8"
+      USING_COVERAGE: "3.6,3.9"
 
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10.0-alpha - 3.10", "pypy3"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10.0-beta - 3.10", "pypy3"]
 
     steps:
       - uses: "actions/checkout@v2"
@@ -80,7 +80,7 @@ jobs:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
         with:
-          python-version: "3.8"
+          python-version: "3.9"
       - name: "Install in dev mode"
         run: "python -m pip install -e .[dev]"
       - name: "Import package"

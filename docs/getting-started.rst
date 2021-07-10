@@ -10,9 +10,9 @@ Installation
 
    $ pip install structlog
 
-If you'd like colorful output in development (you know you do!), install using::
+If you'd like colorful output and pretty exceptions in development (you know you do!), install using::
 
-   $ pip install structlog colorama
+   $ pip install structlog colorama better-exceptions
 
 
 Your First Log Entry
@@ -35,6 +35,7 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
 - If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice `colors <development>`.
+- If you have `better-exceptions <https://github.com/qix-/better-exceptions>`_ installed, exceptions will be rendered in colors and with additional helpful information.
 
 It should be noted that even in most complex logging setups the example would still look just like that thanks to `configuration`.
 Using the defaults, as above, is equivalent to::
@@ -47,7 +48,6 @@ Using the defaults, as above, is equivalent to::
            structlog.processors.add_log_level,
            structlog.processors.StackInfoRenderer(),
            structlog.dev.set_exc_info,
-           structlog.processors.format_exc_info,
            structlog.processors.TimeStamper(),
            structlog.dev.ConsoleRenderer()
        ],
@@ -197,4 +197,4 @@ If you want to see more code, make sure to check out the `examples`!
 
 
 .. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
-.. _recipe: https://docs.python.org/2/howto/logging-cookbook.html
+.. _recipe: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging

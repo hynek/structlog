@@ -24,12 +24,7 @@ from typing import (
 from ._log_levels import make_filtering_bound_logger
 from ._loggers import PrintLoggerFactory
 from .dev import ConsoleRenderer, _has_colorama, set_exc_info
-from .processors import (
-    StackInfoRenderer,
-    TimeStamper,
-    add_log_level,
-    format_exc_info,
-)
+from .processors import StackInfoRenderer, TimeStamper, add_log_level
 from .types import BindableLogger, Context, Processor, WrappedLogger
 
 
@@ -42,7 +37,6 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     add_log_level,
     StackInfoRenderer(),
     set_exc_info,
-    format_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
     ConsoleRenderer(
         colors=_has_colorama and sys.stdout is not None and sys.stdout.isatty()

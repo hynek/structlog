@@ -276,6 +276,19 @@ class TestTimeStamper:
 
 
 class TestFormatExcInfo:
+    @pytest.mark.parametrize("ei", [False, None, ""])
+    def test_nop(self, ei):
+        """
+        If exc_info is falsey, only remove the key.
+        """
+        assert {} == format_exc_info(None, None, {"exc_info": ei})
+
+    def test_nop_missing(self):
+        """
+        If event dict doesn't contain exc_info, do nothing.
+        """
+        assert {} == format_exc_info(None, None, {})
+
     def test_formats_tuple(self, monkeypatch):
         """
         If exc_info is a tuple, it is used.
@@ -293,7 +306,7 @@ class TestFormatExcInfo:
         """
         If exc_info is True, it is obtained using sys.exc_info().
         """
-        # monkeypatching sys.exc_info makes currently py.test return 1 on
+        # monkeypatching sys.exc_info makes currently pytest return 1 on
         # success.
         try:
             raise ValueError("test")
