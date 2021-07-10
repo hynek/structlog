@@ -103,7 +103,66 @@ Processors
 Suggested Configurations
 ------------------------
 
+.. note::
+
+   We do appreciate that fully integrating ``structlog`` with standard library's ``logging`` is fiddly when done for the first time.
+
+   This is the price of flexibility and unfortunately -- given the different needs of our users -- we can't make it any simpler without compromising someone's use-cases.
+   However, once it is set up, you can rely on not having to ever touch it again.
+
 Depending *where* you'd like to do your formatting, you can take one of three approaches:
+
+
+Rendering Within ``structlog``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This is the simplest approach where ``structlog`` does all the heavy lifting and passes a fully-formatted string to ``logging``.
+Chances are, this is all you need.
+
+A basic configuration to output structured logs in JSON format looks like this:
+
+.. code-block:: python
+
+    import structlog
+
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
+            structlog.processors.JSONRenderer()
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
+
+To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the `logging` module like this::
+
+  import logging
+  import sys
+
+  logging.basicConfig(
+      format="%(message)s",
+      stream=sys.stdout,
+      level=logging.INFO,
+  )
+
+In this case *only* your own logs are formatted as JSON:
+
+.. code-block:: pycon
+
+    >>> structlog.get_logger("test").warning("hello")
+    {"event": "hello", "logger": "test", "level": "warning", "timestamp": "2017-03-06T07:39:09.518720Z"}
+
+    >>> logging.getLogger("test").warning("hello")
+    hello
 
 
 Rendering Using `logging`-based Formatters
@@ -154,6 +213,14 @@ Now both ``structlog`` and ``logging`` will emit JSON logs:
 
     >>> logging.getLogger("test").warning("hello")
     {"message": "hello"}
+
+
+.. warning::
+
+   With this approach, it's the standard library ``logging`` formatter's duty to do something useful with the event dict.
+   In the above example that's ``jsonlogger.JsonFormatter``.
+
+   Keep this in mind if you only get the event name without any context, and exceptions are ostensibly swallowed.
 
 
 Rendering Using ``structlog``-based Formatters Within `logging`
@@ -327,55 +394,5 @@ Log entries that do not originate from ``structlog``, are additionally pre-proce
 If you leave ``foreign_pre_chain`` as `None`, formatting will be left to `logging`.
 Meaning: you can define a ``format`` for `ProcessorFormatter` too!
 
-
-Rendering Within ``structlog``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-A basic configuration to output structured logs in JSON format looks like this:
-
-.. code-block:: python
-
-    import structlog
-
-    structlog.configure(
-        processors=[
-            structlog.stdlib.filter_by_level,
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.stdlib.PositionalArgumentsFormatter(),
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.processors.UnicodeDecoder(),
-            structlog.processors.JSONRenderer()
-        ],
-        context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
-    )
-
-(If you're still running Python 2, replace `UnicodeDecoder` through `UnicodeEncoder`.)
-
-To make your program behave like a proper `12 factor app`_ that outputs only JSON to ``stdout``, configure the `logging` module like this::
-
-  import logging
-  import sys
-
-  logging.basicConfig(
-      format="%(message)s",
-      stream=sys.stdout,
-      level=logging.INFO,
-  )
-
-In this case *only* your own logs are formatted as JSON:
-
-.. code-block:: pycon
-
-    >>> structlog.get_logger("test").warning("hello")
-    {"event": "hello", "logger": "test", "level": "warning", "timestamp": "2017-03-06T07:39:09.518720Z"}
-
-    >>> logging.getLogger("test").warning("hello")
-    hello
 
 .. _`12 factor app`: https://12factor.net/logs
