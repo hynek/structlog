@@ -19,16 +19,16 @@ Immutability
 
    You should call some functions with some arguments.
 
-   ---David Reid
+   --- David Reid
 
-The behavior of copying itself, adding new values, and returning the result is useful for applications that keep somehow their own context using classes or closures.
-Twisted is a `fine example <twisted-example>` for that.
-Another possible approach is passing wrapped loggers around or log only within your view where you gather errors and events using return codes and exceptions.
-If you are willing to do that, you should stick to it because `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_ is a very good thing\ [*]_.
-Sooner or later, global state and mutable data lead to unpleasant surprises.
+``structlog`` does its best to have as little global state as possible to achieve its goals.
+In an ideal world, you would just stick to its immutable\ [*]_ bound loggers and reap all the rewards of having purely `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_.
 
-However, in the case of conventional web development, we realize that passing loggers around seems rather cumbersome, intrusive, and generally against the mainstream culture.
-And since it's more important that people actually *use* ``structlog`` than to be pure and snobby, ``structlog`` ships with the `structlog.threadlocal` module and a couple of mechanisms to help here.
+However, we realize that passing loggers around is rather clunky and intrusive in practice.
+And since `practicality beats purity <https://www.python.org/dev/peps/pep-0020/>`_, ``structlog`` ships with the `structlog.threadlocal` module to help you to safely have global context storage.
+
+.. [*] In the spirit of Python's 'consenting adults', ``structlog`` doesn't enforce the immutability with technical means.
+   However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
 
 
 The ``merge_threadlocal`` Processor
@@ -43,6 +43,7 @@ The general flow of using these functions is:
 - Call `structlog.threadlocal.bind_threadlocal` as an alternative to your bound logger's ``bind()`` when you want to bind a particular variable to the thread-local context.
 - Use ``structlog`` as normal.
   Loggers act as they always do, but the `structlog.threadlocal.merge_threadlocal` processor ensures that any thread-local binds get included in all of your log messages.
+- If you want to access the thread-local storage, you use `structlog.threadlocal.get_threadlocal` and `structlog.threadlocal.get_merged_threadlocal`.
 
 .. doctest::
 
@@ -184,7 +185,3 @@ In this case we feel like this is an acceptable trade-off.
 You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
 
 This big red box is also what separates immutable local from mutable global data.
-
-
-.. [*] In the spirit of Python's 'consenting adults', ``structlog`` doesn't enforce the immutability with technical means.
-   However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
