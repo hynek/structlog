@@ -267,8 +267,7 @@ def format_exc_info(
     behaviors:
 
     - If the value is a tuple, render it into the key ``exception``.
-    - If the value is an Exception *and* you're running Python 3, render it
-      into the key ``exception``.
+    - If the value is an Exception render it into the key ``exception``.
     - If the value true but no tuple, obtain exc_info ourselves and render
       that.
 

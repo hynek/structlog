@@ -4,13 +4,17 @@
 
 """
 Helpers that make development with ``structlog`` more pleasant.
+
+See also the narrative documentation in `development`.
 """
 
 import sys
+import warnings
 
 from io import StringIO
 from typing import Any, Optional, Type, Union
 
+from ._frames import _format_exception
 from .types import EventDict, Protocol, WrappedLogger
 
 
@@ -18,6 +22,11 @@ try:
     import colorama
 except ImportError:
     colorama = None
+
+try:
+    import better_exceptions
+except ImportError:
+    better_exceptions = None
 
 
 __all__ = ["ConsoleRenderer"]
@@ -118,13 +127,13 @@ class ConsoleRenderer:
     """
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
-    If ``event_dict`` contains an ``exception`` key (for example from
-    :func:`~structlog.processors.format_exc_info`), it will be rendered *after*
-    the log line.
+    If ``event_dict`` contains a true-ish ``exc_info`` key, it will be
+    rendered *after* the log line. If better-exceptions_ is present, in
+    colors and with extra context.
 
     :param pad_event: Pad the event to this many characters.
-    :param colors: Use colors for a nicer output. The default is True if
-        colorama is present, otherwise False.
+    :param colors: Use colors for a nicer output. `True` by default if
+        colorama_ is installed.
     :param force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
         to be streamed to the console.
@@ -137,10 +146,14 @@ class ConsoleRenderer:
         must be a dict from level names (strings) to colorama styles. The
         default can be obtained by calling
         `ConsoleRenderer.get_default_level_styles`
+    :param pretty_exceptions: Render exceptions with colors and extra
+        information. `True` by default if better-exceptions_ is installed.
 
-    Requires the colorama_ package if *colors* is `True`.
+    Requires the colorama_ package if *colors* is `True`, and the
+    better-exceptions_ package if *pretty_exceptions* is `True`.
 
     .. _colorama: https://pypi.org/project/colorama/
+    .. _better-exceptions: https://pypi.org/project/better-exceptions/
 
     .. versionadded:: 16.0
     .. versionadded:: 16.1 *colors*
@@ -153,8 +166,14 @@ class ConsoleRenderer:
     .. versionchanged:: 19.2 Can be pickled now.
     .. versionchanged:: 20.1 ``colorama`` does not initialize lazily on Windows
        anymore because it breaks rendering.
-    .. versionchanged: 21.1 It is additionally possible to set the logger name
+    .. versionchanged:: 21.1 It is additionally possible to set the logger name
        using the ``logger_name`` key in the ``event_dict``.
+    .. versionadded:: 21.2 *pretty_exceptions*
+    .. versionchanged:: 21.2 `ConsoleRenderer` now handles the ``exc_info``
+       event dict key itself. Do **not** use the
+       `structlog.processors.format_exc_info` processor together with
+       `ConsoleRenderer` anymore! It will keep working, but you can't have
+       pretty exceptions and a warning will be raised if you ask for them.
     """
 
     def __init__(
@@ -164,6 +183,7 @@ class ConsoleRenderer:
         force_colors: bool = False,
         repr_native_str: bool = False,
         level_styles: Optional[Styles] = None,
+        pretty_exceptions: bool = (better_exceptions is not None),
     ):
         self._force_colors = self._init_colorama = False
         styles: Styles
@@ -202,6 +222,7 @@ class ConsoleRenderer:
         )
 
         self._repr_native_str = repr_native_str
+        self._pretty_exceptions = pretty_exceptions
 
     def _repr(self, val: Any) -> str:
         """
@@ -272,6 +293,7 @@ class ConsoleRenderer:
 
         stack = event_dict.pop("stack", None)
         exc = event_dict.pop("exception", None)
+        exc_info = event_dict.pop("exc_info", None)
         sio.write(
             " ".join(
                 self._styles.kv_key
@@ -287,9 +309,26 @@ class ConsoleRenderer:
 
         if stack is not None:
             sio.write("\n" + stack)
-            if exc is not None:
+            if exc_info or exc is not None:
                 sio.write("\n\n" + "=" * 79 + "\n")
-        if exc is not None:
+
+        if exc_info:
+            if not isinstance(exc_info, tuple):
+                exc_info = sys.exc_info()
+
+            if self._pretty_exceptions:
+                sio.write(
+                    "\n"
+                    + "".join(better_exceptions.format_exception(*exc_info))
+                )
+            else:
+                sio.write("\n" + _format_exception(exc_info))
+        elif exc is not None:
+            if self._pretty_exceptions:
+                warnings.warn(
+                    "Remove `render_exc_info` from your processor chain "
+                    "if you want pretty exceptions."
+                )
             sio.write("\n" + exc)
 
         return sio.getvalue()

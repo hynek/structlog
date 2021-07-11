@@ -22,7 +22,7 @@ from structlog import (
 from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
-from structlog.processors import JSONRenderer
+from structlog.processors import JSONRenderer, KeyValueRenderer
 from structlog.stdlib import (
     AsyncBoundLogger,
     BoundLogger,
@@ -501,7 +501,12 @@ def configure_for_pf():
     reset_defaults()
 
 
-def configure_logging(pre_chain, logger=None, pass_foreign_args=False):
+def configure_logging(
+    pre_chain,
+    logger=None,
+    pass_foreign_args=False,
+    renderer=ConsoleRenderer(colors=False),
+):
     """
     Configure logging to use ProcessorFormatter.
     """
@@ -512,7 +517,7 @@ def configure_logging(pre_chain, logger=None, pass_foreign_args=False):
             "formatters": {
                 "plain": {
                     "()": ProcessorFormatter,
-                    "processor": ConsoleRenderer(colors=False),
+                    "processor": renderer,
                     "foreign_pre_chain": pre_chain,
                     "format": "%(message)s [in %(funcName)s]",
                     "logger": logger,
@@ -656,7 +661,7 @@ class TestProcessorFormatter:
         have access to it.
         """
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
-        configure_logging((test_processor,))
+        configure_logging((test_processor,), renderer=KeyValueRenderer())
 
         try:
             raise RuntimeError("oh noo")
@@ -682,7 +687,9 @@ class TestProcessorFormatter:
             return event_dict
 
         test_processor = call_recorder(lambda l, m, event_dict: event_dict)
-        configure_logging((add_excinfo, test_processor))
+        configure_logging(
+            (add_excinfo, test_processor), renderer=KeyValueRenderer()
+        )
 
         try:
             raise MyException("oh noo")

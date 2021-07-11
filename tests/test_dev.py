@@ -3,6 +3,7 @@
 # repository for complete details.
 
 import pickle
+import sys
 
 import pytest
 
@@ -200,15 +201,25 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-    def test_exception(self, cr, padded):
+    def test_exception_rendered(self, cr, padded, recwarn):
         """
-        Exceptions are rendered after a new line.
+        Exceptions are rendered after a new line if they are already rendered
+        in the event dict.
+
+        A warning is emitted if pretty exceptions are active.
         """
         exc = "Traceback:\nFake traceback...\nFakeError: yolo"
 
         rv = cr(None, None, {"event": "test", "exception": exc})
 
         assert (padded + "\n" + exc) == rv
+
+        if cr._pretty_exceptions:
+            (w,) = recwarn.list
+            assert (
+                "Remove `render_exc_info` from your processor chain "
+                "if you want pretty exceptions.",
+            ) == w.message.args
 
     def test_stack_info(self, cr, padded):
         """
@@ -241,27 +252,44 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-    def test_everything(self, cr, styles, padded):
+    @pytest.mark.parametrize("explicit_ei", [True, False])
+    def test_everything(self, cr, styles, padded, explicit_ei):
         """
         Put all cases together.
         """
-        exc = "Traceback:\nFake traceback...\nFakeError: yolo"
-        stack = "fake stack trace"
+        if explicit_ei:
+            try:
+                0 / 0
+            except ZeroDivisionError:
+                ei = sys.exc_info()
+        else:
+            ei = True
 
-        rv = cr(
-            None,
-            None,
-            {
-                "event": "test",
-                "exception": exc,
-                "key": "value",
-                "foo": "bar",
-                "timestamp": "13:13",
-                "logger": "some_module",
-                "level": "error",
-                "stack": stack,
-            },
-        )
+        stack = "fake stack trace"
+        ed = {
+            "event": "test",
+            "exc_info": ei,
+            "key": "value",
+            "foo": "bar",
+            "timestamp": "13:13",
+            "logger": "some_module",
+            "level": "error",
+            "stack": stack,
+        }
+
+        if explicit_ei:
+            rv = cr(None, None, ed)
+        else:
+            try:
+                0 / 0
+            except ZeroDivisionError:
+                rv = cr(None, None, ed)
+                ei = sys.exc_info()
+
+        if dev.better_exceptions:
+            exc = "".join(dev.better_exceptions.format_exception(*ei))
+        else:
+            exc = dev._format_exception(ei)
 
         assert (
             styles.timestamp
