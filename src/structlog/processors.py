@@ -57,7 +57,7 @@ class KeyValueRenderer:
     :param drop_missing: When ``True``, extra keys in *key_order* will be
         dropped rather than rendered as ``None``.
     :param repr_native_str: When ``True``, :func:`repr()` is also applied
-        to native strings (i.e. unicode on Python 3 and bytes on Python 2).
+        to native strings.
         Setting this to ``False`` is useful if you want to have human-readable
         non-ASCII output on Python 2.
 
@@ -433,7 +433,7 @@ class StackInfoRenderer:
     involving an exception.
 
     It works analogously to the *stack_info* argument of the Python 3 standard
-    library logging but works on both 2 and 3.
+    library logging.
 
     .. versionadded:: 0.4.0
     """
