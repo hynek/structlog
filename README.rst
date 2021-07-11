@@ -143,9 +143,6 @@ We collect useful third party extension in `our wiki <https://github.com/hynek/s
 
 ``structlog`` targets Python 3.6 and newer, and PyPy3.
 
-If you need support for older Python versions, the last release with support for Python 2.7 and 3.5 was `20.1.0 <https://pypi.org/project/structlog/20.1.0/>`_.
-The package meta data should ensure that you get the correct version.
-
 
 ``structlog`` for Enterprise
 ----------------------------
