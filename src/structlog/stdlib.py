@@ -733,8 +733,7 @@ class ProcessorFormatter(logging.Formatter):
     def __init__(
         self,
         processor: Optional[Processor] = None,
-        processor_chain: Optional[Sequence[Processor]
-        ] = None,
+        processor_chain: Optional[Sequence[Processor]] = None,
         foreign_pre_chain: Optional[Sequence[Processor]] = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
