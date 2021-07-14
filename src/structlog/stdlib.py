@@ -750,7 +750,9 @@ class ProcessorFormatter(logging.Formatter):
         elif processor is not None and processor_chain is None:
             self.processor_chain = [processor]
         else:
-            raise TypeError("you must specify processor or processor_chain, but not both")
+            raise TypeError(
+                "you must specify processor or processor_chain, but not both"
+            )
 
         self.foreign_pre_chain = foreign_pre_chain
         self.keep_exc_info = keep_exc_info
