@@ -706,7 +706,7 @@ class ProcessorFormatter(logging.Formatter):
         A ``structlog`` processor, or `None` to use *processor_chain* instead.
     :param processor_chain:
         If not `None`, each processor in the chain will be applied to all log
-        entries. If `None` (the default), `processor` will be used instead.
+        entries. If `None` (the default), *processor* will be used instead.
     :param foreign_pre_chain:
         Similar to *processor_chain*, but applied only to non-``structlog`` log
         entries, and before *processor_chain*.  If `None` or empty, formatting
@@ -733,7 +733,8 @@ class ProcessorFormatter(logging.Formatter):
     def __init__(
         self,
         processor: Optional[Processor] = None,
-        processor_chain: Optional[Sequence[Processor]] = None,
+        processor_chain: Optional[Sequence[Processor]
+        ] = None,
         foreign_pre_chain: Optional[Sequence[Processor]] = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
