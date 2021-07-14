@@ -32,6 +32,7 @@ Changes:
 - If the `better-exceptions <https://github.com/qix-/better-exceptions>`_ package is present, ``structlog.dev.ConsoleRenderer`` will now pretty-print exceptions using it.
   Pass ``pretty_exceptions=False`` to disable.
   This only works if ``format_exc_info`` is **absent** in the processor chain.
+- Added ``processor_chain`` argument to ``structlog.stdlib.ProcessorFormatter``.
 
 
 ----
@@ -44,7 +45,8 @@ Changes:
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- ``structlog.stdlib.ProcessorFormatter`` no longer has a ``processor`` attribute.
+  Use ``processor_chain`` instead.
 
 
 Deprecations:

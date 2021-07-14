@@ -702,11 +702,15 @@ class ProcessorFormatter(logging.Formatter):
 
     Please refer to :doc:`standard-library` for examples.
 
-    :param processor: A ``structlog`` processor.
+    :param processor:
+        A ``structlog`` processor, or `None` to use `processor_chain` instead.
+    :param processor_chain:
+        If not `None`, each processor in the chain will be applied to all log
+        entries. If `None` (the default), `processor` will be used instead.
     :param foreign_pre_chain:
-        If not `None`, it is used as an iterable of processors that is applied
-        to non-``structlog`` log entries before *processor*.  If `None`,
-        formatting is left to :mod:`logging`. (default: `None`)
+        Similar to *processor_chain*, but applied only to non-``structlog`` log
+        entries, and before *processor_chain*.  If `None` or empty, formatting
+        is left to :mod:`logging`. (default: `None`)
     :param keep_exc_info: ``exc_info`` on `logging.LogRecord`\ s is
         added to the ``event_dict`` and removed afterwards. Set this to
         ``True`` to keep it on the `logging.LogRecord`. (default: False)
@@ -723,11 +727,13 @@ class ProcessorFormatter(logging.Formatter):
     .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
     .. versionadded:: 19.2.0 *logger*
     .. versionadded:: 19.2.0 *pass_foreign_args*
+    .. versionadded:: 21.2.0 *processor_chain*
     """
 
     def __init__(
         self,
-        processor: Processor,
+        processor: Optional[Processor],
+        processor_chain: Optional[Sequence[Processor]] = None,
         foreign_pre_chain: Optional[Sequence[Processor]] = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
@@ -736,10 +742,16 @@ class ProcessorFormatter(logging.Formatter):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        fmt = kwargs.pop("fmt", "%(message)s")
-        super().__init__(*args, fmt=fmt, **kwargs)  # type: ignore
+        kwargs.setdefault("fmt", "%(message)s")
+        super().__init__(*args, **kwargs)
 
-        self.processor = processor
+        if processor is None and processor_chain is not None:
+            self.processor_chain = processor_chain
+        elif processor is not None and processor_chain is None:
+            self.processor_chain = [processor]
+        else:
+            raise TypeError("you must specify processor or processor_chain, but not both")
+
         self.foreign_pre_chain = foreign_pre_chain
         self.keep_exc_info = keep_exc_info
         self.keep_stack_info = keep_stack_info
@@ -801,7 +813,9 @@ class ProcessorFormatter(logging.Formatter):
 
             del ed["_record"]
 
-        record.msg = self.processor(logger, meth_name, ed)  # type: ignore
+        for proc in self.processor_chain:
+            ed = proc(logger, meth_name, ed)
+        record.msg = ed  # type: ignore
 
         return super().format(record)
 
