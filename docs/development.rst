@@ -9,7 +9,7 @@ If the `better-exceptions <https://github.com/Qix-/better-exceptions>`_ package 
 .. figure:: _static/console_renderer.png
    :alt: Colorful console output by ConsoleRenderer.
 
-You can find the code for the output above `in the repo <https://github.com/hynek/structlog/show_off.py>`_.
+You can find the code for the output above `in the repo <https://github.com/hynek/structlog/blob/main/show_off.py>`_.
 
 To use it, just add it as a renderer to your processor chain.
 It will recognize logger names, log levels, time stamps, stack infos, and ``exc_info`` as produced by ``structlog``'s processors and render them in special ways.

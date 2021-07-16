@@ -117,7 +117,7 @@ Examples
 ^^^^^^^^
 
 The probably most useful formatter for string based loggers is `structlog.processors.JSONRenderer`.
-Advanced log aggregation and analysis tools like `logstash <https://www.elastic.co/products/logstash>`_ offer features like telling them "this is JSON, deal with it" instead of fiddling with regular expressions.
+Advanced log aggregation and analysis tools like `logstash <https://www.elastic.co/logstash>`_ offer features like telling them "this is JSON, deal with it" instead of fiddling with regular expressions.
 
 More examples can be found in the :ref:`examples <processors-examples>` chapter.
 For a list of shipped processors, check out the :ref:`API documentation <procs>`.

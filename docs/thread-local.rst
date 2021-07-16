@@ -77,7 +77,7 @@ The general flow of using these functions is:
 Thread-local Contexts
 ---------------------
 
-``structlog`` also provides thread-local context storage in a form that you may already know from `Flask <https://flask.palletsprojects.com/en/master/design/#thread-locals>`_ and that makes the *entire context* global to your thread or greenlet.
+``structlog`` also provides thread-local context storage in a form that you may already know from `Flask <https://flask.palletsprojects.com/en/latest/design/#thread-locals>`_ and that makes the *entire context* global to your thread or greenlet.
 
 This makes its behavior more difficult to reason about which is why we generally recommend to use the `merge_threadlocal` route.
 
