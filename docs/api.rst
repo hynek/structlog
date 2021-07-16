@@ -109,11 +109,39 @@ API Reference
 
 .. automodule:: structlog.threadlocal
 
+
+Modern Approach
+~~~~~~~~~~~~~~~
+
+.. autofunction:: bind_threadlocal
+
+.. autofunction:: get_threadlocal
+
+   >>> from structlog.threadlocal import bind_threadlocal, get_threadlocal
+   >>> bind_threadlocal(x=1)
+   >>> get_threadlocal()
+   {'x': 1}
+
+.. autofunction:: get_merged_threadlocal
+
+   >>> from structlog import get_logger
+   >>> from structlog.threadlocal import bind_threadlocal, get_merged_threadlocal
+   >>> bind_threadlocal(x=1)
+   >>> log = get_logger()
+   >>> log = log.bind(y=2)
+   >>> get_merged_threadlocal(log)
+   {'x': 1, 'y': 2}
+
 .. autofunction:: merge_threadlocal
 
 .. autofunction:: clear_threadlocal
 
-.. autofunction:: bind_threadlocal
+
+Old Approach
+~~~~~~~~~~~~
+
+The following APIs use a different approach, that we discourage nowadays.
+Please see :doc:`thread-local` for details.
 
 .. autofunction:: wrap_dict
 

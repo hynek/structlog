@@ -7,15 +7,18 @@ import threading
 
 import pytest
 
+import structlog
+
 from structlog._base import BoundLoggerBase
 from structlog._config import wrap_logger
 from structlog.testing import ReturnLogger
 from structlog.threadlocal import (
     _CONTEXT,
-    _get_context,
     as_immutable,
     bind_threadlocal,
     clear_threadlocal,
+    get_merged_threadlocal,
+    get_threadlocal,
     merge_threadlocal,
     merge_threadlocal_context,
     tmp_bind,
@@ -326,19 +329,18 @@ class TestNewThreadLocal:
         Test that unbinding from threadlocal works for keys that exist
         and does not raise error when they do not exist.
         """
-
         clear_threadlocal()
         bind_threadlocal(a=234, b=34)
 
-        assert {"a": 234, "b": 34} == merge_threadlocal_context(None, None, {})
+        assert {"a": 234, "b": 34} == get_threadlocal()
 
         unbind_threadlocal("a")
 
-        assert {"b": 34} == merge_threadlocal_context(None, None, {})
+        assert {"b": 34} == get_threadlocal()
 
         unbind_threadlocal("non-existing-key")
 
-        assert {"b": 34} == merge_threadlocal_context(None, None, {})
+        assert {"b": 34} == get_threadlocal()
 
     def test_get_context_no_context(self):
         """
@@ -351,4 +353,16 @@ class TestNewThreadLocal:
         with pytest.raises(AttributeError):
             _CONTEXT.context
 
-        assert {} == _get_context()
+        assert {} == get_threadlocal()
+
+    def test_get_merged(self):
+        """
+        Returns a copy of the threadlocal context merged with the logger's
+        context.
+        """
+        clear_threadlocal()
+        bind_threadlocal(x=1)
+
+        log = structlog.get_logger().bind(y=2)
+
+        assert {"x": 1, "y": 2} == get_merged_threadlocal(log)
