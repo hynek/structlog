@@ -32,8 +32,8 @@ Changes:
 - If the `better-exceptions <https://github.com/qix-/better-exceptions>`_ package is present, ``structlog.dev.ConsoleRenderer`` will now pretty-print exceptions using it.
   Pass ``pretty_exceptions=False`` to disable.
   This only works if ``format_exc_info`` is **absent** in the processor chain.
-- ``structlog.threadlocal.get_threadlocal()`` can now be used to get a copy of the current thread-local context that has been bound using ``structlog.threadlocal.bind_threadlocal()``.
-- ``structlog.threadlocal.get_merged_threadlocal(bl)`` does the same, but also merges the context from a bound logger *bl*.
+- ``structlog.threadlocal.get_threadlocal()`` and ``structlog.contextvars.get_threadlocal()`` can now be used to get a copy of the current thread-local/context-local context that has been bound using ``structlog.threadlocal.bind_threadlocal()`` and ``structlog.contextvars.bind_contextvars()``.
+- ``structlog.threadlocal.get_merged_threadlocal(bl)`` and ``structlog.contextvars.get_merged_contextvars(bl)`` do the same, but also merge the context from a bound logger *bl*.
 
 
 ----

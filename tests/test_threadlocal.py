@@ -33,6 +33,14 @@ except ImportError:
     greenlet = None
 
 
+@pytest.fixture(autouse=True)
+def _clear_threadlocal():
+    """
+    Make sure all tests start with a clean slate.
+    """
+    clear_threadlocal()
+
+
 @pytest.fixture
 def D():
     """
@@ -287,7 +295,6 @@ class TestNewThreadLocal:
         Binding a variable causes it to be included in the result of
         merge_threadlocal.
         """
-        clear_threadlocal()
         bind_threadlocal(a=1)
 
         assert {"a": 1, "b": 2} == merge_threadlocal(None, None, {"b": 2})
@@ -307,8 +314,6 @@ class TestNewThreadLocal:
         merge_threadlocal returns values as normal even when there has
         been no previous calls to bind_threadlocal.
         """
-        clear_threadlocal()
-
         assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_multiple_binds(self):
@@ -316,7 +321,6 @@ class TestNewThreadLocal:
         Multiple calls to bind_threadlocal accumulate values instead of
         replacing them.
         """
-        clear_threadlocal()
         bind_threadlocal(a=1, b=2)
         bind_threadlocal(c=3)
 
@@ -329,7 +333,6 @@ class TestNewThreadLocal:
         Test that unbinding from threadlocal works for keys that exist
         and does not raise error when they do not exist.
         """
-        clear_threadlocal()
         bind_threadlocal(a=234, b=34)
 
         assert {"a": 234, "b": 34} == get_threadlocal()
@@ -360,7 +363,6 @@ class TestNewThreadLocal:
         Returns a copy of the threadlocal context merged with the logger's
         context.
         """
-        clear_threadlocal()
         bind_threadlocal(x=1)
 
         log = structlog.get_logger().bind(y=2)
