@@ -18,11 +18,47 @@ import contextvars
 
 from typing import Any, Dict
 
-from .types import EventDict, WrappedLogger
+import structlog
+
+from .types import BindableLogger, EventDict, WrappedLogger
 
 
 STRUCTLOG_KEY_PREFIX = "structlog_"
+STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
+
+# For proper isolation, we have to use a dict of ContextVars instead of a
+# single ContextVar with a dict.
+# See https://github.com/hynek/structlog/pull/302 for details.
 _CONTEXT_VARS: Dict[str, contextvars.ContextVar[Any]] = {}
+
+
+def get_contextvars() -> Dict[str, Any]:
+    """
+    Return a copy of the ``structlog``-specific context-local context.
+
+    .. versionadded:: 21.2.0
+    """
+    rv = {}
+    ctx = contextvars.copy_context()
+
+    for k in ctx:
+        if k.name.startswith(STRUCTLOG_KEY_PREFIX) and ctx[k] is not Ellipsis:
+            rv[k.name[STRUCTLOG_KEY_PREFIX_LEN:]] = ctx[k]
+
+    return rv
+
+
+def get_merged_contextvars(bound_logger: BindableLogger) -> Dict[str, Any]:
+    """
+    Return a copy of the current context-local context merged with the context
+    from *bound_logger*.
+
+    .. versionadded:: 21.2.0
+    """
+    ctx = get_contextvars()
+    ctx.update(structlog.get_context(bound_logger))
+
+    return ctx
 
 
 def merge_contextvars(
@@ -41,7 +77,7 @@ def merge_contextvars(
 
     for k in ctx:
         if k.name.startswith(STRUCTLOG_KEY_PREFIX) and ctx[k] is not Ellipsis:
-            event_dict.setdefault(k.name[len(STRUCTLOG_KEY_PREFIX) :], ctx[k])
+            event_dict.setdefault(k.name[STRUCTLOG_KEY_PREFIX_LEN:], ctx[k])
 
     return event_dict
 

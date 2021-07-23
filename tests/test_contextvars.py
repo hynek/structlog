@@ -7,9 +7,14 @@ import secrets
 
 import pytest
 
+import structlog
+
 from structlog.contextvars import (
+    _CONTEXT_VARS,
     bind_contextvars,
     clear_contextvars,
+    get_contextvars,
+    get_merged_contextvars,
     merge_contextvars,
     unbind_contextvars,
 )
@@ -19,7 +24,15 @@ from structlog.contextvars import (
 pytestmark = pytest.mark.asyncio
 
 
-class TestNewContextvars:
+@pytest.fixture(autouse=True)
+def _clear_contextvars():
+    """
+    Make sure all tests start with a clean slate.
+    """
+    clear_contextvars()
+
+
+class TestContextvars:
     async def test_bind(self, event_loop):
         """
         Binding a variable causes it to be included in the result of
@@ -145,7 +158,6 @@ class TestNewContextvars:
         Binding a variable causes it to be included in the result of
         merge_contextvars.
         """
-
         coro1_bind = asyncio.Event()
         coro2_bind = asyncio.Event()
 
@@ -172,3 +184,23 @@ class TestNewContextvars:
 
         assert {"a": 1, "b": 2, "c": 3} == await coro1_task
         assert {"a": 2, "b": 2, "c": 3} == await coro2_task
+
+    def test_get_only_gets_structlog_without_deleted(self):
+        """
+        get_contextvars returns only the structlog-specific key/values with the
+        prefix removed. Deleted keys (= Ellipsis) are ignored.
+        """
+        bind_contextvars(a=1, b=2)
+        unbind_contextvars("b")
+        _CONTEXT_VARS["foo"] = "bar"
+
+        assert {"a": 1} == get_contextvars()
+
+    def test_get_merged_merges_context(self):
+        """
+        get_merged_contextvars merges a bound context into the copy.
+        """
+        bind_contextvars(x=1)
+        log = structlog.get_logger().bind(y=2)
+
+        assert {"x": 1, "y": 2} == get_merged_contextvars(log)
