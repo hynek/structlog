@@ -62,9 +62,19 @@ if colorama is not None:
 else:
     _has_colorama = False
 
-    RESET_ALL = (
-        BRIGHT
-    ) = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = RED_BACK = ""
+    # These are the same values as the colorama color codes. Redefining them
+    # here allows users to specify that they want color without having to 
+    # install colorama, which is only supposed to be necessary in Windows.
+    RESET_ALL = '\033[0m'
+    BRIGHT = '\033[1m'
+    DIM = '\033[2m'
+    RED = '\033[31m'
+    BLUE = '\033[34m'
+    CYAN = '\033[36m'
+    MAGENTA = '\033[35m'
+    YELLOW = '\033[33m'
+    GREEN = '\033[32m'
+    RED_BACK = '\033[41m'
 
 
 class _Styles(Protocol):
