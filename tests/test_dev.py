@@ -26,7 +26,7 @@ class TestPad:
 
 @pytest.fixture(name="cr")
 def _cr():
-    return dev.ConsoleRenderer(colors=dev._has_colorama)
+    return dev.ConsoleRenderer(colors=dev._use_colors)
 
 
 @pytest.fixture(name="styles")
@@ -47,11 +47,14 @@ def _unpadded(styles):
 
 
 class TestConsoleRenderer:
-    @pytest.mark.skipif(dev._has_colorama, reason="Colorama must be missing.")
+    @pytest.mark.skipif(dev.colorama, reason="Colorama must be missing.")
+    @pytest.mark.skipif(
+        not dev._IS_WINDOWS, reason="Must be running on Windows."
+    )
     def test_missing_colorama(self):
         """
         ConsoleRenderer(colors=True) raises SystemError on initialization if
-        colorama is missing.
+        colorama is missing and _IS_WINDOWS is True.
         """
         with pytest.raises(SystemError) as e:
             dev.ConsoleRenderer(colors=True)
@@ -117,11 +120,11 @@ class TestConsoleRenderer:
         Stdlib levels are rendered aligned, in brackets, and color coded.
         """
         my_styles = dev.ConsoleRenderer.get_default_level_styles(
-            colors=dev._has_colorama
+            colors=dev._use_colors
         )
         my_styles["MY_OH_MY"] = my_styles["critical"]
         cr = dev.ConsoleRenderer(
-            colors=dev._has_colorama, level_styles=my_styles
+            colors=dev._use_colors, level_styles=my_styles
         )
 
         # this would blow up if the level_styles override failed
@@ -234,7 +237,7 @@ class TestConsoleRenderer:
         """
         `pad_event` parameter works.
         """
-        rv = dev.ConsoleRenderer(42, dev._has_colorama)(
+        rv = dev.ConsoleRenderer(42, dev._use_colors)(
             None, None, {"event": "test", "foo": "bar"}
         )
 
@@ -350,7 +353,7 @@ class TestConsoleRenderer:
         If force_colors is True, use colors even if the destination is non-tty.
         """
         cr = dev.ConsoleRenderer(
-            colors=dev._has_colorama, force_colors=dev._has_colorama
+            colors=dev._use_colors, force_colors=dev._use_colors
         )
 
         rv = cr(
@@ -374,7 +377,7 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-        assert not dev._has_colorama or dev._ColorfulStyles is cr._styles
+        assert not dev._use_colors or dev._ColorfulStyles is cr._styles
 
     @pytest.mark.parametrize("rns", [True, False])
     def test_repr_native_str(self, rns):
