@@ -367,13 +367,6 @@ class AsyncBoundLogger:
     the processor chain (e.g. JSON serialization) and I/O won't block your
     whole application.
 
-    .. warning: Since the processor pipeline runs in a separate thread,
-        `structlog.contextvars.merge_contextvars` does **nothing** and should
-        be removed from you processor chain.
-
-        Instead it's merged within **this logger** before handing off log
-        processing to the thread.
-
     Only available for Python 3.7 and later.
 
     :ivar structlog.stdlib.BoundLogger sync_bl: The wrapped synchronous logger.
