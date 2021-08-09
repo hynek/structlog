@@ -214,10 +214,13 @@ class ConsoleRenderer:
                             package="colorama",
                         )
                     )
+                # Colorama must be init'd on Windows, but must NOT be
+                # init'd on other OSes, because it can break colors.
+                if force_colors:
+                    colorama.deinit()
+                    colorama.init(strip=False)
                 else:
-                    # Colorama must be init'd on Windows, but must NOT be
-                    # init'd on other OSes, because it can break colors.
-                    _init_colorama(force_colors)
+                    colorama.init()
 
             styles = _ColorfulStyles
         else:
@@ -376,14 +379,6 @@ class ConsoleRenderer:
             "debug": styles.level_debug,
             "notset": styles.level_notset,
         }
-
-
-def _init_colorama(force: bool) -> None:
-    if force:
-        colorama.deinit()
-        colorama.init(strip=False)
-    else:
-        colorama.init()
 
 
 _SENTINEL = object()
