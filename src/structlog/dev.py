@@ -73,7 +73,7 @@ else:
     RED_BACK = "\033[41m"
 
 
-if _IS_WINDOWS:
+if _IS_WINDOWS:  # pragma: no cover
     # On Windows, use colors by default only if colorama is installed.
     _use_colors = colorama is not None
 else:
