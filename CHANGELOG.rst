@@ -35,7 +35,9 @@ Changes:
 - ``structlog.threadlocal.get_threadlocal()`` and ``structlog.contextvars.get_threadlocal()`` can now be used to get a copy of the current thread-local/context-local context that has been bound using ``structlog.threadlocal.bind_threadlocal()`` and ``structlog.contextvars.bind_contextvars()``.
 - ``structlog.threadlocal.get_merged_threadlocal(bl)`` and ``structlog.contextvars.get_merged_contextvars(bl)`` do the same, but also merge the context from a bound logger *bl*.
 - All use of ``colorama`` on non-Windows systems has been excised.
-  Colors will now be enabled by default on non-Windows systems even if colorama is not installed, as it's not necessary on such systems.
+  Thus, colors are now enabled by default in ``structlog.dev.ConsoleRenderer`` on non-Windows systems.
+  You can keep using ``colorama`` to customize colors, of course.
+
 
 ----
 
