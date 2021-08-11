@@ -34,7 +34,8 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 - All keywords are formatted using `structlog.dev.ConsoleRenderer`.
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
-- If you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice `colors <development>`.
+- On Windows, if you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice `colors <development>`.
+  Other OSes do not need colorama for nice colors.
 - If you have `better-exceptions <https://github.com/qix-/better-exceptions>`_ installed, exceptions will be rendered in colors and with additional helpful information.
 
 It should be noted that even in most complex logging setups the example would still look just like that thanks to `configuration`.

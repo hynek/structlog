@@ -47,8 +47,6 @@ def _pad(s: str, length: int) -> str:
 
 
 if colorama is not None:
-    _has_colorama = True
-
     RESET_ALL = colorama.Style.RESET_ALL
     BRIGHT = colorama.Style.BRIGHT
     DIM = colorama.Style.DIM
@@ -60,11 +58,27 @@ if colorama is not None:
     GREEN = colorama.Fore.GREEN
     RED_BACK = colorama.Back.RED
 else:
-    _has_colorama = False
+    # These are the same values as the colorama color codes. Redefining them
+    # here allows users to specify that they want color without having to
+    # install colorama, which is only supposed to be necessary in Windows.
+    RESET_ALL = "\033[0m"
+    BRIGHT = "\033[1m"
+    DIM = "\033[2m"
+    RED = "\033[31m"
+    BLUE = "\033[34m"
+    CYAN = "\033[36m"
+    MAGENTA = "\033[35m"
+    YELLOW = "\033[33m"
+    GREEN = "\033[32m"
+    RED_BACK = "\033[41m"
 
-    RESET_ALL = (
-        BRIGHT
-    ) = DIM = RED = BLUE = CYAN = MAGENTA = YELLOW = GREEN = RED_BACK = ""
+
+if _IS_WINDOWS:  # pragma: no cover
+    # On Windows, use colors by default only if colorama is installed.
+    _use_colors = colorama is not None
+else:
+    # On other OSes, use colors by default.
+    _use_colors = True
 
 
 class _Styles(Protocol):
@@ -174,34 +188,39 @@ class ConsoleRenderer:
        `structlog.processors.format_exc_info` processor together with
        `ConsoleRenderer` anymore! It will keep working, but you can't have
        pretty exceptions and a warning will be raised if you ask for them.
+    .. versionchanged:: 21.3 The colors keyword now defaults to True on
+       non-Windows systems, and either True or False in Windows depending on
+       whether colorama is installed.
     """
 
     def __init__(
         self,
         pad_event: int = _EVENT_WIDTH,
-        colors: bool = _has_colorama,
+        colors: bool = _use_colors,
         force_colors: bool = False,
         repr_native_str: bool = False,
         level_styles: Optional[Styles] = None,
         pretty_exceptions: bool = (better_exceptions is not None),
     ):
-        self._force_colors = self._init_colorama = False
         styles: Styles
-        if colors is True:
-            if colorama is None:
-                raise SystemError(
-                    _MISSING.format(
-                        who=self.__class__.__name__ + " with `colors=True`",
-                        package="colorama",
-                    )
-                )
-
+        if colors:
             if _IS_WINDOWS:  # pragma: no cover
-                _init_colorama(self._force_colors)
-            else:
-                self._init_colorama = True
+                # On Windows, we can't do colorful output without colorama.
+                if colorama is None:
+                    classname = self.__class__.__name__
+                    raise SystemError(
+                        _MISSING.format(
+                            who=classname + " with `colors=True`",
+                            package="colorama",
+                        )
+                    )
+                # Colorama must be init'd on Windows, but must NOT be
+                # init'd on other OSes, because it can break colors.
                 if force_colors:
-                    self._force_colors = True
+                    colorama.deinit()
+                    colorama.init(strip=False)
+                else:
+                    colorama.init()
 
             styles = _ColorfulStyles
         else:
@@ -241,10 +260,6 @@ class ConsoleRenderer:
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> str:
 
-        # Initialize lazily to prevent import side-effects.
-        if self._init_colorama:
-            _init_colorama(self._force_colors)
-            self._init_colorama = False
         sio = StringIO()
 
         ts = event_dict.pop("timestamp", None)
@@ -364,14 +379,6 @@ class ConsoleRenderer:
             "debug": styles.level_debug,
             "notset": styles.level_notset,
         }
-
-
-def _init_colorama(force: bool) -> None:
-    if force:
-        colorama.deinit()
-        colorama.init(strip=False)
-    else:
-        colorama.init()
 
 
 _SENTINEL = object()
