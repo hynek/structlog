@@ -50,8 +50,8 @@ The general flow of using these functions is:
    >>> from structlog.threadlocal import (
    ...     bind_threadlocal,
    ...     clear_threadlocal,
-   ...     get_threadlocal,
    ...     get_merged_threadlocal,
+   ...     get_threadlocal,
    ...     merge_threadlocal,
    ... )
    >>> from structlog import configure
