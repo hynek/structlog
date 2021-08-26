@@ -1,4 +1,4 @@
-Thread Local-Context
+Thread-Local Context
 ====================
 
 .. testsetup:: *
@@ -50,6 +50,8 @@ The general flow of using these functions is:
    >>> from structlog.threadlocal import (
    ...     bind_threadlocal,
    ...     clear_threadlocal,
+   ...     get_threadlocal,
+   ...     get_merged_threadlocal,
    ...     merge_threadlocal,
    ... )
    >>> from structlog import configure
@@ -61,7 +63,7 @@ The general flow of using these functions is:
    ... )
    >>> log = structlog.get_logger()
    >>> # At the top of your request handler (or, ideally, some general
-   >>> # middleware), clear the threadlocal context and bind some common
+   >>> # middleware), clear the thread-local context and bind some common
    >>> # values:
    >>> clear_threadlocal()
    >>> bind_threadlocal(a=1)
@@ -69,7 +71,13 @@ The general flow of using these functions is:
    >>> # (perhaps by using structlog.get_logger() to create them).
    >>> log.msg("hi")
    a=1 event='hi'
-   >>> # And when we clear the threadlocal state again, it goes away.
+   >>> # You can access the current thread-local state.
+   >>> get_threadlocal()
+   {'a': 1}
+   >>> # Or get it merged with a bound logger.
+   >>> get_merged_threadlocal(log.bind(example=True))
+   {'a': 1, 'example': True}
+   >>> # And when we clear the thread-local state again, it goes away.
    >>> clear_threadlocal()
    >>> log.msg("hi there")
    event='hi there'
