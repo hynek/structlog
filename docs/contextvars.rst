@@ -15,7 +15,7 @@ Context Variables
 Historically, ``structlog`` only supported thread-local context binding.
 With the introduction of :mod:`contextvars` in Python 3.7, there is now a way of having a global context that is local to the current context and even works in concurrent code such as code using :mod:`asyncio`.
 
-For that ``structlog`` provides a the `structlog.contextvars` module with a set of functions to bind variables to a context-local context.
+For that ``structlog`` provides the `structlog.contextvars` module with a set of functions to bind variables to a context-local context.
 This context is safe to be used in asynchronous code.
 
 The general flow is:
@@ -24,7 +24,7 @@ The general flow is:
 - Call `structlog.contextvars.clear_contextvars` at the beginning of your request handler (or whenever you want to reset the context-local context).
 - Call `structlog.contextvars.bind_contextvars` and `structlog.contextvars.unbind_contextvars` instead of your bound logger's ``bind()`` and ``unbind()`` when you want to bind and unbind key-value pairs to the context-local context.
 - Use ``structlog`` as normal.
-  Loggers act as the always do, but the `structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
+  Loggers act as they always do, but the `structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
 
 .. doctest::
 
