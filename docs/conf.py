@@ -35,7 +35,6 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
-    "sphinx_toolbox.more_autodoc.autoprotocol",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -70,7 +69,7 @@ nitpick_ignore = [
     ("py:class", "BinaryIO"),
     ("py:class", "ILogObserver"),
     ("py:class", "PlainFileObserver"),
-    ("py:class", "TLLogger"),
+    ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "TextIO"),
     ("py:class", "traceback"),
     ("py:class", "structlog._base.BoundLoggerBase"),

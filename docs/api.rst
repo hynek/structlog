@@ -297,7 +297,7 @@ Please see :doc:`thread-local` for details.
 
 .. automodule:: structlog.types
 
-.. autoprotocol:: BindableLogger
+.. autoclass:: BindableLogger
 
    Additionally to the methods listed below, bound loggers **must** have a ``__init__`` method with the following signature:
 
@@ -308,7 +308,15 @@ Please see :doc:`thread-local` for details.
 
    They currently also have to carry a `Context` as a ``_context`` attribute.
 
-.. autoprotocol:: FilteringBoundLogger
+   .. note::
+
+     Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
+
+.. autoclass:: FilteringBoundLogger
+
+   .. note::
+
+     Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
 
 .. autodata:: EventDict
 .. autodata:: WrappedLogger

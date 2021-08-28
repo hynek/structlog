@@ -95,8 +95,8 @@ Used by `structlog.dev.ConsoleRenderer`.
 @runtime_checkable
 class BindableLogger(Protocol):
     """
-    Methods shared among all bound loggers and that are relied on by
-    ``structlog``.
+    **Protocol**: Methods shared among all bound loggers and that are relied on
+    by ``structlog``.
 
     .. versionadded:: 20.2
     """
@@ -118,10 +118,9 @@ class BindableLogger(Protocol):
 
 class FilteringBoundLogger(BindableLogger, Protocol):
     """
-    A `BindableLogger` that filters by a level.
+    **Protocol**: A `BindableLogger` that filters by a level.
 
-    Currently, the only way to instantiate one is using
-    `make_filtering_bound_logger`.
+    The only way to instantiate one is using `make_filtering_bound_logger`.
 
     .. versionadded:: 20.2.0
     """

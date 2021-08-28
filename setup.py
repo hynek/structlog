@@ -53,17 +53,7 @@ EXTRAS_REQUIRE = {
         "pytest>=6.0",
         "simplejson",
     ],
-    "docs": [
-        "furo",
-        "sphinx",
-        "twisted",
-        # Explicitly list sphinx-toolbox dependencies.
-        # Unfortunately they break very frequently.
-        "sphinx-toolbox<2.12",
-        "apeye<1.0",
-        "cachecontrol",
-        "lockfile",
-    ],
+    "docs": ["furo", "sphinx", "twisted"],
 }
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit"]

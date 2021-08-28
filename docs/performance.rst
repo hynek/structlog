@@ -80,7 +80,7 @@ It has the following properties:
 - Renders exceptions.
 - Adds an `ISO 8601 <https://en.wikipedia.org/wiki/ISO_8601>`_ timestamp under the ``timestamp`` key in the UTC timezone.
 - Renders the log entries as JSON using orjson_ which is faster than plain logging in `logging`.
-- Uses `BytesLoggerFactory` because orjson returns bytes.
+- Uses `structlog.BytesLoggerFactory` because orjson returns bytes.
   That saves encoding ping-pong.
 
 Therefore a log entry might look like this:

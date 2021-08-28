@@ -51,7 +51,7 @@ It's much easier to demonstrate with an example:
 You can observe the following:
 
 - The wrapped logger can be found in the instance variable `structlog.BoundLoggerBase._logger`.
-- The helper method `structlog.BoundLoggerBase._proxy_to_logger` that is a DRY_ convenience function that runs the processor chain, handles possible `DropEvent`\ s and calls a named function on `_logger`.
+- The helper method `structlog.BoundLoggerBase._proxy_to_logger` that is a DRY_ convenience function that runs the processor chain, handles possible `structlog.DropEvent`\ s and calls a named function on `_logger`.
 - You can run the chain by hand through using `structlog.BoundLoggerBase._process_event` .
 
 These two methods and one attribute are all you need to write own wrapper classes.
