@@ -12,10 +12,16 @@ import sys
 import warnings
 
 from io import StringIO
-from typing import Any, Optional, Type, Union
+from typing import Any, Optional, TextIO, Type, Union
 
 from ._frames import _format_exception
-from .types import EventDict, Protocol, WrappedLogger
+from .types import (
+    EventDict,
+    ExceptionFormatter,
+    ExcInfo,
+    Protocol,
+    WrappedLogger,
+)
 
 
 try:
@@ -28,8 +34,21 @@ try:
 except ImportError:
     better_exceptions = None
 
+try:
+    import rich
 
-__all__ = ["ConsoleRenderer"]
+    from rich.console import Console
+    from rich.traceback import Traceback
+except ImportError:
+    rich = None  # type: ignore
+
+
+__all__ = [
+    "ConsoleRenderer",
+    "plain_traceback",
+    "rich_traceback",
+    "better_traceback",
+]
 
 _IS_WINDOWS = sys.platform == "win32"
 
@@ -137,13 +156,64 @@ class _PlainStyles:
     kv_value = ""
 
 
+def plain_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
+    """
+    "Pretty"-print *exc_info* to *sio* using our own plain formatter.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    Used by default if neither ``rich`` not ``better-exceptions`` are present.
+
+    .. versionadded:: 21.2
+    """
+    sio.write("\n" + _format_exception(exc_info))
+
+
+def rich_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
+    """
+    Pretty-print *exc_info* to *sio* using the ``rich`` package.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    Used by default if ``rich`` is installed.
+
+    .. versionadded:: 21.2
+    """
+    sio.write("\n")
+    Console(file=sio, color_system="truecolor").print(
+        Traceback.from_exception(*exc_info, show_locals=True)
+    )
+
+
+def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
+    """
+    Pretty-print *exc_info* to *sio* using the ``better-exceptions`` package.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    Used by default if ``better-exceptions`` is installed and ``rich`` is
+    absent.
+
+    .. versionadded:: 21.2
+    """
+    sio.write("\n" + "".join(better_exceptions.format_exception(*exc_info)))
+
+
+if rich is not None:
+    default_exception_formatter = rich_traceback
+elif better_exceptions is not None:  # type: ignore
+    default_exception_formatter = better_traceback
+else:
+    default_exception_formatter = plain_traceback
+
+
 class ConsoleRenderer:
     """
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
     If ``event_dict`` contains a true-ish ``exc_info`` key, it will be
-    rendered *after* the log line. If better-exceptions_ is present, in
-    colors and with extra context.
+    rendered *after* the log line. If rich_ or better-exceptions_ are present,
+    in colors and with extra context.
 
     :param pad_event: Pad the event to this many characters.
     :param colors: Use colors for a nicer output. `True` by default if
@@ -160,14 +230,17 @@ class ConsoleRenderer:
         must be a dict from level names (strings) to colorama styles. The
         default can be obtained by calling
         `ConsoleRenderer.get_default_level_styles`
-    :param pretty_exceptions: Render exceptions with colors and extra
-        information. `True` by default if better-exceptions_ is installed.
+    :param exception_formatter: A callable to render ``exc_infos``. If rich_
+        or better-exceptions_ are installed, they are used for pretty-printing
+        by default (rich_ taking precendence). You can also manually set it to
+        `plain_traceback`, `better_traceback`, `rich_traceback`, or implement
+        your own.
 
-    Requires the colorama_ package if *colors* is `True`, and the
-    better-exceptions_ package if *pretty_exceptions* is `True`.
+    Requires the colorama_ package if *colors* is `True` **on Windows**.
 
     .. _colorama: https://pypi.org/project/colorama/
     .. _better-exceptions: https://pypi.org/project/better-exceptions/
+    .. _rich: https://pypi.org/project/rich/
 
     .. versionadded:: 16.0
     .. versionadded:: 16.1 *colors*
@@ -182,13 +255,14 @@ class ConsoleRenderer:
        anymore because it breaks rendering.
     .. versionchanged:: 21.1 It is additionally possible to set the logger name
        using the ``logger_name`` key in the ``event_dict``.
-    .. versionadded:: 21.2 *pretty_exceptions*
+    .. versionadded:: 21.2 *exception_formatter*
     .. versionchanged:: 21.2 `ConsoleRenderer` now handles the ``exc_info``
        event dict key itself. Do **not** use the
        `structlog.processors.format_exc_info` processor together with
        `ConsoleRenderer` anymore! It will keep working, but you can't have
-       pretty exceptions and a warning will be raised if you ask for them.
-    .. versionchanged:: 21.3 The colors keyword now defaults to True on
+       customize exception formatting and a warning will be raised if you ask
+       for it.
+    .. versionchanged:: 21.2 The colors keyword now defaults to True on
        non-Windows systems, and either True or False in Windows depending on
        whether colorama is installed.
     """
@@ -200,7 +274,7 @@ class ConsoleRenderer:
         force_colors: bool = False,
         repr_native_str: bool = False,
         level_styles: Optional[Styles] = None,
-        pretty_exceptions: bool = (better_exceptions is not None),
+        exception_formatter: ExceptionFormatter = default_exception_formatter,
     ):
         styles: Styles
         if colors:
@@ -241,7 +315,7 @@ class ConsoleRenderer:
         )
 
         self._repr_native_str = repr_native_str
-        self._pretty_exceptions = pretty_exceptions
+        self._exception_formatter = exception_formatter
 
     def _repr(self, val: Any) -> str:
         """
@@ -331,17 +405,11 @@ class ConsoleRenderer:
             if not isinstance(exc_info, tuple):
                 exc_info = sys.exc_info()
 
-            if self._pretty_exceptions:
-                sio.write(
-                    "\n"
-                    + "".join(better_exceptions.format_exception(*exc_info))
-                )
-            else:
-                sio.write("\n" + _format_exception(exc_info))
+            self._exception_formatter(sio, exc_info)
         elif exc is not None:
-            if self._pretty_exceptions:
+            if self._exception_formatter is not plain_traceback:
                 warnings.warn(
-                    "Remove `render_exc_info` from your processor chain "
+                    "Remove `format_exc_info` from your processor chain "
                     "if you want pretty exceptions."
                 )
             sio.write("\n" + exc)

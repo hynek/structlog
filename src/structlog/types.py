@@ -17,6 +17,7 @@ from typing import (
     Mapping,
     MutableMapping,
     Optional,
+    TextIO,
     Tuple,
     Type,
     Union,
@@ -78,6 +79,16 @@ ExcInfo = Tuple[Type[BaseException], BaseException, Optional[TracebackType]]
 An exception info tuple as returned by `sys.exc_info`.
 
 .. versionadded:: 20.2
+"""
+
+
+ExceptionFormatter = Callable[[TextIO, ExcInfo], None]
+"""
+A callable that pretty-prints an `ExcInfo` into a file-like object.
+
+Used by `structlog.dev.ConsoleRenderer`.
+
+.. versionadded:: 21.2
 """
 
 
