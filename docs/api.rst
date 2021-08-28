@@ -73,6 +73,10 @@ API Reference
 .. autoclass:: ConsoleRenderer
    :members: get_default_level_styles
 
+.. autofunction:: plain_traceback
+.. autofunction:: rich_traceback
+.. autofunction:: better_traceback
+
 .. autofunction:: set_exc_info
 
 
@@ -311,6 +315,7 @@ Please see :doc:`thread-local` for details.
 .. autodata:: Processor
 .. autodata:: Context
 .. autodata:: ExcInfo
+.. autodata:: ExceptionFormatter
 
 
 `structlog.twisted` Module

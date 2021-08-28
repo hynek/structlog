@@ -5,6 +5,8 @@
 import pickle
 import sys
 
+from io import StringIO
+
 import pytest
 
 from structlog import dev
@@ -26,7 +28,9 @@ class TestPad:
 
 @pytest.fixture(name="cr")
 def _cr():
-    return dev.ConsoleRenderer(colors=dev._use_colors)
+    return dev.ConsoleRenderer(
+        colors=dev._use_colors, exception_formatter=dev.plain_traceback
+    )
 
 
 @pytest.fixture(name="styles")
@@ -204,23 +208,27 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-    def test_exception_rendered(self, cr, padded, recwarn):
+    @pytest.mark.parametrize("wrap", [True, False])
+    def test_exception_rendered(self, cr, padded, recwarn, wrap):
         """
         Exceptions are rendered after a new line if they are already rendered
         in the event dict.
 
-        A warning is emitted if pretty exceptions are active.
+        A warning is emitted if exception printing is "customized".
         """
         exc = "Traceback:\nFake traceback...\nFakeError: yolo"
 
+        # Wrap the formatter to provoke the warning.
+        if wrap:
+            cr._exception_formatter = lambda s, ei: dev.plain_tracebacks(s, ei)
         rv = cr(None, None, {"event": "test", "exception": exc})
 
         assert (padded + "\n" + exc) == rv
 
-        if cr._pretty_exceptions:
+        if wrap:
             (w,) = recwarn.list
             assert (
-                "Remove `render_exc_info` from your processor chain "
+                "Remove `format_exc_info` from your processor chain "
                 "if you want pretty exceptions.",
             ) == w.message.args
 
@@ -289,10 +297,7 @@ class TestConsoleRenderer:
                 rv = cr(None, None, ed)
                 ei = sys.exc_info()
 
-        if dev.better_exceptions:
-            exc = "".join(dev.better_exceptions.format_exception(*ei))
-        else:
-            exc = dev._format_exception(ei)
+        exc = dev._format_exception(ei)
 
         assert (
             styles.timestamp
@@ -431,3 +436,53 @@ class TestSetExcInfo:
         exception.
         """
         assert {"exc_info": True} == dev.set_exc_info(None, "exception", {})
+
+
+@pytest.mark.skipif(dev.rich is None, reason="Needs rich.")
+class TestRichTraceback:
+    def test_default(self):
+        """
+        If rich is present, it's the default.
+        """
+        assert dev.default_exception_formatter is dev.rich_traceback
+
+    def test_does_not_blow_up(self):
+        """
+        We trust rich to do the right thing, so we just exercise the function
+        and check the first new line that we add manually is present.
+        """
+        sio = StringIO()
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            dev.rich_traceback(sio, sys.exc_info())
+
+        assert sio.getvalue().startswith("\n")
+
+
+@pytest.mark.skipif(
+    dev.better_exceptions is None, reason="Needs better-exceptions."
+)
+class TestBetterTraceback:
+    def test_default(self):
+        """
+        If better-exceptions is present and rich is NOT present, it's the
+        default.
+        """
+        assert (
+            dev.rich is not None
+            or dev.default_exception_formatter is dev.better_traceback
+        )
+
+    def test_does_not_blow_up(self):
+        """
+        We trust better-exceptions to do the right thing, so we just exercise
+        the function.
+        """
+        sio = StringIO()
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            dev.better_traceback(sio, sys.exc_info())
+
+        assert sio.getvalue().startswith("\n")

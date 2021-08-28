@@ -10,9 +10,9 @@ Installation
 
    $ pip install structlog
 
-If you'd like colorful output and pretty exceptions in development (you know you do!), install using::
+If you want pretty exceptions in development (you know you do!), additionally install either `rich <https://github.com/willmcgugan/rich>`_ or `better-exceptions <https://github.com/qix-/better-exceptions>`_. Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by ``rich``.
 
-   $ pip install structlog colorama better-exceptions
+On Windows, you also have to install `colorama`_ if you want colorful output beside exceptions.
 
 
 Your First Log Entry

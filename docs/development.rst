@@ -4,7 +4,11 @@ Development
 To make development a more pleasurable experience, ``structlog`` comes with the `structlog.dev` module.
 
 The highlight is `structlog.dev.ConsoleRenderer` that offers nicely aligned and colorful (requires the `colorama package <https://pypi.org/project/colorama/>`_ if on Windows) console output.
-If the `better-exceptions <https://github.com/Qix-/better-exceptions>`_ package is installed, it will also pretty-print exceptions with helpful contextual data.
+
+If one of the `rich <https://rich.readthedocs.io/>`_ or  `better-exceptions <https://github.com/Qix-/better-exceptions>`_ packages is installed, it will also pretty-print exceptions with helpful contextual data.
+``rich`` takes precedence over ``better-exceptions``, but you can configure it by passing `structlog.dev.plain_traceback` or `structlog.dev.better_traceback` for the ``exception_formatter`` parameter of `ConsoleRenderer`.
+
+The following output is rendered using ``rich``:
 
 .. figure:: _static/console_renderer.png
    :alt: Colorful console output by ConsoleRenderer.
