@@ -101,7 +101,7 @@ With that, it's also the *only* processor that needs to know anything about the 
 
 It can return one of three types:
 
-- An Unicode string or a bytes string (i.e. `str` or `bytes`) that is passed as the first (and only) positional argument to the underlying logger.
+- An Unicode string (`str`), a bytes string (`bytes`), or a `bytearray` that is passed as the first (and only) positional argument to the underlying logger.
 - A tuple of ``(args, kwargs)`` that are passed as ``log_method(*args, **kwargs)``.
 - A dictionary which is passed as ``log_method(**kwargs)``.
 

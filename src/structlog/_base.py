@@ -131,7 +131,7 @@ class BoundLoggerBase:
 
         :raises: `structlog.DropEvent` if log entry should be dropped.
         :raises: `ValueError` if the final processor doesn't return a
-            str, bytes, tuple, or a dict.
+            str, bytes, bytearray, tuple, or a dict.
 
         :returns: `tuple` of ``(*args, **kw)``
 
@@ -143,6 +143,10 @@ class BoundLoggerBase:
 
         .. versionchanged:: 14.0.0
             Allow final processor to return a `dict`.
+        .. versionchanged:: 20.2.0
+            Allow final processor to return `bytes`.
+        .. versionchanged:: 21.2.0
+            Allow final processor to return a `bytearray`.
         """
         # We're typing it as Any, because processors can return more than an
         # EventDict.
@@ -154,7 +158,7 @@ class BoundLoggerBase:
         for proc in self._processors:
             event_dict = proc(self._logger, method_name, event_dict)
 
-        if isinstance(event_dict, (str, bytes)):
+        if isinstance(event_dict, (str, bytes, bytearray)):
             return (event_dict,), {}
         elif isinstance(event_dict, tuple):
             # In this case we assume that the last processor returned a tuple
