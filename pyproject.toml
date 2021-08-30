@@ -24,12 +24,18 @@ source = ["src", ".tox/*/site-packages"]
 show_missing = true
 skip_covered = true
 exclude_lines = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-    "raise NotImplementedError",
+    # a more strict default pragma
+    "\\# pragma: no cover\\b",
+
+    # allow defensive code
+    "^\\s*raise AssertionError\\b",
+    "^\\s*raise NotImplementedError\\b",
+    "^\\s*return NotImplemented\\b",
+    "^\\s*raise$",
+
     # typing-related code
     "^if (False|TYPE_CHECKING):",
-    ": \\.\\.\\.$",
+    ": \\.\\.\\.(\\s*#.*)?$",
     "^ +\\.\\.\\.$",
     "-> ['\"]?NoReturn['\"]?:",
 ]
