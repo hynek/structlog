@@ -186,6 +186,16 @@ class TestProcessing:
 
         assert ((b"foo",), {}) == b._process_event(None, "name", {})
 
+    def test_last_processor_returns_bytearray(self):
+        """
+        If the final processor returns a bytearray, ``(the_array,), {}`` is
+        returned.
+        """
+        logger = stub(msg=lambda *args, **kw: (args, kw))
+        b = build_bl(logger, processors=[lambda *_: bytearray(b"foo")])
+
+        assert ((bytearray(b"foo"),), {}) == b._process_event(None, "name", {})
+
     def test_last_processor_returns_tuple(self):
         """
         If the final processor returns a tuple, it is just passed through.

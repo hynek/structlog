@@ -39,6 +39,8 @@ Changes:
 - All use of ``colorama`` on non-Windows systems has been excised.
   Thus, colors are now enabled by default in ``structlog.dev.ConsoleRenderer`` on non-Windows systems.
   You can keep using ``colorama`` to customize colors, of course.
+- The final processor can now return a ``bytearray`` (additionally to ``str`` and ``bytes``).
+  `#344 <https://github.com/hynek/structlog/issues/344>`_
 
 
 ----
