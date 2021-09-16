@@ -202,7 +202,9 @@ Rendering Using `logging`-based Formatters
             structlog.processors.UnicodeDecoder(),
             # Transform event dict into `logging.Logger` method arguments.
             # "event" becomes "msg" and the rest is passed as a dict in
-            # "extra".
+            # "extra". IMPORTANT: This means that the standard library MUST
+            # render "extra" for the context to appear in log entries! See
+            # warning below.
             structlog.stdlib.render_to_log_kwargs,
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),
