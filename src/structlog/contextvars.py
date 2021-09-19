@@ -16,7 +16,7 @@ See :doc:`contextvars`.
 
 import contextvars
 
-from typing import Any, Dict
+from typing import Any, Dict, Mapping
 
 import structlog
 
@@ -98,16 +98,22 @@ def clear_contextvars() -> None:
             k.set(Ellipsis)
 
 
-def bind_contextvars(**kw: Any) -> None:
-    """
+def bind_contextvars(**kw: Any) -> "Mapping[str, contextvars.Token[Any]]":
+    r"""
     Put keys and values into the context-local context.
 
     Use this instead of :func:`~structlog.BoundLogger.bind` when you want some
     context to be global (context-local).
 
+    Return the mapping of ``contextvars.Token``\s resulting
+    from setting the backing ``ContextVar``\s.
+    Suitable for passing to :func:`reset_contextvars`.
+
     .. versionadded:: 20.1.0
-    .. versionchanged:: 21.1.0 See toplevel note.
+    .. versionchanged:: 21.1.0 Return the ``contextvars.Token`` mapping
+        rather than None. See also the toplevel note.
     """
+    rv = {}
     for k, v in kw.items():
         structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
         try:
@@ -116,7 +122,21 @@ def bind_contextvars(**kw: Any) -> None:
             var = contextvars.ContextVar(structlog_k, default=Ellipsis)
             _CONTEXT_VARS[structlog_k] = var
 
-        var.set(v)
+        rv[k] = var.set(v)
+
+    return rv
+
+
+def reset_contextvars(**kw: "contextvars.Token[Any]") -> None:
+    r"""
+    Reset contextvars corresponding to the given Tokens.
+
+    .. versionadded:: 21.1.0
+    """
+    for k, v in kw.items():
+        structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
+        var = _CONTEXT_VARS[structlog_k]
+        var.reset(v)
 
 
 def unbind_contextvars(*keys: str) -> None:

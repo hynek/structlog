@@ -176,6 +176,7 @@ Please see :doc:`thread-local` for details.
 .. autofunction:: merge_contextvars
 .. autofunction:: clear_contextvars
 .. autofunction:: unbind_contextvars
+.. autofunction:: reset_contextvars
 
 
 .. _procs:

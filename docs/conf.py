@@ -71,7 +71,10 @@ nitpick_ignore = [
     ("py:class", "PlainFileObserver"),
     ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "TextIO"),
+    ("py:class", "TLLogger"),
+    ("py:class", "Token"),
     ("py:class", "traceback"),
+    ("py:class", "contextvars.Token"),
     ("py:class", "structlog._base.BoundLoggerBase"),
     ("py:class", "structlog.dev._Styles"),
     ("py:class", "structlog.types.EventDict"),
@@ -163,4 +166,4 @@ linkcheck_ignore = [
 # Twisted's trac tends to be slow
 linkcheck_timeout = 300
 
-intersphinx_mapping = {"https://docs.python.org/3": None}
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
