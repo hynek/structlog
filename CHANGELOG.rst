@@ -41,6 +41,7 @@ Changes:
   You can keep using ``colorama`` to customize colors, of course.
 - The final processor can now return a ``bytearray`` (additionally to ``str`` and ``bytes``).
   `#344 <https://github.com/hynek/structlog/issues/344>`_
+- ``structlog.contextvars.bind_contextvars()`` now returns a mapping of keys to ``contextvars.Token``\s, allowing you to reset values using the new ``structlog.contextvars.reset_contextvars()``.
 
 
 ----

@@ -47,6 +47,7 @@ The general flow is:
    >>> # values:
    >>> clear_contextvars()
    >>> bind_contextvars(a=1, b=2)
+   {'a': <Token var=<ContextVar name='structlog_a' default=Ellipsis at ...> at ...>, 'b': <Token var=<ContextVar name='structlog_b' default=Ellipsis at ...> at ...>}
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
    >>> log.msg("hello")
@@ -61,3 +62,18 @@ The general flow is:
    >>> clear_contextvars()
    >>> log.msg("hi there")
    event='hi there' a=None
+
+
+If e.g. your request handler calls a helper function that needs to temporarily override some contextvars before restoring them back to their original values, you can use the :class:`~contextvars.contextvars.Token`\s returned by :func:`~structlog.contextvars.bind_contextvars` along with :func:`~structlog.contextvars.reset_contextvars` to accomplish this (much like how :meth:`contextvars.ContextVar.reset` works):
+
+.. code-block:: python
+
+    def foo():
+        bind_contextvars(a=1)
+        _helper()
+        log.msg("a is restored!")  # a=1
+
+    def _helper():
+        tokens = bind_contextvars(a=2)
+        log.msg("a is overridden")  # a=2
+        reset_contextvars(**tokens)

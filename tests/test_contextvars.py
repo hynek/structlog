@@ -16,6 +16,7 @@ from structlog.contextvars import (
     get_contextvars,
     get_merged_contextvars,
     merge_contextvars,
+    reset_contextvars,
     unbind_contextvars,
 )
 
@@ -62,6 +63,30 @@ class TestContextvars:
             "c": 333,
             "d": 4,
         } == await event_loop.create_task(coro())
+
+    async def test_reset(self, event_loop):
+        """
+        reset_contextvars allows resetting contexvars to
+        previously-set values.
+        """
+
+        async def coro():
+            bind_contextvars(a=1)
+
+            assert {"a": 1} == get_contextvars()
+
+            await event_loop.create_task(nested_coro())
+
+        async def nested_coro():
+            tokens = bind_contextvars(a=2, b=3)
+
+            assert {"a": 2, "b": 3} == get_contextvars()
+
+            reset_contextvars(**tokens)
+
+            assert {"a": 1} == get_contextvars()
+
+        await event_loop.create_task(coro())
 
     async def test_nested_async_bind(self, event_loop):
         """
