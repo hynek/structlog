@@ -16,7 +16,7 @@ Backward-incompatible changes:
 
   Make sure to remove ``format_exc_info`` from your processor chain if you configure ``structlog`` manually.
   This change is not really breaking, because the old use-case will keep working as before.
-  However if you pass ``pretty_exceptions=True`` (which is the default if the ``better-exceptions`` package is present), a warning will be raised and the exception will be renderered without prettyfication.
+  However if you pass ``pretty_exceptions=True`` (which is the default if either ``rich`` or ``better-exceptions`` is installed), a warning will be raised and the exception will be renderered without prettyfication.
 
 
 Deprecations:
