@@ -56,7 +56,7 @@ EXTRAS_REQUIRE = {
     "docs": ["furo", "sphinx", "twisted"],
 }
 EXTRAS_REQUIRE["dev"] = (
-    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit"]
+    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit", "rich"]
 )
 
 ###############################################################################
