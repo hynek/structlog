@@ -29,7 +29,7 @@ The return value of each processor is passed on to the next one as ``event_dict`
 .. note::
 
    ``structlog`` only looks at the return value of the **last** processor.
-   That means that as long as you control the next processor in the pipeline (i.e. the processor that will get your return value passed as an argument), you can return whatever you want.
+   That means that as long as you control the next processor in the chain (i.e. the processor that will get your return value passed as an argument), you can return whatever you want.
 
    Returning a modified event dictionary from your processors is just a convention to make processors composable.
 
