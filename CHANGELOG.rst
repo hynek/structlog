@@ -29,20 +29,21 @@ Changes:
 ^^^^^^^^
 
 - ``structlog`` is now importable if ``sys.stdout`` is ``None`` (e.g. when running using ``pythonw``).
+- ``structlog.threadlocal.get_threadlocal()`` and ``structlog.contextvars.get_contextvars()`` can now be used to get a copy of the current thread-local/context-local context that has been bound using ``structlog.threadlocal.bind_threadlocal()`` and ``structlog.contextvars.bind_contextvars()``.
+- ``structlog.threadlocal.get_merged_threadlocal(bl)`` and ``structlog.contextvars.get_merged_contextvars(bl)`` do the same, but also merge the context from a bound logger *bl*.
+- ``structlog.contextvars.bind_contextvars()`` now returns a mapping of keys to ``contextvars.Token``\s, allowing you to reset values using the new ``structlog.contextvars.reset_contextvars()``.
+  `#339 <https://github.com/hynek/structlog/pull/339>`_
 - Exception rendering in ``structlog.dev.ConsoleLogger`` is now configurable using the ``exception_formatter`` setting.
   If either the `rich <https://github.com/willmcgugan/rich>`_ or the `better-exceptions <https://github.com/qix-/better-exceptions>`_ package is present, ``structlog`` will use them for pretty-printing tracebacks.
   ``rich`` takes precedence over ``better-exceptions`` if both are present.
 
   This only works if ``format_exc_info`` is **absent** in the processor chain.
-- ``structlog.threadlocal.get_threadlocal()`` and ``structlog.contextvars.get_threadlocal()`` can now be used to get a copy of the current thread-local/context-local context that has been bound using ``structlog.threadlocal.bind_threadlocal()`` and ``structlog.contextvars.bind_contextvars()``.
-- ``structlog.threadlocal.get_merged_threadlocal(bl)`` and ``structlog.contextvars.get_merged_contextvars(bl)`` do the same, but also merge the context from a bound logger *bl*.
 - All use of ``colorama`` on non-Windows systems has been excised.
   Thus, colors are now enabled by default in ``structlog.dev.ConsoleRenderer`` on non-Windows systems.
   You can keep using ``colorama`` to customize colors, of course.
+  `#345 <https://github.com/hynek/structlog/pull/345>`_
 - The final processor can now return a ``bytearray`` (additionally to ``str`` and ``bytes``).
   `#344 <https://github.com/hynek/structlog/issues/344>`_
-- ``structlog.contextvars.bind_contextvars()`` now returns a mapping of keys to ``contextvars.Token``\s, allowing you to reset values using the new ``structlog.contextvars.reset_contextvars()``.
-  `#339 <https://github.com/hynek/structlog/pull/339>`_
 
 
 ----
