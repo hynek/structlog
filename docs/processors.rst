@@ -26,6 +26,13 @@ Each processors receives three positional arguments:
 
 The return value of each processor is passed on to the next one as ``event_dict`` until finally the return value of the last processor gets passed into the wrapped logging method.
 
+.. note::
+
+   ``structlog`` only looks at the return value of the **last** processor.
+   That means that as long as you control the next processor in the pipeline (i.e. the processor that will get your return value passed as an argument), you can return whatever you want.
+
+   Returning a modified event dictionary from your processors is just a convention to make processors composable.
+
 
 Examples
 ^^^^^^^^
@@ -111,6 +118,12 @@ This should give you enough power to use ``structlog`` with any logging system w
 
 .. versionchanged:: 14.0.0
    Allow final processor to return a `dict`.
+
+.. versionchanged:: 20.2.0
+   Allow final processor to return a `bytes`.
+
+.. versionchanged:: 21.2.0
+   Allow final processor to return a `bytearray`.
 
 
 Examples
