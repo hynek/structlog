@@ -4,6 +4,7 @@
 
 import pickle
 import sys
+
 from collections import OrderedDict
 from io import StringIO
 
@@ -212,11 +213,13 @@ class TestConsoleRenderer:
         """
         Key-value pairs go in original order to the end.
         """
-        cr = dev.ConsoleRenderer(
-            sort_keys=False
-        )
+        cr = dev.ConsoleRenderer(sort_keys=False)
 
-        rv = cr(None, None, OrderedDict([("event", "test"), ("key", "value"), ("foo", "bar")]))
+        rv = cr(
+            None,
+            None,
+            OrderedDict([("event", "test"), ("key", "value"), ("foo", "bar")]),
+        )
 
         assert (
             padded
