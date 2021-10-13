@@ -4,7 +4,7 @@
 
 import pickle
 import sys
-
+from collections import OrderedDict
 from io import StringIO
 
 import pytest
@@ -205,6 +205,35 @@ class TestConsoleRenderer:
             + "="
             + styles.kv_value
             + "value"
+            + styles.reset
+        ) == rv
+
+    def test_key_values_unsorted(self, styles, padded):
+        """
+        Key-value pairs go in original order to the end.
+        """
+        cr = dev.ConsoleRenderer(
+            sort_keys=False
+        )
+
+        rv = cr(None, None, OrderedDict([("event", "test"), ("key", "value"), ("foo", "bar")]))
+
+        assert (
+            padded
+            + styles.kv_key
+            + "key"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "value"
+            + styles.reset
+            + " "
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
             + styles.reset
         ) == rv
 
