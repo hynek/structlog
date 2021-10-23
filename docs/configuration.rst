@@ -38,7 +38,7 @@ Thus the :ref:`example <proc>` from the previous chapter could have been written
 
 .. doctest:: config_get_logger
 
-   >>> configure(processors=[proc], context_class=dict)
+   >>> configure(processors=[proc])
    >>> log = get_logger()
    >>> log.msg("hello world")
    I got called with {'event': 'hello world'}
