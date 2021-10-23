@@ -10,16 +10,17 @@ Installation
 
    $ pip install structlog
 
-If you want pretty exceptions in development (you know you do!), additionally install either `rich <https://github.com/willmcgugan/rich>`_ or `better-exceptions <https://github.com/qix-/better-exceptions>`_. Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by ``rich``.
+If you want pretty exceptions in development (you know you do!), additionally install either rich_ or `better-exceptions`_.
+Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by ``rich``.
 
-On Windows, you also have to install `colorama`_ if you want colorful output beside exceptions.
+On Windows, you also have to install colorama_ if you want colorful output beside exceptions.
 
 
 Your First Log Entry
 --------------------
 
 A lot of effort went into making ``structlog`` accessible without reading pages of documentation.
-And indeed, the simplest possible usage looks like this:
+And indeed, the simplest possible usage looks like this (if you're reading this on a small screen, you):
 
 .. doctest::
 
@@ -34,9 +35,9 @@ Here, ``structlog`` takes full advantage of its hopefully useful default setting
 - All keywords are formatted using `structlog.dev.ConsoleRenderer`.
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
-- On Windows, if you have `colorama <https://pypi.org/project/colorama/>`_ installed, it's rendered in nice `colors <development>`.
+- On Windows, if you have colorama_ installed, it's rendered in nice `colors <development>`.
   Other OSes do not need colorama for nice colors.
-- If you have `better-exceptions <https://github.com/qix-/better-exceptions>`_ installed, exceptions will be rendered in colors and with additional helpful information.
+- If you have rich_ or `better-exceptions`_ installed, exceptions will be rendered in colors and with additional helpful information.
 
 It should be noted that even in most complex logging setups the example would still look just like that thanks to `configuration`.
 Using the defaults, as above, is equivalent to::
@@ -199,3 +200,6 @@ If you want to see more code, make sure to check out the `examples`!
 
 .. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _recipe: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging
+.. _rich: https://github.com/willmcgugan/rich
+.. _`better-exceptions`: https://github.com/qix-/better-exceptions
+.. _colorama: https://pypi.org/project/colorama/
