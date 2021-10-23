@@ -20,7 +20,8 @@ Your First Log Entry
 --------------------
 
 A lot of effort went into making ``structlog`` accessible without reading pages of documentation.
-And indeed, the simplest possible usage looks like this (if you're reading this on a small screen, you):
+And indeed, the simplest possible usage looks like this
+(if you're reading this on a small screen, you may have to scroll the example horizontally to see the full output):
 
 .. doctest::
 
