@@ -266,6 +266,7 @@ class ConsoleRenderer:
     .. versionchanged:: 21.2 The colors keyword now defaults to True on
        non-Windows systems, and either True or False in Windows depending on
        whether colorama is installed.
+    .. versionadded:: 21.3.0 *sort_keys*
     """
 
     def __init__(
