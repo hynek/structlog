@@ -235,6 +235,7 @@ class ConsoleRenderer:
         by default (rich_ taking precendence). You can also manually set it to
         `plain_traceback`, `better_traceback`, `rich_traceback`, or implement
         your own.
+    :param sort_keys: Whether to sort keys when formatting. `True` by default.
 
     Requires the colorama_ package if *colors* is `True` **on Windows**.
 
@@ -265,6 +266,7 @@ class ConsoleRenderer:
     .. versionchanged:: 21.2 The colors keyword now defaults to True on
        non-Windows systems, and either True or False in Windows depending on
        whether colorama is installed.
+    .. versionadded:: 21.3.0 *sort_keys*
     """
 
     def __init__(
@@ -275,6 +277,7 @@ class ConsoleRenderer:
         repr_native_str: bool = False,
         level_styles: Optional[Styles] = None,
         exception_formatter: ExceptionFormatter = default_exception_formatter,
+        sort_keys: bool = True,
     ):
         styles: Styles
         if colors:
@@ -316,6 +319,7 @@ class ConsoleRenderer:
 
         self._repr_native_str = repr_native_str
         self._exception_formatter = exception_formatter
+        self._sort_keys = sort_keys
 
     def _repr(self, val: Any) -> str:
         """
@@ -383,6 +387,11 @@ class ConsoleRenderer:
         stack = event_dict.pop("stack", None)
         exc = event_dict.pop("exception", None)
         exc_info = event_dict.pop("exc_info", None)
+
+        event_dict_keys = event_dict.keys()
+        if self._sort_keys:
+            event_dict_keys = sorted(event_dict_keys)
+
         sio.write(
             " ".join(
                 self._styles.kv_key
@@ -392,7 +401,7 @@ class ConsoleRenderer:
                 + self._styles.kv_value
                 + self._repr(event_dict[key])
                 + self._styles.reset
-                for key in sorted(event_dict.keys())
+                for key in event_dict_keys
             )
         )
 

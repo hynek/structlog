@@ -208,6 +208,37 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
+    def test_key_values_unsorted(self, styles, padded):
+        """
+        Key-value pairs go in original order to the end.
+        """
+        cr = dev.ConsoleRenderer(sort_keys=False)
+
+        rv = cr(
+            None,
+            None,
+            {"event": "test", "key": "value", "foo": "bar"},
+        )
+
+        assert (
+            padded
+            + styles.kv_key
+            + "key"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "value"
+            + styles.reset
+            + " "
+            + styles.kv_key
+            + "foo"
+            + styles.reset
+            + "="
+            + styles.kv_value
+            + "bar"
+            + styles.reset
+        ) == rv
+
     @pytest.mark.parametrize("wrap", [True, False])
     def test_exception_rendered(self, cr, padded, recwarn, wrap):
         """
