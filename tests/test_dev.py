@@ -5,7 +5,6 @@
 import pickle
 import sys
 
-from collections import OrderedDict
 from io import StringIO
 
 import pytest
@@ -218,7 +217,7 @@ class TestConsoleRenderer:
         rv = cr(
             None,
             None,
-            OrderedDict([("event", "test"), ("key", "value"), ("foo", "bar")]),
+            {"event": "test", "key": "value", "foo": "bar"},
         )
 
         assert (
