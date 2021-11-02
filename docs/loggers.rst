@@ -28,21 +28,22 @@ Finally, if you call *any other* method on :class:`~structlog.BoundLogger`, it w
 #. Make a copy of the context -- now it becomes the *event dictionary*,
 #. Add the keyword arguments of the method call to the event dict.
 #. Add a new key ``event`` with the value of the first positional argument of the method call to the event dict.
-#. Run the processors on the event dict.
+#. Run the processors successively on the event dict.
    Each processor receives the result of its predecessor.
-#. Finally it takes the result of the final processor and calls the method with the same name – that got called on the bound logger – on the wrapped logger\ [1]_.
-   For flexibility, the final processor can return either a string that is passed directly as a positional parameter, or a tuple ``(args, kwargs)`` that are passed as ``wrapped_logger.log_method(*args, **kwargs)``.
+#. Finally, it takes the result of the final processor and calls the method with the same name – that got called on the bound logger – on the wrapped logger\ [1]_.
+   For flexibility, the final processor can return either a string\ [2]_ that is passed directly as a positional parameter, or a tuple ``(args, kwargs)`` that are passed as ``wrapped_logger.log_method(*args, **kwargs)``.
 
 
 .. [1] Since this is slightly magicy, ``structlog`` comes with concrete loggers for the `standard-library` and :doc:`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
        Of course, you are free to implement your own bound loggers too.
+.. [2] `str`, `bytes`, or `bytearray` to be exact.
 
 
 Creation
 --------
 
-You won't be instantiating it yourself though.
-In practice you will configure ``structlog`` as explained in the `next chapter <configuration>`  and then just call `structlog.get_logger`.
+You won't be instantiating bound loggers yourself.
+In practice you will configure ``structlog`` as explained in the `next chapter <configuration>` and then just call `structlog.get_logger`.
 
 
 In some rare cases you may not want to do that.
@@ -102,7 +103,7 @@ Additionally, the following arguments are allowed too:
 **wrapper_class**
    A class to use instead of :class:`~structlog.BoundLogger` for wrapping.
    This is useful if you want to sub-class BoundLogger and add custom logging methods.
-   BoundLogger's bind/new methods are sub-classing friendly so you won't have to re-implement them.
+   BoundLogger's bind/new methods are sub-classing-friendly so you won't have to re-implement them.
    Please refer to the :ref:`related example <wrapper_class-example>` for how this may look.
 
 **initial_values**
