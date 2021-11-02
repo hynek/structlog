@@ -24,8 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- ``structlog.dev.ConsoleRenderer`` now has ``sort_keys`` boolean parameter which controls whether to sort keys when formatting keys output. `True` by default.
-  `#331 <https://github.com/hynek/structlog/pull/358>`_
+- ``structlog.dev.ConsoleRenderer`` now has ``sort_keys`` boolean parameter that allows to disable the sorting of keys on output.
+  `#358 <https://github.com/hynek/structlog/pull/358>`_
 
 
 ----
