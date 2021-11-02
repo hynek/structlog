@@ -12,7 +12,7 @@ import sys
 import warnings
 
 from io import StringIO
-from typing import Any, Optional, TextIO, Type, Union
+from typing import Any, Iterable, Optional, TextIO, Type, Union
 
 from ._frames import _format_exception
 from .types import (
@@ -388,7 +388,7 @@ class ConsoleRenderer:
         exc = event_dict.pop("exception", None)
         exc_info = event_dict.pop("exc_info", None)
 
-        event_dict_keys = event_dict.keys()
+        event_dict_keys: Iterable[str] = event_dict.keys()
         if self._sort_keys:
             event_dict_keys = sorted(event_dict_keys)
 
