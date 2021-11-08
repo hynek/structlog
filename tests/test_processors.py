@@ -274,6 +274,22 @@ class TestTimeStamper:
             None, None, {}
         )
 
+    @pytest.mark.parametrize(
+        ("utc", "expect"),
+        [
+            (True, "1980-03-25T16:00:00Z"),
+            (False, "1980-03-25T17:00:00"),
+        ],
+    )
+    def test_apply_freezegun_after_instantiation(self, utc, expect):
+        """
+        Instantiate TimeStamper after mocking datetime
+        """
+        ts = TimeStamper(fmt="iso", utc=utc)
+        with freeze_time("1980-03-25 16:00:00", tz_offset=1):
+            d = ts(None, None, {})
+            assert expect == d["timestamp"]
+
 
 class TestFormatExcInfo:
     @pytest.mark.parametrize("ei", [False, None, ""])

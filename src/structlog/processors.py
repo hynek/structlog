@@ -333,7 +333,17 @@ def _make_stamper(
     if fmt is None and not utc:
         raise ValueError("UNIX timestamps are always UTC.")
 
-    now = getattr(datetime.datetime, "utcnow" if utc else "now")
+    now: Callable[[], datetime.datetime]
+
+    if utc:
+
+        def now() -> datetime.datetime:
+            return datetime.datetime.utcnow()
+
+    else:
+
+        def now() -> datetime.datetime:
+            return datetime.datetime.now()
 
     if fmt is None:
 
