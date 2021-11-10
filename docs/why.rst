@@ -26,4 +26,4 @@ Structured logging means that you don't write hard-to-parse and hard-to-keep-con
 
 
 
-.. _`Paul Querna`: https://web.archive.org/web/20170801134840/https://journal.paul.querna.org/articles/2011/12/26/log-for-machines-in-json/
+.. _`Paul Querna`: https://paul.querna.org/articles/2011/12/26/log-for-machines-in-json/
