@@ -365,11 +365,11 @@ def _make_stamper(
 
         if utc:
             return stamper_iso_utc
-        else:
-            return stamper_iso_local
+
+        return stamper_iso_local
 
     def stamper_fmt(event_dict: EventDict) -> EventDict:
-        event_dict[key] = now().strftime(fmt)
+        event_dict[key] = now().strftime(fmt)  # type: ignore
 
         return event_dict
 
