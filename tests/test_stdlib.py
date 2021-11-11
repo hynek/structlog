@@ -37,6 +37,7 @@ from structlog.stdlib import (
     get_logger,
     render_to_log_kwargs,
 )
+from structlog.testing import CapturedCall
 from structlog.types import BindableLogger
 
 from .additional_frame import additional_frame
@@ -849,6 +850,16 @@ async def _abl(cl):
     reason="AsyncBoundLogger is only for Python 3.7 and later.",
 )
 class TestAsyncBoundLogger:
+    def test_sync_bl(self, abl, cl):
+        """
+        AsyncBoungLogger.sync_bl works outside of loops.
+        """
+        abl.sync_bl.info("test")
+
+        assert [
+            CapturedCall(method_name="info", args=(), kwargs={"event": "test"})
+        ] == cl.calls
+
     @pytest.mark.asyncio
     async def test_protocol(self, abl):
         """

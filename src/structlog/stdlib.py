@@ -470,8 +470,9 @@ class AsyncBoundLogger:
         """
         ctx = contextvars.copy_context()
 
-        await self._loop.run_in_executor(
-            self._executor, partial(ctx.run, partial(meth, event, *args, **kw))
+        await asyncio.get_running_loop().run_in_executor(
+            self._executor,
+            lambda: ctx.run(lambda: meth(event, *args, **kw)),
         )
 
     async def debug(self, event: str, *args: Any, **kw: Any) -> None:

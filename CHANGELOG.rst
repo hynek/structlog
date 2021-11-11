@@ -28,6 +28,9 @@ Changes:
   `#358 <https://github.com/hynek/structlog/pull/358>`_
 - ``structlog.processors.TimeStamper`` now works well with FreezeGun even when it gets applied before the loggers are configured.
   `#364 <https://github.com/hynek/structlog/pull/364>`_
+- ``structlog.stdlib.AsyncBoundLogger`` now determines the running loop when logging, not on instantiation.
+  That has a minor performance impact, but makes it more robust when loops change (e.g. ``aiohttp.web.run_app()``), or you want to use ``sync_bl`` *before* a loop has started.
+
 
 ----
 
