@@ -682,11 +682,11 @@ def render_to_log_kwargs(
 
 class ProcessorFormatter(logging.Formatter):
     r"""
-    Call ``structlog`` processors on :`logging.LogRecord`\ s.
+    Call ``structlog`` processors on `logging.LogRecord`\ s.
 
     This `logging.Formatter` allows to configure :mod:`logging` to call
-    *processor* on ``structlog``-borne log entries (origin is determined solely
-    on the fact whether the ``msg`` field on the `logging.LogRecord` is
+    *processor(s)* on ``structlog``-borne log entries (origin is determined
+    solely on the fact whether the ``msg`` field on the `logging.LogRecord` is
     a dict or not).
 
     This allows for two interesting use cases:
@@ -696,10 +696,24 @@ class ProcessorFormatter(logging.Formatter):
 
     Please refer to :doc:`standard-library` for examples.
 
-    :param processor: A ``structlog`` processor.
+    :param processor: A single ``structlog`` processor used for rendering the
+        event dictionary before passing it off to `logging`. Must return a
+        `str`.
+    :param processors: A chain of ``structlog`` processors. The last one must
+        render to a `str` that gets passed off to `logging`. The event
+        dictionary contains additionally two keys:
+
+        - ``_record``: a `logging.LogRecord` that either originated the log
+          entry **or** was created by `wrap_for_formatter`.
+        - ``_from_structlog``: a `bool` whether or not ``_record`` was created
+          by `wrap_for_formatter` from ``structlog`` or not. In other words:
+
+        It is the *processors* chain's duty to remove them if you don't want
+        them as part of your output. If you use the *processor* (singular)
+        argument instead, you will *not* receive these keys.
     :param foreign_pre_chain:
         If not `None`, it is used as an iterable of processors that is applied
-        to non-``structlog`` log entries before *processor*.  If `None`,
+        to **non**-``structlog`` log entries before *processor*.  If `None`,
         formatting is left to :mod:`logging`. (default: `None`)
     :param keep_exc_info: ``exc_info`` on `logging.LogRecord`\ s is
         added to the ``event_dict`` and removed afterwards. Set this to
@@ -713,15 +727,20 @@ class ProcessorFormatter(logging.Formatter):
         ``args`` attribute to the ``event_dict`` under ``positional_args`` key.
         (default: False)
 
+    :raises TypeError: If both or neither *processor* and *processors* is
+        passed.
+
     .. versionadded:: 17.1.0
     .. versionadded:: 17.2.0 *keep_exc_info* and *keep_stack_info*
     .. versionadded:: 19.2.0 *logger*
     .. versionadded:: 19.2.0 *pass_foreign_args*
+    .. versionadded:: 21.3.0 *processors*
     """
 
     def __init__(
         self,
-        processor: Processor,
+        processor: Optional[Processor] = None,
+        processors: Optional[Sequence[Processor]] = (),
         foreign_pre_chain: Optional[Sequence[Processor]] = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
@@ -733,7 +752,31 @@ class ProcessorFormatter(logging.Formatter):
         fmt = kwargs.pop("fmt", "%(message)s")
         super().__init__(*args, fmt=fmt, **kwargs)  # type: ignore
 
-        self.processor = processor
+        if processor and processors:
+            raise TypeError(
+                "The `processor` and `processors` arguments are mutually "
+                "exclusive."
+            )
+
+        self.processors: Sequence[Processor]
+        if processor is not None:
+
+            def remove_processor_meta(
+                _: WrappedLogger, __: str, ed: EventDict
+            ) -> EventDict:
+                del ed["_record"]
+                del ed["_from_structlog"]
+
+                return ed
+
+            self.processors = (remove_processor_meta, processor)
+        elif processors:
+            self.processors = processors
+        else:
+            raise TypeError(
+                "Either `processor` or `processors` must be passed."
+            )
+
         self.foreign_pre_chain = foreign_pre_chain
         self.keep_exc_info = keep_exc_info
         self.keep_stack_info = keep_stack_info
@@ -764,10 +807,16 @@ class ProcessorFormatter(logging.Formatter):
             # processed by multiple logging formatters.  LogRecord.getMessage
             # would transform our dict into a str.
             ed = record.msg.copy()  # type: ignore
+            ed["_record"] = record
+            ed["_from_structlog"] = True
         else:
             logger = self.logger
             meth_name = record.levelname.lower()
-            ed = {"event": record.getMessage(), "_record": record}
+            ed = {
+                "event": record.getMessage(),
+                "_record": record,
+                "_from_structlog": False,
+            }
 
             if self.pass_foreign_args:
                 ed["positional_args"] = record.args
@@ -793,9 +842,10 @@ class ProcessorFormatter(logging.Formatter):
             for proc in self.foreign_pre_chain or ():
                 ed = proc(logger, meth_name, ed)
 
-            del ed["_record"]
+        for p in self.processors:
+            ed = p(logger, meth_name, ed)
 
-        record.msg = self.processor(logger, meth_name, ed)  # type: ignore
+        record.msg = ed
 
         return super().format(record)
 
