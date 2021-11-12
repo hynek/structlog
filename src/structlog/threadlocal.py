@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
@@ -7,6 +8,7 @@ Primitives to keep context global but thread (and greenlet) local.
 
 See `thread-local`.
 """
+
 import contextlib
 import threading
 import uuid
