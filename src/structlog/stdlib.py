@@ -592,7 +592,7 @@ class PositionalArgumentsFormatter:
             if len(args) == 1 and isinstance(args[0], dict) and args[0]:
                 args = args[0]
 
-            event_dict["event"] = event_dict["event"] % args
+            event_dict["event"] %= args
 
         if self.remove_positional_args and args is not None:
             del event_dict["positional_args"]
