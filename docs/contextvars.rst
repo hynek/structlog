@@ -63,7 +63,7 @@ The general flow mirrors the one for :doc:`thread-local <thread-local>`:
    event='hi there' a=None
 
 
-If e.g. your request handler calls a helper function that needs to temporarily override some contextvars before restoring them back to their original values, you can use the :class:`~contextvars.contextvars.Token`\s returned by :func:`~structlog.contextvars.bind_contextvars` along with :func:`~structlog.contextvars.reset_contextvars` to accomplish this (much like how :meth:`contextvars.ContextVar.reset` works):
+If e.g. your request handler calls a helper function that needs to temporarily override some contextvars before restoring them back to their original values, you can use the :class:`~contextvars.Token`\s returned by :func:`~structlog.contextvars.bind_contextvars` along with :func:`~structlog.contextvars.reset_contextvars` to accomplish this (much like how :meth:`contextvars.ContextVar.reset` works):
 
 .. code-block:: python
 

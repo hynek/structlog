@@ -73,14 +73,16 @@ nitpick_ignore = [
     ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "TextIO"),
     ("py:class", "TLLogger"),
-    ("py:class", "Token"),
     ("py:class", "traceback"),
-    ("py:class", "contextvars.Token"),
     ("py:class", "structlog._base.BoundLoggerBase"),
     ("py:class", "structlog.dev._Styles"),
     ("py:class", "structlog.types.EventDict"),
     ("py:obj", "sync_bl"),
     ("py:obj", "entries"),
+    # XXX: Remove after docs builder has 3.8.13/3.9.9/3.10.1:
+    # C.f. https://github.com/python/cpython/pull/29533
+    ("py:obj", "contextvars.Token"),
+    ("py:class", "contextvars.Token"),
 ]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
