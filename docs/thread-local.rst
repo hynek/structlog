@@ -27,7 +27,7 @@ In an ideal world, you would just stick to its immutable\ [*]_ bound loggers and
 However, we realize that passing loggers around is rather clunky and intrusive in practice.
 And since `practicality beats purity <https://www.python.org/dev/peps/pep-0020/>`_, ``structlog`` ships with the `structlog.threadlocal` module to help you to safely have global context storage.
 
-.. [*] In the spirit of Python's 'consenting adults', ``structlog`` doesn't enforce the immutability with technical means.
+.. [*] In the spirit of Python's "consenting adults" principle, ``structlog`` doesn't enforce the immutability with technical means.
    However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
 
 
