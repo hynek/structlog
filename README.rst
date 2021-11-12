@@ -65,6 +65,8 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
    >>> log.info("user.logged_in", happy=True)
    2020-11-18 09:18.28 [info     ] user.logged_in                 another_key=42 happy=True some_key=23 user=hynek
 
+You can also bind key/value pairs to `thread-local storage <https://www.structlog.org/en/stable/thread-local.html>`_ and `contextvars <https://www.structlog.org/en/stable/contextvars.html>`_.
+
 
 Powerful Pipelines
 ==================
@@ -139,9 +141,9 @@ Project Information
 
 ``structlog`` is dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.org/project/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at https://www.structlog.org/.
 
-We collect useful third party extension in `our wiki <https://github.com/hynek/structlog/wiki/Third-party-Extensions>`_.
+We collect useful third-party extension in `our wiki <https://github.com/hynek/structlog/wiki/Third-party-Extensions>`_.
 
-``structlog`` targets Python 3.6 and newer, and PyPy3.
+``structlog`` targets Python 3.6 and later; including PyPy3.
 
 
 ``structlog`` for Enterprise

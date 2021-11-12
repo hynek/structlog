@@ -187,6 +187,7 @@ The convenience of having a thread-local context comes at a price though:
      Otherwise each log call will result in an instantiation of a temporary BoundLogger.
 
      See `configuration` for more details.
+   - It `doesn't play well <https://github.com/hynek/structlog/issues/296>`_ with `os.fork` and thus `multiprocessing` (unless configured to use the ``spawn`` start method).
 
 The general sentiment against thread-locals is that they're hard to test.
 In this case we feel like this is an acceptable trade-off.
