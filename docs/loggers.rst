@@ -5,16 +5,21 @@ Loggers
 Bound Loggers
 -------------
 
-The center of ``structlog`` is the immutable log wrapper :class:`~structlog.BoundLogger`.
+The centerpiece of ``structlog`` that you will interact with most is called a *bound logger*.
+It is what you get back from `structlog.get_logger()` and call your logging methods on.
+
+It consists of three parts:
 
 .. image:: _static/BoundLogger.svg
 
-What it does is:
-
-- Store a *context dictionary* with key-value pairs that should be part of every log entry,
-- store a list of :doc:`processors <processors>` that are called on every log entry,
-- and store a *logger* that it's wrapping.
-  This *can* be standard library's `logging.Logger` but absolutely doesn't have to.
+#. A *context dictionary* that you can *bind* key/value pairs to.
+   This dictionary is *merged* into each log entry that is logged from *this logger specifically*.
+   That means that every logger has it own context, but it is possible to have global contexts too using `thread-local data <thread-local>` and :doc:`contextvars`.
+#. A list of :doc:`processors <processors>` that are called on every log entry.
+#. And finally a *logger* that it's wrapping.
+   This wrapped logger is reponsible for the *output* of the log entry that has been returned by the last processor.
+   This *can* be standard library's `logging.Logger`, but absolutely doesn't have to.
+   Bound loggers themselves do *not* do any I/O themselves.
 
 To manipulate the context dictionary, it offers to:
 

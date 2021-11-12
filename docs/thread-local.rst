@@ -22,13 +22,11 @@ Immutability
    --- David Reid
 
 ``structlog`` does its best to have as little global state as possible to achieve its goals.
-In an ideal world, you would just stick to its immutable\ [*]_ bound loggers and reap all the rewards of having purely `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_.
+In an ideal world, you would just stick to its immutable bound loggers and reap all the rewards of having purely `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_.
 
 However, we realize that passing loggers around is rather clunky and intrusive in practice.
 And since `practicality beats purity <https://www.python.org/dev/peps/pep-0020/>`_, ``structlog`` ships with the `structlog.threadlocal` module to help you to safely have global context storage.
 
-.. [*] In the spirit of Python's "consenting adults" principle, ``structlog`` doesn't enforce the immutability with technical means.
-   However, if you don't meddle with undocumented data, the objects can be safely considered immutable.
 
 
 The ``merge_threadlocal`` Processor
