@@ -6,6 +6,7 @@
 """
 Generic bound logger that can wrap anything.
 """
+
 from functools import partial
 from typing import Any, Dict
 
