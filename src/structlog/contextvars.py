@@ -106,12 +106,12 @@ def bind_contextvars(**kw: Any) -> "Mapping[str, contextvars.Token[Any]]":
     Use this instead of :func:`~structlog.BoundLogger.bind` when you want some
     context to be global (context-local).
 
-    Return the mapping of ``contextvars.Token``\s resulting
-    from setting the backing ``ContextVar``\s.
+    Return the mapping of `contextvars.Token`\s resulting
+    from setting the backing :class:`~contextvars.ContextVar`\s.
     Suitable for passing to :func:`reset_contextvars`.
 
     .. versionadded:: 20.1.0
-    .. versionchanged:: 21.1.0 Return the ``contextvars.Token`` mapping
+    .. versionchanged:: 21.1.0 Return the `contextvars.Token` mapping
         rather than None. See also the toplevel note.
     """
     rv = {}
