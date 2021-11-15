@@ -416,6 +416,16 @@ For example, to use the standard library's `logging.config.dictConfig` to log co
         timestamper,
     ]
 
+    def extract_from_record(_, __, event_dict):
+        """
+        Extract thread and process names and add them to the event dict.
+        """
+        record = event_dict["_record"]
+        event_dict["thread_name"] = record.threadName
+        event_dict["process_name"] = record.processName
+
+        return event_dict
+
     logging.config.dictConfig({
             "version": 1,
             "disable_existing_loggers": False,
@@ -431,6 +441,7 @@ For example, to use the standard library's `logging.config.dictConfig` to log co
                 "colored": {
                     "()": structlog.stdlib.ProcessorFormatter,
                     "processors": [
+                       extract_from_record,
                        structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                        structlog.dev.ConsoleRenderer(colors=True),
                     ],
@@ -476,17 +487,19 @@ This defines two formatters: one plain and one colored.
 Both are run for each log entry.
 Log entries that do not originate from ``structlog``, are additionally pre-processed using a cached ``timestamper`` and :func:`~structlog.stdlib.add_log_level`.
 
+Additionally, for both `logging` and ``structlog`` -- but only for the colorful logger -- we also extract some data from `logging.LogRecord`:
+
 .. code-block:: pycon
 
-    >>> logging.getLogger().warning("bar")
-    2017-03-06 11:49:27 [warning  ] bar
+   >>> logging.getLogger().warning("bar")
+   2021-11-15 13:26:52 [warning  ] bar    process_name=MainProcess thread_name=MainThread
 
-    >>> structlog.get_logger("structlog").warning("foo", x=42)
-    2017-03-06 11:49:32 [warning  ] foo                            x=42
+   >>> structlog.get_logger("structlog").warning("foo", x=42)
+   2021-11-15 13:26:52 [warning  ] foo    process_name=MainProcess thread_name=MainThread x=42
 
-    >>> print(open("test.log").read())
-    2017-03-06 11:49:27 [warning  ] bar
-    2017-03-06 11:49:32 [warning  ] foo                            x=42
+   >>> pathlib.Path("test.log").read_text()
+   2021-11-15 13:26:52 [warning  ] bar
+   2021-11-15 13:26:52 [warning  ] foo    x=42
 
 (Sadly, you have to imagine the colors in the first two outputs.)
 
