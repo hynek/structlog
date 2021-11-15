@@ -54,7 +54,7 @@ EXTRAS_REQUIRE = {
         "pytest>=6.0",
         "simplejson",
     ],
-    "docs": ["furo", "sphinx", "twisted"],
+    "docs": ["furo", "sphinx", "sphinxcontrib-mermaid", "twisted"],
 }
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["pre-commit", "rich"]

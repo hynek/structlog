@@ -119,6 +119,20 @@ Rendering Within ``structlog``
 This is the simplest approach where ``structlog`` does all the heavy lifting and passes a fully-formatted string to ``logging``.
 Chances are, this is all you need.
 
+.. mermaid::
+   :align: center
+
+   flowchart TD
+      User
+      structlog
+      stdlib[Standard Library\ne.g. logging.StreamHandler]
+
+      User --> |"structlog.get_logger().info('foo')"| structlog
+      User --> |"logging.getLogger().info('foo')"| stdlib
+      structlog --> |"logging.getLogger().info(#quot;{'event': 'foo'}#quot;)"| stdlib ==> Output
+
+      Output
+
 A basic configuration to output structured logs in JSON format looks like this:
 
 .. code-block:: python
@@ -187,6 +201,23 @@ In this case *only* your own logs are formatted as JSON:
 Rendering Using `logging`-based Formatters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+You can choose to use ``structlog`` only for building the event dictionary and leave all formatting -- additionally to the output -- to the standard library.
+
+.. mermaid::
+   :align: center
+
+   flowchart TD
+      User
+      structlog
+      stdlib[Standard Library\ne.g. logging.StreamHandler]
+
+      User --> |"structlog.get_logger().info('foo', bar=42)"| structlog
+      User --> |"logging.getLogger().info('foo')"| stdlib
+      structlog --> |"logging.getLogger().info('foo', extra={&quot;bar&quot;: 42})"| stdlib ==> Output
+
+      Output
+
+
 .. code-block:: python
 
     import structlog
@@ -249,14 +280,37 @@ Now both ``structlog`` and ``logging`` will emit JSON logs:
 Rendering Using ``structlog``-based Formatters Within `logging`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``structlog`` comes with a `ProcessorFormatter` that can be used as a `logging.Formatter` in any stdlib `Handler <logging.handlers>` object.
+Finally, the most ambitious approach.
+Here, you use ``structlog``'s `ProcessorFormatter` as a `logging.Formatter`.
 
-The `ProcessorFormatter` has two parts to its API:
+This means that ``structlog`` is responsible for formatting both its own log entries, as well those coming from calls to the standard library.
+Consequently, the output is the duty of the standard library too.
 
-#. The `structlog.stdlib.ProcessorFormatter.wrap_for_formatter` method must be used as the last processor in `structlog.configure`,
-   it converts the processed event dict to something that the ``ProcessorFormatter`` understands.
-#. The `ProcessorFormatter` itself,
-   which can wrap any ``structlog`` renderer to handle the output of both ``structlog`` and standard library events.
+.. mermaid::
+   :align: center
+
+   flowchart TD
+      User
+      structlog
+      structlog2[structlog]
+      stdlib["Standard Library"]
+
+      User --> |"structlog.get_logger().info(#quot;foo#quot;, bar=42)"| structlog
+      User --> |"logging.getLogger().info(#quot;foo#quot;)"| stdlib
+      structlog --> |"logging.getLogger().info(event_dict, {#quot;extra#quot;: {#quot;_logger#quot;: logger, #quot;_name#quot;: name})"| stdlib
+
+      stdlib --> |"structlog.stdlib.ProcessorFormatter.format(logging.Record)"| structlog2
+      structlog2 --> |"Returns a string that is passed into logging handlers.\nThis flow is controlled by the logging configuration."| stdlib2
+
+      stdlib2[Standard Library\ne.g. logging.StreamHandler] ==> Output
+
+
+`ProcessorFormatter` has two parts to its API:
+
+#. Instead of a renderer, the `structlog.stdlib.ProcessorFormatter.wrap_for_formatter` static method must be used as the last processor in the :doc:`processor chain <processors>`.
+   It converts the processed event dictionary into something that `ProcessorFormatter` understands.
+#. The `ProcessorFormatter` itself, whose ``format()`` method gets called by standard library `logging` for every log entry (if you configure `logging` correctly).
+   It can wrap any ``structlog`` renderer to handle the output of both ``structlog`` and standard library events.
 
 Thus, the simplest possible configuration looks like the following:
 
