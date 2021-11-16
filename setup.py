@@ -15,6 +15,7 @@ from setuptools import find_packages, setup
 NAME = "structlog"
 KEYWORDS = ["logging", "structured", "structure", "log"]
 PROJECT_URLS = {
+    "Changelog": "https://www.structlog.org/en/stable/changelog.html",
     "Documentation": "https://www.structlog.org/",
     "Bug Tracker": "https://github.com/hynek/structlog/issues",
     "Source Code": "https://github.com/hynek/structlog",
@@ -101,9 +102,9 @@ def find_meta(meta):
 
 VERSION = find_meta("version")
 LONG = (
-    "==============================================\n"
-    "``structlog``: : Structured Logging for Python\n"
-    "==============================================\n"
+    "============================================\n"
+    "``structlog``: Structured Logging for Python\n"
+    "============================================\n"
     + read("README.rst").split(".. -begin-short-")[1]
     + "\n\n"
     + "Release Information\n"
