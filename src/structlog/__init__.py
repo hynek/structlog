@@ -4,9 +4,8 @@
 # repository for complete details.
 
 """
-Structured logging for Python.
+Structured Logging for Python
 """
-
 
 from structlog import dev, processors, stdlib, testing, threadlocal, types
 from structlog._base import BoundLoggerBase, get_context
@@ -46,7 +45,7 @@ except ImportError:
 __version__ = "21.3.0.dev0"
 
 __title__ = "structlog"
-__description__ = "Structured Logging for Python"
+__description__ = __doc__.strip()
 __uri__ = "https://www.structlog.org/"
 
 __author__ = "Hynek Schlawack"
