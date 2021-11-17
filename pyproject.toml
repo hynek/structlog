@@ -81,7 +81,7 @@ docs = [
 
 # Combine tests and docs and a few more dev tools to a dev environment.
 # Refresh using `tox -e cog`
-#
+
 dev = [
     "pre-commit",
     "rich",
@@ -104,8 +104,9 @@ dev = [
     "sphinx",
     "sphinxcontrib-mermaid",
     "twisted",
-# [[[end]]]
+    # [[[end]]]
 ]
+
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers "
