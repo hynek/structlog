@@ -76,10 +76,13 @@ docs = [
     "sphinx",
     "sphinxcontrib-mermaid",
     "twisted",
+
 ]
 
+# Combine tests and docs and a few more dev tools to a dev environment.
 # We make `dev = [` part of the output so cog doesn't dedent the list.
 # Refresh using `tox -e cog`
+#
 # [[[cog
 # import cog, pathlib, tomli
 # cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
@@ -155,8 +158,11 @@ profile = "attrs"
 
 [project.readme]
 content-type = "text/x-rst"
+
 # Load README.rst, but remove header and badges.
 # Refresh using `tox -e cog`
+# Nothing except for the adapted README follows after here.
+#
 # [[[cog
 # import cog, pathlib
 # cog.out('text = """')
