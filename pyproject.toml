@@ -55,7 +55,6 @@ include = [
     "tests",
     ".github",
     "show_off.py",
-    "typing_examples.py",
 ]
 exclude = [
     "docs/_build",
