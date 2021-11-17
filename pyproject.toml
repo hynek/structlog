@@ -80,23 +80,20 @@ docs = [
 ]
 
 # Combine tests and docs and a few more dev tools to a dev environment.
-# We make `dev = [` part of the output so cog doesn't dedent the list.
 # Refresh using `tox -e cog`
 #
-# [[[cog
-# import cog, pathlib, tomli
-# cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
-# opt = cfg["project"]["optional-dependencies"]
-# dev = ["pre-commit", "rich", "cogapp", "tomli"]
-# cog.outl("dev = [")
-# for dep in dev + opt["tests"] + opt["docs"]:
-#     cog.outl(f'    "{dep}",')
-# ]]]
 dev = [
     "pre-commit",
     "rich",
     "cogapp",
     "tomli",
+    # [[[cog
+    # import cog, pathlib, tomli
+    # cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
+    # opt = cfg["project"]["optional-dependencies"]
+    # for dep in opt["tests"] + opt["docs"]:
+    #     cog.outl(f'"{dep}",')
+    # ]]]
     "coverage[toml]",
     "freezegun>=0.2.8",
     "pretend",
