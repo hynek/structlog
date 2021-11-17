@@ -88,11 +88,11 @@ dev = [
     "cogapp",
     "tomli",
     # [[[cog
-    # import cog, pathlib, tomli
+    # import pathlib, tomli
     # cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
     # opt = cfg["project"]["optional-dependencies"]
     # for dep in opt["tests"] + opt["docs"]:
-    #     cog.outl(f'"{dep}",')
+    #     print(f'"{dep}",')
     # ]]]
     "coverage[toml]",
     "freezegun>=0.2.8",
@@ -161,9 +161,17 @@ content-type = "text/x-rst"
 # Nothing except for the adapted README follows after here.
 #
 # [[[cog
-# import cog, pathlib
-# cog.out('text = """')
-# cog.out(pathlib.Path("README.rst").read_text().split(".. -begin-short-")[1].lstrip().replace('"""', r'\"\"\"') + '"""')
+# import pathlib
+# print(
+#     'text = """'
+#     + pathlib.Path("README.rst")
+#       .read_text()
+#       .split(".. -begin-short-")[1]
+#       .lstrip()
+#       .replace('"""', r'\"\"\"')
+#     + '"""',
+#     end=""
+# )
 # ]]]
 text = """``structlog`` makes logging in Python **faster**, **less painful**, and **more powerful** by adding **structure** to your log entries.
 It has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio* or type hints along the way, and `influenced the design <https://twitter.com/sirupsen/status/638330548361019392>`_ of `structured logging packages in other ecosystems <https://github.com/sirupsen/logrus>`_.
