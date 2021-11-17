@@ -12,7 +12,8 @@ The third digit is only for regressions.
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- ``structlog`` switched its packaging to `flit <https://flit.readthedocs.io/>`_.
+  Users shouldn't notice a difference, but (re-)packagers might.
 
 
 Deprecations:
