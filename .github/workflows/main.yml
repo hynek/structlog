@@ -59,7 +59,7 @@ jobs:
           name: coverage-data
 
       - name: "Combine & check coverage"
-        run: /
+        run: |
           set -xe
           python -m coverage combine
           python -m coverage report --fail-under=100
