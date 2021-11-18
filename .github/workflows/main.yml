@@ -60,8 +60,8 @@ jobs:
 
       - name: "Combine & check coverage"
         run: \
-          coverage combine
-          coverage report --fail-under=100
+          python -m coverage combine
+          python -m coverage report --fail-under=100
 
   package:
     name: "Build & verify package"
