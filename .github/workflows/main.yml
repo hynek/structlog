@@ -12,8 +12,6 @@ jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
-    env:
-      USING_COVERAGE: "3.6,3.9,3.10"
 
     strategy:
       matrix:
@@ -36,11 +34,11 @@ jobs:
         run: "python -m tox"
 
       - name: Upload coverage data
-        if: "contains(env.USING_COVERAGE, matrix.python-version)"
         uses: "actions/upload-artifact@v2"
         with:
           name: coverage-data
           path: ".coverage.*"
+          if-no-files-found: ignore
 
   coverage:
     runs-on: "ubuntu-latest"
