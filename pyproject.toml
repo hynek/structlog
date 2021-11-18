@@ -1,17 +1,16 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 [build-system]
-requires = ["flit_core >=3.2,<4"]
+requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
+
 
 [project]
 name = "structlog"
 authors = [{name = "Hynek Schlawack", email = "hs@ox.cx"}]
 dynamic = ["version", "description"]
 requires-python = ">=3.6"
-dependencies = [
-    "typing-extensions; python_version<'3.8'"
-]
+dependencies = ["typing-extensions; python_version<'3.8'"]
 license = { file = "LICENSE" }
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [
@@ -112,9 +111,7 @@ dev = [
 addopts = "-ra --strict-markers "
 xfail_strict = true
 testpaths = "tests"
-filterwarnings = [
-    "once::Warning",
-]
+filterwarnings = ["once::Warning"]
 
 
 [tool.coverage.run]
@@ -159,8 +156,8 @@ content-type = "text/x-rst"
 
 # Load README.rst, but remove header and badges.
 # Refresh using `tox -e cog`
-# Nothing except for the adapted README follows after here.
-#
+# Nothing except for the adapted README follows after this point.
+
 # [[[cog
 # import pathlib
 # print(
