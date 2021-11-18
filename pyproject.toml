@@ -46,7 +46,6 @@ Ko-fi = "https://ko-fi.com/the_hynek"
 include = [
     ".pre-commit-config.yaml",
     ".readthedocs.yml",
-    "codecov.yml",
     "*.ini",
     "*.rst",
     "LICENSE.*",
