@@ -35,7 +35,7 @@ Once you feel inspired to try it out, check out our friendly `Getting Started tu
 
 .. -begin-spiel-
 
-If you prefer videos over reading, check out this DjangoCon Europe 2019 talk by `Markus Holtermann <https://twitter.com/m_holtermann>`_: `Logging Rethought 2: The Actions of Frank Taylor Jr. <https://www.youtube.com/watch?v=Y5eyEgyHLLo>`_.
+If you prefer videos over reading, check out `Markus Holtermann <https://twitter.com/m_holtermann>`_'s DjangoCon Europe 2019 talk: `Logging Rethought 2: The Actions of Frank Taylor Jr. <https://www.youtube.com/watch?v=Y5eyEgyHLLo>`_
 
 
 Easier Logging
