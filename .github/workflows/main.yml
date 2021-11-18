@@ -50,7 +50,7 @@ jobs:
       - name: Use latest Python so it understands all syntax
         uses: actions/setup-python@v2
         with:
-          python-version: 3.10
+          python-version: "3.10"
 
       - name: "Install dependencies"
         run: |
