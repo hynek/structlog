@@ -1,17 +1,16 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 [build-system]
-requires = ["flit_core >=3.2,<4"]
+requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
+
 
 [project]
 name = "structlog"
 authors = [{name = "Hynek Schlawack", email = "hs@ox.cx"}]
 dynamic = ["version", "description"]
 requires-python = ">=3.6"
-dependencies = [
-    "typing-extensions; python_version<'3.8'"
-]
+dependencies = ["typing-extensions; python_version<'3.8'"]
 license = { file = "LICENSE" }
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [
@@ -47,7 +46,6 @@ Ko-fi = "https://ko-fi.com/the_hynek"
 include = [
     ".pre-commit-config.yaml",
     ".readthedocs.yml",
-    "codecov.yml",
     "*.ini",
     "*.rst",
     "LICENSE.*",
@@ -74,26 +72,26 @@ tests = [
 docs = [
     "furo",
     "sphinx",
+    "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
     "twisted",
 ]
 
-# We make `dev = [` part of the output so cog doesn't dedent the list.
+# Combine tests and docs and a few more dev tools to a dev environment.
 # Refresh using `tox -e cog`
-# [[[cog
-# import cog, pathlib, tomli
-# cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
-# opt = cfg["project"]["optional-dependencies"]
-# dev = ["pre-commit", "rich", "cogapp", "tomli"]
-# cog.outl("dev = [")
-# for dep in dev + opt["tests"] + opt["docs"]:
-#     cog.outl(f'    "{dep}",')
-# ]]]
+
 dev = [
     "pre-commit",
     "rich",
     "cogapp",
     "tomli",
+    # [[[cog
+    # import pathlib, tomli
+    # cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
+    # opt = cfg["project"]["optional-dependencies"]
+    # for dep in opt["tests"] + opt["docs"]:
+    #     print(f'"{dep}",')
+    # ]]]
     "coverage[toml]",
     "freezegun>=0.2.8",
     "pretend",
@@ -102,18 +100,18 @@ dev = [
     "simplejson",
     "furo",
     "sphinx",
+    "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
     "twisted",
-# [[[end]]]
+    # [[[end]]]
 ]
+
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers "
 xfail_strict = true
 testpaths = "tests"
-filterwarnings = [
-    "once::Warning",
-]
+filterwarnings = ["once::Warning"]
 
 
 [tool.coverage.run]
@@ -155,12 +153,23 @@ profile = "attrs"
 
 [project.readme]
 content-type = "text/x-rst"
+
 # Load README.rst, but remove header and badges.
 # Refresh using `tox -e cog`
+# Nothing except for the adapted README follows after this point.
+
 # [[[cog
-# import cog, pathlib
-# cog.out('text = """')
-# cog.out(pathlib.Path("README.rst").read_text().split(".. -begin-short-")[1].lstrip().replace('"""', r'\"\"\"') + '"""')
+# import pathlib
+# print(
+#     'text = """'
+#     + pathlib.Path("README.rst")
+#       .read_text()
+#       .split(".. -begin-short-")[1]
+#       .lstrip()
+#       .replace('"""', r'\"\"\"')
+#     + '"""',
+#     end=""
+# )
 # ]]]
 text = """``structlog`` makes logging in Python **faster**, **less painful**, and **more powerful** by adding **structure** to your log entries.
 It has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio* or type hints along the way, and `influenced the design <https://twitter.com/sirupsen/status/638330548361019392>`_ of `structured logging packages in other ecosystems <https://github.com/sirupsen/logrus>`_.
@@ -188,7 +197,7 @@ You can stop writing prose and start thinking in terms of an event that happens 
    >>> from structlog import get_logger
    >>> log = get_logger()
    >>> log.info("key_value_logging", out_of_the_box=True, effort=0)
-   2020-11-18 09:17.09 [info     ] key_value_logging              effort=0 out_of_the_box=True
+   2020-11-18 09:17.09 [info     ] key_value_logging    effort=0 out_of_the_box=True
 
 Each log entry is a meaningful dictionary instead of an opaque string now!
 
@@ -203,7 +212,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
    >>> log = log.bind(user="anonymous", some_key=23)
    >>> log = log.bind(user="hynek", another_key=42)
    >>> log.info("user.logged_in", happy=True)
-   2020-11-18 09:18.28 [info     ] user.logged_in                 another_key=42 happy=True some_key=23 user=hynek
+   2020-11-18 09:18.28 [info     ] user.logged_in    another_key=42 happy=True some_key=23 user=hynek
 
 You can also bind key/value pairs to `thread-local storage <https://www.structlog.org/en/stable/thread-local.html>`_ and `contextvars <https://www.structlog.org/en/stable/contextvars.html>`_.
 

@@ -131,6 +131,7 @@ Change into the newly created directory and **after activating your virtual envi
 .. code-block:: bash
 
     $ cd structlog
+    $ pip install --upgrade pip setuptools  # PLEASE don't skip this step
     $ pip install -e .[dev]
 
 If you run the virtual environment’s Python and try to ``import structlog`` it should work!
