@@ -60,6 +60,11 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install --upgrade coverage[toml] virtualenv tox
 
+      - name: "Download coverage data"
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-data
+
       - name: "Combine coverage"
         run: "coverage combine"
 
