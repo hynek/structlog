@@ -35,17 +35,36 @@ jobs:
       - name: "Run tox targets for ${{ matrix.python-version }}"
         run: "python -m tox"
 
-      - name: "Combine coverage"
+      - name: Upload coverage data
+        if: "contains(env.USING_COVERAGE, matrix.python-version)"
+        uses: "actions/upload-artifact@v2"
+        with:
+          name: coverage-data
+          path: ".coverage.*"
+
+  coverage:
+    runs-on: "ubuntu-latest"
+    needs: tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use latest Python so it understands all syntax
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
+
+      - name: "Install dependencies"
         run: |
           set -xe
-          python -m coverage combine
-          python -m coverage xml
-        if: "contains(env.USING_COVERAGE, matrix.python-version)"
-      - name: Upload coverage to Codecov
-        if: "contains(env.USING_COVERAGE, matrix.python-version)"
-        uses: "codecov/codecov-action@v2"
-        with:
-          fail_ci_if_error: true
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade coverage[toml] virtualenv tox
+
+      - name: "Combine coverage"
+        run: "coverage combine"
+
+      - name: "Report & check coverage"
+        run: "coverage report --fail-under=100"
 
   package:
     name: "Build & verify package"
