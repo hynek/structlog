@@ -53,23 +53,17 @@ jobs:
           python-version: "3.10"
 
       - name: "Install dependencies"
-        run: |
-          set -xe
-          python -VV
-          python -m site
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install --upgrade coverage[toml] virtualenv tox
+        run: "python -m pip install --upgrade coverage[toml]"
 
       - name: "Download coverage data"
         uses: actions/download-artifact@v2
         with:
           name: coverage-data
 
-      - name: "Combine coverage"
-        run: "coverage combine"
-
-      - name: "Report & check coverage"
-        run: "coverage report --fail-under=100"
+      - name: "Combine & check coverage"
+        run: \
+          coverage combine
+          coverage report --fail-under=100
 
   package:
     name: "Build & verify package"
