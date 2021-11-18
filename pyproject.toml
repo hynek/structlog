@@ -73,9 +73,9 @@ tests = [
 docs = [
     "furo",
     "sphinx",
+    "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
     "twisted",
-
 ]
 
 # Combine tests and docs and a few more dev tools to a dev environment.
@@ -101,6 +101,7 @@ dev = [
     "simplejson",
     "furo",
     "sphinx",
+    "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
     "twisted",
     # [[[end]]]

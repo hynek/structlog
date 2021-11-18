@@ -31,6 +31,7 @@ def find_version(*file_paths):
 # -- General configuration ----------------------------------------------------
 
 extensions = [
+    "notfound.extension",
     "sphinx.ext.autodoc",
     "sphinx.ext.autodoc.typehints",
     "sphinx.ext.doctest",
