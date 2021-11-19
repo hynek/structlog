@@ -8,6 +8,10 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  FORCE_COLOR: "1"  # Make tools pretty.
+  TOX_TESTENV_PASSENV: "FORCE_COLOR"
+
 
 jobs:
   tests:
