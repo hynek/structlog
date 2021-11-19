@@ -8,11 +8,11 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+
 jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
-
     strategy:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "pypy3"]
@@ -40,9 +40,11 @@ jobs:
           path: ".coverage.*"
           if-no-files-found: ignore
 
+
   coverage:
     runs-on: "ubuntu-latest"
     needs: tests
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -61,6 +63,7 @@ jobs:
         run: |
           python -m coverage combine
           python -m coverage report --fail-under=100
+
 
   package:
     name: "Build & verify package"
@@ -83,13 +86,13 @@ jobs:
       - name: "Check long_description"
         run: "python -m twine check dist/*"
 
+
   install-dev:
+    name: "Verify dev env"
+    runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
-
-    name: "Verify dev env"
-    runs-on: "${{ matrix.os }}"
 
     steps:
       - uses: "actions/checkout@v2"
