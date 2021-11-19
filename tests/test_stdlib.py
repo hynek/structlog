@@ -11,7 +11,7 @@ import sys
 
 import pytest
 
-from pretend import call_recorder
+from pretend import call_recorder, stub
 
 from structlog import (
     PrintLogger,
@@ -484,8 +484,8 @@ class TestRenderToLogKW:
         assert {"msg": "message", "extra": event_dict} == d
 
 
-@pytest.fixture
-def configure_for_pf():
+@pytest.fixture(name="configure_for_processor_formatter")
+def _configure_for_processor_formatter():
     """
     Configure structlog to use ProcessorFormatter.
 
@@ -511,15 +511,28 @@ def configure_logging(
 ):
     """
     Configure logging to use ProcessorFormatter.
+
+    Return a list that is filled with event dicts form calls.
     """
-    return logging.config.dictConfig(
+    event_dicts = []
+
+    def capture(_, __, ed):
+        event_dicts.append(ed.copy())
+
+        return ed
+
+    logging.config.dictConfig(
         {
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": {
                 "plain": {
                     "()": ProcessorFormatter,
-                    "processor": renderer,
+                    "processors": [
+                        capture,
+                        ProcessorFormatter.remove_processors_meta,
+                        renderer,
+                    ],
                     "foreign_pre_chain": pre_chain,
                     "format": "%(message)s [in %(funcName)s]",
                     "logger": logger,
@@ -543,24 +556,30 @@ def configure_logging(
         }
     )
 
+    return event_dicts
 
+
+@pytest.mark.usefixtures("configure_for_processor_formatter")
 class TestProcessorFormatter:
     """
     These are all integration tests because they're all about integration.
     """
 
-    def test_foreign_delegate(self, configure_for_pf, capsys):
+    def test_foreign_delegate(self, capsys):
         """
         If foreign_pre_chain is None, non-structlog log entries are delegated
-        to logging.
+        to logging. The processor chain's event dict is invoked with
+        `_from_structlog=False`
         """
-        configure_logging(None)
+        calls = configure_logging(None)
 
         logging.getLogger().warning("foo")
 
         assert ("", "foo [in test_foreign_delegate]\n") == capsys.readouterr()
+        assert calls[0]["_from_structlog"] is False
+        assert isinstance(calls[0]["_record"], logging.LogRecord)
 
-    def test_clears_args(self, configure_for_pf, capsys):
+    def test_clears_args(self, capsys):
         """
         We render our log records before sending it back to logging.  Therefore
         we must clear `LogRecord.args` otherwise the user gets an
@@ -576,9 +595,7 @@ class TestProcessorFormatter:
             "hello world. [in test_clears_args]\n",
         ) == capsys.readouterr()
 
-    def test_pass_foreign_args_true_sets_positional_args_key(
-        self, configure_for_pf, capsys
-    ):
+    def test_pass_foreign_args_true_sets_positional_args_key(self):
         """
         If `pass_foreign_args` is `True` we set the `positional_args` key in
         the `event_dict` before clearing args.
@@ -594,9 +611,9 @@ class TestProcessorFormatter:
         assert "positional_args" in event_dict
         assert positional_args == event_dict["positional_args"]
 
-    def test_log_dict(self, configure_for_pf, capsys):
+    def test_log_dict(self, capsys):
         """
-        Test that dicts can be logged with std library loggers.
+        dicts can be logged with std library loggers.
         """
         configure_logging(None)
 
@@ -607,12 +624,12 @@ class TestProcessorFormatter:
             "{'foo': 'bar'} [in test_log_dict]\n",
         ) == capsys.readouterr()
 
-    def test_foreign_pre_chain(self, configure_for_pf, capsys):
+    def test_foreign_pre_chain(self, capsys):
         """
         If foreign_pre_chain is an iterable, it's used to pre-process
         non-structlog log entries.
         """
-        configure_logging((add_log_level,))
+        configure_logging([add_log_level])
 
         logging.getLogger().warning("foo")
 
@@ -621,7 +638,7 @@ class TestProcessorFormatter:
             "[warning  ] foo [in test_foreign_pre_chain]\n",
         ) == capsys.readouterr()
 
-    def test_foreign_pre_chain_add_logger_name(self, configure_for_pf, capsys):
+    def test_foreign_pre_chain_add_logger_name(self, capsys):
         """
         foreign_pre_chain works with add_logger_name processor.
         """
@@ -636,7 +653,7 @@ class TestProcessorFormatter:
         ) == capsys.readouterr()
 
     def test_foreign_chain_can_pass_dictionaries_without_excepting(
-        self, configure_for_pf, capsys
+        self, capsys
     ):
         """
         If a foreign logger passes a dictionary to a logging function,
@@ -657,7 +674,7 @@ class TestProcessorFormatter:
             "test_foreign_chain_can_pass_dictionaries_without_excepting]\n",
         ) == capsys.readouterr()
 
-    def test_foreign_pre_chain_gets_exc_info(self, configure_for_pf, capsys):
+    def test_foreign_pre_chain_gets_exc_info(self):
         """
         If non-structlog record contains exc_info, foreign_pre_chain functions
         have access to it.
@@ -675,7 +692,7 @@ class TestProcessorFormatter:
         assert "exc_info" in event_dict
         assert isinstance(event_dict["exc_info"], tuple)
 
-    def test_foreign_pre_chain_sys_exc_info(self, configure_for_pf, capsys):
+    def test_foreign_pre_chain_sys_exc_info(self):
         """
         If a foreign_pre_chain function accesses sys.exc_info(),
         ProcessorFormatter should not have changed it.
@@ -702,9 +719,7 @@ class TestProcessorFormatter:
 
         assert MyException is event_dict["exc_info"][0]
 
-    def test_other_handlers_get_original_record(
-        self, configure_for_pf, capsys
-    ):
+    def test_other_handlers_get_original_record(self):
         """
         Logging handlers that come after the handler with ProcessorFormatter
         should receive original, unmodified record.
@@ -713,9 +728,10 @@ class TestProcessorFormatter:
 
         handler1 = logging.StreamHandler()
         handler1.setFormatter(ProcessorFormatter(JSONRenderer()))
-        handler2 = type("", (), {})()
-        handler2.handle = call_recorder(lambda record: None)
-        handler2.level = logging.INFO
+        handler2 = stub(
+            handle=call_recorder(lambda record: None),
+            level=logging.INFO,
+        )
         logger = logging.getLogger()
         logger.addHandler(handler1)
         logger.addHandler(handler2)
@@ -729,7 +745,7 @@ class TestProcessorFormatter:
         assert "meh" == handler2_record.msg
 
     @pytest.mark.parametrize("keep", [True, False])
-    def test_formatter_unsets_exc_info(self, configure_for_pf, capsys, keep):
+    def test_formatter_unsets_exc_info(self, capsys, keep):
         """
         Stack traces doesn't get printed outside of the json document when
         keep_exc_info are set to False but preserved if set to True.
@@ -767,7 +783,7 @@ class TestProcessorFormatter:
             assert "Traceback (most recent call last):" in err
 
     @pytest.mark.parametrize("keep", [True, False])
-    def test_formatter_unsets_stack_info(self, configure_for_pf, capsys, keep):
+    def test_formatter_unsets_stack_info(self, capsys, keep):
         """
         Stack traces doesn't get printed outside of the json document when
         keep_stack_info are set to False but preserved if set to True.
@@ -794,11 +810,11 @@ class TestProcessorFormatter:
         else:
             assert 2 == err.count("Stack (most recent call last):")
 
-    def test_native(self, configure_for_pf, capsys):
+    def test_native(self, capsys):
         """
         If the log entry comes from structlog, it's unpackaged and processed.
         """
-        configure_logging(None)
+        eds = configure_logging(None)
 
         get_logger().warning("foo")
 
@@ -806,13 +822,15 @@ class TestProcessorFormatter:
             "",
             "[warning  ] foo [in test_native]\n",
         ) == capsys.readouterr()
+        assert eds[0]["_from_structlog"] is True
+        assert isinstance(eds[0]["_record"], logging.LogRecord)
 
-    def test_native_logger(self, configure_for_pf, capsys):
+    def test_native_logger(self, capsys):
         """
         If the log entry comes from structlog, it's unpackaged and processed.
         """
         logger = logging.getLogger()
-        configure_logging(None, logger=logger)
+        eds = configure_logging(None, logger=logger)
 
         get_logger().warning("foo")
 
@@ -820,13 +838,15 @@ class TestProcessorFormatter:
             "",
             "[warning  ] foo [in test_native_logger]\n",
         ) == capsys.readouterr()
+        assert eds[0]["_from_structlog"] is True
+        assert isinstance(eds[0]["_record"], logging.LogRecord)
 
-    def test_foreign_pre_chain_filter_by_level(self, configure_for_pf, capsys):
+    def test_foreign_pre_chain_filter_by_level(self, capsys):
         """
         foreign_pre_chain works with filter_by_level processor.
         """
         logger = logging.getLogger()
-        configure_logging((filter_by_level,), logger=logger)
+        configure_logging([filter_by_level], logger=logger)
         configure(
             processors=[ProcessorFormatter.wrap_for_formatter],
             logger_factory=LoggerFactory(),
@@ -839,6 +859,31 @@ class TestProcessorFormatter:
             "",
             "foo [in test_foreign_pre_chain_filter_by_level]\n",
         ) == capsys.readouterr()
+
+    def test_processor_and_processors(self):
+        """
+        Passing both processor and processors raises a TypeError.
+        """
+        with pytest.raises(TypeError, match="mutually exclusive"):
+            ProcessorFormatter(processor=1, processors=[1])
+
+    def test_no_renderer(self):
+        """
+        Passing neither processor nor processors raises a TypeError.
+        """
+        with pytest.raises(TypeError, match="must be passed"):
+            ProcessorFormatter()
+
+    def test_remove_processors_meta(self):
+        """
+        remove_processors_meta removes _record and _from_structlog. And only
+        them.
+        """
+        assert {"foo": "bar"} == ProcessorFormatter.remove_processors_meta(
+            None,
+            None,
+            {"foo": "bar", "_record": "foo", "_from_structlog": True},
+        )
 
 
 @pytest.fixture(name="abl")

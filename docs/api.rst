@@ -290,7 +290,7 @@ Please see :doc:`thread-local` for details.
 .. autoclass:: PositionalArgumentsFormatter
 
 .. autoclass:: ProcessorFormatter
-   :members: wrap_for_formatter
+   :members: wrap_for_formatter, remove_processors_meta
 
 
 `structlog.types` Module

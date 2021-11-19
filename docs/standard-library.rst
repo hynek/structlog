@@ -278,14 +278,14 @@ Now both ``structlog`` and ``logging`` will emit JSON logs:
 
    Keep this in mind if you only get the event name without any context, and exceptions are ostensibly swallowed.
 
+.. _processor-formatter:
 
 Rendering Using ``structlog``-based Formatters Within `logging`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, the most ambitious approach.
-Here, you use ``structlog``'s `ProcessorFormatter` as a `logging.Formatter`.
+Here, you use ``structlog``'s `ProcessorFormatter` as a `logging.Formatter` for both `logging` as well as ``structlog`` log entries.
 
-This means that ``structlog`` is responsible for formatting both its own log entries, as well those coming from calls to the standard library.
 Consequently, the output is the duty of the standard library too.
 
 .. mermaid::
@@ -310,10 +310,12 @@ Consequently, the output is the duty of the standard library too.
 
 `ProcessorFormatter` has two parts to its API:
 
-#. Instead of a renderer, the `structlog.stdlib.ProcessorFormatter.wrap_for_formatter` static method must be used as the last processor in the :doc:`processor chain <processors>`.
+#. On the ``structlog`` side, the :doc:`processor chain <processors>` must be configured to end with `structlog.stdlib.ProcessorFormatter.wrap_for_formatter` as the renderer.
    It converts the processed event dictionary into something that `ProcessorFormatter` understands.
-#. The `ProcessorFormatter` itself, whose ``format()`` method gets called by standard library `logging` for every log entry (if you configure `logging` correctly).
-   It can wrap any ``structlog`` renderer to handle the output of both ``structlog`` and standard library events.
+#. On the `logging` side, you must configure `ProcessorFormatter` as your formatter of choice.
+   `logging` then calls `ProcessorFormatter`'s ``format()`` method.
+
+   For that, `ProcessorFormatter` wraps a processor chain that is responsible for rendering your log entries to strings.
 
 Thus, the simplest possible configuration looks like the following:
 
@@ -331,7 +333,7 @@ Thus, the simplest possible configuration looks like the following:
     )
 
     formatter = structlog.stdlib.ProcessorFormatter(
-        processor=structlog.dev.ConsoleRenderer(),
+        processors=[structlog.dev.ConsoleRenderer()],
     )
 
     handler = logging.StreamHandler()
@@ -349,14 +351,17 @@ which will allow both of these to work in other modules:
     >>> import structlog
 
     >>> logging.getLogger("stdlog").info("woo")
-    woo
+    woo      _from_structlog=False _record=<LogRecord:...>
     >>> structlog.get_logger("structlog").info("amazing", events="oh yes")
-    amazing                        events=oh yes
+    amazing  _from_structlog=True _record=<LogRecord:...> events=oh yes
 
 Of course, you probably want timestamps and log levels in your output.
 The `ProcessorFormatter` has a ``foreign_pre_chain`` argument which is responsible for adding properties to events from the standard library -- i.e. that do not originate from a ``structlog`` logger -- and which should in general match the ``processors`` argument to `structlog.configure` so you get a consistent output.
 
-For example, to add timestamps, log levels, and traceback handling to your logs you should do:
+``_from_structlog`` and ``_record`` allow your processors to determine whether the log entry is coming from ``structlog``, and to extract information from `logging.LogRecord`\s and add them to the event dictionary.
+However, you probably don't want to have them in your log files, thus we've added the `ProcessorFormatter.remove_processors_meta` processor to do so conveniently.
+
+For example, to add timestamps, log levels, and traceback handling to your logs without ``_from_structlog`` and ``_record`` noise you should do:
 
 .. code-block:: python
 
@@ -375,10 +380,15 @@ For example, to add timestamps, log levels, and traceback handling to your logs 
     )
 
     formatter = structlog.stdlib.ProcessorFormatter(
-        processor=structlog.dev.ConsoleRenderer(),
         # These run ONLY on `logging` entries that do NOT originate within
         # structlog.
         foreign_pre_chain=shared_processors,
+        # These run on ALL entries after the pre_chain is done.
+        processors=[
+           # Remove _record & _from_structlog.
+           structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+           structlog.dev.ConsoleRenderer(),
+         ],
     )
 
 which (given the same ``logging.*`` calls as in the previous example) will result in:
@@ -386,9 +396,9 @@ which (given the same ``logging.*`` calls as in the previous example) will resul
 .. code-block:: pycon
 
     >>> logging.getLogger("stdlog").info("woo")
-    2017-03-06 14:59:20 [info     ] woo
+    2021-11-15 11:41:47 [info     ] woo
     >>> structlog.get_logger("structlog").info("amazing", events="oh yes")
-    2017-03-06 14:59:20 [info     ] amazing                        events=oh yes
+    2021-11-15 11:41:47 [info     ] amazing    events=oh yes
 
 This allows you to set up some sophisticated logging configurations.
 For example, to use the standard library's `logging.config.dictConfig` to log colored logs to the console and plain logs to a file you could do:
@@ -406,18 +416,35 @@ For example, to use the standard library's `logging.config.dictConfig` to log co
         timestamper,
     ]
 
+    def extract_from_record(_, __, event_dict):
+        """
+        Extract thread and process names and add them to the event dict.
+        """
+        record = event_dict["_record"]
+        event_dict["thread_name"] = record.threadName
+        event_dict["process_name"] = record.processName
+
+        return event_dict
+
     logging.config.dictConfig({
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": {
                 "plain": {
                     "()": structlog.stdlib.ProcessorFormatter,
-                    "processor": structlog.dev.ConsoleRenderer(colors=False),
+                    "processors": [
+                       structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                       structlog.dev.ConsoleRenderer(colors=False),
+                    ],
                     "foreign_pre_chain": pre_chain,
                 },
                 "colored": {
                     "()": structlog.stdlib.ProcessorFormatter,
-                    "processor": structlog.dev.ConsoleRenderer(colors=True),
+                    "processors": [
+                       extract_from_record,
+                       structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                       structlog.dev.ConsoleRenderer(colors=True),
+                    ],
                     "foreign_pre_chain": pre_chain,
                 },
             },
@@ -460,17 +487,19 @@ This defines two formatters: one plain and one colored.
 Both are run for each log entry.
 Log entries that do not originate from ``structlog``, are additionally pre-processed using a cached ``timestamper`` and :func:`~structlog.stdlib.add_log_level`.
 
+Additionally, for both `logging` and ``structlog`` -- but only for the colorful logger -- we also extract some data from `logging.LogRecord`:
+
 .. code-block:: pycon
 
-    >>> logging.getLogger().warning("bar")
-    2017-03-06 11:49:27 [warning  ] bar
+   >>> logging.getLogger().warning("bar")
+   2021-11-15 13:26:52 [warning  ] bar    process_name=MainProcess thread_name=MainThread
 
-    >>> structlog.get_logger("structlog").warning("foo", x=42)
-    2017-03-06 11:49:32 [warning  ] foo                            x=42
+   >>> structlog.get_logger("structlog").warning("foo", x=42)
+   2021-11-15 13:26:52 [warning  ] foo    process_name=MainProcess thread_name=MainThread x=42
 
-    >>> print(open("test.log").read())
-    2017-03-06 11:49:27 [warning  ] bar
-    2017-03-06 11:49:32 [warning  ] foo                            x=42
+   >>> pathlib.Path("test.log").read_text()
+   2021-11-15 13:26:52 [warning  ] bar
+   2021-11-15 13:26:52 [warning  ] foo    x=42
 
 (Sadly, you have to imagine the colors in the first two outputs.)
 

@@ -31,6 +31,13 @@ Changes:
   `#364 <https://github.com/hynek/structlog/pull/364>`_
 - ``structlog.stdlib.AsyncBoundLogger`` now determines the running loop when logging, not on instantiation.
   That has a minor performance impact, but makes it more robust when loops change (e.g. ``aiohttp.web.run_app()``), or you want to use ``sync_bl`` *before* a loop has started.
+- ``structlog.stdlib.ProcessorFormatter`` now has a *processors* argument that allows to define a processor chain to run over *all* log entries.
+
+  Before running the chain, two additional keys are added to the event dictionary: ``_record`` and ``_from_structlog``.
+  With them it's possible to extract information from ``logging.LogRecord``\s and differentiate between ``structlog`` and ``logging`` log entries while processing them.
+
+  The old *processor* (singular) parameter is now deprecated, but no plans exist to remove it.
+  `#365 <https://github.com/hynek/structlog/pull/365>`_
 
 
 ----
