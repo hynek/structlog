@@ -15,7 +15,7 @@ env:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.python-version }}"
+    name: "tox on ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
