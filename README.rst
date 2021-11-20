@@ -143,7 +143,8 @@ Project Information
 
 We collect useful third-party extension in `our wiki <https://github.com/hynek/structlog/wiki/Third-party-Extensions>`_.
 
-``structlog`` targets Python 3.6 and later; including PyPy3.
+``structlog`` targets Python 3.6 and later.
+PyPy3 is known to work, but is not tested anymore.
 
 
 ``structlog`` for Enterprise

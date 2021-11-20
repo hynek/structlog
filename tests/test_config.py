@@ -58,7 +58,7 @@ def test_lazy_logger_is_not_detected_as_abstract_method():
 
 def test_default_context_class():
     """
-    Default context class is dict on Python 3.6+ and PyPy
+    Default context class is dict.
     """
     assert dict is _BUILTIN_DEFAULT_CONTEXT_CLASS
 
