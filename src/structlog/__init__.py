@@ -42,7 +42,7 @@ except ImportError:
     contextvars = None  # type: ignore
 
 
-__version__ = "21.3.0.dev0"
+__version__ = "21.3.0"
 
 __title__ = "structlog"
 __description__ = __doc__.strip()
