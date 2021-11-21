@@ -115,6 +115,7 @@ class TestBound:
 
         assert {} == get_threadlocal()
 
+    @pytest.mark.xfail
     def test_cleanup_conflict2(self):
         bind_threadlocal(x="original")
         with bound(x=42, y="foo"):
