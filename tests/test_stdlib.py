@@ -84,12 +84,19 @@ class TestLoggerFactory:
         The name guesser walks up the frames until it reaches a frame whose
         name is not from structlog or one of the configurable other names.
         """
+
+        # Compute the names to __main__ so it doesn't get thrown off if people
+        # install plugins that alter the frames. E.g. #370
+        names = set()
+        f = sys._getframe()
+        while f.f_globals["__name__"] != "__main__":
+            names.add(f.f_globals["__name__"].split(".", 1)[0])
+            f = f.f_back
+
         assert (
             "__main__"
             == additional_frame(
-                LoggerFactory(
-                    ignore_frame_names=["tests.", "_pytest.", "pluggy"]
-                )
+                LoggerFactory(ignore_frame_names=list(names))
             ).name
         )
 
