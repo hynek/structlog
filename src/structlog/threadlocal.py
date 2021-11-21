@@ -102,6 +102,23 @@ def tmp_bind(
         logger._context.update(saved)
 
 
+@contextlib.contextmanager
+def bound(**kw: Any) -> None:
+    """
+    Bind *kw* to the current thread-local context and unbind it afterwards. Can
+    be used as a context manager or decorator.
+
+    .. versionadded:: 21.4.0
+    """
+
+    bind_threadlocal(**kw)
+    try:
+        yield
+    finally:
+        # Will remove overwritten keys
+        unbind_threadlocal(*kw.keys())
+
+
 class _ThreadLocalDictWrapper:
     """
     Wrap a dict-like class and keep the state *global* but *thread-local*.
