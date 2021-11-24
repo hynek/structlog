@@ -46,7 +46,8 @@ __version__ = "21.4.0.dev0"
 
 __title__ = "structlog"
 if __doc__ is None:
-    __description__ = ""
+    # __doc__ is None when running with PYTHONOPTIMIZE=2 / -OO
+    __description__ = ""  # pragma: no cover
 else:
     __description__ = __doc__.strip()
 

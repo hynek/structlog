@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Fixed ``structlog`` when running in optimized mode (PYTHONOPTIMIZE=2).
+- Fixed import when running in optimized mode (``PYTHONOPTIMIZE=2``).
+   `#373 <https://github.com/hynek/structlog/pull/373>`_
 
 
 ----
