@@ -374,7 +374,7 @@ class TestNewThreadLocal:
 class TestBoundThreadlocal:
     def test_cleanup(self):
         """
-        Bindings defined through bound are cleaned up
+        Bindings are cleaned up
         """
         with bound_threadlocal(x=42, y="foo"):
             assert {"x": 42, "y": "foo"} == get_threadlocal()
@@ -393,7 +393,7 @@ class TestBoundThreadlocal:
 
     def test_preserve_independent_bind(self):
         """
-        New bindings inside bound are preserved after the clean up
+        New bindings inside bound_threadlocal are preserved after the clean up
         """
         with bound_threadlocal(x=42):
             bind_threadlocal(y="foo")
@@ -403,7 +403,7 @@ class TestBoundThreadlocal:
 
     def test_nesting_works(self):
         """
-        bound binds and unbinds even when nested
+        bound_threadlocal binds and unbinds even when nested
         """
         with bound_threadlocal(l1=1):
             assert {"l1": 1} == get_threadlocal()
@@ -417,8 +417,8 @@ class TestBoundThreadlocal:
 
     def test_as_decorator(self):
         """
-        bound can be used as a decorator and it preserves the name, signature
-        and documentation of the wrapped function.
+        bound_threadlocal can be used as a decorator and it preserves the name,
+        signature and documentation of the wrapped function.
         """
 
         @bound_threadlocal(x=42)

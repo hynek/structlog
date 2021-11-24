@@ -95,7 +95,7 @@ def tmp_bind(
     Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
 
     Use :func:`~structlog.threadlocal.tmp_bind` instead when you want
-    the tempory bindings to be applied to the global context (thread-local).
+    the temporary bindings to be applied to the global context (thread-local).
     """
     saved = as_immutable(logger)._context
     try:
@@ -265,7 +265,7 @@ def bound_threadlocal(**kw: Any) -> None:
     restore overwritten keys. Can be used as a context manager or decorator.
 
     Use this instead of :func:`~structlog.threadlocal.tmp_bind` when you want
-    the tempory bindings to be applied to the global context (thread-local).
+    the temporary bindings to be applied to the global context (thread-local).
 
     .. versionadded:: 21.4.0
     """
