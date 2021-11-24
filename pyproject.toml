@@ -111,7 +111,10 @@ dev = [
 addopts = "-ra --strict-markers "
 xfail_strict = true
 testpaths = "tests"
-filterwarnings = ["once::Warning"]
+filterwarnings = [
+    "once::Warning",
+    "ignore:.*are you using python -O.*:pytest.PytestConfigWarning",
+]
 
 
 [tool.coverage.run]
