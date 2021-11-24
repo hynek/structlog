@@ -119,6 +119,10 @@ Modern Approach
 
 .. autofunction:: bind_threadlocal
 
+.. autofunction:: unbind_threadlocal
+
+.. autofunction:: bound_threadlocal
+
 .. autofunction:: get_threadlocal
 
    >>> from structlog.threadlocal import bind_threadlocal, get_threadlocal
