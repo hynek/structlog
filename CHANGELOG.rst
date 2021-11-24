@@ -24,7 +24,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Added ``structlog.threadlocal.bound_threadlocal`` as a thread-local equivalent of ``structlog.threadlocal.tmp_bind``
+  for temporarily binding keys to the global context through a decorator/context manager.
 
 
 ----

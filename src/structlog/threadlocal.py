@@ -93,6 +93,9 @@ def tmp_bind(
 ) -> Generator[TLLogger, None, None]:
     """
     Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
+
+    Use :func:`~structlog.threadlocal.tmp_bind` instead when you want
+    the tempory bindings to be applied to the global context (thread-local).
     """
     saved = as_immutable(logger)._context
     try:
@@ -100,23 +103,6 @@ def tmp_bind(
     finally:
         logger._context.clear()
         logger._context.update(saved)
-
-
-@contextlib.contextmanager
-def bound(**kw: Any) -> None:
-    """
-    Bind *kw* to the current thread-local context and unbind it afterwards. Can
-    be used as a context manager or decorator.
-
-    .. versionadded:: 21.4.0
-    """
-
-    bind_threadlocal(**kw)
-    try:
-        yield
-    finally:
-        # Will remove overwritten keys
-        unbind_threadlocal(*kw.keys())
 
 
 class _ThreadLocalDictWrapper:
@@ -270,6 +256,28 @@ def unbind_threadlocal(*keys: str) -> None:
     context = _get_context()
     for key in keys:
         context.pop(key, None)
+
+
+@contextlib.contextmanager
+def bound_threadlocal(**kw: Any) -> None:
+    """
+    Bind *kw* to the current thread-local context. Unbind *kw* afterwards &
+    restore overwritten keys. Can be used as a context manager or decorator.
+
+    Use this instead of :func:`~structlog.threadlocal.tmp_bind` when you want
+    the tempory bindings to be applied to the global context (thread-local).
+
+    .. versionadded:: 21.4.0
+    """
+    context = get_threadlocal()
+    saved = {k: context[k] for k in context.keys() & kw.keys()}
+
+    bind_threadlocal(**kw)
+    try:
+        yield
+    finally:
+        unbind_threadlocal(*kw.keys())
+        bind_threadlocal(**saved)
 
 
 def _get_context() -> Context:
