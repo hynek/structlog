@@ -46,10 +46,10 @@ __version__ = "21.4.0.dev0"
 
 __title__ = "structlog"
 if __doc__ is None:
-    __description__ = "" 
-else: 
+    __description__ = ""
+else:
     __description__ = __doc__.strip()
-    
+
 __uri__ = "https://www.structlog.org/"
 
 __author__ = "Hynek Schlawack"
