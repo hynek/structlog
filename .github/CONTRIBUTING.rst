@@ -185,7 +185,7 @@ Thank you for considering contributing to ``structlog``!
 .. _`PEP 8`: https://www.python.org/dev/peps/pep-0008/
 .. _`PEP 257`: https://www.python.org/dev/peps/pep-0257/
 .. _`good test docstrings`: https://jml.io/pages/test-docstrings.html
-.. _`Code of Conduct`: https://github.com/hynek/structlog/blob/main/.github/CODE_OF_CONDUCT.rst
+.. _`Code of Conduct`: https://github.com/hynek/structlog/blob/main/.github/CODE_OF_CONDUCT.md
 .. _changelog: https://github.com/hynek/structlog/blob/main/CHANGELOG.rst
 .. _`backward compatibility`: https://www.structlog.org/en/latest/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
