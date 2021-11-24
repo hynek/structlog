@@ -24,7 +24,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Fixed ``structlog`` when running in optimized mode (PYTHONOPTIMIZE=2). 
 
 
 ----
