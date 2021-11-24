@@ -383,7 +383,7 @@ class TestBoundThreadlocal:
 
     def test_cleanup_conflict(self):
         """
-        Overwritten keys should be restored after the clean up
+        Overwritten keys are restored after the clean up
         """
         bind_threadlocal(x="original", z="unrelated")
         with bound_threadlocal(x=42, y="foo"):
