@@ -79,7 +79,6 @@ API Reference
    :maxdepth: 1
 
    backward-compatibility
-   contributing
    license
    changelog
 
