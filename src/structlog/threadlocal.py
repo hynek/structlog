@@ -261,11 +261,10 @@ def unbind_threadlocal(*keys: str) -> None:
 @contextlib.contextmanager
 def bound_threadlocal(**kw: Any) -> None:
     """
-    Bind *kw* to the current thread-local context. Unbind *kw* afterwards &
-    restore overwritten keys. Can be used as a context manager or decorator.
+    Bind *kw* to the current thread-local context. Unbind or restore *kw*
+    afterwards. Do **not** affect other keys.
 
-    Use this instead of :func:`~structlog.threadlocal.tmp_bind` when you want
-    the temporary bindings to be applied to the global context (thread-local).
+    Can be used as a context manager or decorator.
 
     .. versionadded:: 21.4.0
     """
