@@ -26,9 +26,8 @@ Changes:
 
 - Fixed import when running in optimized mode (``PYTHONOPTIMIZE=2``).
   `#373 <https://github.com/hynek/structlog/pull/373>`_
-- Added ``structlog.threadlocal.bound_threadlocal`` as a thread-local equivalent of ``structlog.threadlocal.tmp_bind``
-  for temporarily binding keys to the global context through a decorator/context manager.
- `#371 <https://github.com/hynek/structlog/pull/371>`_
+- Added the ``structlog.threadlocal.bound_threadlocal`` decorator/context manager to temporarily bind key/value pairs to a thread-local context.
+  `#371 <https://github.com/hynek/structlog/pull/371>`_
 
 
 ----
