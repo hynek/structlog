@@ -93,6 +93,9 @@ def tmp_bind(
 ) -> Generator[TLLogger, None, None]:
     """
     Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
+
+    Only works with `structlog.threadlocal.wrap_dict`-based contexts.
+    Use :func:`~structlog.threadlocal.bound_threadlocal` for new code.
     """
     saved = as_immutable(logger)._context
     try:
@@ -253,6 +256,27 @@ def unbind_threadlocal(*keys: str) -> None:
     context = _get_context()
     for key in keys:
         context.pop(key, None)
+
+
+@contextlib.contextmanager
+def bound_threadlocal(**kw: Any) -> Generator[None, None, None]:
+    """
+    Bind *kw* to the current thread-local context. Unbind or restore *kw*
+    afterwards. Do **not** affect other keys.
+
+    Can be used as a context manager or decorator.
+
+    .. versionadded:: 21.4.0
+    """
+    context = get_threadlocal()
+    saved = {k: context[k] for k in context.keys() & kw.keys()}
+
+    bind_threadlocal(**kw)
+    try:
+        yield
+    finally:
+        unbind_threadlocal(*kw.keys())
+        bind_threadlocal(**saved)
 
 
 def _get_context() -> Context:

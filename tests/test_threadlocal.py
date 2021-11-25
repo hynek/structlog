@@ -2,7 +2,7 @@
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
-
+import inspect
 import threading
 
 import pytest
@@ -16,6 +16,7 @@ from structlog.threadlocal import (
     _CONTEXT,
     as_immutable,
     bind_threadlocal,
+    bound_threadlocal,
     clear_threadlocal,
     get_merged_threadlocal,
     get_threadlocal,
@@ -368,3 +369,66 @@ class TestNewThreadLocal:
         log = structlog.get_logger().bind(y=2)
 
         assert {"x": 1, "y": 2} == get_merged_threadlocal(log)
+
+
+class TestBoundThreadlocal:
+    def test_cleanup(self):
+        """
+        Bindings are cleaned up
+        """
+        with bound_threadlocal(x=42, y="foo"):
+            assert {"x": 42, "y": "foo"} == get_threadlocal()
+
+        assert {} == get_threadlocal()
+
+    def test_cleanup_conflict(self):
+        """
+        Overwritten keys are restored after the clean up
+        """
+        bind_threadlocal(x="original", z="unrelated")
+        with bound_threadlocal(x=42, y="foo"):
+            assert {"x": 42, "y": "foo", "z": "unrelated"} == get_threadlocal()
+
+        assert {"x": "original", "z": "unrelated"} == get_threadlocal()
+
+    def test_preserve_independent_bind(self):
+        """
+        New bindings inside bound_threadlocal are preserved after the clean up
+        """
+        with bound_threadlocal(x=42):
+            bind_threadlocal(y="foo")
+            assert {"x": 42, "y": "foo"} == get_threadlocal()
+
+        assert {"y": "foo"} == get_threadlocal()
+
+    def test_nesting_works(self):
+        """
+        bound_threadlocal binds and unbinds even when nested
+        """
+        with bound_threadlocal(l1=1):
+            assert {"l1": 1} == get_threadlocal()
+
+            with bound_threadlocal(l2=2):
+                assert {"l1": 1, "l2": 2} == get_threadlocal()
+
+            assert {"l1": 1} == get_threadlocal()
+
+        assert {} == get_threadlocal()
+
+    def test_as_decorator(self):
+        """
+        bound_threadlocal can be used as a decorator and it preserves the name,
+        signature and documentation of the wrapped function.
+        """
+
+        @bound_threadlocal(x=42)
+        def wrapped(arg1):
+            """Wrapped documentation"""
+            bind_threadlocal(y=arg1)
+            assert {"x": 42, "y": arg1} == get_threadlocal()
+
+        wrapped(23)
+
+        assert "wrapped" == wrapped.__name__
+        assert "(arg1)" == str(inspect.signature(wrapped))
+        assert "Wrapped documentation" == wrapped.__doc__
