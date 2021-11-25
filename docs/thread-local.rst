@@ -52,6 +52,7 @@ The general flow of using these functions is:
    ...     get_merged_threadlocal,
    ...     get_threadlocal,
    ...     merge_threadlocal,
+   ...     unbind_threadlocal,
    ... )
    >>> from structlog import configure
    >>> configure(
@@ -65,9 +66,13 @@ The general flow of using these functions is:
    >>> # middleware), clear the thread-local context and bind some common
    >>> # values:
    >>> clear_threadlocal()
-   >>> bind_threadlocal(a=1)
+   >>> bind_threadlocal(a=1, b=2)
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
+   >>> log.msg("hi")
+   a=1 b=2 event='hi'
+   >>> # Use unbind_threadlocal to remove a variable from the context.
+   >>> unbind_threadlocal("b")
    >>> log.msg("hi")
    a=1 event='hi'
    >>> # You can also bind key/value pairs temporarily.

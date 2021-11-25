@@ -175,6 +175,7 @@ Please see :doc:`thread-local` for details.
 .. automodule:: structlog.contextvars
 
 .. autofunction:: bind_contextvars
+.. autofunction:: bound_contextvars
 .. autofunction:: get_contextvars
 .. autofunction:: get_merged_contextvars
 .. autofunction:: merge_contextvars

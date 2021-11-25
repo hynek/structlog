@@ -29,6 +29,7 @@ The general flow mirrors the one for :doc:`thread-local <thread-local>`:
 
    >>> from structlog.contextvars import (
    ...     bind_contextvars,
+   ...     bound_contextvars,
    ...     clear_contextvars,
    ...     merge_contextvars,
    ...     unbind_contextvars,
@@ -42,7 +43,7 @@ The general flow mirrors the one for :doc:`thread-local <thread-local>`:
    ... )
    >>> log = structlog.get_logger()
    >>> # At the top of your request handler (or, ideally, some general
-   >>> # middleware), clear the threadlocal context and bind some common
+   >>> # middleware), clear the contextvars-local context and bind some common
    >>> # values:
    >>> clear_contextvars()
    >>> bind_contextvars(a=1, b=2)
@@ -51,11 +52,18 @@ The general flow mirrors the one for :doc:`thread-local <thread-local>`:
    >>> # (perhaps by using structlog.get_logger() to create them).
    >>> log.msg("hello")
    event='hello' a=1 b=2
-   >>> # Use unbind_contextvars to remove a variable from the context
+   >>> # Use unbind_contextvars to remove a variable from the context.
    >>> unbind_contextvars("b")
    >>> log.msg("world")
    event='world' a=1
-   >>> # And when we clear the threadlocal state again, it goes away.
+   >>> # You can also bind key/value pairs temporarily.
+   >>> with bound_contextvars(b=2):
+   ...    log.msg("hi")
+   event='hi' a=1 b=2
+   >>> # Now it's gone again.
+   >>> log.msg("hi")
+   event='hi' a=1
+   >>> # And when we clear the contextvars state again, it goes away.
    >>> # a=None is printed due to the key_order argument passed to
    >>> # KeyValueRenderer, but it is NOT present anymore.
    >>> clear_contextvars()

@@ -15,9 +15,10 @@ Python 3.7 as :mod:`contextvars`.
 See :doc:`contextvars`.
 """
 
+import contextlib
 import contextvars
 
-from typing import Any, Dict, Mapping
+from typing import Any, Dict, Generator, Mapping
 
 import structlog
 
@@ -154,3 +155,24 @@ def unbind_contextvars(*keys: str) -> None:
         structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
         if structlog_k in _CONTEXT_VARS:
             _CONTEXT_VARS[structlog_k].set(Ellipsis)
+
+
+@contextlib.contextmanager
+def bound_contextvars(**kw: Any) -> Generator[None, None, None]:
+    """
+    Bind *kw* to the current context-local context. Unbind or restore *kw*
+    afterwards. Do **not** affect other keys.
+
+    Can be used as a context manager or decorator.
+
+    .. versionadded:: 21.4.0
+    """
+    context = get_contextvars()
+    saved = {k: context[k] for k in context.keys() & kw.keys()}
+
+    bind_contextvars(**kw)
+    try:
+        yield
+    finally:
+        unbind_contextvars(*kw.keys())
+        bind_contextvars(**saved)

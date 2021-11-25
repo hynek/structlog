@@ -4,6 +4,7 @@
 # repository for complete details.
 
 import asyncio
+import inspect
 import secrets
 
 import pytest
@@ -13,6 +14,7 @@ import structlog
 from structlog.contextvars import (
     _CONTEXT_VARS,
     bind_contextvars,
+    bound_contextvars,
     clear_contextvars,
     get_contextvars,
     get_merged_contextvars,
@@ -230,3 +232,66 @@ class TestContextvars:
         log = structlog.get_logger().bind(y=2)
 
         assert {"x": 1, "y": 2} == get_merged_contextvars(log)
+
+
+class TestBoundContextvars:
+    def test_cleanup(self):
+        """
+        Bindings are cleaned up
+        """
+        with bound_contextvars(x=42, y="foo"):
+            assert {"x": 42, "y": "foo"} == get_contextvars()
+
+        assert {} == get_contextvars()
+
+    def test_cleanup_conflict(self):
+        """
+        Overwritten keys are restored after the clean up
+        """
+        bind_contextvars(x="original", z="unrelated")
+        with bound_contextvars(x=42, y="foo"):
+            assert {"x": 42, "y": "foo", "z": "unrelated"} == get_contextvars()
+
+        assert {"x": "original", "z": "unrelated"} == get_contextvars()
+
+    def test_preserve_independent_bind(self):
+        """
+        New bindings inside bound_contextvars are preserved after the clean up
+        """
+        with bound_contextvars(x=42):
+            bind_contextvars(y="foo")
+            assert {"x": 42, "y": "foo"} == get_contextvars()
+
+        assert {"y": "foo"} == get_contextvars()
+
+    def test_nesting_works(self):
+        """
+        bound_contextvars binds and unbinds even when nested
+        """
+        with bound_contextvars(l1=1):
+            assert {"l1": 1} == get_contextvars()
+
+            with bound_contextvars(l2=2):
+                assert {"l1": 1, "l2": 2} == get_contextvars()
+
+            assert {"l1": 1} == get_contextvars()
+
+        assert {} == get_contextvars()
+
+    def test_as_decorator(self):
+        """
+        bound_contextvars can be used as a decorator and it preserves the
+        name, signature and documentation of the wrapped function.
+        """
+
+        @bound_contextvars(x=42)
+        def wrapped(arg1):
+            """Wrapped documentation"""
+            bind_contextvars(y=arg1)
+            assert {"x": 42, "y": arg1} == get_contextvars()
+
+        wrapped(23)
+
+        assert "wrapped" == wrapped.__name__
+        assert "(arg1)" == str(inspect.signature(wrapped))
+        assert "Wrapped documentation" == wrapped.__doc__
