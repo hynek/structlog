@@ -10,9 +10,10 @@ This is just a friendly reminder about the most common mistakes.  Please make su
 If an item doesn't apply to your pull request, **check it anyway** to make it apparent that there's nothing left to do.
 
 - [ ] Added **tests** for changed code.
+- [ ] **New APIs** are added to [`typing_examples.py`](https://github.com/hynek/structlog/blob/main/tests/typing_examples.py).
 - [ ] Updated **documentation** for changed code.
     - [ ] New functions/classes have to be added to `docs/api.rst` by hand.
-    - [ ] Changed/added classes/methods/functions have appropriate `versionadded`, `versionchanged`, or `deprecated` [directives](http://www.sphinx-doc.org/en/stable/markup/para.html#directive-versionadded).  Find the appropriate next version in our [``__init__.py``](https://github.com/hynek/structlog/blob/main/src/structlog/__init__.py) file.
+    - [ ] Changed/added classes/methods/functions have appropriate `versionadded`, `versionchanged`, or `deprecated` [directives](http://www.sphinx-doc.org/en/stable/markup/para.html#directive-versionadded).  Find the appropriate next version in our [`__init__.py`](https://github.com/hynek/structlog/blob/main/src/structlog/__init__.py) file.
 - [ ] Documentation in `.rst` files is written using [semantic newlines](https://rhodesmill.org/brandon/2012/one-sentence-per-line/).
 - [ ] Changes (and possible deprecations) are documented in the [changelog](https://github.com/hynek/structlog/blob/main/CHANGELOG.rst).
 
