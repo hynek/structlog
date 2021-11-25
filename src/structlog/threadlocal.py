@@ -94,8 +94,8 @@ def tmp_bind(
     """
     Bind *tmp_values* to *logger* & memorize current state. Rewind afterwards.
 
-    Use :func:`~structlog.threadlocal.bound_threadlocal` instead when you want
-    the temporary bindings to be applied to the global context (thread-local).
+    Only works with `structlog.threadlocal.wrap_dict`-based contexts.
+    Use :func:`~structlog.threadlocal.bound_threadlocal` for new code.
     """
     saved = as_immutable(logger)._context
     try:
