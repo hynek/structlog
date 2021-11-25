@@ -45,11 +45,8 @@ except ImportError:
 __version__ = "21.4.0.dev0"
 
 __title__ = "structlog"
-if __doc__ is None:
-    # __doc__ is None when running with PYTHONOPTIMIZE=2 / -OO
-    __description__ = ""  # type: ignore
-else:
-    __description__ = __doc__.strip()
+# __doc__ is None when running with PYTHONOPTIMIZE=2 / -OO
+__description__ = (__doc__ or "").strip()
 
 __uri__ = "https://www.structlog.org/"
 
