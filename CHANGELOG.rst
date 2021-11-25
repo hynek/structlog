@@ -32,7 +32,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Fixed import when running in optimized mode (``PYTHONOPTIMIZE=2``, or ``python -OO``).
+- Fixed import when running in optimized mode (``PYTHONOPTIMIZE=2`` or ``python -OO``).
   `#373 <https://github.com/hynek/structlog/pull/373>`_
 - Added the ``structlog.threadlocal.bound_threadlocal`` and ``structlog.contextvars.bound_contextvars`` decorator/context managers to temporarily bind key/value pairs to a thread-local and context-local context.
   `#371 <https://github.com/hynek/structlog/pull/371>`_
