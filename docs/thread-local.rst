@@ -47,6 +47,7 @@ The general flow of using these functions is:
 
    >>> from structlog.threadlocal import (
    ...     bind_threadlocal,
+   ...     bound_threadlocal,
    ...     clear_threadlocal,
    ...     get_merged_threadlocal,
    ...     get_threadlocal,
@@ -67,6 +68,13 @@ The general flow of using these functions is:
    >>> bind_threadlocal(a=1)
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
+   >>> log.msg("hi")
+   a=1 event='hi'
+   >>> # You can also bind key/value pairs temporarily.
+   >>> with bound_threadlocal(b=2):
+   ...    log.msg("hi")
+   a=1 b=2 event='hi'
+   >>> # Now it's gone again.
    >>> log.msg("hi")
    a=1 event='hi'
    >>> # You can access the current thread-local state.
