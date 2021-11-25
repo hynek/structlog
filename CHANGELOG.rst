@@ -3,6 +3,15 @@ Changelog
 
 Versions follow `CalVer <https://calver.org>`_ with a strict backwards compatibility policy.
 
+Put simply, you shouldn't ever be afraid to upgrade ``structlog`` if you're using its public APIs.
+Whenever there is a need to break compatibility, it is announced here in the changelog, and raises a ``DeprecationWarning`` for a year (if possible) before it's finally really broken.
+
+.. warning::
+
+   You cannot rely on the default settings and the `structlog.dev` module.
+   They may be adjusted in the future to provide a better experience when starting to use ``structlog``.
+   So please make sure to **always** properly configure your applications.
+
 
 21.4.0 (UNRELEASED)
 -------------------

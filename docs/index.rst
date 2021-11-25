@@ -78,7 +78,6 @@ API Reference
 .. toctree::
    :maxdepth: 1
 
-   backward-compatibility
    license
    changelog
 

@@ -23,7 +23,7 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 - Make sure your changes pass our [CI].
   You won't get any feedback until it's green unless you ask for it.
 - Once you've addressed review feedback, make sure to bump the pull request with a short note, so we know you're done.
-- Don’t break [backward compatibility](https://structlog.org/en/latest/backward-compatibility.html).
+- Don’t break backwards compatibility.
 
 
 ## Code
