@@ -12,6 +12,7 @@ Whenever there is a need to break compatibility, it is announced here in the cha
    They may be adjusted in the future to provide a better experience when starting to use ``structlog``.
    So please make sure to **always** properly configure your applications.
 
+.. changelog
 
 21.4.0 (2021-11-25)
 -------------------
