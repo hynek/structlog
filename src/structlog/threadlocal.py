@@ -259,7 +259,7 @@ def unbind_threadlocal(*keys: str) -> None:
 
 
 @contextlib.contextmanager
-def bound_threadlocal(**kw: Any) -> None:
+def bound_threadlocal(**kw: Any) -> Generator[None, None, None]:
     """
     Bind *kw* to the current thread-local context. Unbind or restore *kw*
     afterwards. Do **not** affect other keys.
