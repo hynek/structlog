@@ -64,7 +64,6 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 
   In that case you should look into [*asdf*](https://asdf-vm.com) or [*pyenv*](https://github.com/pyenv/pyenv), which make it very easy to install many different Python versions in parallel.
 - Write [good test docstrings](https://jml.io/pages/test-docstrings.html).
-- To ensure new features work well with the rest of the system, they should be also added to our [*Hypothesis*](https://hypothesis.readthedocs.io/) testing strategy, which can be found in `tests/strategies.py`.
 - If you've changed or added public APIs, please update our type stubs (files ending in `.pyi`).
 
 
@@ -107,8 +106,8 @@ If your change is noteworthy, there needs to be a changelog entry in `CHANGELOG.
 - Prefer simple past tense or constructions with "now".
   For example:
 
-  + Added ``structlog.func()``.
-  + ``structlog.func()`` now doesn't crash the Large Hadron Collider anymore when passed the *foobar* argument.
+  * Added `structlog.func()`.
+  * `structlog.func()` now doesn't crash the Large Hadron Collider anymore when passed the *foobar* argument.
 
 Example entries:
 
