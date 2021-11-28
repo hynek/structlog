@@ -19,7 +19,6 @@ First steps:
 User's Guide
 ============
 
-
 Basics
 ------
 
