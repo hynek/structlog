@@ -3,29 +3,11 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-import codecs
-import os
-import re
+from importlib.metadata import version
 
-
-here = os.path.abspath(os.path.dirname(__file__))
 
 # We want an image in the README and include the README in the docs.
 suppress_warnings = ["image.nonlocal_uri"]
-
-
-def read(*parts):
-    return codecs.open(os.path.join(here, *parts), "r").read()
-
-
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(
-        r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M
-    )
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
 
 
 # -- General configuration ----------------------------------------------------
@@ -59,7 +41,7 @@ copyright = f"2013, { author }"
 # built documents.
 #
 # The short X.Y version.
-version = find_version("..", "src", "structlog", "__init__.py")
+version = version("structlog")
 # The full version, including alpha/beta/rc tags.
 release = ""
 exclude_patterns = ["_build"]
