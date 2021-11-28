@@ -2,7 +2,7 @@
 Structured Logging for Python
 =============================
 
-Release v\ |version| (`What's new? <changelog>`).
+Release v\ |release| (`What's new? <changelog>`)
 
 .. include:: ../README.rst
    :start-after: -begin-short-

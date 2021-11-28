@@ -3,7 +3,7 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-from importlib.metadata import version
+from importlib import metadata
 
 
 # We want an image in the README and include the README in the docs.
@@ -39,11 +39,12 @@ copyright = f"2013, { author }"
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-#
-# The short X.Y version.
-version = version("structlog")
+
 # The full version, including alpha/beta/rc tags.
-release = ""
+release = metadata.version("structlog")
+# The short X.Y version.
+version = release.rsplit(".", 1)[0]
+
 exclude_patterns = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all
