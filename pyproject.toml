@@ -10,7 +10,7 @@ name = "structlog"
 authors = [{name = "Hynek Schlawack", email = "hs@ox.cx"}]
 dynamic = ["version", "description"]
 requires-python = ">=3.6"
-dependencies = ["typing-extensions; python_version<'3.8'"]
+dependencies = ["typing-extensions; python_version<'3.8'", "logfmt>=0.4"]
 license = { file = "LICENSE" }
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [

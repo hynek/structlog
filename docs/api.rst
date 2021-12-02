@@ -232,6 +232,16 @@ Please see :doc:`thread-local` for details.
       ...                                       {"a": 42, "b": [1, 2, 3]})
       'b=[1, 2, 3] a=42'
 
+.. autoclass:: LogfmtRenderer
+
+   .. doctest::
+
+      >>> from structlog.processors import LogfmtRenderer
+      >>> LogfmtRenderer(sort_keys=True)(None, None, {"a": 42, "b": [1, 2, 3]})
+      'a=42 b="[1, 2, 3]"'
+      >>> LogfmtRenderer(key_order=["b", "a"])(None, None,
+      ...                                      {"a": 42, "b": [1, 2, 3]})
+      'b="[1, 2, 3]" a=42'
 
 .. autofunction:: add_log_level
 

@@ -18,6 +18,7 @@ from structlog.processors import (
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
+    LogfmtRenderer,
     StackInfoRenderer,
     TimeStamper,
     UnicodeDecoder,
@@ -123,6 +124,86 @@ class TestKeyValueRenderer:
 
         cnt = rv.count("哈")
         assert 2 == cnt
+
+
+class TestLogfmtRenderer:
+    def test_sort_keys(self, event_dict):
+        """
+        Keys are sorted if sort_keys is set.
+        """
+        rv = LogfmtRenderer(sort_keys=True)(None, None, event_dict)
+
+        assert r'a="<A(\o/)>" b="[3, 4]" x=7 y="test" z="(1, 2)"' == rv
+
+    def test_order_complete(self, event_dict):
+        """
+        Orders keys according to key_order.
+        """
+        rv = LogfmtRenderer(key_order=["y", "b", "a", "z", "x"])(
+            None, None, event_dict
+        )
+
+        assert r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7' == rv
+
+    def test_order_missing(self, event_dict):
+        """
+        Missing keys get rendered as None.
+        """
+        rv = LogfmtRenderer(key_order=["c", "y", "b", "a", "z", "x"])(
+            None, None, event_dict
+        )
+
+        assert r'c= y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7' == rv
+
+    def test_order_missing_dropped(self, event_dict):
+        """
+        Missing keys get dropped
+        """
+        rv = LogfmtRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"], drop_missing=True
+        )(None, None, event_dict)
+
+        assert r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7' == rv
+
+    def test_order_extra(self, event_dict):
+        """
+        Extra keys get sorted if sort_keys=True.
+        """
+        event_dict["B"] = "B"
+        event_dict["A"] = "A"
+
+        rv = LogfmtRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"], sort_keys=True
+        )(None, None, event_dict)
+
+        assert (
+            r'c= y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7 A="A" B="B"'
+        ) == rv
+
+    def test_order_sorted_missing_dropped(self, event_dict):
+        """
+        Keys get sorted if sort_keys=True and extras get dropped.
+        """
+        event_dict["B"] = "B"
+        event_dict["A"] = "A"
+
+        rv = LogfmtRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"],
+            sort_keys=True,
+            drop_missing=True,
+        )(None, None, event_dict)
+
+        assert r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7 A="A" B="B"' == rv
+
+    def test_random_order(self, event_dict):
+        """
+        No special ordering doesn't blow up.
+        """
+        rv = LogfmtRenderer()(None, None, event_dict)
+
+        assert isinstance(rv, str)
+
+
 
 
 class TestJSONRenderer:
