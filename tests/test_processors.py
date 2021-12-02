@@ -193,7 +193,10 @@ class TestLogfmtRenderer:
             drop_missing=True,
         )(None, None, event_dict)
 
-        assert r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7 A="A" B="B"' == rv
+        assert (
+            r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7 A="A" B="B"'
+            == rv
+        )
 
     def test_random_order(self, event_dict):
         """
@@ -202,8 +205,6 @@ class TestLogfmtRenderer:
         rv = LogfmtRenderer()(None, None, event_dict)
 
         assert isinstance(rv, str)
-
-
 
 
 class TestJSONRenderer:

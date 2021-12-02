@@ -126,9 +126,7 @@ class LogfmtRenderer:
     ) -> str:
 
         try:
-            return next(
-                logfmt.format(dict(self._ordered_items(event_dict)))
-            )
+            return next(logfmt.format(dict(self._ordered_items(event_dict))))
         except StopIteration:
             return ""
 
