@@ -206,6 +206,14 @@ class TestLogfmtRenderer:
 
         assert isinstance(rv, str)
 
+    def test_empty_event_dict(self):
+        """
+        Empty event dict renders as empty string.
+        """
+        rv = LogfmtRenderer()(None, None, {})
+
+        assert "" == rv
+
 
 class TestJSONRenderer:
     def test_renders_json(self, event_dict):

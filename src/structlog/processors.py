@@ -101,12 +101,12 @@ class KeyValueRenderer:
 
 class LogfmtRenderer:
     """
-    Render ``event_dict`` using the `logfmt <https://brandur.org/logfmt>`_ format.
+    Render ``event_dict`` using the logfmt format.
 
     :param sort_keys: Whether to sort keys when formatting.
     :param key_order: List of keys that should be rendered in this exact
-        order. Missing keys are rendered with empty values, extra keys depending on
-        *sort_keys* and the dict class.
+        order. Missing keys are rendered with empty values, extra keys
+        depending on *sort_keys* and the dict class.
     :param drop_missing: When ``True``, extra keys in *key_order* will be
         dropped rather than rendered with empty values.
 
