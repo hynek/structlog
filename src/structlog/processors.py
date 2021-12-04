@@ -101,7 +101,9 @@ class KeyValueRenderer:
 
 class LogfmtRenderer:
     """
-    Render ``event_dict`` using the logfmt format.
+    Render ``event_dict`` using the logfmt_ format.
+    
+    .. _logfmt: https://brandur.org/logfmt
 
     :param sort_keys: Whether to sort keys when formatting.
     :param key_order: List of keys that should be rendered in this exact
@@ -137,9 +139,9 @@ def _items_sorter(
     drop_missing: bool,
 ) -> Callable[[EventDict], List[Tuple[str, Any]]]:
     """
-    Return a function to sort items from an `event_dict`.
+    Return a function to sort items from an ``event_dict``.
 
-    See :class:`KeyValueRenderer` for an explanation of the parameters.
+    See `KeyValueRenderer` for an explanation of the parameters.
     """
     # Use an optimized version for each case.
     if key_order and sort_keys:
