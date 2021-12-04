@@ -25,8 +25,6 @@ from typing import (
     Union,
 )
 
-import logfmt
-
 from ._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
@@ -111,6 +109,11 @@ class LogfmtRenderer:
         depending on *sort_keys* and the dict class.
     :param drop_missing: When ``True``, extra keys in *key_order* will be
         dropped rather than rendered with empty values.
+    :param bool_as_flag: When ``True``, render ``{"flag": True}`` as
+        ``flag``, instead of ``flag=true``. ``{"flag": False}`` is
+        always rendered as ``flag=false``.
+
+    :raises ValueError: If a key contains non printable or space characters.
 
     .. versionadded:: 21.5.0
     """
@@ -120,17 +123,38 @@ class LogfmtRenderer:
         sort_keys: bool = False,
         key_order: Optional[Sequence[str]] = None,
         drop_missing: bool = False,
+        bool_as_flag: bool = True,
     ):
         self._ordered_items = _items_sorter(sort_keys, key_order, drop_missing)
+        self.bool_as_flag = bool_as_flag
 
     def __call__(
         self, _: WrappedLogger, __: str, event_dict: EventDict
     ) -> str:
 
-        try:
-            return next(logfmt.format(dict(self._ordered_items(event_dict))))
-        except StopIteration:
-            return ""
+        elements: List[str] = []
+        for key, value in self._ordered_items(event_dict):
+            if any(c <= " " for c in key):
+                raise ValueError(f'Invalid key: "{key}"')
+
+            if value is None:
+                elements.append(f"{key}=")
+                continue
+
+            if isinstance(value, bool):
+                if self.bool_as_flag and value:
+                    elements.append(f"{key}")
+                    continue
+                value = "true" if value else "false"
+
+            value = f"{value}".replace('"', '\\"')
+
+            if " " in value or "=" in value:
+                value = f'"{value}"'
+
+            elements.append(f"{key}={value}")
+
+        return " ".join(elements)
 
 
 def _items_sorter(
@@ -277,7 +301,7 @@ class JSONRenderer:
     def __init__(
         self,
         serializer: Callable[..., Union[str, bytes]] = json.dumps,
-        **dumps_kw: Any
+        **dumps_kw: Any,
     ) -> None:
         dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw

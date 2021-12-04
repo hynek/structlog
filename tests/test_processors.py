@@ -133,7 +133,7 @@ class TestLogfmtRenderer:
         """
         rv = LogfmtRenderer(sort_keys=True)(None, None, event_dict)
 
-        assert r'a="<A(\o/)>" b="[3, 4]" x=7 y="test" z="(1, 2)"' == rv
+        assert r'a=<A(\o/)> b="[3, 4]" x=7 y=test z="(1, 2)"' == rv
 
     def test_order_complete(self, event_dict):
         """
@@ -143,7 +143,7 @@ class TestLogfmtRenderer:
             None, None, event_dict
         )
 
-        assert r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7' == rv
+        assert r'y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7' == rv
 
     def test_order_missing(self, event_dict):
         """
@@ -153,7 +153,7 @@ class TestLogfmtRenderer:
             None, None, event_dict
         )
 
-        assert r'c= y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7' == rv
+        assert r'c= y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7' == rv
 
     def test_order_missing_dropped(self, event_dict):
         """
@@ -163,7 +163,7 @@ class TestLogfmtRenderer:
             key_order=["c", "y", "b", "a", "z", "x"], drop_missing=True
         )(None, None, event_dict)
 
-        assert r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7' == rv
+        assert r'y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7' == rv
 
     def test_order_extra(self, event_dict):
         """
@@ -177,7 +177,7 @@ class TestLogfmtRenderer:
         )(None, None, event_dict)
 
         assert (
-            r'c= y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7 A="A" B="B"'
+            r'c= y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7 A=A B=B'
         ) == rv
 
     def test_order_sorted_missing_dropped(self, event_dict):
@@ -193,10 +193,7 @@ class TestLogfmtRenderer:
             drop_missing=True,
         )(None, None, event_dict)
 
-        assert (
-            r'y="test" b="[3, 4]" a="<A(\o/)>" z="(1, 2)" x=7 A="A" B="B"'
-            == rv
-        )
+        assert r'y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7 A=A B=B' == rv
 
     def test_random_order(self, event_dict):
         """
@@ -213,6 +210,66 @@ class TestLogfmtRenderer:
         rv = LogfmtRenderer()(None, None, {})
 
         assert "" == rv
+
+    def test_bool_as_flag(self):
+        """
+        If activated, render ``{"a": True}`` as ``a`` instead of ``a=true``.
+        """
+        event_dict = {"a": True, "b": False}
+
+        rv_abbrev = LogfmtRenderer(bool_as_flag=True)(None, None, event_dict)
+        assert r"a b=false" == rv_abbrev
+
+        rv_no_abbrev = LogfmtRenderer(bool_as_flag=False)(
+            None, None, event_dict
+        )
+        assert r"a=true b=false" == rv_no_abbrev
+
+    def test_reference_format(self):
+        """
+        Test rendering according to example at
+        https://pkg.go.dev/github.com/kr/logfmt
+        """
+        event_dict = {
+            "foo": "bar",
+            "a": 14,
+            "baz": "hello kitty",
+            "cool%story": "bro",
+            "f": True,
+            "%^asdf": True,
+        }
+
+        rv = LogfmtRenderer()(None, None, event_dict)
+        assert 'foo=bar a=14 baz="hello kitty" cool%story=bro f %^asdf' == rv
+
+    def test_equal_sign_or_space_in_value(self):
+        """
+        Values with equal signs are always quoted.
+        """
+        event_dict = {
+            "without": "somevalue",
+            "withequal": "some=value",
+            "withspace": "some value",
+        }
+
+        rv = LogfmtRenderer()(None, None, event_dict)
+        assert (
+            r'without=somevalue withequal="some=value" withspace="some value"'
+            == rv
+        )
+
+    def test_invalid_key(self):
+        """
+        Keys cannot contain space characters.
+        """
+        event_dict = {
+            "invalid key": "somevalue",
+        }
+
+        with pytest.raises(ValueError) as e:
+            LogfmtRenderer()(None, None, event_dict)
+
+        assert 'Invalid key: "invalid key"' == e.value.args[0]
 
 
 class TestJSONRenderer:

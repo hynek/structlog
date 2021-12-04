@@ -237,11 +237,11 @@ Please see :doc:`thread-local` for details.
    .. doctest::
 
       >>> from structlog.processors import LogfmtRenderer
-      >>> event_dict = {"a": 42, "b": [1, 2, 3]}
+      >>> event_dict = {"a": 42, "b": [1, 2, 3], "flag": True}
       >>> LogfmtRenderer(sort_keys=True)(None, None, event_dict)
-      'a=42 b="[1, 2, 3]"'
-      >>> LogfmtRenderer(key_order=["b", "a"])(None, None, event_dict)
-      'b="[1, 2, 3]" a=42'
+      'a=42 b="[1, 2, 3]" flag'
+      >>> LogfmtRenderer(key_order=["b", "a"], bool_as_flag=False)(None, None, event_dict)
+      'b="[1, 2, 3]" a=42 flag=true'
 
 .. autofunction:: add_log_level
 
