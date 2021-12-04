@@ -102,7 +102,7 @@ class KeyValueRenderer:
 class LogfmtRenderer:
     """
     Render ``event_dict`` using the logfmt_ format.
-    
+
     .. _logfmt: https://brandur.org/logfmt
 
     :param sort_keys: Whether to sort keys when formatting.
