@@ -664,6 +664,30 @@ def add_logger_name(
     return event_dict
 
 
+_BLANK_LOGRECORD = logging.LogRecord(
+    "name", 0, "pathname", 0, "msg", tuple(), None
+)
+
+
+def add_extra(
+    logger: logging.Logger, method_name: str, event_dict: EventDict
+) -> EventDict:
+    """
+    Add extra `logging.LogRecord` keys to the event dictionary.
+
+    This function is useful for adding data passed in the ``extra`` parameter
+    of the `logging` module's log methods to the event dictionary.
+
+    .. versionadded:: 21.5.0
+    """
+    record: Optional[logging.LogRecord] = event_dict.get("_record")
+    if record is not None:
+        for key, value in record.__dict__.items():
+            if key not in _BLANK_LOGRECORD.__dict__:
+                event_dict[key] = value
+    return event_dict
+
+
 def render_to_log_kwargs(
     _: logging.Logger, __: str, event_dict: EventDict
 ) -> EventDict:

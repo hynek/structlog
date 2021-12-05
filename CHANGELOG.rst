@@ -39,6 +39,9 @@ Changes:
 
 - Added the ``structlog.processors.LogfmtRenderer`` processor to render log lines using the `logfmt <https://brandur.org/logfmt>`_ format.
   `#376 <https://github.com/hynek/structlog/pull/376>`_
+- Added ``structlog.stdlib.add_extra`` processor that adds extra ``logging.LogRecord`` keys to the event dictionary.
+  This function is useful for adding data passed in the ``extra`` parameter of the ``logging`` module's log methods to the event dictionary.
+  `#377 <https://github.com/hynek/structlog/pull/377>`_
 
 
 ----

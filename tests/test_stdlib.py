@@ -9,6 +9,8 @@ import logging.config
 import os
 import sys
 
+from io import StringIO
+
 import pytest
 
 from pretend import call_recorder, stub
@@ -31,6 +33,7 @@ from structlog.stdlib import (
     PositionalArgumentsFormatter,
     ProcessorFormatter,
     _FixedFindCallerLogger,
+    add_extra,
     add_log_level,
     add_log_level_number,
     add_logger_name,
@@ -470,6 +473,44 @@ class TestAddLoggerName:
         event_dict = add_logger_name(None, None, {"_record": record})
 
         assert name == event_dict["logger"]
+
+
+class TestAddExtra:
+    def test_add_extra(self, log_record):
+        """
+        Extra attributes of a LogRecord are added to the event dict.
+        """
+        extra = {"x_this": "is", "x_the": 3, "x_extra": "values"}
+        record: logging.LogRecord = log_record()
+        record.__dict__.update(extra)
+        event_dict = {"_record": record}
+        event_dict_out = add_extra(None, None, event_dict)
+        assert event_dict_out == {**event_dict, **extra}
+
+    def test_add_extra_e2e(self):
+        """
+        Values passed in the extra parameter of log methods are added as
+        members of JSON output objects.
+        """
+        logger = logging.Logger(sys._getframe().f_code.co_name)
+        string_io = StringIO()
+        handler = logging.StreamHandler(string_io)
+        formatter = ProcessorFormatter(
+            foreign_pre_chain=[add_extra],
+            processors=[JSONRenderer()],
+        )
+        handler.setFormatter(formatter)
+        handler.setLevel(0)
+        logger.addHandler(handler)
+        logger.setLevel(0)
+        extra = {"with": "values", "from": "extra"}
+        logger.info("Some %s", "text", extra=extra)
+        out_item_set = set(json.loads(string_io.getvalue()).items())
+        expected_item_set = set({"event": "Some text", **extra}.items())
+        assert expected_item_set.issubset(out_item_set), (
+            f"expected_item_set={expected_item_set} should"
+            f"be a subset of out_item_set={out_item_set}"
+        )
 
 
 class TestRenderToLogKW:

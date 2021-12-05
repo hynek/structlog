@@ -91,7 +91,7 @@ structlog.configure(
 
 formatter = structlog.stdlib.ProcessorFormatter(
     processor=structlog.dev.ConsoleRenderer(),
-    foreign_pre_chain=shared_processors,
+    foreign_pre_chain=[*structlog.stdlib.add_extra, shared_processors],
 )
 
 
