@@ -77,7 +77,7 @@ jobs:
           name: html-report
           path: htmlcov
         if: ${{ failure() }}
-        
+
 
   package:
     name: "Build & verify package"
