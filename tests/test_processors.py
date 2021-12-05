@@ -18,6 +18,7 @@ from structlog.processors import (
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
+    LogfmtRenderer,
     StackInfoRenderer,
     TimeStamper,
     UnicodeDecoder,
@@ -123,6 +124,152 @@ class TestKeyValueRenderer:
 
         cnt = rv.count("哈")
         assert 2 == cnt
+
+
+class TestLogfmtRenderer:
+    def test_sort_keys(self, event_dict):
+        """
+        Keys are sorted if sort_keys is set.
+        """
+        rv = LogfmtRenderer(sort_keys=True)(None, None, event_dict)
+
+        assert r'a=<A(\o/)> b="[3, 4]" x=7 y=test z="(1, 2)"' == rv
+
+    def test_order_complete(self, event_dict):
+        """
+        Orders keys according to key_order.
+        """
+        rv = LogfmtRenderer(key_order=["y", "b", "a", "z", "x"])(
+            None, None, event_dict
+        )
+
+        assert r'y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7' == rv
+
+    def test_order_missing(self, event_dict):
+        """
+        Missing keys get rendered as None.
+        """
+        rv = LogfmtRenderer(key_order=["c", "y", "b", "a", "z", "x"])(
+            None, None, event_dict
+        )
+
+        assert r'c= y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7' == rv
+
+    def test_order_missing_dropped(self, event_dict):
+        """
+        Missing keys get dropped
+        """
+        rv = LogfmtRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"], drop_missing=True
+        )(None, None, event_dict)
+
+        assert r'y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7' == rv
+
+    def test_order_extra(self, event_dict):
+        """
+        Extra keys get sorted if sort_keys=True.
+        """
+        event_dict["B"] = "B"
+        event_dict["A"] = "A"
+
+        rv = LogfmtRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"], sort_keys=True
+        )(None, None, event_dict)
+
+        assert (
+            r'c= y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7 A=A B=B'
+        ) == rv
+
+    def test_order_sorted_missing_dropped(self, event_dict):
+        """
+        Keys get sorted if sort_keys=True and extras get dropped.
+        """
+        event_dict["B"] = "B"
+        event_dict["A"] = "A"
+
+        rv = LogfmtRenderer(
+            key_order=["c", "y", "b", "a", "z", "x"],
+            sort_keys=True,
+            drop_missing=True,
+        )(None, None, event_dict)
+
+        assert r'y=test b="[3, 4]" a=<A(\o/)> z="(1, 2)" x=7 A=A B=B' == rv
+
+    def test_random_order(self, event_dict):
+        """
+        No special ordering doesn't blow up.
+        """
+        rv = LogfmtRenderer()(None, None, event_dict)
+
+        assert isinstance(rv, str)
+
+    def test_empty_event_dict(self):
+        """
+        Empty event dict renders as empty string.
+        """
+        rv = LogfmtRenderer()(None, None, {})
+
+        assert "" == rv
+
+    def test_bool_as_flag(self):
+        """
+        If activated, render ``{"a": True}`` as ``a`` instead of ``a=true``.
+        """
+        event_dict = {"a": True, "b": False}
+
+        rv_abbrev = LogfmtRenderer(bool_as_flag=True)(None, None, event_dict)
+        assert r"a b=false" == rv_abbrev
+
+        rv_no_abbrev = LogfmtRenderer(bool_as_flag=False)(
+            None, None, event_dict
+        )
+        assert r"a=true b=false" == rv_no_abbrev
+
+    def test_reference_format(self):
+        """
+        Test rendering according to example at
+        https://pkg.go.dev/github.com/kr/logfmt
+        """
+        event_dict = {
+            "foo": "bar",
+            "a": 14,
+            "baz": "hello kitty",
+            "cool%story": "bro",
+            "f": True,
+            "%^asdf": True,
+        }
+
+        rv = LogfmtRenderer()(None, None, event_dict)
+        assert 'foo=bar a=14 baz="hello kitty" cool%story=bro f %^asdf' == rv
+
+    def test_equal_sign_or_space_in_value(self):
+        """
+        Values with equal signs are always quoted.
+        """
+        event_dict = {
+            "without": "somevalue",
+            "withequal": "some=value",
+            "withspace": "some value",
+        }
+
+        rv = LogfmtRenderer()(None, None, event_dict)
+        assert (
+            r'without=somevalue withequal="some=value" withspace="some value"'
+            == rv
+        )
+
+    def test_invalid_key(self):
+        """
+        Keys cannot contain space characters.
+        """
+        event_dict = {
+            "invalid key": "somevalue",
+        }
+
+        with pytest.raises(ValueError) as e:
+            LogfmtRenderer()(None, None, event_dict)
+
+        assert 'Invalid key: "invalid key"' == e.value.args[0]
 
 
 class TestJSONRenderer:

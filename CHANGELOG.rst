@@ -33,7 +33,8 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-*none*
+- Added the ``structlog.processors.LogfmtRenderer`` processor to render log lines using the `logfmt <https://brandur.org/logfmt>`_ format.
+  `#376 <https://github.com/hynek/structlog/pull/376>`_
 
 
 ----

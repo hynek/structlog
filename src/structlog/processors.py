@@ -75,42 +75,7 @@ class KeyValueRenderer:
         drop_missing: bool = False,
         repr_native_str: bool = True,
     ):
-        # Use an optimized version for each case.
-        if key_order and sort_keys is True:
-
-            def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
-                items = []
-                for key in key_order:  # type: ignore
-                    value = event_dict.pop(key, None)
-                    if value is not None or not drop_missing:
-                        items.append((key, value))
-
-                items += sorted(event_dict.items())
-
-                return items
-
-        elif key_order:
-
-            def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
-                items = []
-                for key in key_order:  # type: ignore
-                    value = event_dict.pop(key, None)
-                    if value is not None or not drop_missing:
-                        items.append((key, value))
-
-                items += event_dict.items()
-
-                return items
-
-        elif sort_keys:
-
-            def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
-                return sorted(event_dict.items())
-
-        else:
-            ordered_items = operator.methodcaller("items")  # type: ignore
-
-        self._ordered_items = ordered_items
+        self._ordered_items = _items_sorter(sort_keys, key_order, drop_missing)
 
         if repr_native_str is True:
             self._repr = repr
@@ -130,6 +95,114 @@ class KeyValueRenderer:
         return " ".join(
             k + "=" + self._repr(v) for k, v in self._ordered_items(event_dict)
         )
+
+
+class LogfmtRenderer:
+    """
+    Render ``event_dict`` using the logfmt_ format.
+
+    .. _logfmt: https://brandur.org/logfmt
+
+    :param sort_keys: Whether to sort keys when formatting.
+    :param key_order: List of keys that should be rendered in this exact
+        order. Missing keys are rendered with empty values, extra keys
+        depending on *sort_keys* and the dict class.
+    :param drop_missing: When ``True``, extra keys in *key_order* will be
+        dropped rather than rendered with empty values.
+    :param bool_as_flag: When ``True``, render ``{"flag": True}`` as
+        ``flag``, instead of ``flag=true``. ``{"flag": False}`` is
+        always rendered as ``flag=false``.
+
+    :raises ValueError: If a key contains non printable or space characters.
+
+    .. versionadded:: 21.5.0
+    """
+
+    def __init__(
+        self,
+        sort_keys: bool = False,
+        key_order: Optional[Sequence[str]] = None,
+        drop_missing: bool = False,
+        bool_as_flag: bool = True,
+    ):
+        self._ordered_items = _items_sorter(sort_keys, key_order, drop_missing)
+        self.bool_as_flag = bool_as_flag
+
+    def __call__(
+        self, _: WrappedLogger, __: str, event_dict: EventDict
+    ) -> str:
+
+        elements: List[str] = []
+        for key, value in self._ordered_items(event_dict):
+            if any(c <= " " for c in key):
+                raise ValueError(f'Invalid key: "{key}"')
+
+            if value is None:
+                elements.append(f"{key}=")
+                continue
+
+            if isinstance(value, bool):
+                if self.bool_as_flag and value:
+                    elements.append(f"{key}")
+                    continue
+                value = "true" if value else "false"
+
+            value = f"{value}".replace('"', '\\"')
+
+            if " " in value or "=" in value:
+                value = f'"{value}"'
+
+            elements.append(f"{key}={value}")
+
+        return " ".join(elements)
+
+
+def _items_sorter(
+    sort_keys: bool,
+    key_order: Optional[Sequence[str]],
+    drop_missing: bool,
+) -> Callable[[EventDict], List[Tuple[str, Any]]]:
+    """
+    Return a function to sort items from an ``event_dict``.
+
+    See `KeyValueRenderer` for an explanation of the parameters.
+    """
+    # Use an optimized version for each case.
+    if key_order and sort_keys:
+
+        def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
+            items = []
+            for key in key_order:  # type: ignore
+                value = event_dict.pop(key, None)
+                if value is not None or not drop_missing:
+                    items.append((key, value))
+
+            items += sorted(event_dict.items())
+
+            return items
+
+    elif key_order:
+
+        def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
+            items = []
+            for key in key_order:  # type: ignore
+                value = event_dict.pop(key, None)
+                if value is not None or not drop_missing:
+                    items.append((key, value))
+
+            items += event_dict.items()
+
+            return items
+
+    elif sort_keys:
+
+        def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
+            return sorted(event_dict.items())
+
+    else:
+        ordered_items = operator.methodcaller("items")  # type: ignore
+
+    return ordered_items
 
 
 class UnicodeEncoder:
@@ -228,7 +301,7 @@ class JSONRenderer:
     def __init__(
         self,
         serializer: Callable[..., Union[str, bytes]] = json.dumps,
-        **dumps_kw: Any
+        **dumps_kw: Any,
     ) -> None:
         dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw
