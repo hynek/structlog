@@ -76,6 +76,11 @@ Processors
 `add_logger_name`:
    Adds the name of the logger to the event dictionary under the key ``logger``.
 
+`ExtraAdder`:
+   Add extra attributes of `logging.LogRecord` objects to the event dictionary.
+
+   This processor can be used for adding data passed in the ``extra`` parameter of the `logging` module's log methods to the event dictionary.
+
 :func:`~structlog.stdlib.add_log_level`:
    Adds the log level to the event dictionary under the key ``level``.
 
@@ -413,6 +418,10 @@ For example, to use the standard library's `logging.config.dictConfig` to log co
         # Add the log level and a timestamp to the event_dict if the log entry
         # is not from structlog.
         structlog.stdlib.add_log_level,
+        # Add extra attributes of LogRecord objects to the event dictionary
+        # so that values passed in the extra parameter of log methods pass
+        # through to log output.
+        structlog.stdlib.ExtraAdder(),
         timestamper,
     ]
 

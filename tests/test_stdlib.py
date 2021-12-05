@@ -9,6 +9,9 @@ import logging.config
 import os
 import sys
 
+from io import StringIO
+from typing import Any, Callable, Collection, Dict, Optional, Set
+
 import pytest
 
 from pretend import call_recorder, stub
@@ -27,6 +30,7 @@ from structlog.processors import JSONRenderer, KeyValueRenderer
 from structlog.stdlib import (
     AsyncBoundLogger,
     BoundLogger,
+    ExtraAdder,
     LoggerFactory,
     PositionalArgumentsFormatter,
     ProcessorFormatter,
@@ -39,7 +43,7 @@ from structlog.stdlib import (
     render_to_log_kwargs,
 )
 from structlog.testing import CapturedCall
-from structlog.types import BindableLogger
+from structlog.types import BindableLogger, EventDict
 
 from .additional_frame import additional_frame
 
@@ -428,8 +432,8 @@ class TestAddLogLevel:
         assert "warning" == event_dict["level"]
 
 
-@pytest.fixture
-def log_record():
+@pytest.fixture(name="make_log_record")
+def _make_log_record():
     """
     A LogRecord factory.
     """
@@ -461,15 +465,144 @@ class TestAddLoggerName:
 
         assert name == event_dict["logger"]
 
-    def test_logger_name_added_with_record(self, log_record):
+    def test_logger_name_added_with_record(self, make_log_record):
         """
         The logger name is deduced from the LogRecord if provided.
         """
         name = "sample-name"
-        record = log_record(name=name)
+        record = make_log_record(name=name)
         event_dict = add_logger_name(None, None, {"_record": record})
 
         assert name == event_dict["logger"]
+
+
+def extra_dict() -> Dict[str, Any]:
+    """
+    A dict to be passed in the `extra` parameter of the `logging` module's log
+    methods.
+    """
+    return {
+        "this": "is",
+        "some": "extra values",
+        "x_int": 4,
+        "x_bool": True,
+    }
+
+
+@pytest.fixture(name="extra_dict")
+def extra_dict_fixture():
+    return extra_dict()
+
+
+class TestExtraAdder:
+    @pytest.mark.parametrize(
+        "allow, misses",
+        [
+            (None, None),
+            ({}, None),
+            *[({key}, None) for key in extra_dict().keys()],
+            ({"missing"}, {"missing"}),
+            ({"missing", "keys"}, {"missing"}),
+            ({"this", "x_int"}, None),
+        ],
+    )
+    def test_add_extra(
+        self,
+        make_log_record: Callable[[], logging.LogRecord],
+        extra_dict: Dict[str, Any],
+        allow: Optional[Collection[str]],
+        misses: Optional[Set[str]],
+    ):
+        """
+        Extra attributes of a LogRecord object are added to the event dict.
+        """
+        record: logging.LogRecord = make_log_record()
+        record.__dict__.update(extra_dict)
+        event_dict = {"_record": record, "ed_key": "ed_value"}
+        expected = self._copy_allowed(event_dict, extra_dict, allow)
+
+        if allow is None:
+            actual = ExtraAdder()(None, None, event_dict)
+            assert expected == actual
+        actual = ExtraAdder(allow)(None, None, event_dict)
+        assert expected == actual
+        if misses:
+            assert misses.isdisjoint(expected.keys())
+
+    def test_no_record(self):
+        """
+        If the event_dict has no LogRecord, do nothing.
+        """
+        actual = ExtraAdder()(None, None, {})
+
+        assert {} == actual
+
+    @pytest.mark.parametrize(
+        "allow, misses",
+        [
+            (None, None),
+            ({}, None),
+            *[({key}, None) for key in extra_dict().keys()],
+            ({"missing"}, {"missing"}),
+            ({"missing", "keys"}, {"missing"}),
+            ({"this", "x_int"}, None),
+        ],
+    )
+    def test_add_extra_e2e(
+        self,
+        extra_dict: Dict[str, Any],
+        allow: Optional[Collection[str]],
+        misses: Optional[Set[str]],
+    ):
+        """
+        Values passed in the `extra` parameter of the `logging` module's log
+        methods pass through to log output.
+        """
+        logger = logging.Logger(sys._getframe().f_code.co_name)
+        string_io = StringIO()
+        handler = logging.StreamHandler(string_io)
+        formatter = ProcessorFormatter(
+            foreign_pre_chain=[ExtraAdder(allow)],
+            processors=[JSONRenderer()],
+        )
+        handler.setFormatter(formatter)
+        handler.setLevel(0)
+        logger.addHandler(handler)
+        logger.setLevel(0)
+        logging.warning("allow = %s", allow)
+
+        event_dict = {"event": "Some text"}
+        expected = self._copy_allowed(event_dict, extra_dict, allow)
+
+        logger.info("Some %s", "text", extra=extra_dict)
+        actual = {
+            key: value
+            for key, value in json.loads(string_io.getvalue()).items()
+            if not key.startswith("_")
+        }
+
+        assert expected == actual
+        if misses:
+            assert misses.isdisjoint(expected.keys())
+
+    @classmethod
+    def _copy_allowed(
+        cls,
+        event_dict: EventDict,
+        extra_dict: Dict[str, Any],
+        allow: Optional[Collection[str]],
+    ) -> EventDict:
+        if allow is None:
+            return {**event_dict, **extra_dict}
+        else:
+            return {
+                **event_dict,
+                **{
+                    key: value
+                    for key, value in extra_dict.items()
+                    if key in allow
+                },
+            }
 
 
 class TestRenderToLogKW:

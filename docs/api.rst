@@ -302,6 +302,8 @@ Please see :doc:`thread-local` for details.
 
 .. autofunction:: add_logger_name
 
+.. autofunction:: ExtraAdder
+
 .. autoclass:: PositionalArgumentsFormatter
 
 .. autoclass:: ProcessorFormatter
