@@ -9,7 +9,8 @@ import pytest
 
 from pretend import raiser
 
-from structlog._utils import until_not_interrupted
+from structlog._utils import until_not_interrupted, get_processname
+import multiprocessing
 
 
 class TestUntilNotInterrupted:
@@ -35,3 +36,17 @@ class TestUntilNotInterrupted:
         until_not_interrupted(raise_on_first_three)
 
         assert 3 == calls[0]
+
+
+class TestProcessname:
+    def test_default(self):
+        assert get_processname() == multiprocessing.current_process().name
+
+    def test_changed(self, monkeypatch: pytest.MonkeyPatch):
+        tmp_name = "fakename"
+        monkeypatch.setattr(
+            target=multiprocessing.current_process(),
+            name="name",
+            value=tmp_name,
+        )
+        assert get_processname() == tmp_name

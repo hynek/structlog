@@ -4,9 +4,16 @@
 # repository for complete details.
 
 import datetime
+import inspect
 import json
+import logging
+import os
 import pickle
 import sys
+import threading
+
+from io import StringIO
+from typing import Any, Dict, Optional, Set
 
 import pytest
 
@@ -14,7 +21,11 @@ from freezegun import freeze_time
 
 import structlog
 
+from structlog import BoundLogger
 from structlog.processors import (
+    CallsiteInfoAdder,
+    CallsiteParameter,
+    CALLSITE_PARAMETERS,
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
@@ -27,8 +38,9 @@ from structlog.processors import (
     _json_fallback_handler,
     format_exc_info,
 )
+from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
-
+from structlog._utils import get_processname
 
 try:
     import simplejson
@@ -714,3 +726,187 @@ class TestFigureOutExcInfo:
         e = ValueError()
 
         assert (e.__class__, e, None) == _figure_out_exc_info(e)
+
+
+
+class TestCallsiteInfoAdder:
+    parameter_strings = {
+        "pathname",
+        "filename",
+        "module",
+        "funcName",
+        "lineno",
+        "thread",
+        "threadName",
+        "process",
+        "processName",
+    }
+
+    @pytest.mark.parametrize(
+        "parameter_strings",
+        [
+            None,
+            *[{parameter} for parameter in parameter_strings],
+            set(),
+            parameter_strings,
+            {"pathname", "filename"},
+            {"module", "funcName"},
+        ],
+    )
+    def test_logging_log(
+        self,
+        parameter_strings: Optional[Set[str]],
+    ) -> None:
+        processors = []
+        logging.info("parameter_strings = %s", parameter_strings)
+        if parameter_strings is None:
+            processors.append(CallsiteInfoAdder())
+            parameter_strings = self.parameter_strings
+        else:
+            parameters = self.filter_parameters(parameter_strings)
+            logging.info("parameters = %s", parameters)
+            processors.append(CallsiteInfoAdder(parameters=parameters))
+
+        logger = logging.Logger(sys._getframe().f_code.co_name)
+        string_io = StringIO()
+        handler = logging.StreamHandler(string_io)
+        formatter = ProcessorFormatter(
+            processors=[*processors, JSONRenderer()],
+        )
+        handler.setFormatter(formatter)
+        handler.setLevel(0)
+        logger.addHandler(handler)
+        logger.setLevel(0)
+        callsite_params = self.get_callsite_params()
+        logger.info("test message")
+
+        callsite_params = self.filter_parameter_dict(callsite_params, parameter_strings)
+        out = json.loads(string_io.getvalue())
+        assert isinstance(out, dict)
+        out_item_set = set(out.items())
+        expected_item_set = set(
+            {
+                "event": "test message",
+                **callsite_params,
+            }.items()
+        )
+        assert expected_item_set.issubset(out_item_set), (
+            f"{out_item_set}"
+            "\nshould be a superset of\n"
+            f"{expected_item_set}"
+            "\nbut it is missing\n"
+            f"{expected_item_set.difference(out_item_set)}"
+        )
+        unexpected_params = self.invert_parameter_strings(parameter_strings)
+        assert unexpected_params.isdisjoint(out.keys()), (
+            f"{unexpected_params}"
+            "\nshould be disjoint with\n"
+            f"{out.keys()}"
+            "\nbut contains\n"
+            f"{unexpected_params.intersection(out.keys())}"
+        )
+
+    @pytest.mark.parametrize(
+        "parameter_strings",
+        [
+            None,
+            *[{parameter} for parameter in parameter_strings],
+            set(),
+            parameter_strings,
+            {"pathname", "filename"},
+            {"module", "funcName"},
+        ],
+    )
+    def test_structlog_log(
+        self,
+        parameter_strings: Optional[Set[str]],
+    ) -> None:
+        processors = []
+        logging.info("parameter_strings = %s", parameter_strings)
+        if parameter_strings is None:
+            processors.append(CallsiteInfoAdder())
+            parameter_strings = self.parameter_strings
+        else:
+            parameters = self.filter_parameters(parameter_strings)
+            logging.info("parameters = %s", parameters)
+            processors.append(CallsiteInfoAdder(parameters=parameters))
+
+        logger = logging.Logger(sys._getframe().f_code.co_name)
+        string_io = StringIO()
+        handler = logging.StreamHandler(string_io)
+        formatter = ProcessorFormatter(
+            processors=[JSONRenderer()],
+        )
+        handler.setFormatter(formatter)
+        handler.setLevel(0)
+        logger.addHandler(handler)
+        logger.setLevel(0)
+        ctx: Dict[str, Any] = {}
+        bound_logger = BoundLogger(
+            logger, [*processors, ProcessorFormatter.wrap_for_formatter], ctx
+        )
+        callsite_params = self.get_callsite_params()
+        bound_logger.info("test message")
+
+        callsite_params = self.filter_parameter_dict(callsite_params, parameter_strings)
+        out = json.loads(string_io.getvalue())
+        assert isinstance(out, dict)
+        out_item_set = set(out.items())
+        expected_item_set = set(
+            {
+                "event": "test message",
+                **callsite_params,
+            }.items()
+        )
+        assert expected_item_set.issubset(out_item_set), (
+            f"{out_item_set}"
+            "\nshould be a superset of\n"
+            f"{expected_item_set}"
+            "\nbut it is missing\n"
+            f"{expected_item_set.difference(out_item_set)}"
+        )
+        unexpected_params = self.invert_parameter_strings(parameter_strings)
+        assert unexpected_params.isdisjoint(out.keys()), (
+            f"{unexpected_params}"
+            "\nshould be disjoint with\n"
+            f"{out.keys()}"
+            "\nbut contains\n"
+            f"{unexpected_params.intersection(out.keys())}"
+        )
+
+    @classmethod
+    def invert_parameter_strings(cls, parameter_strings: Set[str]) -> Set[str]:
+        return cls.parameter_strings.difference(parameter_strings)
+
+    @classmethod
+    def filter_parameters(cls, parameter_strings: Set[str]) -> Set[CallsiteParameter]:
+        return {
+            parameter
+            for parameter in CALLSITE_PARAMETERS
+            if parameter.value in parameter_strings
+        }
+
+    @classmethod
+    def filter_parameter_dict(
+        cls, input: Dict[str, Any], parameter_strings: Set[str]
+    ) -> Dict[str, Any]:
+        return {key: value for key, value in input.items() if key in parameter_strings}
+
+    @classmethod
+    def get_callsite_params(cls, offset: int = 1) -> Dict[str, Any]:
+        """
+        This function creates callsite parameters for the line that is `offset` lines after it.
+        """
+        frame_info = inspect.stack()[1]
+        traceback = inspect.getframeinfo(frame_info[0])
+        return {
+            "pathname": traceback.filename,
+            "filename": os.path.basename(traceback.filename),
+            "module": os.path.splitext(os.path.basename(traceback.filename))[0],
+            "funcName": frame_info.function,
+            "lineno": frame_info.lineno + offset,
+            "thread": threading.get_ident(),
+            "threadName": threading.current_thread().name,
+            "process": os.getpid(),
+            "processName": get_processname(),
+        }

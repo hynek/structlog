@@ -36,6 +36,7 @@ from ._frames import (
     _format_exception,
     _format_stack,
 )
+from ._utils import get_processname
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from .types import EventDict, ExcInfo, WrappedLogger
 
@@ -51,6 +52,9 @@ __all__ = [
     "format_exc_info",
     "ExceptionPrettyPrinter",
     "StackInfoRenderer",
+    "CALLSITE_PARAMETERS",
+    "CallsiteParameter",
+    "CallsiteInfoAdder",
 ]
 
 
@@ -551,22 +555,7 @@ class CallsiteParameter(str, enum.Enum):
     PROCESS_NAME = "processName"
 
 
-call_site_parameters: Set[CallsiteParameter] = set(CallsiteParameter)
-
-
-def _get_processname() -> str:
-    processName = "MainProcess"
-    mp: Any = sys.modules.get("multiprocessing")
-    if mp is not None:
-        # Errors may occur if multiprocessing has not finished loading
-        # yet - e.g. if a custom import hook causes third-party code
-        # to run when multiprocessing calls import. See issue 8200
-        # for an example
-        try:
-            processName = mp.current_process().name
-        except Exception:
-            pass
-    return processName
+CALLSITE_PARAMETERS: Set[CallsiteParameter] = set(CallsiteParameter)
 
 
 class CallsiteInfoAdder:
@@ -579,17 +568,19 @@ class CallsiteInfoAdder:
         CallsiteParameter.FILENAME: lambda module, frame_info: os.path.basename(
             frame_info.filename
         ),
-        CallsiteParameter.MODULE: lambda module, frame_info: module,
+        CallsiteParameter.MODULE: lambda module, frame_info: os.path.splitext(
+            os.path.basename(frame_info.filename)
+        )[0],
         CallsiteParameter.FUNC_NAME: lambda module, frame_info: frame_info.function,
         CallsiteParameter.LINENO: lambda module, frame_info: frame_info.lineno,
         CallsiteParameter.THREAD: lambda module, frame_info: threading.get_ident(),
         CallsiteParameter.THREAD_NAME: lambda module, frame_info: threading.current_thread().name,
         CallsiteParameter.PROCESS: lambda module, frame_info: os.getpid(),
-        CallsiteParameter.PROCESS_NAME: lambda module, frame_info: _get_processname,
+        CallsiteParameter.PROCESS_NAME: lambda module, frame_info: get_processname(),
     }
 
     def __init__(
-        self, parameters: Set[CallsiteParameter] = call_site_parameters
+        self, parameters: Set[CallsiteParameter] = CALLSITE_PARAMETERS
     ) -> None:
         self._parameters = parameters
         self._active_handlers: List[
