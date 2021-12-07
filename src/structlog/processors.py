@@ -8,15 +8,15 @@ Processors useful regardless of the logging framework.
 """
 
 import datetime
-import json
-import operator
-import sys
-import time
 import enum
-import logging
 import inspect
+import json
+import logging
+import operator
 import os
+import sys
 import threading
+import time
 
 from typing import (
     Any,
