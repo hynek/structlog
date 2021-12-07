@@ -12,6 +12,11 @@ import json
 import operator
 import sys
 import time
+import enum
+import logging
+import inspect
+import os
+import threading
 
 from typing import (
     Any,
@@ -20,6 +25,7 @@ from typing import (
     List,
     Optional,
     Sequence,
+    Set,
     TextIO,
     Tuple,
     Union,
@@ -530,4 +536,83 @@ class StackInfoRenderer:
                 _find_first_app_frame_and_name()[0]
             )
 
+        return event_dict
+
+
+class CallsiteParameter(str, enum.Enum):
+    PATHNAME = "pathname"
+    FILENAME = "filename"
+    MODULE = "module"
+    FUNC_NAME = "funcName"
+    LINENO = "lineno"
+    THREAD = "thread"
+    THREAD_NAME = "threadName"
+    PROCESS = "process"
+    PROCESS_NAME = "processName"
+
+
+call_site_parameters: Set[CallsiteParameter] = set(CallsiteParameter)
+
+
+def _get_processname() -> str:
+    processName = "MainProcess"
+    mp: Any = sys.modules.get("multiprocessing")
+    if mp is not None:
+        # Errors may occur if multiprocessing has not finished loading
+        # yet - e.g. if a custom import hook causes third-party code
+        # to run when multiprocessing calls import. See issue 8200
+        # for an example
+        try:
+            processName = mp.current_process().name
+        except Exception:
+            pass
+    return processName
+
+
+class CallsiteInfoAdder:
+    __slots__ = ["_parameters", "_active_handlers"]
+
+    _handlers: Dict[
+        CallsiteParameter, Callable[[str, inspect.Traceback], Any]
+    ] = {
+        CallsiteParameter.PATHNAME: lambda module, frame_info: frame_info.filename,
+        CallsiteParameter.FILENAME: lambda module, frame_info: os.path.basename(
+            frame_info.filename
+        ),
+        CallsiteParameter.MODULE: lambda module, frame_info: module,
+        CallsiteParameter.FUNC_NAME: lambda module, frame_info: frame_info.function,
+        CallsiteParameter.LINENO: lambda module, frame_info: frame_info.lineno,
+        CallsiteParameter.THREAD: lambda module, frame_info: threading.get_ident(),
+        CallsiteParameter.THREAD_NAME: lambda module, frame_info: threading.current_thread().name,
+        CallsiteParameter.PROCESS: lambda module, frame_info: os.getpid(),
+        CallsiteParameter.PROCESS_NAME: lambda module, frame_info: _get_processname,
+    }
+
+    def __init__(
+        self, parameters: Set[CallsiteParameter] = call_site_parameters
+    ) -> None:
+        self._parameters = parameters
+        self._active_handlers: List[
+            Tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+        ] = []
+        for parameter in self._parameters:
+            self._active_handlers.append(
+                (parameter, self._handlers[parameter])
+            )
+
+    def __call__(
+        self, logger: logging.Logger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        record: Optional[logging.LogRecord] = event_dict.get("_record")
+        if record is not None:
+            for parameter in self._parameters:
+                event_dict[parameter.value] = record.__dict__[parameter.value]
+        else:
+            frame, module = _find_first_app_frame_and_name(
+                additional_ignores=[__name__]
+            )
+            frame_info = inspect.getframeinfo(frame)
+            for parameter, handler in self._active_handlers:
+                handler(module, frame_info)
+                event_dict[parameter.value] = handler(module, frame_info)
         return event_dict
