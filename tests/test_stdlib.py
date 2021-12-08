@@ -485,7 +485,7 @@ class TestAddExtra:
         record.__dict__.update(extra)
         event_dict = {"_record": record}
         event_dict_out = add_extra(None, None, event_dict)
-        assert event_dict_out == {**event_dict, **extra}
+        assert {**event_dict, **extra} == event_dict_out
 
     def test_add_extra_e2e(self):
         """

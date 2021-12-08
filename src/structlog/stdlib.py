@@ -43,6 +43,7 @@ __all__ = [
     "add_log_level_number",
     "add_log_level",
     "add_logger_name",
+    "add_extra",
     "BoundLogger",
     "filter_by_level",
     "get_logger",
