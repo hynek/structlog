@@ -18,6 +18,7 @@ from functools import partial
 from typing import (
     Any,
     Callable,
+    Collection,
     Dict,
     Iterable,
     List,
@@ -44,7 +45,7 @@ __all__ = [
     "add_log_level_number",
     "add_log_level",
     "add_logger_name",
-    "add_extra",
+    "ExtraAdder",
     "BoundLogger",
     "filter_by_level",
     "get_logger",
@@ -666,35 +667,35 @@ def add_logger_name(
     return event_dict
 
 
-_BLANK_LOGRECORD = logging.LogRecord(
+_LOG_RECORD_KEYS = logging.LogRecord(
     "name", 0, "pathname", 0, "msg", tuple(), None
-)
+).__dict__.keys()
 
 
 class ExtraAdder:
     """
-    Add extra `logging.LogRecord` attributes to the event dictionary.
+    Add extra attributes of `logging.LogRecord` objects to the event
+    dictionary.
 
-    This processor is useful for adding data passed in the ``extra`` parameter
-    of the `logging` module's log methods to the event dictionary.
+    This processor can be used for adding data passed in the ``extra``
+    parameter of the `logging` module's log methods to the event dictionary.
 
-    :param allow: An optional list of keys to allow to pass through from
-        `logging.LogRecord` objects to event dictionaries.
+    :param allow: An optional collection of attributes that, if present in
+        `logging.LogRecord` objects, will be copied to event dictionaries.
 
-        If `allow` is set to None, then all extra `log`
+        If ``allow`` is None all attributes of `logging.LogRecord` objects that
+        do not exist on a standard `logging.LogRecord` object will be copied to
+        event dictionaries.
 
     .. versionadded:: 21.5.0
     """
-    __slots__ = ["_allow", "_copier"]
 
-    def __init__(self, allow: Optional[Sequence[str]] = None) -> None:
-        self._allow = allow
+    __slots__ = ["_copier"]
+
+    def __init__(self, allow: Optional[Collection[str]] = None) -> None:
         self._copier: Callable[[EventDict, logging.LogRecord], None]
-        if self._allow is not None:
-            # this is to convince mypy that the value being passed as the first
-            # argument to _copy_allowed is in fact not an optional.
-            _allow = self._allow
-            self._copier = functools.partial(self._copy_allowed, _allow)
+        if allow is not None:
+            self._copier = functools.partial(self._copy_allowed, [*allow])
         else:
             self._copier = self._copy_all
 
@@ -711,19 +712,20 @@ class ExtraAdder:
         cls, event_dict: EventDict, record: logging.LogRecord
     ) -> None:
         for key, value in record.__dict__.items():
-            if key not in _BLANK_LOGRECORD.__dict__:
+            if key not in _LOG_RECORD_KEYS:
                 event_dict[key] = value
 
     @classmethod
     def _copy_allowed(
         cls,
-        allow: Sequence[str],
+        allow: Collection[str],
         event_dict: EventDict,
         record: logging.LogRecord,
     ) -> None:
         for key in allow:
             if key in record.__dict__:
                 event_dict[key] = record.__dict__[key]
+
 
 def render_to_log_kwargs(
     _: logging.Logger, __: str, event_dict: EventDict

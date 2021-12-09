@@ -302,7 +302,7 @@ Please see :doc:`thread-local` for details.
 
 .. autofunction:: add_logger_name
 
-.. autofunction:: add_extra
+.. autofunction:: ExtraAdder
 
 .. autoclass:: PositionalArgumentsFormatter
 
