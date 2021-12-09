@@ -10,7 +10,7 @@ import os
 import sys
 
 from io import StringIO
-from typing import Any, Dict, Optional, Sequence, Set
+from typing import Any, Collection, Dict, Optional, Set
 
 import pytest
 
@@ -510,7 +510,7 @@ class TestAddExtra:
         self,
         log_record: logging.LogRecord,
         extra_dict: Dict[str, Any],
-        allow: Optional[Sequence[str]],
+        allow: Optional[Collection[str]],
         misses: Optional[Set[str]],
     ):
         """
@@ -519,18 +519,7 @@ class TestAddExtra:
         record: logging.LogRecord = log_record()
         record.__dict__.update(extra_dict)
         event_dict = {"_record": record, "ed_key": "ed_value"}
-        expected: EventDict
-        if allow is None:
-            expected = {**event_dict, **extra_dict}
-        else:
-            expected = {
-                **event_dict,
-                **{
-                    key: value
-                    for key, value in extra_dict.items()
-                    if key in allow
-                },
-            }
+        expected = self._copy_allowed(event_dict, extra_dict, allow)
 
         if allow is None:
             actual = ExtraAdder()(None, None, event_dict)
@@ -554,7 +543,7 @@ class TestAddExtra:
     def test_add_extra_e2e(
         self,
         extra_dict: Dict[str, Any],
-        allow: Optional[Sequence[str]],
+        allow: Optional[Collection[str]],
         misses: Optional[Set[str]],
     ):
         """
@@ -575,18 +564,7 @@ class TestAddExtra:
         logging.warning("allow = %s", allow)
 
         event_dict = {"event": "Some text"}
-        expected: EventDict
-        if allow is None:
-            expected = {**event_dict, **extra_dict}
-        else:
-            expected = {
-                **event_dict,
-                **{
-                    key: value
-                    for key, value in extra_dict.items()
-                    if key in allow
-                },
-            }
+        expected = self._copy_allowed(event_dict, extra_dict, allow)
 
         logger.info("Some %s", "text", extra=extra_dict)
         actual = {
@@ -598,6 +576,25 @@ class TestAddExtra:
         assert expected == actual
         if misses:
             assert misses.isdisjoint(expected.keys())
+
+    @classmethod
+    def _copy_allowed(
+        cls,
+        event_dict: EventDict,
+        extra_dict: Dict[str, Any],
+        allow: Optional[Collection[str]],
+    ) -> EventDict:
+        if allow is None:
+            return {**event_dict, **extra_dict}
+        else:
+            return {
+                **event_dict,
+                **{
+                    key: value
+                    for key, value in extra_dict.items()
+                    if key in allow
+                },
+            }
 
 
 class TestRenderToLogKW:
