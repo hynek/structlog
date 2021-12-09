@@ -10,6 +10,7 @@ See also :doc:`structlog's standard library support <standard-library>`.
 """
 
 import asyncio
+import functools
 import logging
 import sys
 
@@ -670,24 +671,59 @@ _BLANK_LOGRECORD = logging.LogRecord(
 )
 
 
-def add_extra(
-    logger: logging.Logger, method_name: str, event_dict: EventDict
-) -> EventDict:
+class ExtraAdder:
     """
-    Add extra `logging.LogRecord` keys to the event dictionary.
+    Add extra `logging.LogRecord` attributes to the event dictionary.
 
-    This function is useful for adding data passed in the ``extra`` parameter
+    This processor is useful for adding data passed in the ``extra`` parameter
     of the `logging` module's log methods to the event dictionary.
+
+    :param allow: An optional list of keys to allow to pass through from
+        `logging.LogRecord` objects to event dictionaries.
+
+        If `allow` is set to None, then all extra `log`
 
     .. versionadded:: 21.5.0
     """
-    record: Optional[logging.LogRecord] = event_dict.get("_record")
-    if record is not None:
+    __slots__ = ["_allow", "_copier"]
+
+    def __init__(self, allow: Optional[Sequence[str]] = None) -> None:
+        self._allow = allow
+        self._copier: Callable[[EventDict, logging.LogRecord], None]
+        if self._allow is not None:
+            # this is to convince mypy that the value being passed as the first
+            # argument to _copy_allowed is in fact not an optional.
+            _allow = self._allow
+            self._copier = functools.partial(self._copy_allowed, _allow)
+        else:
+            self._copier = self._copy_all
+
+    def __call__(
+        self, logger: logging.Logger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        record: Optional[logging.LogRecord] = event_dict.get("_record")
+        if record is not None:
+            self._copier(event_dict, record)
+        return event_dict
+
+    @classmethod
+    def _copy_all(
+        cls, event_dict: EventDict, record: logging.LogRecord
+    ) -> None:
         for key, value in record.__dict__.items():
             if key not in _BLANK_LOGRECORD.__dict__:
                 event_dict[key] = value
-    return event_dict
 
+    @classmethod
+    def _copy_allowed(
+        cls,
+        allow: Sequence[str],
+        event_dict: EventDict,
+        record: logging.LogRecord,
+    ) -> None:
+        for key in allow:
+            if key in record.__dict__:
+                event_dict[key] = record.__dict__[key]
 
 def render_to_log_kwargs(
     _: logging.Logger, __: str, event_dict: EventDict

@@ -10,6 +10,7 @@ import os
 import sys
 
 from io import StringIO
+from typing import Any, Dict, Optional, Sequence
 
 import pytest
 
@@ -29,6 +30,7 @@ from structlog.processors import JSONRenderer, KeyValueRenderer
 from structlog.stdlib import (
     AsyncBoundLogger,
     BoundLogger,
+    ExtraAdder,
     LoggerFactory,
     PositionalArgumentsFormatter,
     ProcessorFormatter,
@@ -42,7 +44,7 @@ from structlog.stdlib import (
     render_to_log_kwargs,
 )
 from structlog.testing import CapturedCall
-from structlog.types import BindableLogger
+from structlog.types import BindableLogger, EventDict
 
 from .additional_frame import additional_frame
 
@@ -475,19 +477,82 @@ class TestAddLoggerName:
         assert name == event_dict["logger"]
 
 
+def extra_dict() -> Dict[str, Any]:
+    """
+    A dict to be passed in the `extra` parameter of the `logging` module's log
+    methods.
+    """
+    return {
+        "this": "is",
+        "some": "extra values",
+        "x_int": 4,
+        "x_bool": True,
+    }
+
+
+@pytest.fixture(name="extra_dict")
+def extra_dict_fixture():
+    return extra_dict()
+
+
 class TestAddExtra:
-    def test_add_extra(self, log_record):
+    @pytest.mark.parametrize(
+        "allow",
+        [
+            None,
+            {},
+            *[{key} for key in extra_dict().keys()],
+            {"missing"},
+            {"missing", "keys"},
+            {"this", "x_int"},
+        ],
+    )
+    def test_add_extra(
+        self,
+        log_record: logging.LogRecord,
+        extra_dict: Dict[str, Any],
+        allow: Optional[Sequence[str]],
+    ):
         """
         Extra attributes of a LogRecord are added to the event dict.
         """
-        extra = {"x_this": "is", "x_the": 3, "x_extra": "values"}
+        # extra = {"x_this": "is", "x_the": 3, "x_extra": "values"}
         record: logging.LogRecord = log_record()
-        record.__dict__.update(extra)
-        event_dict = {"_record": record}
-        event_dict_out = add_extra(None, None, event_dict)
-        assert {**event_dict, **extra} == event_dict_out
+        record.__dict__.update(extra_dict)
+        event_dict = {"_record": record, "ed_key": "ed_value"}
+        expected_result: EventDict
+        if allow is None:
+            expected_result = {**event_dict, **extra_dict}
+        else:
+            expected_result = {
+                **event_dict,
+                **{
+                    key: value
+                    for key, value in extra_dict.items()
+                    if key in allow
+                },
+            }
 
-    def test_add_extra_e2e(self):
+        if allow is None:
+            actual_result = ExtraAdder()(None, None, event_dict)
+            assert expected_result == actual_result
+        actual_result = ExtraAdder(allow)(None, None, event_dict)
+        assert expected_result == actual_result
+
+    @pytest.mark.parametrize(
+        "allow",
+        [
+            None,
+            {},
+            *[{key} for key in extra_dict().keys()],
+            {"missing"},
+            {"missing", "keys"},
+            {"this", "x_int"},
+        ],
+    )
+    def test_add_extra_e2e(
+        self, extra_dict: Dict[str, Any], allow: Optional[Sequence[str]]
+    ):
         """
         Values passed in the extra parameter of log methods are added as
         members of JSON output objects.
@@ -496,21 +561,37 @@ class TestAddExtra:
         string_io = StringIO()
         handler = logging.StreamHandler(string_io)
         formatter = ProcessorFormatter(
-            foreign_pre_chain=[add_extra],
+            foreign_pre_chain=[ExtraAdder(allow)],
             processors=[JSONRenderer()],
         )
         handler.setFormatter(formatter)
         handler.setLevel(0)
         logger.addHandler(handler)
         logger.setLevel(0)
-        extra = {"with": "values", "from": "extra"}
-        logger.info("Some %s", "text", extra=extra)
-        out_item_set = set(json.loads(string_io.getvalue()).items())
-        expected_item_set = set({"event": "Some text", **extra}.items())
-        assert expected_item_set.issubset(out_item_set), (
-            f"expected_item_set={expected_item_set} should"
-            f"be a subset of out_item_set={out_item_set}"
-        )
+        logging.warning("allow = %s", allow)
+
+        event_dict = {"event": "Some text"}
+        expected_result: EventDict
+        if allow is None:
+            expected_result = {**event_dict, **extra_dict}
+        else:
+            expected_result = {
+                **event_dict,
+                **{
+                    key: value
+                    for key, value in extra_dict.items()
+                    if key in allow
+                },
+            }
+
+        logger.info("Some %s", "text", extra=extra_dict)
+        actual_result = {
+            key: value
+            for key, value in json.loads(string_io.getvalue()).items()
+            if not key.startswith("_")
+        }
+
+        assert expected_result == actual_result
 
 
 class TestRenderToLogKW:
