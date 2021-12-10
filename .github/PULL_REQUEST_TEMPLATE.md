@@ -6,7 +6,7 @@ Please tell us what your pull request is about here.
 # Pull Request Check List
 
 This is just a friendly reminder about the most common mistakes.  Please make sure that you tick all boxes.
-But please read our [contribution guide](https://github.com/hynek/structlog/blob/main/.github/CONTRIBUTING.md) at least once, it will save you unnecessary review cycles!
+But please read our [contribution guide](https://github.com/hynek/structlog/blob/main/.github/CONTRIBUTING.md) at least once; it will save you unnecessary review cycles!
 
 If an item doesn't apply to your pull request, **check it anyway** to make it apparent that there's nothing left to do.
 
