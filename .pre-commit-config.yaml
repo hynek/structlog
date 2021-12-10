@@ -36,3 +36,4 @@ repos:
       - id: end-of-file-fixer
       - id: debug-statements
       - id: check-toml
+      - id: check-yaml
