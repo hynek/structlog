@@ -22,6 +22,9 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
   This is a hard rule; patches with missing tests or documentation can't be merged.
 - Make sure your changes pass our [CI].
   You won't get any feedback until it's green unless you ask for it.
+  For the CI to pass, the coverage must be 100%.
+  If you have problems to test something, open anyway and ask for advice.
+  In some situations, we may agree to add an `# pragma: no cover`.
 - Once you've addressed review feedback, make sure to bump the pull request with a short note, so we know you're done.
 - Don’t break backwards compatibility.
 
