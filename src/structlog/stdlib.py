@@ -695,6 +695,9 @@ class ExtraAdder:
     def __init__(self, allow: Optional[Collection[str]] = None) -> None:
         self._copier: Callable[[EventDict, logging.LogRecord], None]
         if allow is not None:
+            # The contents of allow is copied to a new list so that changes to
+            # the list passed into the constructor does not change the
+            # behaviour of this processor.
             self._copier = functools.partial(self._copy_allowed, [*allow])
         else:
             self._copier = self._copy_all
