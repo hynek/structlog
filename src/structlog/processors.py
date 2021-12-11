@@ -21,6 +21,8 @@ import time
 from typing import (
     Any,
     Callable,
+    Collection,
+    Container,
     Dict,
     List,
     Optional,
@@ -54,7 +56,7 @@ __all__ = [
     "StackInfoRenderer",
     "CALLSITE_PARAMETERS",
     "CallsiteParameter",
-    "CallsiteInfoAdder",
+    "CallsiteParameterAdder",
 ]
 
 
@@ -558,31 +560,70 @@ class CallsiteParameter(str, enum.Enum):
 CALLSITE_PARAMETERS: Set[CallsiteParameter] = set(CallsiteParameter)
 
 
-class CallsiteInfoAdder:
-    __slots__ = ["_parameters", "_active_handlers"]
+class CallsiteParameterAdder:
+    """
+    Adds parameters of the callsite that an event dictionary orginated from to
+    the event dictionary.
+
+
+    If the event dictionary has an embedded `logging.LogRecord` object then the
+    callsite information will be determined from that. For event dictionaries
+    without an embedded `logging.LogRecord` object the callsite will be
+    determined from stack trace, ignoring all intra-structlog calls and frames
+    which start with values in ``additional_ignores`` if it is specified.
+
+    The keys used for various callsite parameters in the event dictionary are
+    the string values of `CallsiteParameter` members.
+
+    :param parameters: A collection of `CallsiteParameter` values that should be added to the event dictionary.
+
+    :param additional_ignores: Additional names with which the first frame must
+        not start.
+
+    .. versionadded:: 21.5.0
+    """
+
+    __slots__ = ["_parameters", "_active_handlers", "_additional_ignores"]
 
     _handlers: Dict[
         CallsiteParameter, Callable[[str, inspect.Traceback], Any]
     ] = {
-        CallsiteParameter.PATHNAME: lambda module, frame_info: frame_info.filename,
-        CallsiteParameter.FILENAME: lambda module, frame_info: os.path.basename(
-            frame_info.filename
+        CallsiteParameter.PATHNAME: (
+            lambda module, frame_info: frame_info.filename
         ),
-        CallsiteParameter.MODULE: lambda module, frame_info: os.path.splitext(
-            os.path.basename(frame_info.filename)
-        )[0],
-        CallsiteParameter.FUNC_NAME: lambda module, frame_info: frame_info.function,
-        CallsiteParameter.LINENO: lambda module, frame_info: frame_info.lineno,
-        CallsiteParameter.THREAD: lambda module, frame_info: threading.get_ident(),
-        CallsiteParameter.THREAD_NAME: lambda module, frame_info: threading.current_thread().name,
-        CallsiteParameter.PROCESS: lambda module, frame_info: os.getpid(),
-        CallsiteParameter.PROCESS_NAME: lambda module, frame_info: get_processname(),
+        CallsiteParameter.FILENAME: (
+            lambda module, frame_info: os.path.basename(frame_info.filename)
+        ),
+        CallsiteParameter.MODULE: (
+            lambda module, frame_info: os.path.splitext(
+                os.path.basename(frame_info.filename)
+            )[0]
+        ),
+        CallsiteParameter.FUNC_NAME: (
+            lambda module, frame_info: frame_info.function
+        ),
+        CallsiteParameter.LINENO: (
+            lambda module, frame_info: frame_info.lineno
+        ),
+        CallsiteParameter.THREAD: (
+            lambda module, frame_info: threading.get_ident()
+        ),
+        CallsiteParameter.THREAD_NAME: (
+            lambda module, frame_info: threading.current_thread().name
+        ),
+        CallsiteParameter.PROCESS: (lambda module, frame_info: os.getpid()),
+        CallsiteParameter.PROCESS_NAME: (
+            lambda module, frame_info: get_processname()
+        ),
     }
 
     def __init__(
-        self, parameters: Set[CallsiteParameter] = CALLSITE_PARAMETERS
+        self,
+        parameters: Collection[CallsiteParameter] = CALLSITE_PARAMETERS,
+        additional_ignores: Optional[List[str]] = None,
     ) -> None:
         self._parameters = parameters
+        self._additional_ignores = additional_ignores
         self._active_handlers: List[
             Tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
         ] = []
@@ -600,7 +641,7 @@ class CallsiteInfoAdder:
                 event_dict[parameter.value] = record.__dict__[parameter.value]
         else:
             frame, module = _find_first_app_frame_and_name(
-                additional_ignores=[__name__]
+                additional_ignores=self._additional_ignores
             )
             frame_info = inspect.getframeinfo(frame)
             for parameter, handler in self._active_handlers:
