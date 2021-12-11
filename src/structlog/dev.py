@@ -233,7 +233,7 @@ class ConsoleRenderer:
         `ConsoleRenderer.get_default_level_styles`
     :param exception_formatter: A callable to render ``exc_infos``. If rich_
         or better-exceptions_ are installed, they are used for pretty-printing
-        by default (rich_ taking precendence). You can also manually set it to
+        by default (rich_ taking precedence). You can also manually set it to
         `plain_traceback`, `better_traceback`, `rich_traceback`, or implement
         your own.
     :param sort_keys: Whether to sort keys when formatting. `True` by default.
