@@ -383,7 +383,7 @@ class AsyncBoundLogger:
 
     sync_bl: BoundLogger
 
-    # Blantant lie, we use a property for _context. Need this for Protocol
+    # Blatant lie, we use a property for _context. Need this for Protocol
     # though.
     _context: Context
 
