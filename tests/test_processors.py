@@ -14,7 +14,7 @@ import sys
 import threading
 
 from io import StringIO
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import pytest
 
@@ -749,119 +749,30 @@ class TestCallsiteInfoAdder:
         }
 
     @classmethod
-    def make_processors(cls, parameter_strings: Optional[Set[str]]) -> None:
+    def make_processors(
+        cls,
+        parameter_strings: Optional[Set[str]],
+        additional_ignores: Optional[List[str]],
+    ) -> None:
         processors = []
         if parameter_strings is None:
-            processors.append(CallsiteParameterAdder())
+            processors.append(
+                CallsiteParameterAdder(additional_ignores=additional_ignores)
+            )
         else:
             parameters = cls.filter_parameters(parameter_strings)
-            processors.append(CallsiteParameterAdder(parameters=parameters))
+            processors.append(
+                CallsiteParameterAdder(
+                    parameters=parameters,
+                    additional_ignores=additional_ignores,
+                )
+            )
         return processors
-
-    # @pytest.mark.parametrize(
-    #     "parameter_strings",
-    #     [
-    #         None,
-    #         *[{parameter} for parameter in parameter_strings],
-    #         set(),
-    #         parameter_strings,
-    #         {"pathname", "filename"},
-    #         {"module", "funcName"},
-    #     ],
-    # )
-    # def test_logging_log(
-    #     self,
-    #     parameter_strings: Optional[Set[str]],
-    # ) -> None:
-    #     """
-    #     Callsite parameters are added for event dictionaries that originate from
-    #     """
-    #     processors = self.make_processors(parameter_strings)
-    #     logger = logging.Logger(sys._getframe().f_code.co_name)
-    #     string_io = StringIO()
-    #     handler = logging.StreamHandler(string_io)
-
-    #     formatter = ProcessorFormatter(
-    #         processors=[*processors, JSONRenderer()],
-    #     )
-    #     handler.setFormatter(formatter)
-    #     handler.setLevel(0)
-    #     logger.addHandler(handler)
-    #     logger.setLevel(0)
-
-    #     test_message = "test message"
-    #     callsite_params = self.get_callsite_parameters()
-    #     logger.info(test_message)
-
-    #     callsite_params = self.filter_parameter_dict(
-    #         callsite_params, parameter_strings
-    #     )
-    #     actual = {
-    #         key: value
-    #         for key, value in json.loads(string_io.getvalue()).items()
-    #         if not key.startswith("_")
-    #     }
-    #     expected = {
-    #         "event": test_message,
-    #         **callsite_params,
-    #     }
-    #     assert expected == actual
-
-    # @pytest.mark.parametrize(
-    #     "parameter_strings",
-    #     [
-    #         None,
-    #         *[{parameter} for parameter in parameter_strings],
-    #         set(),
-    #         parameter_strings,
-    #         {"pathname", "filename"},
-    #         {"module", "funcName"},
-    #     ],
-    # )
-    # def test_structlog_log(
-    #     self,
-    #     parameter_strings: Optional[Set[str]],
-    # ) -> None:
-    #     processors = self.make_processors(parameter_strings)
-
-    #     logger = logging.Logger(sys._getframe().f_code.co_name)
-    #     string_io = StringIO()
-    #     handler = logging.StreamHandler(string_io)
-    #     formatter = ProcessorFormatter(
-    #         processors=[JSONRenderer()],
-    #     )
-    #     handler.setFormatter(formatter)
-    #     handler.setLevel(0)
-    #     logger.addHandler(handler)
-    #     logger.setLevel(0)
-
-    #     ctx: Dict[str, Any] = {}
-    #     bound_logger = BoundLogger(
-    #         logger, [*processors, ProcessorFormatter.wrap_for_formatter], ctx
-    #     )
-
-    #     test_message = "test message"
-    #     callsite_params = self.get_callsite_parameters()
-    #     bound_logger.info(test_message)
-
-    #     callsite_params = self.filter_parameter_dict(
-    #         callsite_params, parameter_strings
-    #     )
-    #     actual = {
-    #         key: value
-    #         for key, value in json.loads(string_io.getvalue()).items()
-    #         if not key.startswith("_")
-    #     }
-    #     expected = {
-    #         "event": test_message,
-    #         **callsite_params,
-    #     }
-    #     assert expected == actual
 
     @pytest.mark.parametrize(
         "setup, front, parameter_strings",
         itertools.product(
-            ["shared", "pre-with-common"],
+            ["common-without-pre", "common-with-pre", "shared", "everywhere"],
             ["logging", "structlog"],
             [
                 None,
@@ -882,15 +793,39 @@ class TestCallsiteInfoAdder:
         logger = logging.Logger(sys._getframe().f_code.co_name)
         string_io = StringIO()
         handler = logging.StreamHandler(string_io)
-        processors = self.make_processors(parameter_strings)
-        if setup == "shared":
+        if setup == "common-without-pre":
+            processors = self.make_processors(
+                parameter_strings, additional_ignores=None
+            )
+            common_processors = processors
             formatter = ProcessorFormatter(
                 processors=[*processors, JSONRenderer()]
             )
-        elif setup == "pre-with-common":
+        elif setup == "common-with-pre":
+            processors = self.make_processors(
+                parameter_strings, additional_ignores=None
+            )
+            common_processors = processors
             formatter = ProcessorFormatter(
                 foreign_pre_chain=processors,
                 processors=[JSONRenderer()],
+            )
+        elif setup == "shared":
+            processors = self.make_processors(
+                parameter_strings, additional_ignores=[]
+            )
+            common_processors = []
+            formatter = ProcessorFormatter(
+                processors=[*processors, JSONRenderer()],
+            )
+        elif setup == "everywhere":
+            processors = self.make_processors(
+                parameter_strings, additional_ignores=[]
+            )
+            common_processors = processors
+            formatter = ProcessorFormatter(
+                foreign_pre_chain=processors,
+                processors=[*processors, JSONRenderer()],
             )
         else:
             raise ValueError(f"invalid setup {setup}")
@@ -907,7 +842,7 @@ class TestCallsiteInfoAdder:
             ctx: Dict[str, Any] = {}
             bound_logger = BoundLogger(
                 logger,
-                [*processors, ProcessorFormatter.wrap_for_formatter],
+                [*common_processors, ProcessorFormatter.wrap_for_formatter],
                 ctx,
             )
             callsite_params = self.get_callsite_parameters()
