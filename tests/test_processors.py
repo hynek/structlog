@@ -17,8 +17,8 @@ from io import StringIO
 from typing import Any, Dict, List, Optional, Set
 
 import pytest
-from _pytest.capture import CaptureFixture
 
+from _pytest.capture import CaptureFixture
 from freezegun import freeze_time
 
 import structlog
