@@ -813,18 +813,6 @@ class TestCallsiteInfoAdder:
         sys.stderr.write(f"expected={expected}\n")
         assert expected == actual
 
-        # record: logging.LogRecord = make_log_record()
-        # record.__dict__.update(extra_dict)
-        # event_dict = {"_record": record, "ed_key": "ed_value"}
-        # expected = self._copy_allowed(event_dict, extra_dict, allow)
-
-        # if allow is None:
-        #     actual = ExtraAdder()(None, None, event_dict)
-        #     assert expected == actual
-        # actual = ExtraAdder(allow)(None, None, event_dict)
-        # assert expected == actual
-        # if misses:
-        #     assert misses.isdisjoint(expected.keys())
 
     @pytest.mark.parametrize(
         "setup, origin, parameter_strings",
