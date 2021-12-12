@@ -19,6 +19,7 @@ import threading
 import time
 
 from typing import (
+    Annotated,
     Any,
     Callable,
     Collection,
@@ -545,6 +546,14 @@ class StackInfoRenderer:
 
 
 class CallsiteParameter(str, enum.Enum):
+    """
+    Callsite parameters that can be added to an event dictionary with the
+    `CallsiteParameterAdder` processor class.
+
+    The string values of the members of this enum will be used as the keys for
+    the callsite parameters in the event dictionary.
+    """
+
     PATHNAME = "pathname"
     FILENAME = "filename"
     MODULE = "module"
@@ -556,7 +565,12 @@ class CallsiteParameter(str, enum.Enum):
     PROCESS_NAME = "processName"
 
 
-CALLSITE_PARAMETERS: Set[CallsiteParameter] = set(CallsiteParameter)
+CALLSITE_PARAMETERS: Annotated[
+    Set[CallsiteParameter],
+    """
+A set of all `CallsiteParameter` enum members.
+""",
+] = set(CallsiteParameter)
 
 
 class CallsiteParameterAdder:
@@ -564,16 +578,16 @@ class CallsiteParameterAdder:
     Adds parameters of the callsite that an event dictionary orginated from to
     the event dictionary.
 
-
-    If the event dictionary has an embedded `logging.LogRecord` object then the
-    callsite information will be determined from that. For event dictionaries
-    without an embedded `logging.LogRecord` object the callsite will be
-    determined from stack trace, ignoring all intra-structlog calls and calls
-    from the `logging` module and frames that from module names starting with
-    values in ``additional_ignores``, if it is specified.
+    If the event dictionary has an embedded `logging.LogRecord` object and did
+    not originate from `structlog` then the callsite information will be
+    determined from the ``LogRecord`` object. For event dictionaries without an
+    embedded `logging.LogRecord` object the callsite will be determined from
+    stack trace, ignoring all intra-structlog calls and calls from the
+    `logging` module and frames that from module names starting with values in
+    ``additional_ignores``, if it is specified.
 
     The keys used for various callsite parameters in the event dictionary are
-    the string values of `CallsiteParameter` members.
+    the string values of `CallsiteParameter` enum members.
 
     :param parameters:
         A collection of `CallsiteParameter` values that should be added to the

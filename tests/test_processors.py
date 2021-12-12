@@ -17,6 +17,7 @@ from io import StringIO
 from typing import Any, Dict, List, Optional, Set
 
 import pytest
+from _pytest.capture import CaptureFixture
 
 from freezegun import freeze_time
 
@@ -732,7 +733,7 @@ class TestFigureOutExcInfo:
         assert (e.__class__, e, None) == _figure_out_exc_info(e)
 
 
-class TestCallsiteInfoAdder:
+class TestCallsiteParameterAdder:
     parameter_strings = {
         "pathname",
         "filename",
@@ -749,6 +750,40 @@ class TestCallsiteInfoAdder:
         assert self.parameter_strings == {
             member.value for member in CALLSITE_PARAMETERS
         }
+
+    @pytest.mark.xfail(
+        reason="CallsiteParameterAdder will not work with async logging."
+    )
+    @pytest.mark.asyncio
+    async def test_async(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: CaptureFixture[str]
+    ) -> None:
+        try:
+            string_io = StringIO()
+
+            class StingIOLogger(structlog.PrintLogger):
+                def __init__(self):
+                    super().__init__(file=string_io)
+
+            processor = self.make_processor(None, ["concurrent", "threading"])
+            structlog.configure(
+                processors=[processor, JSONRenderer()],
+                logger_factory=StingIOLogger,
+                wrapper_class=structlog.stdlib.AsyncBoundLogger,
+                cache_logger_on_first_use=True,
+            )
+
+            logger = structlog.stdlib.get_logger()
+
+            callsite_params = self.get_callsite_parameters()
+            await logger.info("baz")
+
+            assert {"event": "baz", **callsite_params} == json.loads(
+                string_io.getvalue()
+            )
+
+        finally:
+            structlog.reset_defaults()
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
