@@ -14,7 +14,8 @@ import sys
 import threading
 
 from io import StringIO
-from typing import Any, Callable, Dict, List, Optional, Set
+from types import FrameType, ModuleType
+from typing import Any, Dict, List, Optional, Set
 
 import pytest
 
@@ -43,6 +44,7 @@ from structlog.processors import (
 from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
 from structlog.types import EventDict
+from tests.utils import mock_getframe
 
 
 try:
@@ -731,6 +733,10 @@ class TestFigureOutExcInfo:
         assert (e.__class__, e, None) == _figure_out_exc_info(e)
 
 
+import traceback
+from unittest.mock import MagicMock
+
+
 class TestCallsiteInfoAdder:
     parameter_strings = {
         "pathname",
@@ -748,6 +754,33 @@ class TestCallsiteInfoAdder:
         assert self.parameter_strings == {
             member.value for member in CALLSITE_PARAMETERS
         }
+
+    def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """
+        Test that aditional ignores results in frames from matching module names
+        to be ignored.
+        """
+        test_message = "test message"
+        additional_ignores = ["tests.utils"]
+        processor = self.make_processor(None, additional_ignores)
+        event_dict: EventDict = {"event": test_message}
+
+        # WARNING: The below three lines are sensitive to relative line numbers
+        # (i.e. the invocation of processor must be two lines after the
+        # invocation of get_callsite_parameters) and is order sensitive (i.e.
+        # monkeypatch.setattr must occur after get_callsite_parameters but
+        # before invocation of processor).
+        callsite_params = self.get_callsite_parameters(2)
+        monkeypatch.setattr(sys, "_getframe", value=mock_getframe)
+        actual = processor(None, None, event_dict)
+
+        sys.stderr.write(f"actual={actual}\n")
+        expected = {
+            "event": test_message,
+            **callsite_params,
+        }
+        sys.stderr.write(f"expected={expected}\n")
+        assert expected == actual
 
     @pytest.mark.parametrize(
         "origin, parameter_strings",
@@ -787,7 +820,7 @@ class TestCallsiteInfoAdder:
                 test_message,
                 None,
                 None,
-                callsite_params["funcName"]
+                callsite_params["funcName"],
             )
             event_dict: EventDict = {
                 "event": test_message,
@@ -812,7 +845,6 @@ class TestCallsiteInfoAdder:
         }
         sys.stderr.write(f"expected={expected}\n")
         assert expected == actual
-
 
     @pytest.mark.parametrize(
         "setup, origin, parameter_strings",
@@ -909,6 +941,10 @@ class TestCallsiteInfoAdder:
         parameter_strings: Optional[Set[str]],
         additional_ignores: Optional[List[str]] = None,
     ) -> CallsiteParameterAdder:
+        """
+        Creates a processor with parameters matching the supplied
+        ``parameter_strings`` value.
+        """
         if parameter_strings is None:
             return CallsiteParameterAdder(
                 additional_ignores=additional_ignores
@@ -924,8 +960,17 @@ class TestCallsiteInfoAdder:
     def filter_parameters(
         cls, parameter_strings: Optional[Set[str]]
     ) -> Set[CallsiteParameter]:
+        """
+        Returns all `structlog.processor.CALLSITE_PARAMETERS` that match the set
+        of `parameter_strings`.
+
+        :param parameter_strings: The parameters strings for which correspnding
+            `structlog.processor.CALLSITE_PARAMETERS` values should be returned.
+            If this value is `None` then all
+            `structlog.processor.CALLSITE_PARAMETERS` values will be returned.
+        """
         if parameter_strings is None:
-            parameter_strings = cls.parameter_strings
+            return CALLSITE_PARAMETERS
         return {
             parameter
             for parameter in CALLSITE_PARAMETERS
@@ -936,6 +981,12 @@ class TestCallsiteInfoAdder:
     def filter_parameter_dict(
         cls, input: Dict[str, Any], parameter_strings: Optional[Set[str]]
     ) -> Dict[str, Any]:
+        """
+        Filter a dictionary according to provided parameter strings.
+
+        :param parameter_strings: The parameters to keep in the dictionary, if
+            this value is None then all parameter strings are included.
+        """
         if parameter_strings is None:
             parameter_strings = cls.parameter_strings
         return {

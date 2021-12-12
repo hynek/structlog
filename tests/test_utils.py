@@ -84,6 +84,7 @@ class TestProcessname:
         is thrown when an attempt is made to retrive the current process name
         from the `multiprocessing` module.
         """
+
         def _current_process() -> None:
             raise RuntimeError("test")
 

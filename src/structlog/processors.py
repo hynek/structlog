@@ -38,8 +38,8 @@ from ._frames import (
     _format_exception,
     _format_stack,
 )
-from ._utils import get_processname
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
+from ._utils import get_processname
 from .types import EventDict, ExcInfo, WrappedLogger
 
 
@@ -677,5 +677,5 @@ class CallsiteParameterAdder:
             for parameter, handler in self._active_handlers:
                 handler(module, frame_info)
                 event_dict[parameter.value] = handler(module, frame_info)
-        sys.stderr.write("event_dict = {}\n".format(event_dict))
+        sys.stderr.write(f"event_dict = {event_dict}\n")
         return event_dict

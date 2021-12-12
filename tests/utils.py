@@ -6,8 +6,18 @@
 """
 Shared test utilities.
 """
+import sys
+from types import FrameType
 
 from structlog._log_levels import _NAME_TO_LEVEL
 
 
 stdlib_log_methods = [m for m in _NAME_TO_LEVEL if m != "notset"]
+
+
+_REAL_GETFRAME = sys._getframe
+
+
+def mock_getframe(__depth: int = 0) -> FrameType:
+    real_frame: FrameType = _REAL_GETFRAME(__depth)
+    return real_frame
