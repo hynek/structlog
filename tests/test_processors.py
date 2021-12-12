@@ -14,7 +14,7 @@ import sys
 import threading
 
 from io import StringIO
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set
 
 import pytest
 
@@ -42,6 +42,7 @@ from structlog.processors import (
 )
 from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
+from structlog.types import EventDict
 
 
 try:
@@ -743,34 +744,90 @@ class TestCallsiteInfoAdder:
         "processName",
     }
 
-    def test_all_parameters_tested(self) -> None:
+    def test_all_parameters(self) -> None:
         assert self.parameter_strings == {
             member.value for member in CALLSITE_PARAMETERS
         }
 
-    @classmethod
-    def make_processors(
-        cls,
+    @pytest.mark.parametrize(
+        "origin, parameter_strings",
+        itertools.product(
+            ["logging", "structlog"],
+            [
+                None,
+                *[{parameter} for parameter in parameter_strings],
+                set(),
+                parameter_strings,
+                {"pathname", "filename"},
+                {"module", "funcName"},
+            ],
+        ),
+    )
+    def test_processor(
+        self,
+        origin: str,
         parameter_strings: Optional[Set[str]],
-        additional_ignores: Optional[List[str]],
-    ) -> None:
-        processors = []
-        if parameter_strings is None:
-            processors.append(
-                CallsiteParameterAdder(additional_ignores=additional_ignores)
+    ):
+        """
+        Extra attributes of a LogRecord object are added to the event dict.
+        """
+        test_message = "test message"
+        processor = self.make_processor(parameter_strings)
+        if origin == "structlog":
+            event_dict: EventDict = {"event": test_message}
+            callsite_params = self.get_callsite_parameters()
+            actual = processor(None, None, event_dict)
+        elif origin == "logging":
+            callsite_params = self.get_callsite_parameters()
+            record = logging.LogRecord(
+                "name",
+                logging.INFO,
+                callsite_params["pathname"],
+                callsite_params["lineno"],
+                test_message,
+                None,
+                None,
+                callsite_params["funcName"]
             )
+            event_dict: EventDict = {
+                "event": test_message,
+                "_record": record,
+                "_from_structlog": False,
+            }
+            actual = processor(None, None, event_dict)
         else:
-            parameters = cls.filter_parameters(parameter_strings)
-            processors.append(
-                CallsiteParameterAdder(
-                    parameters=parameters,
-                    additional_ignores=additional_ignores,
-                )
-            )
-        return processors
+            raise ValueError(f"invalid origin {origin}")
+        actual = {
+            key: value
+            for key, value in actual.items()
+            if not key.startswith("_")
+        }
+        sys.stderr.write(f"actual={actual}\n")
+        callsite_params = self.filter_parameter_dict(
+            callsite_params, parameter_strings
+        )
+        expected = {
+            "event": test_message,
+            **callsite_params,
+        }
+        sys.stderr.write(f"expected={expected}\n")
+        assert expected == actual
+
+        # record: logging.LogRecord = make_log_record()
+        # record.__dict__.update(extra_dict)
+        # event_dict = {"_record": record, "ed_key": "ed_value"}
+        # expected = self._copy_allowed(event_dict, extra_dict, allow)
+
+        # if allow is None:
+        #     actual = ExtraAdder()(None, None, event_dict)
+        #     assert expected == actual
+        # actual = ExtraAdder(allow)(None, None, event_dict)
+        # assert expected == actual
+        # if misses:
+        #     assert misses.isdisjoint(expected.keys())
 
     @pytest.mark.parametrize(
-        "setup, front, parameter_strings",
+        "setup, origin, parameter_strings",
         itertools.product(
             ["common-without-pre", "common-with-pre", "shared", "everywhere"],
             ["logging", "structlog"],
@@ -784,44 +841,36 @@ class TestCallsiteInfoAdder:
             ],
         ),
     )
-    def test_log(
+    def test_e2e(
         self,
         setup: str,
-        front: str,
+        origin: str,
         parameter_strings: Optional[Set[str]],
     ) -> None:
         logger = logging.Logger(sys._getframe().f_code.co_name)
         string_io = StringIO()
         handler = logging.StreamHandler(string_io)
         if setup == "common-without-pre":
-            processors = self.make_processors(
-                parameter_strings, additional_ignores=None
-            )
+            processors = [self.make_processor(parameter_strings)]
             common_processors = processors
             formatter = ProcessorFormatter(
                 processors=[*processors, JSONRenderer()]
             )
         elif setup == "common-with-pre":
-            processors = self.make_processors(
-                parameter_strings, additional_ignores=None
-            )
+            processors = [self.make_processor(parameter_strings)]
             common_processors = processors
             formatter = ProcessorFormatter(
                 foreign_pre_chain=processors,
                 processors=[JSONRenderer()],
             )
         elif setup == "shared":
-            processors = self.make_processors(
-                parameter_strings, additional_ignores=[]
-            )
+            processors = [self.make_processor(parameter_strings)]
             common_processors = []
             formatter = ProcessorFormatter(
                 processors=[*processors, JSONRenderer()],
             )
         elif setup == "everywhere":
-            processors = self.make_processors(
-                parameter_strings, additional_ignores=[]
-            )
+            processors = [self.make_processor(parameter_strings)]
             common_processors = processors
             formatter = ProcessorFormatter(
                 foreign_pre_chain=processors,
@@ -835,10 +884,10 @@ class TestCallsiteInfoAdder:
         logger.setLevel(0)
 
         test_message = "test message"
-        if front == "logging":
+        if origin == "logging":
             callsite_params = self.get_callsite_parameters()
             logger.info(test_message)
-        elif front == "structlog":
+        elif origin == "structlog":
             ctx: Dict[str, Any] = {}
             bound_logger = BoundLogger(
                 logger,
@@ -848,7 +897,7 @@ class TestCallsiteInfoAdder:
             callsite_params = self.get_callsite_parameters()
             bound_logger.info(test_message)
         else:
-            raise ValueError(f"invalid front {front}")
+            raise ValueError(f"invalid front {origin}")
 
         callsite_params = self.filter_parameter_dict(
             callsite_params, parameter_strings
@@ -865,6 +914,23 @@ class TestCallsiteInfoAdder:
         }
         sys.stderr.write(f"expected={expected}\n")
         assert expected == actual
+
+    @classmethod
+    def make_processor(
+        cls,
+        parameter_strings: Optional[Set[str]],
+        additional_ignores: Optional[List[str]] = None,
+    ) -> CallsiteParameterAdder:
+        if parameter_strings is None:
+            return CallsiteParameterAdder(
+                additional_ignores=additional_ignores
+            )
+        else:
+            parameters = cls.filter_parameters(parameter_strings)
+            return CallsiteParameterAdder(
+                parameters=parameters,
+                additional_ignores=additional_ignores,
+            )
 
     @classmethod
     def filter_parameters(
