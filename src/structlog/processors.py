@@ -22,7 +22,6 @@ from typing import (
     Any,
     Callable,
     Collection,
-    Container,
     Dict,
     List,
     Optional,
@@ -569,30 +568,28 @@ class CallsiteParameterAdder:
     If the event dictionary has an embedded `logging.LogRecord` object then the
     callsite information will be determined from that. For event dictionaries
     without an embedded `logging.LogRecord` object the callsite will be
-    determined from stack trace, ignoring all intra-structlog calls and frames
-    which start with values in ``additional_ignores`` if it is specified.
+    determined from stack trace, ignoring all intra-structlog calls and calls
+    from the `logging` module and frames that from module names starting with
+    values in ``additional_ignores``, if it is specified.
 
     The keys used for various callsite parameters in the event dictionary are
     the string values of `CallsiteParameter` members.
 
-    :param parameters: A collection of `CallsiteParameter` values that should
-    be added to the event dictionary.
+    :param parameters:
+        A collection of `CallsiteParameter` values that should be added to the
+        event dictionary.
 
-    :param additional_ignores: Additional names with which the first frame must
-        not start. If no additional ignores are supplied then it will default
-        to `["logging"]`.
+    :param additional_ignores:
+        Additional names with which the a frame's module name must not start.
 
-    .. note:: When used with `structlog.stdlib.ProcessorFormatter` the most
-        efficent configuration is to either use this processor in
-        ``foreign_pre_chain`` of `structlog.stdlib.ProcessorFormatter`` and in
-        `processors` of `structlog.configure`, or to use it in ``processor`` of
+    .. note::
+        When used with `structlog.stdlib.ProcessorFormatter` the most efficent
+        configuration is to either use this processor in ``foreign_pre_chain``
+        of `structlog.stdlib.ProcessorFormatter`` and in `processors` of
+        `structlog.configure`, or to use it in ``processor`` of
         `structlog.stdlib.ProcessorFormatter` without using it in `processors``
         of `structlog.configure` and ``foreign_pre_chain`` of
         `structlog.stdlib.ProcessorFormatter`.
-
-
-
-
 
     .. versionadded:: 21.5.0
     """
@@ -639,7 +636,10 @@ class CallsiteParameterAdder:
         self._parameters = parameters
         if additional_ignores is None:
             additional_ignores = []
-        self._additional_ignores = [*additional_ignores, "logging"]
+        # Ignore stack frames from the logging module. They will occur if this
+        # processor is used in ProcessorFormatter, and additionally the logging
+        # module should not be logging using structlog.
+        self._additional_ignores = ["logging", *additional_ignores]
         self._active_handlers: List[
             Tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
         ] = []
@@ -659,21 +659,16 @@ class CallsiteParameterAdder:
         traceback.print_stack()
         record: Optional[logging.LogRecord] = event_dict.get("_record")
         from_structlog: Optional[bool] = event_dict.get("_from_structlog")
+        # If the event dictionary has a record, but it comes from structlog,
+        # then the callsite parameters of the record will not be correct.
         if record is not None and not from_structlog:
-            # if from_structlog:
-            #     return event_dict
             for parameter in self._parameters:
                 event_dict[parameter.value] = record.__dict__[parameter.value]
         else:
-            # if from_structlog:
-            #     return event_dict
             frame, module = _find_first_app_frame_and_name(
                 additional_ignores=self._additional_ignores
             )
-            # sys.stderr.write("_find_first_app_frame_and_name: frame = {}\n".format(frame))
-            # sys.stderr.write("_find_first_app_frame_and_name: module = {}\n".format(module))
             frame_info = inspect.getframeinfo(frame)
-            # sys.stderr.write("frame_info = {}\n".format(frame_info))
             for parameter, handler in self._active_handlers:
                 handler(module, frame_info)
                 event_dict[parameter.value] = handler(module, frame_info)

@@ -14,7 +14,6 @@ import sys
 import threading
 
 from io import StringIO
-from types import FrameType, ModuleType
 from typing import Any, Dict, List, Optional, Set
 
 import pytest
@@ -733,10 +732,6 @@ class TestFigureOutExcInfo:
         assert (e.__class__, e, None) == _figure_out_exc_info(e)
 
 
-import traceback
-from unittest.mock import MagicMock
-
-
 class TestCallsiteInfoAdder:
     parameter_strings = {
         "pathname",
@@ -757,8 +752,8 @@ class TestCallsiteInfoAdder:
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
-        Test that aditional ignores results in frames from matching module names
-        to be ignored.
+        Test that aditional ignores results in frames from matching module
+        names to be ignored.
         """
         test_message = "test message"
         additional_ignores = ["tests.utils"]
@@ -835,7 +830,6 @@ class TestCallsiteInfoAdder:
             for key, value in actual.items()
             if not key.startswith("_")
         }
-        sys.stderr.write(f"actual={actual}\n")
         callsite_params = self.filter_parameter_dict(
             callsite_params, parameter_strings
         )
@@ -843,7 +837,6 @@ class TestCallsiteInfoAdder:
             "event": test_message,
             **callsite_params,
         }
-        sys.stderr.write(f"expected={expected}\n")
         assert expected == actual
 
     @pytest.mark.parametrize(
@@ -927,12 +920,10 @@ class TestCallsiteInfoAdder:
             for key, value in json.loads(string_io.getvalue()).items()
             if not key.startswith("_")
         }
-        sys.stderr.write(f"actual={actual}\n")
         expected = {
             "event": test_message,
             **callsite_params,
         }
-        sys.stderr.write(f"expected={expected}\n")
         assert expected == actual
 
     @classmethod
@@ -961,12 +952,13 @@ class TestCallsiteInfoAdder:
         cls, parameter_strings: Optional[Set[str]]
     ) -> Set[CallsiteParameter]:
         """
-        Returns all `structlog.processor.CALLSITE_PARAMETERS` that match the set
-        of `parameter_strings`.
+        Returns all `structlog.processor.CALLSITE_PARAMETERS` that match the
+        set of `parameter_strings`.
 
-        :param parameter_strings: The parameters strings for which correspnding
-            `structlog.processor.CALLSITE_PARAMETERS` values should be returned.
-            If this value is `None` then all
+        :param parameter_strings:
+            The parameters strings for which correspnding
+            `structlog.processor.CALLSITE_PARAMETERS` values should be
+            returned. If this value is `None` then all
             `structlog.processor.CALLSITE_PARAMETERS` values will be returned.
         """
         if parameter_strings is None:
@@ -1005,13 +997,13 @@ class TestCallsiteInfoAdder:
             function that callsite parameters should be generated for.
         """
         frame_info = inspect.stack()[1]
-        traceback = inspect.getframeinfo(frame_info[0])
+        frame_traceback = inspect.getframeinfo(frame_info[0])
         return {
-            "pathname": traceback.filename,
-            "filename": os.path.basename(traceback.filename),
-            "module": os.path.splitext(os.path.basename(traceback.filename))[
-                0
-            ],
+            "pathname": frame_traceback.filename,
+            "filename": os.path.basename(frame_traceback.filename),
+            "module": os.path.splitext(
+                os.path.basename(frame_traceback.filename)
+            )[0],
             "funcName": frame_info.function,
             "lineno": frame_info.lineno + offset,
             "thread": threading.get_ident(),

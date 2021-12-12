@@ -62,7 +62,7 @@ class TestProcessname:
 
     def test_no_multiprocessing(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
-        The returned process name is the default process name the
+        The returned process name is the default process name if the
         `multiprocessing` module is not available.
         """
         tmp_name = "fakename"
