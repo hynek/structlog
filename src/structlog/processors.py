@@ -575,10 +575,21 @@ class CallsiteParameterAdder:
     The keys used for various callsite parameters in the event dictionary are
     the string values of `CallsiteParameter` members.
 
-    :param parameters: A collection of `CallsiteParameter` values that should be added to the event dictionary.
+    :param parameters: A collection of `CallsiteParameter` values that should be
+    added to the event dictionary.
 
     :param additional_ignores: Additional names with which the first frame must
         not start.
+
+    .. warning:: This processor should not be used in the processor parameter of
+        a `structlog.stdlib.ProcessorFormatter`, as this will result in the
+        processor running multiple times for the same event dictionary and
+        adding invalid values.
+
+        Instead, this function should be used in the ``foreign_pre_chain``
+        parameter of `structlog.stdlib.ProcessorFormatter` and in the processors
+        parameter of `structlog.configure`.
+
 
     .. versionadded:: 21.5.0
     """
@@ -635,16 +646,31 @@ class CallsiteParameterAdder:
     def __call__(
         self, logger: logging.Logger, name: str, event_dict: EventDict
     ) -> EventDict:
+        sys.stderr.write(
+            f"CallsiteParameterAdder.__call__: event_dict = {event_dict}\n"
+        )
+        import traceback
+
+        traceback.print_stack()
         record: Optional[logging.LogRecord] = event_dict.get("_record")
+
         if record is not None:
-            for parameter in self._parameters:
-                event_dict[parameter.value] = record.__dict__[parameter.value]
+            from_structlog: Optional[bool] = event_dict.get("_from_structlog")
+            if not from_structlog:
+                for parameter in self._parameters:
+                    event_dict[parameter.value] = record.__dict__[
+                        parameter.value
+                    ]
         else:
             frame, module = _find_first_app_frame_and_name(
                 additional_ignores=self._additional_ignores
             )
+            # sys.stderr.write("_find_first_app_frame_and_name: frame = {}\n".format(frame))
+            # sys.stderr.write("_find_first_app_frame_and_name: module = {}\n".format(module))
             frame_info = inspect.getframeinfo(frame)
+            # sys.stderr.write("frame_info = {}\n".format(frame_info))
             for parameter, handler in self._active_handlers:
                 handler(module, frame_info)
                 event_dict[parameter.value] = handler(module, frame_info)
+        sys.stderr.write("event_dict = {}\n".format(event_dict))
         return event_dict

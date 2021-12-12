@@ -5,6 +5,7 @@
 
 import datetime
 import inspect
+import itertools
 import json
 import logging
 import os
@@ -22,10 +23,11 @@ from freezegun import freeze_time
 import structlog
 
 from structlog import BoundLogger
+from structlog._utils import get_processname
 from structlog.processors import (
-    CallsiteParameterAdder,
-    CallsiteParameter,
     CALLSITE_PARAMETERS,
+    CallsiteParameter,
+    CallsiteParameterAdder,
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
@@ -40,7 +42,7 @@ from structlog.processors import (
 )
 from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
-from structlog._utils import get_processname
+
 
 try:
     import simplejson
@@ -741,153 +743,200 @@ class TestCallsiteInfoAdder:
         "processName",
     }
 
-    @pytest.mark.parametrize(
-        "parameter_strings",
-        [
-            None,
-            *[{parameter} for parameter in parameter_strings],
-            set(),
-            parameter_strings,
-            {"pathname", "filename"},
-            {"module", "funcName"},
-        ],
-    )
-    def test_logging_log(
-        self,
-        parameter_strings: Optional[Set[str]],
-    ) -> None:
-        """
-        Callsite parameters are added for event dictionaries that originate from
-        """
-        processors = []
-        logging.info("parameter_strings = %s", parameter_strings)
-        if parameter_strings is None:
-            processors.append(CallsiteParameterAdder())
-            parameter_strings = self.parameter_strings
-        else:
-            parameters = self.filter_parameters(parameter_strings)
-            logging.info("parameters = %s", parameters)
-            processors.append(CallsiteParameterAdder(parameters=parameters))
-
-        logger = logging.Logger(sys._getframe().f_code.co_name)
-        string_io = StringIO()
-        handler = logging.StreamHandler(string_io)
-        formatter = ProcessorFormatter(
-            processors=[*processors, JSONRenderer()],
-        )
-        handler.setFormatter(formatter)
-        handler.setLevel(0)
-        logger.addHandler(handler)
-        logger.setLevel(0)
-        callsite_params = self.get_callsite_parameters()
-        logger.info("test message")
-
-        callsite_params = self.filter_parameter_dict(
-            callsite_params, parameter_strings
-        )
-        out = json.loads(string_io.getvalue())
-        assert isinstance(out, dict)
-        out_item_set = set(out.items())
-        expected_item_set = set(
-            {
-                "event": "test message",
-                **callsite_params,
-            }.items()
-        )
-        assert expected_item_set.issubset(out_item_set), (
-            f"{out_item_set}"
-            "\nshould be a superset of\n"
-            f"{expected_item_set}"
-            "\nbut it is missing\n"
-            f"{expected_item_set.difference(out_item_set)}"
-        )
-        unexpected_params = self.invert_parameter_strings(parameter_strings)
-        assert unexpected_params.isdisjoint(out.keys()), (
-            f"{unexpected_params}"
-            "\nshould be disjoint with\n"
-            f"{out.keys()}"
-            "\nbut contains\n"
-            f"{unexpected_params.intersection(out.keys())}"
-        )
-
-    @pytest.mark.parametrize(
-        "parameter_strings",
-        [
-            None,
-            *[{parameter} for parameter in parameter_strings],
-            set(),
-            parameter_strings,
-            {"pathname", "filename"},
-            {"module", "funcName"},
-        ],
-    )
-    def test_structlog_log(
-        self,
-        parameter_strings: Optional[Set[str]],
-    ) -> None:
-        processors = []
-        logging.info("parameter_strings = %s", parameter_strings)
-        if parameter_strings is None:
-            processors.append(CallsiteParameterAdder())
-            parameter_strings = self.parameter_strings
-        else:
-            parameters = self.filter_parameters(parameter_strings)
-            logging.info("parameters = %s", parameters)
-            processors.append(CallsiteParameterAdder(parameters=parameters))
-
-        logger = logging.Logger(sys._getframe().f_code.co_name)
-        string_io = StringIO()
-        handler = logging.StreamHandler(string_io)
-        formatter = ProcessorFormatter(
-            processors=[JSONRenderer()],
-        )
-        handler.setFormatter(formatter)
-        handler.setLevel(0)
-        logger.addHandler(handler)
-        logger.setLevel(0)
-        ctx: Dict[str, Any] = {}
-        bound_logger = BoundLogger(
-            logger, [*processors, ProcessorFormatter.wrap_for_formatter], ctx
-        )
-        callsite_params = self.get_callsite_parameters()
-        bound_logger.info("test message")
-
-        callsite_params = self.filter_parameter_dict(
-            callsite_params, parameter_strings
-        )
-        out = json.loads(string_io.getvalue())
-        assert isinstance(out, dict)
-        out_item_set = set(out.items())
-        expected_item_set = set(
-            {
-                "event": "test message",
-                **callsite_params,
-            }.items()
-        )
-        assert expected_item_set.issubset(out_item_set), (
-            f"{out_item_set}"
-            "\nshould be a superset of\n"
-            f"{expected_item_set}"
-            "\nbut it is missing\n"
-            f"{expected_item_set.difference(out_item_set)}"
-        )
-        unexpected_params = self.invert_parameter_strings(parameter_strings)
-        assert unexpected_params.isdisjoint(out.keys()), (
-            f"{unexpected_params}"
-            "\nshould be disjoint with\n"
-            f"{out.keys()}"
-            "\nbut contains\n"
-            f"{unexpected_params.intersection(out.keys())}"
-        )
+    def test_all_parameters_tested(self) -> None:
+        assert self.parameter_strings == {
+            member.value for member in CALLSITE_PARAMETERS
+        }
 
     @classmethod
-    def invert_parameter_strings(cls, parameter_strings: Set[str]) -> Set[str]:
-        return cls.parameter_strings.difference(parameter_strings)
+    def make_processors(cls, parameter_strings: Optional[Set[str]]) -> None:
+        processors = []
+        if parameter_strings is None:
+            processors.append(CallsiteParameterAdder())
+        else:
+            parameters = cls.filter_parameters(parameter_strings)
+            processors.append(CallsiteParameterAdder(parameters=parameters))
+        return processors
+
+    # @pytest.mark.parametrize(
+    #     "parameter_strings",
+    #     [
+    #         None,
+    #         *[{parameter} for parameter in parameter_strings],
+    #         set(),
+    #         parameter_strings,
+    #         {"pathname", "filename"},
+    #         {"module", "funcName"},
+    #     ],
+    # )
+    # def test_logging_log(
+    #     self,
+    #     parameter_strings: Optional[Set[str]],
+    # ) -> None:
+    #     """
+    #     Callsite parameters are added for event dictionaries that originate from
+    #     """
+    #     processors = self.make_processors(parameter_strings)
+    #     logger = logging.Logger(sys._getframe().f_code.co_name)
+    #     string_io = StringIO()
+    #     handler = logging.StreamHandler(string_io)
+
+    #     formatter = ProcessorFormatter(
+    #         processors=[*processors, JSONRenderer()],
+    #     )
+    #     handler.setFormatter(formatter)
+    #     handler.setLevel(0)
+    #     logger.addHandler(handler)
+    #     logger.setLevel(0)
+
+    #     test_message = "test message"
+    #     callsite_params = self.get_callsite_parameters()
+    #     logger.info(test_message)
+
+    #     callsite_params = self.filter_parameter_dict(
+    #         callsite_params, parameter_strings
+    #     )
+    #     actual = {
+    #         key: value
+    #         for key, value in json.loads(string_io.getvalue()).items()
+    #         if not key.startswith("_")
+    #     }
+    #     expected = {
+    #         "event": test_message,
+    #         **callsite_params,
+    #     }
+    #     assert expected == actual
+
+    # @pytest.mark.parametrize(
+    #     "parameter_strings",
+    #     [
+    #         None,
+    #         *[{parameter} for parameter in parameter_strings],
+    #         set(),
+    #         parameter_strings,
+    #         {"pathname", "filename"},
+    #         {"module", "funcName"},
+    #     ],
+    # )
+    # def test_structlog_log(
+    #     self,
+    #     parameter_strings: Optional[Set[str]],
+    # ) -> None:
+    #     processors = self.make_processors(parameter_strings)
+
+    #     logger = logging.Logger(sys._getframe().f_code.co_name)
+    #     string_io = StringIO()
+    #     handler = logging.StreamHandler(string_io)
+    #     formatter = ProcessorFormatter(
+    #         processors=[JSONRenderer()],
+    #     )
+    #     handler.setFormatter(formatter)
+    #     handler.setLevel(0)
+    #     logger.addHandler(handler)
+    #     logger.setLevel(0)
+
+    #     ctx: Dict[str, Any] = {}
+    #     bound_logger = BoundLogger(
+    #         logger, [*processors, ProcessorFormatter.wrap_for_formatter], ctx
+    #     )
+
+    #     test_message = "test message"
+    #     callsite_params = self.get_callsite_parameters()
+    #     bound_logger.info(test_message)
+
+    #     callsite_params = self.filter_parameter_dict(
+    #         callsite_params, parameter_strings
+    #     )
+    #     actual = {
+    #         key: value
+    #         for key, value in json.loads(string_io.getvalue()).items()
+    #         if not key.startswith("_")
+    #     }
+    #     expected = {
+    #         "event": test_message,
+    #         **callsite_params,
+    #     }
+    #     assert expected == actual
+
+    @pytest.mark.parametrize(
+        "setup, front, parameter_strings",
+        itertools.product(
+            ["shared", "pre-with-common"],
+            ["logging", "structlog"],
+            [
+                None,
+                *[{parameter} for parameter in parameter_strings],
+                set(),
+                parameter_strings,
+                {"pathname", "filename"},
+                {"module", "funcName"},
+            ],
+        ),
+    )
+    def test_log(
+        self,
+        setup: str,
+        front: str,
+        parameter_strings: Optional[Set[str]],
+    ) -> None:
+        logger = logging.Logger(sys._getframe().f_code.co_name)
+        string_io = StringIO()
+        handler = logging.StreamHandler(string_io)
+        processors = self.make_processors(parameter_strings)
+        if setup == "shared":
+            formatter = ProcessorFormatter(
+                processors=[*processors, JSONRenderer()]
+            )
+        elif setup == "pre-with-common":
+            formatter = ProcessorFormatter(
+                foreign_pre_chain=processors,
+                processors=[JSONRenderer()],
+            )
+        else:
+            raise ValueError(f"invalid setup {setup}")
+        handler.setFormatter(formatter)
+        handler.setLevel(0)
+        logger.addHandler(handler)
+        logger.setLevel(0)
+
+        test_message = "test message"
+        if front == "logging":
+            callsite_params = self.get_callsite_parameters()
+            logger.info(test_message)
+        elif front == "structlog":
+            ctx: Dict[str, Any] = {}
+            bound_logger = BoundLogger(
+                logger,
+                [*processors, ProcessorFormatter.wrap_for_formatter],
+                ctx,
+            )
+            callsite_params = self.get_callsite_parameters()
+            bound_logger.info(test_message)
+        else:
+            raise ValueError(f"invalid front {front}")
+
+        callsite_params = self.filter_parameter_dict(
+            callsite_params, parameter_strings
+        )
+        actual = {
+            key: value
+            for key, value in json.loads(string_io.getvalue()).items()
+            if not key.startswith("_")
+        }
+        sys.stderr.write(f"actual={actual}\n")
+        expected = {
+            "event": test_message,
+            **callsite_params,
+        }
+        sys.stderr.write(f"expected={expected}\n")
+        assert expected == actual
 
     @classmethod
     def filter_parameters(
-        cls, parameter_strings: Set[str]
+        cls, parameter_strings: Optional[Set[str]]
     ) -> Set[CallsiteParameter]:
+        if parameter_strings is None:
+            parameter_strings = cls.parameter_strings
         return {
             parameter
             for parameter in CALLSITE_PARAMETERS
@@ -896,8 +945,10 @@ class TestCallsiteInfoAdder:
 
     @classmethod
     def filter_parameter_dict(
-        cls, input: Dict[str, Any], parameter_strings: Set[str]
+        cls, input: Dict[str, Any], parameter_strings: Optional[Set[str]]
     ) -> Dict[str, Any]:
+        if parameter_strings is None:
+            parameter_strings = cls.parameter_strings
         return {
             key: value
             for key, value in input.items()

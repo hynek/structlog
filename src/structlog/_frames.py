@@ -9,6 +9,7 @@ import traceback
 from io import StringIO
 from types import FrameType
 from typing import List, Optional, Tuple
+import inspect
 
 from .types import ExcInfo
 
@@ -44,12 +45,16 @@ def _find_first_app_frame_and_name(
     ignores = ["structlog"] + (additional_ignores or [])
     f = sys._getframe()
     name = f.f_globals.get("__name__") or "?"
+    # sys.stderr.write(f"name={name}\n")
     while any(tuple(name.startswith(i) for i in ignores)):
+        # sys.stderr.write(f"name={name}\n")
         if f.f_back is None:
             name = "?"
             break
         f = f.f_back
         name = f.f_globals.get("__name__") or "?"
+    # sys.stderr.write(f"f = {f}, name={name}\n")
+    # traceback.print_stack()
     return f, name
 
 
