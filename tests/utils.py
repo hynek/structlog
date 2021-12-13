@@ -6,8 +6,24 @@
 """
 Shared test utilities.
 """
+import sys
+
+from types import FrameType
 
 from structlog._log_levels import _NAME_TO_LEVEL
 
 
 stdlib_log_methods = [m for m in _NAME_TO_LEVEL if m != "notset"]
+
+
+_REAL_GETFRAME = sys._getframe
+
+
+def mock_getframe(__depth: int = 0) -> FrameType:
+    """
+    This function is used to inject an additional stack frame from a moudle
+    that can be used to test  the ``additional_ignores`` parameter of the
+    `structlog._frames._find_first_app_frame_and_name` parameter.
+    """
+    real_frame: FrameType = _REAL_GETFRAME(__depth)
+    return real_frame

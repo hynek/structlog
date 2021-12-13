@@ -276,6 +276,13 @@ Please see :doc:`thread-local` for details.
       >>> TimeStamper(fmt="%Y", key="year")(None, None, {})  # doctest: +SKIP
       {'year': '2013'}
 
+.. autoclass:: CallsiteParameter
+   :members:
+
+.. autodata:: CALLSITE_PARAMETERS
+
+.. autoclass:: CallsiteParameterAdder
+
 
 `structlog.stdlib` Module
 -------------------------

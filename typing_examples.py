@@ -14,6 +14,8 @@ from typing import Any, Callable, List, Optional
 
 import structlog
 
+from structlog.processors import CALLSITE_PARAMETERS, CallsiteParameter
+
 
 bl = structlog.get_logger()
 bl.msg("hello", whom="world", x=42, y={})
@@ -65,6 +67,42 @@ structlog.configure(
 
 formatter = structlog.stdlib.ProcessorFormatter(
     processor=structlog.dev.ConsoleRenderer(),
+)
+
+formatter = structlog.stdlib.ProcessorFormatter(
+    processors=[
+        structlog.processors.CallsiteParameterAdder(),
+        structlog.processors.CallsiteParameterAdder(
+            CALLSITE_PARAMETERS, ["threading"]
+        ),
+        structlog.processors.CallsiteParameterAdder(
+            CALLSITE_PARAMETERS, additional_ignores=["threading"]
+        ),
+        structlog.processors.CallsiteParameterAdder(
+            parameters=CALLSITE_PARAMETERS, additional_ignores=["threading"]
+        ),
+        structlog.processors.CallsiteParameterAdder(
+            [
+                CallsiteParameter.FILENAME,
+                CallsiteParameter.FUNC_NAME,
+                CallsiteParameter.LINENO,
+            ]
+        ),
+        structlog.processors.CallsiteParameterAdder(
+            parameters=[
+                CallsiteParameter.FILENAME,
+                CallsiteParameter.FUNC_NAME,
+                CallsiteParameter.LINENO,
+            ]
+        ),
+        structlog.processors.CallsiteParameterAdder(
+            parameters=[
+                CallsiteParameter.FILENAME,
+                CallsiteParameter.FUNC_NAME,
+                CallsiteParameter.LINENO,
+            ]
+        ),
+    ],
 )
 
 handler = logging.StreamHandler()
