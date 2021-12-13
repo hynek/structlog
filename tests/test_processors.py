@@ -25,7 +25,6 @@ import structlog
 from structlog import BoundLogger
 from structlog._utils import get_processname
 from structlog.processors import (
-    CALLSITE_PARAMETERS,
     CallsiteParameter,
     CallsiteParameterAdder,
     ExceptionPrettyPrinter,
@@ -745,6 +744,8 @@ class TestCallsiteParameterAdder:
         "process_name",
     }
 
+    _all_parameters = set(CallsiteParameter)
+
     def test_all_parameters(self) -> None:
         """
         All callsite parameters are included in ``self.parameter_strings`` and
@@ -752,7 +753,7 @@ class TestCallsiteParameterAdder:
         keys for all callsite parameters.
         """
         assert self.parameter_strings == {
-            member.value for member in CALLSITE_PARAMETERS
+            member.value for member in self._all_parameters
         }
         assert self.parameter_strings == self.get_callsite_parameters().keys()
 
@@ -1002,22 +1003,20 @@ class TestCallsiteParameterAdder:
         cls, parameter_strings: Optional[Set[str]]
     ) -> Set[CallsiteParameter]:
         """
-        Returns a set containing the elements of
-        `structlog.processor.CALLSITE_PARAMETERS` with values that are in
-        ``parameter_strings``, if ``parameter_strings`` is ``None`` then
-        ``structlog.processor.CALLSITE_PARAMETERS` will be returned.
+        Returns a set containing all ``CallsiteParameter`` members with values
+        that are in ``parameter_strings``.
 
         :param parameter_strings:
             The parameters strings for which corresponding
-            `structlog.processor.CALLSITE_PARAMETERS` values should be
+            ``CallsiteParameter`` members should be
             returned. If this value is `None` then all
-            `structlog.processor.CALLSITE_PARAMETERS` values will be returned.
+            ``CallsiteParameter`` will be returned.
         """
         if parameter_strings is None:
-            return CALLSITE_PARAMETERS
+            return cls._all_parameters
         return {
             parameter
-            for parameter in CALLSITE_PARAMETERS
+            for parameter in cls._all_parameters
             if parameter.value in parameter_strings
         }
 

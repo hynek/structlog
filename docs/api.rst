@@ -279,8 +279,6 @@ Please see :doc:`thread-local` for details.
 .. autoclass:: CallsiteParameter
    :members:
 
-.. autodata:: CALLSITE_PARAMETERS
-
 .. autoclass:: CallsiteParameterAdder
 
 

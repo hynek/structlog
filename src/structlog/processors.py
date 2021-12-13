@@ -55,7 +55,6 @@ __all__ = [
     "format_exc_info",
     "ExceptionPrettyPrinter",
     "StackInfoRenderer",
-    "CALLSITE_PARAMETERS",
     "CallsiteParameter",
     "CallsiteParameterAdder",
 ]
@@ -580,12 +579,6 @@ class CallsiteParameter(str, enum.Enum):
     PROCESS_NAME = "process_name"
 
 
-#: A set of all `CallsiteParameter` enum members.
-#:
-#: .. versionadded:: 21.5.0
-CALLSITE_PARAMETERS: Set[CallsiteParameter] = set(CallsiteParameter)
-
-
 class CallsiteParameterAdder:
     """
     Adds parameters of the callsite that an event dictionary originated from to
@@ -671,6 +664,8 @@ class CallsiteParameterAdder:
         CallsiteParameter.PROCESS_NAME: "processName",
     }
 
+    _all_parameters: Set[CallsiteParameter] = set(CallsiteParameter)
+
     class _RecordMapping(NamedTuple):
         event_dict_key: str
         record_attribute: str
@@ -683,7 +678,7 @@ class CallsiteParameterAdder:
 
     def __init__(
         self,
-        parameters: Collection[CallsiteParameter] = CALLSITE_PARAMETERS,
+        parameters: Collection[CallsiteParameter] = _all_parameters,
         additional_ignores: Optional[List[str]] = None,
     ) -> None:
         if additional_ignores is None:

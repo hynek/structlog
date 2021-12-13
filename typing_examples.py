@@ -14,7 +14,7 @@ from typing import Any, Callable, List, Optional
 
 import structlog
 
-from structlog.processors import CALLSITE_PARAMETERS, CallsiteParameter
+from structlog.processors import CallsiteParameter
 
 
 bl = structlog.get_logger()
@@ -73,13 +73,13 @@ formatter = structlog.stdlib.ProcessorFormatter(
     processors=[
         structlog.processors.CallsiteParameterAdder(),
         structlog.processors.CallsiteParameterAdder(
-            CALLSITE_PARAMETERS, ["threading"]
+            set(CallsiteParameter), ["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
-            CALLSITE_PARAMETERS, additional_ignores=["threading"]
+            set(CallsiteParameter), additional_ignores=["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
-            parameters=CALLSITE_PARAMETERS, additional_ignores=["threading"]
+            parameters=set(CallsiteParameter), additional_ignores=["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
             [
