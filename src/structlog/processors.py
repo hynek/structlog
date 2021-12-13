@@ -707,12 +707,6 @@ class CallsiteParameterAdder:
     def __call__(
         self, logger: logging.Logger, name: str, event_dict: EventDict
     ) -> EventDict:
-        sys.stderr.write(
-            f"CallsiteParameterAdder.__call__: event_dict = {event_dict}\n"
-        )
-        import traceback
-
-        traceback.print_stack()
         record: Optional[logging.LogRecord] = event_dict.get("_record")
         from_structlog: Optional[bool] = event_dict.get("_from_structlog")
         # If the event dictionary has a record, but it comes from structlog,
