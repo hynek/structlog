@@ -601,26 +601,27 @@ class CallsiteParameterAdder:
     not originate from `structlog` then the callsite information will be
     determined from the `logging.LogRecord` object. For event dictionaries
     without an embedded `logging.LogRecord` object the callsite will be
-    determined from stack trace, ignoring all intra-structlog calls and calls
-    from the `logging` module and frames that from module names starting with
-    values in ``additional_ignores``, if it is specified.
+    determined from the stack trace, ignoring all intra-structlog calls, calls
+    from the `logging` module, and stack frames from modules with names that
+    start with values in ``additional_ignores``, if it is specified.
 
-    The keys used for various callsite parameters in the event dictionary are
-    the string values of `CallsiteParameter` enum members.
+    The keys used for callsite parameters in the event dictionary are the
+    string values of `CallsiteParameter` enum members.
 
     :param parameters:
         A collection of `CallsiteParameter` values that should be added to the
         event dictionary.
 
     :param additional_ignores:
-        Additional names with which the a frame's module name must not start.
+        Additional names with which the a stack frame's module name must not
+        start for it to be considered when determening the callsite.
 
     .. note::
-        When used with `structlog.stdlib.ProcessorFormatter` the most
-        efficient configuration is to either use this processor in
-        ``foreign_pre_chain`` of `structlog.stdlib.ProcessorFormatter` and in
-        ``processors`` of `structlog.configure`, or to use it in ``processor``
-        of `structlog.stdlib.ProcessorFormatter` without using it in
+        When used with `structlog.stdlib.ProcessorFormatter` the most efficient
+        configuration is to either use this processor in ``foreign_pre_chain``
+        of `structlog.stdlib.ProcessorFormatter` and in ``processors`` of
+        `structlog.configure`, or to use it in ``processor`` of
+        `structlog.stdlib.ProcessorFormatter` without using it in
         ``processors`` of `structlog.configure` and ``foreign_pre_chain`` of
         `structlog.stdlib.ProcessorFormatter`.
 
@@ -675,7 +676,6 @@ class CallsiteParameterAdder:
         record_attribute: str
 
     __slots__ = [
-        "_parameters",
         "_active_handlers",
         "_additional_ignores",
         "_record_mappings",
@@ -733,6 +733,5 @@ class CallsiteParameterAdder:
             )
             frame_info = inspect.getframeinfo(frame)
             for parameter, handler in self._active_handlers:
-                handler(module, frame_info)
                 event_dict[parameter.value] = handler(module, frame_info)
         return event_dict

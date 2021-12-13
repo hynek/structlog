@@ -952,7 +952,7 @@ class TestCallsiteParameterAdder:
             callsite_params = self.get_callsite_parameters()
             bound_logger.info(test_message)
         else:
-            raise ValueError(f"invalid front {origin}")
+            raise ValueError(f"invalid origin {origin}")
 
         callsite_params = self.filter_parameter_dict(
             callsite_params, parameter_strings
@@ -976,7 +976,7 @@ class TestCallsiteParameterAdder:
     ) -> CallsiteParameterAdder:
         """
         Creates a ``CallsiteParameterAdder`` with parameters matching the
-        supplied ``parameter_strings`` value and with the supplied
+        supplied ``parameter_strings`` values and with the supplied
         ``additional_ignores`` values.
 
         :param parameter_strings:
