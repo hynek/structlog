@@ -606,7 +606,7 @@ class CallsiteParameterAdder:
         event dictionary.
 
     :param additional_ignores:
-        Additional names with which the a stack frame's module name must not
+        Additional names with which a stack frame's module name must not
         start for it to be considered when determening the callsite.
 
     .. note::
