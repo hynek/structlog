@@ -15,9 +15,6 @@
       <a href="https://pypi.org/project/structlog/">
          <img src="https://img.shields.io/pypi/v/structlog" alt="PyPI release" />
       </a>
-      <a href="https://pepy.tech/project/structlog">
-          <img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" />
-      </a>
    </p>
 
 .. -begin-short-
