@@ -18,6 +18,30 @@ Whenever there is a need to break compatibility, it is announced here in the cha
 
 .. changelog
 
+XX.Y.Z (UNRELEASED)
+-------------------
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+*none*
+
+
+----
+
+
 21.5.0 (2021-12-16)
 -------------------
 
