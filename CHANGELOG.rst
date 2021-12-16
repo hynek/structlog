@@ -222,7 +222,7 @@ Backward-incompatible changes:
   You can regain the old behavior by using ``structlog.configure(wrapper_class=structlog.BoundLogger)``.
 
   Please note that due to the various interactions between settings, it's possible that you encounter even more errors.
-  We **strongly** urge you to always configure all possible settings since the default configuration is *not* covered by our `backward compatibility policy <https://www.structlog.org/en/stable/backward-compatibility.html>`_.
+  We **strongly** urge you to always configure all possible settings since the default configuration is *not* covered by our backwards-compatibility policy.
 
 
 Deprecations:
