@@ -76,7 +76,7 @@ class TestGetProcessname:
             name="modules",
             value={},
         )
-        assert get_processname() == "MainProcess"
+        assert get_processname() == "n/a"
 
     def test_exception(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
@@ -93,4 +93,4 @@ class TestGetProcessname:
             name="current_process",
             value=_current_process,
         )
-        assert get_processname() == "MainProcess"
+        assert get_processname() == "n/a"

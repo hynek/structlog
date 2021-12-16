@@ -4,6 +4,7 @@
 # repository for complete details.
 
 import datetime
+import functools
 import inspect
 import itertools
 import json
@@ -42,7 +43,7 @@ from structlog.processors import (
 from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
 from structlog.types import EventDict
-from tests.utils import mock_getframe
+from tests.additional_frame import additional_frame
 
 
 try:
@@ -801,9 +802,13 @@ class TestCallsiteParameterAdder:
         `additional_ignores` are ignored when determining the callsite.
         """
         test_message = "test message"
-        additional_ignores = ["tests.utils"]
+        additional_ignores = ["tests.additional_frame"]
         processor = self.make_processor(None, additional_ignores)
         event_dict: EventDict = {"event": test_message}
+
+        # `functools.partial` is used instead of a lambda because a lambda will
+        # add an additional frame in a module that should not be ignored.
+        _sys_getframe = functools.partial(additional_frame, sys._getframe)
 
         # WARNING: The below three lines are sensitive to relative line numbers
         # (i.e. the invocation of processor must be two lines after the
@@ -811,7 +816,7 @@ class TestCallsiteParameterAdder:
         # monkeypatch.setattr must occur after get_callsite_parameters but
         # before invocation of processor).
         callsite_params = self.get_callsite_parameters(2)
-        monkeypatch.setattr(sys, "_getframe", value=mock_getframe)
+        monkeypatch.setattr(sys, "_getframe", value=_sys_getframe)
         actual = processor(None, None, event_dict)
 
         expected = {
@@ -867,7 +872,7 @@ class TestCallsiteParameterAdder:
             }
             actual = processor(None, None, event_dict)
         else:
-            raise ValueError(f"invalid origin {origin}")
+            pytest.fail(f"invalid origin {origin}")
         actual = {
             key: value
             for key, value in actual.items()
@@ -933,7 +938,7 @@ class TestCallsiteParameterAdder:
                 processors=[*processors, JSONRenderer()],
             )
         else:
-            raise ValueError(f"invalid setup {setup}")
+            pytest.fail(f"invalid setup {setup}")
         handler.setFormatter(formatter)
         handler.setLevel(0)
         logger.addHandler(handler)
@@ -953,7 +958,7 @@ class TestCallsiteParameterAdder:
             callsite_params = self.get_callsite_parameters()
             bound_logger.info(test_message)
         else:
-            raise ValueError(f"invalid origin {origin}")
+            pytest.fail(f"invalid origin {origin}")
 
         callsite_params = self.filter_parameter_dict(
             callsite_params, parameter_strings

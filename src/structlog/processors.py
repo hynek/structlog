@@ -545,7 +545,7 @@ class StackInfoRenderer:
         return event_dict
 
 
-class CallsiteParameter(str, enum.Enum):
+class CallsiteParameter(enum.Enum):
     """
     Callsite parameters that can be added to an event dictionary with the
     `structlog.processors.CallsiteParameterAdder` processor class.
@@ -613,7 +613,7 @@ class CallsiteParameterAdder:
         When used with `structlog.stdlib.ProcessorFormatter` the most efficient
         configuration is to either use this processor in ``foreign_pre_chain``
         of `structlog.stdlib.ProcessorFormatter` and in ``processors`` of
-        `structlog.configure`, or to use it in ``processor`` of
+        `structlog.configure`, or to use it in ``processors`` of
         `structlog.stdlib.ProcessorFormatter` without using it in
         ``processors`` of `structlog.configure` and ``foreign_pre_chain`` of
         `structlog.stdlib.ProcessorFormatter`.
@@ -621,8 +621,8 @@ class CallsiteParameterAdder:
     .. versionadded:: 21.5.0
     """
 
-    _handlers: Dict[
-        CallsiteParameter, Callable[[str, inspect.Traceback], Any]
+    _handlers: ClassVar[
+        Dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
     ] = {
         CallsiteParameter.PATHNAME: (
             lambda module, frame_info: frame_info.filename
@@ -664,7 +664,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.PROCESS_NAME: "processName",
     }
 
-    _all_parameters: Set[CallsiteParameter] = set(CallsiteParameter)
+    _all_parameters: ClassVar[Set[CallsiteParameter]] = set(CallsiteParameter)
 
     class _RecordMapping(NamedTuple):
         event_dict_key: str

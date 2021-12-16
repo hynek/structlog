@@ -33,7 +33,7 @@ def until_not_interrupted(f: Callable[..., Any], *args: Any, **kw: Any) -> Any:
 def get_processname() -> str:
     # based on code from
     # https://github.com/python/cpython/blob/313f92a57bc3887026ec16adb536bb2b7580ce47/Lib/logging/__init__.py#L342-L352
-    processname = "MainProcess"
+    processname = "n/a"
     mp: Any = sys.modules.get("multiprocessing")
     if mp is not None:
         # Errors may occur if multiprocessing has not finished loading
