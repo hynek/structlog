@@ -42,7 +42,7 @@ except ImportError:
     contextvars = None  # type: ignore
 
 
-__version__ = "21.5.0.dev0"
+__version__ = "21.5.0"
 
 __title__ = "structlog"
 # __doc__ is None when running with PYTHONOPTIMIZE=2 / -OO

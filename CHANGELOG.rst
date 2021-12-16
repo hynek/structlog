@@ -18,7 +18,7 @@ Whenever there is a need to break compatibility, it is announced here in the cha
 
 .. changelog
 
-21.5.0 (UNRELEASED)
+21.5.0 (2021-12-16)
 -------------------
 
 
