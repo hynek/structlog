@@ -41,6 +41,7 @@ Changes:
   `#376 <https://github.com/hynek/structlog/pull/376>`_
 - Added the ``structlog.stdlib.ExtraAdder`` processor that adds extra attributes of ``logging.LogRecord`` objects to the event dictionary.
   This processor can be used for adding data passed in the ``extra`` parameter of the ``logging`` module's log methods to the event dictionary.
+  `#209 <https://github.com/hynek/structlog/pull/209>`_
   `#377 <https://github.com/hynek/structlog/pull/377>`_
 - Added the ``structlog.processor.CallsiteParameterAdder`` processor that adds parameters of the callsite that an event dictionary orginated from to the event dictionary.
   This processor can be used to enrich events dictionaries with information such as the function name, line number and filename that an event dictionary orignated from.
