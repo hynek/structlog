@@ -753,6 +753,7 @@ class TestCallsiteParameterAdder:
         the dictionary returned by ``self.get_callsite_parameters`` contains
         keys for all callsite parameters.
         """
+
         assert self.parameter_strings == {
             member.value for member in self._all_parameters
         }
@@ -823,6 +824,7 @@ class TestCallsiteParameterAdder:
             "event": test_message,
             **callsite_params,
         }
+
         assert expected == actual
 
     @pytest.mark.parametrize(
@@ -885,6 +887,7 @@ class TestCallsiteParameterAdder:
             "event": test_message,
             **callsite_params,
         }
+
         assert expected == actual
 
     @pytest.mark.parametrize(
@@ -972,6 +975,7 @@ class TestCallsiteParameterAdder:
             "event": test_message,
             **callsite_params,
         }
+
         assert expected == actual
 
     @classmethod
