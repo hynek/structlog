@@ -4,9 +4,18 @@
 # repository for complete details.
 
 import datetime
+import functools
+import inspect
+import itertools
 import json
+import logging
+import os
 import pickle
 import sys
+import threading
+
+from io import StringIO
+from typing import Any, Dict, List, Optional, Set
 
 import pytest
 
@@ -14,7 +23,11 @@ from freezegun import freeze_time
 
 import structlog
 
+from structlog import BoundLogger
+from structlog._utils import get_processname
 from structlog.processors import (
+    CallsiteParameter,
+    CallsiteParameterAdder,
     ExceptionPrettyPrinter,
     JSONRenderer,
     KeyValueRenderer,
@@ -27,7 +40,10 @@ from structlog.processors import (
     _json_fallback_handler,
     format_exc_info,
 )
+from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
+from structlog.types import EventDict
+from tests.additional_frame import additional_frame
 
 
 try:
@@ -714,3 +730,347 @@ class TestFigureOutExcInfo:
         e = ValueError()
 
         assert (e.__class__, e, None) == _figure_out_exc_info(e)
+
+
+class TestCallsiteParameterAdder:
+    parameter_strings = {
+        "pathname",
+        "filename",
+        "module",
+        "func_name",
+        "lineno",
+        "thread",
+        "thread_name",
+        "process",
+        "process_name",
+    }
+
+    _all_parameters = set(CallsiteParameter)
+
+    def test_all_parameters(self) -> None:
+        """
+        All callsite parameters are included in ``self.parameter_strings`` and
+        the dictionary returned by ``self.get_callsite_parameters`` contains
+        keys for all callsite parameters.
+        """
+
+        assert self.parameter_strings == {
+            member.value for member in self._all_parameters
+        }
+        assert self.parameter_strings == self.get_callsite_parameters().keys()
+
+    @pytest.mark.xfail(
+        reason=(
+            "CallsiteParameterAdder cannot "
+            "determine the callsite for async calls."
+        )
+    )
+    @pytest.mark.asyncio
+    async def test_async(self) -> None:
+        """
+        Callsite information for async invocations are correct.
+        """
+        try:
+            string_io = StringIO()
+
+            class StingIOLogger(structlog.PrintLogger):
+                def __init__(self):
+                    super().__init__(file=string_io)
+
+            processor = self.make_processor(None, ["concurrent", "threading"])
+            structlog.configure(
+                processors=[processor, JSONRenderer()],
+                logger_factory=StingIOLogger,
+                wrapper_class=structlog.stdlib.AsyncBoundLogger,
+                cache_logger_on_first_use=True,
+            )
+
+            logger = structlog.stdlib.get_logger()
+
+            callsite_params = self.get_callsite_parameters()
+            await logger.info("baz")
+
+            assert {"event": "baz", **callsite_params} == json.loads(
+                string_io.getvalue()
+            )
+
+        finally:
+            structlog.reset_defaults()
+
+    def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """
+        Stack frames from modules with names that start with values in
+        `additional_ignores` are ignored when determining the callsite.
+        """
+        test_message = "test message"
+        additional_ignores = ["tests.additional_frame"]
+        processor = self.make_processor(None, additional_ignores)
+        event_dict: EventDict = {"event": test_message}
+
+        # `functools.partial` is used instead of a lambda because a lambda will
+        # add an additional frame in a module that should not be ignored.
+        _sys_getframe = functools.partial(additional_frame, sys._getframe)
+
+        # WARNING: The below three lines are sensitive to relative line numbers
+        # (i.e. the invocation of processor must be two lines after the
+        # invocation of get_callsite_parameters) and is order sensitive (i.e.
+        # monkeypatch.setattr must occur after get_callsite_parameters but
+        # before invocation of processor).
+        callsite_params = self.get_callsite_parameters(2)
+        monkeypatch.setattr(sys, "_getframe", value=_sys_getframe)
+        actual = processor(None, None, event_dict)
+
+        expected = {
+            "event": test_message,
+            **callsite_params,
+        }
+
+        assert expected == actual
+
+    @pytest.mark.parametrize(
+        "origin, parameter_strings",
+        itertools.product(
+            ["logging", "structlog"],
+            [
+                None,
+                *[{parameter} for parameter in parameter_strings],
+                set(),
+                parameter_strings,
+                {"pathname", "filename"},
+                {"module", "func_name"},
+            ],
+        ),
+    )
+    def test_processor(
+        self,
+        origin: str,
+        parameter_strings: Optional[Set[str]],
+    ):
+        """
+        The correct callsite parameters are added to event dictionaries.
+        """
+        test_message = "test message"
+        processor = self.make_processor(parameter_strings)
+        if origin == "structlog":
+            event_dict: EventDict = {"event": test_message}
+            callsite_params = self.get_callsite_parameters()
+            actual = processor(None, None, event_dict)
+        elif origin == "logging":
+            callsite_params = self.get_callsite_parameters()
+            record = logging.LogRecord(
+                "name",
+                logging.INFO,
+                callsite_params["pathname"],
+                callsite_params["lineno"],
+                test_message,
+                None,
+                None,
+                callsite_params["func_name"],
+            )
+            event_dict: EventDict = {
+                "event": test_message,
+                "_record": record,
+                "_from_structlog": False,
+            }
+            actual = processor(None, None, event_dict)
+        else:
+            pytest.fail(f"invalid origin {origin}")
+        actual = {
+            key: value
+            for key, value in actual.items()
+            if not key.startswith("_")
+        }
+        callsite_params = self.filter_parameter_dict(
+            callsite_params, parameter_strings
+        )
+        expected = {
+            "event": test_message,
+            **callsite_params,
+        }
+
+        assert expected == actual
+
+    @pytest.mark.parametrize(
+        "setup, origin, parameter_strings",
+        itertools.product(
+            ["common-without-pre", "common-with-pre", "shared", "everywhere"],
+            ["logging", "structlog"],
+            [
+                None,
+                *[{parameter} for parameter in parameter_strings],
+                set(),
+                parameter_strings,
+                {"pathname", "filename"},
+                {"module", "func_name"},
+            ],
+        ),
+    )
+    def test_e2e(
+        self,
+        setup: str,
+        origin: str,
+        parameter_strings: Optional[Set[str]],
+    ) -> None:
+        """
+        Logging output contains the correct callsite parameters.
+        """
+        logger = logging.Logger(sys._getframe().f_code.co_name)
+        string_io = StringIO()
+        handler = logging.StreamHandler(string_io)
+        processors = [self.make_processor(parameter_strings)]
+        if setup == "common-without-pre":
+            common_processors = processors
+            formatter = ProcessorFormatter(
+                processors=[*processors, JSONRenderer()]
+            )
+        elif setup == "common-with-pre":
+            common_processors = processors
+            formatter = ProcessorFormatter(
+                foreign_pre_chain=processors,
+                processors=[JSONRenderer()],
+            )
+        elif setup == "shared":
+            common_processors = []
+            formatter = ProcessorFormatter(
+                processors=[*processors, JSONRenderer()],
+            )
+        elif setup == "everywhere":
+            common_processors = processors
+            formatter = ProcessorFormatter(
+                foreign_pre_chain=processors,
+                processors=[*processors, JSONRenderer()],
+            )
+        else:
+            pytest.fail(f"invalid setup {setup}")
+        handler.setFormatter(formatter)
+        handler.setLevel(0)
+        logger.addHandler(handler)
+        logger.setLevel(0)
+
+        test_message = "test message"
+        if origin == "logging":
+            callsite_params = self.get_callsite_parameters()
+            logger.info(test_message)
+        elif origin == "structlog":
+            ctx: Dict[str, Any] = {}
+            bound_logger = BoundLogger(
+                logger,
+                [*common_processors, ProcessorFormatter.wrap_for_formatter],
+                ctx,
+            )
+            callsite_params = self.get_callsite_parameters()
+            bound_logger.info(test_message)
+        else:
+            pytest.fail(f"invalid origin {origin}")
+
+        callsite_params = self.filter_parameter_dict(
+            callsite_params, parameter_strings
+        )
+        actual = {
+            key: value
+            for key, value in json.loads(string_io.getvalue()).items()
+            if not key.startswith("_")
+        }
+        expected = {
+            "event": test_message,
+            **callsite_params,
+        }
+
+        assert expected == actual
+
+    @classmethod
+    def make_processor(
+        cls,
+        parameter_strings: Optional[Set[str]],
+        additional_ignores: Optional[List[str]] = None,
+    ) -> CallsiteParameterAdder:
+        """
+        Creates a ``CallsiteParameterAdder`` with parameters matching the
+        supplied ``parameter_strings`` values and with the supplied
+        ``additional_ignores`` values.
+
+        :param parameter_strings:
+            Strings for which corresponding ``CallsiteParameters`` should be
+            included in the resulting ``CallsiteParameterAdded``.
+        :param additional_ignores:
+            Used as ``additional_ignores`` for the resulting
+            ``CallsiteParameterAdded``.
+        """
+        if parameter_strings is None:
+            return CallsiteParameterAdder(
+                additional_ignores=additional_ignores
+            )
+        else:
+            parameters = cls.filter_parameters(parameter_strings)
+            return CallsiteParameterAdder(
+                parameters=parameters,
+                additional_ignores=additional_ignores,
+            )
+
+    @classmethod
+    def filter_parameters(
+        cls, parameter_strings: Optional[Set[str]]
+    ) -> Set[CallsiteParameter]:
+        """
+        Returns a set containing all ``CallsiteParameter`` members with values
+        that are in ``parameter_strings``.
+
+        :param parameter_strings:
+            The parameters strings for which corresponding
+            ``CallsiteParameter`` members should be
+            returned. If this value is `None` then all
+            ``CallsiteParameter`` will be returned.
+        """
+        if parameter_strings is None:
+            return cls._all_parameters
+        return {
+            parameter
+            for parameter in cls._all_parameters
+            if parameter.value in parameter_strings
+        }
+
+    @classmethod
+    def filter_parameter_dict(
+        cls, input: Dict[str, Any], parameter_strings: Optional[Set[str]]
+    ) -> Dict[str, Any]:
+        """
+        Returns a dictionary that is equivalent to ``input`` but with all keys
+        not in ``parameter_strings`` removed.
+
+        :param parameter_strings:
+            The keys to keep in the dictionary, if this value is ``None`` then
+            all keys matching ``cls.parameter_strings`` are kept.
+        """
+        if parameter_strings is None:
+            parameter_strings = cls.parameter_strings
+        return {
+            key: value
+            for key, value in input.items()
+            if key in parameter_strings
+        }
+
+    @classmethod
+    def get_callsite_parameters(cls, offset: int = 1) -> Dict[str, Any]:
+        """
+        This function creates dictionary of callsite parameters for the line
+        that is ``offset`` lines after the invocation of this function.
+
+        :param offset:
+            The amount of lines after the invocation of this function that
+            callsite parameters should be generated for.
+        """
+        frame_info = inspect.stack()[1]
+        frame_traceback = inspect.getframeinfo(frame_info[0])
+        return {
+            "pathname": frame_traceback.filename,
+            "filename": os.path.basename(frame_traceback.filename),
+            "module": os.path.splitext(
+                os.path.basename(frame_traceback.filename)
+            )[0],
+            "func_name": frame_info.function,
+            "lineno": frame_info.lineno + offset,
+            "thread": threading.get_ident(),
+            "thread_name": threading.current_thread().name,
+            "process": os.getpid(),
+            "process_name": get_processname(),
+        }

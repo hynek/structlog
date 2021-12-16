@@ -8,18 +8,27 @@ Processors useful regardless of the logging framework.
 """
 
 import datetime
+import enum
+import inspect
 import json
+import logging
 import operator
+import os
 import sys
+import threading
 import time
 
 from typing import (
     Any,
     Callable,
+    ClassVar,
+    Collection,
     Dict,
     List,
+    NamedTuple,
     Optional,
     Sequence,
+    Set,
     TextIO,
     Tuple,
     Union,
@@ -31,6 +40,7 @@ from ._frames import (
     _format_stack,
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
+from ._utils import get_processname
 from .types import EventDict, ExcInfo, WrappedLogger
 
 
@@ -45,6 +55,8 @@ __all__ = [
     "format_exc_info",
     "ExceptionPrettyPrinter",
     "StackInfoRenderer",
+    "CallsiteParameter",
+    "CallsiteParameterAdder",
 ]
 
 
@@ -530,4 +542,185 @@ class StackInfoRenderer:
                 _find_first_app_frame_and_name()[0]
             )
 
+        return event_dict
+
+
+class CallsiteParameter(enum.Enum):
+    """
+    Callsite parameters that can be added to an event dictionary with the
+    `structlog.processors.CallsiteParameterAdder` processor class.
+
+    The string values of the members of this enum will be used as the keys for
+    the callsite parameters in the event dictionary.
+
+    .. versionadded:: 21.5.0
+    """
+
+    #: The full path to the python source file of the callsite.
+    PATHNAME = "pathname"
+    #: The basename part of the full path to the python source file of the
+    #: callsite.
+    FILENAME = "filename"
+    #: The python module the callsite was in. This mimicks the module attribute
+    #: of `logging.LogRecord` objects and will be the basename, without
+    #: extension, of the full path to the python source file of the callsite.
+    MODULE = "module"
+    #: The name of the function that the callsite was in.
+    FUNC_NAME = "func_name"
+    #: The line number of the callsite.
+    LINENO = "lineno"
+    #: The ID of the thread the callsite was executed in.
+    THREAD = "thread"
+    #: The name of the thread the callsite was executed in.
+    THREAD_NAME = "thread_name"
+    #: The ID of the process the callsite was executed in.
+    PROCESS = "process"
+    #: The name of the process the callsite was executed in.
+    PROCESS_NAME = "process_name"
+
+
+class CallsiteParameterAdder:
+    """
+    Adds parameters of the callsite that an event dictionary originated from to
+    the event dictionary. This processor can be used to enrich events
+    dictionaries with information such as the function name, line number and
+    filename that an event dictionary originated from.
+
+    .. warning::
+        This processor cannot detect the correct callsite for invocation of
+        async functions.
+
+    If the event dictionary has an embedded `logging.LogRecord` object and did
+    not originate from `structlog` then the callsite information will be
+    determined from the `logging.LogRecord` object. For event dictionaries
+    without an embedded `logging.LogRecord` object the callsite will be
+    determined from the stack trace, ignoring all intra-structlog calls, calls
+    from the `logging` module, and stack frames from modules with names that
+    start with values in ``additional_ignores``, if it is specified.
+
+    The keys used for callsite parameters in the event dictionary are the
+    string values of `CallsiteParameter` enum members.
+
+    :param parameters:
+        A collection of `CallsiteParameter` values that should be added to the
+        event dictionary.
+
+    :param additional_ignores:
+        Additional names with which a stack frame's module name must not
+        start for it to be considered when determening the callsite.
+
+    .. note::
+        When used with `structlog.stdlib.ProcessorFormatter` the most efficient
+        configuration is to either use this processor in ``foreign_pre_chain``
+        of `structlog.stdlib.ProcessorFormatter` and in ``processors`` of
+        `structlog.configure`, or to use it in ``processors`` of
+        `structlog.stdlib.ProcessorFormatter` without using it in
+        ``processors`` of `structlog.configure` and ``foreign_pre_chain`` of
+        `structlog.stdlib.ProcessorFormatter`.
+
+    .. versionadded:: 21.5.0
+    """
+
+    _handlers: ClassVar[
+        Dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+    ] = {
+        CallsiteParameter.PATHNAME: (
+            lambda module, frame_info: frame_info.filename
+        ),
+        CallsiteParameter.FILENAME: (
+            lambda module, frame_info: os.path.basename(frame_info.filename)
+        ),
+        CallsiteParameter.MODULE: (
+            lambda module, frame_info: os.path.splitext(
+                os.path.basename(frame_info.filename)
+            )[0]
+        ),
+        CallsiteParameter.FUNC_NAME: (
+            lambda module, frame_info: frame_info.function
+        ),
+        CallsiteParameter.LINENO: (
+            lambda module, frame_info: frame_info.lineno
+        ),
+        CallsiteParameter.THREAD: (
+            lambda module, frame_info: threading.get_ident()
+        ),
+        CallsiteParameter.THREAD_NAME: (
+            lambda module, frame_info: threading.current_thread().name
+        ),
+        CallsiteParameter.PROCESS: (lambda module, frame_info: os.getpid()),
+        CallsiteParameter.PROCESS_NAME: (
+            lambda module, frame_info: get_processname()
+        ),
+    }
+    _record_attribute_map: ClassVar[Dict[CallsiteParameter, str]] = {
+        CallsiteParameter.PATHNAME: "pathname",
+        CallsiteParameter.FILENAME: "filename",
+        CallsiteParameter.MODULE: "module",
+        CallsiteParameter.FUNC_NAME: "funcName",
+        CallsiteParameter.LINENO: "lineno",
+        CallsiteParameter.THREAD: "thread",
+        CallsiteParameter.THREAD_NAME: "threadName",
+        CallsiteParameter.PROCESS: "process",
+        CallsiteParameter.PROCESS_NAME: "processName",
+    }
+
+    _all_parameters: ClassVar[Set[CallsiteParameter]] = set(CallsiteParameter)
+
+    class _RecordMapping(NamedTuple):
+        event_dict_key: str
+        record_attribute: str
+
+    __slots__ = [
+        "_active_handlers",
+        "_additional_ignores",
+        "_record_mappings",
+    ]
+
+    def __init__(
+        self,
+        parameters: Collection[CallsiteParameter] = _all_parameters,
+        additional_ignores: Optional[List[str]] = None,
+    ) -> None:
+        if additional_ignores is None:
+            additional_ignores = []
+        # Ignore stack frames from the logging module. They will occur if this
+        # processor is used in ProcessorFormatter, and additionally the logging
+        # module should not be logging using structlog.
+        self._additional_ignores = ["logging", *additional_ignores]
+        self._active_handlers: List[
+            Tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+        ] = []
+        self._record_mappings: List[
+            "CallsiteParameterAdder._RecordMapping"
+        ] = []
+        for parameter in parameters:
+            self._active_handlers.append(
+                (parameter, self._handlers[parameter])
+            )
+            self._record_mappings.append(
+                self._RecordMapping(
+                    parameter.value,
+                    self._record_attribute_map[parameter],
+                )
+            )
+
+    def __call__(
+        self, logger: logging.Logger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        record: Optional[logging.LogRecord] = event_dict.get("_record")
+        from_structlog: Optional[bool] = event_dict.get("_from_structlog")
+        # If the event dictionary has a record, but it comes from structlog,
+        # then the callsite parameters of the record will not be correct.
+        if record is not None and not from_structlog:
+            for mapping in self._record_mappings:
+                event_dict[mapping.event_dict_key] = record.__dict__[
+                    mapping.record_attribute
+                ]
+        else:
+            frame, module = _find_first_app_frame_and_name(
+                additional_ignores=self._additional_ignores
+            )
+            frame_info = inspect.getframeinfo(frame)
+            for parameter, handler in self._active_handlers:
+                event_dict[parameter.value] = handler(module, frame_info)
         return event_dict
