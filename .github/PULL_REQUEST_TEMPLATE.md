@@ -1,15 +1,17 @@
 # Summary
 
-Please tell us what your pull request is about here.
+<!-- Please tell us what your pull request is about here. -->
 
 
 # Pull Request Check List
 
+<!--
 This is just a friendly reminder about the most common mistakes.
 Please make sure that you tick all boxes.
 But please read our [contribution guide](https://github.com/hynek/structlog/blob/main/.github/CONTRIBUTING.md) at least once; it will save you unnecessary review cycles!
 
 If an item doesn't apply to your pull request, **check it anyway** to make it apparent that there's nothing left to do.
+-->
 
 - [ ] Added **tests** for changed code.
     - The CI fails with less than 100% coverage.
@@ -22,5 +24,7 @@ If an item doesn't apply to your pull request, **check it anyway** to make it ap
 - [ ] Changes (and possible deprecations) are documented in the [**changelog**](https://github.com/hynek/structlog/blob/main/CHANGELOG.rst).
 - [ ] Consider granting [push permissions to the PR branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork), so maintainers can fix minor issues themselves without pestering you.
 
+<!--
 If you have *any* questions to *any* of the points above, just **submit and ask**!
 This checklist is here to *help* you, not to deter you from contributing!
+-->
