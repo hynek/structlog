@@ -21,7 +21,7 @@ _REAL_GETFRAME = sys._getframe
 
 def mock_getframe(__depth: int = 0) -> FrameType:
     """
-    This function is used to inject an additional stack frame from a moudle
+    This function is used to inject an additional stack frame from a module
     that can be used to test  the ``additional_ignores`` parameter of
     `structlog._frames._find_first_app_frame_and_name`.
     """
