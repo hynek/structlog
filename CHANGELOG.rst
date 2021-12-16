@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Versions follow `Calendar Versioning <https://calver.org>`_ with a strict backwards compatibility policy.
+Versions follow `Calendar Versioning <https://calver.org>`_ with a strict backwards-compatibility policy.
 
 The **first digit** of the version is the year.
 The **second digit** is incremented with each release, starting at 1 for each year.
@@ -238,7 +238,7 @@ Changes:
 - ``structlog`` has now type hints for all of its APIs!
   Since ``structlog`` is highly dynamic and configurable, this led to a few concessions like a specialized ``structlog.stdlib.get_logger()`` whose only difference to ``structlog.get_logger()`` is that it has the correct type hints.
 
-  We consider them provisional for the time being – i.e. the backward compatibility does not apply to them in its full strength until we feel we got it right.
+  We consider them provisional for the time being – i.e. the backwards-compatibility does not apply to them in its full strength until we feel we got it right.
   Please feel free to provide feedback!
   `#223 <https://github.com/hynek/structlog/issues/223>`_,
   `#282 <https://github.com/hynek/structlog/issues/282>`_
@@ -520,7 +520,7 @@ Backward-incompatible changes:
 
 - The default renderer now is ``structlog.dev.ConsoleRenderer`` if you don't configure ``structlog``.
   Colors are used if available and human-friendly timestamps are prepended.
-  This is in line with our backward `compatibility policy <https://www.structlog.org/en/stable/backward-compatibility.html>`_ that explicitly excludes default settings.
+  This is in line with our backwards-compatibility policy that explicitly excludes default settings.
 
 
 Changes:
@@ -783,7 +783,7 @@ Changes:
 Changes:
 ^^^^^^^^
 
-- Promote to stable, thus henceforth a strict backward compatibility policy is put into effect.
+- Promote to stable, thus henceforth a strict backwards-compatibility policy is put into effect.
 - Add ``key_order`` option to ``structlog.processors.KeyValueRenderer`` for more predictable log entries with any ``dict`` class.
 - ``structlog.PrintLogger`` now uses proper I/O routines and is thus viable not only for examples but also for production.
 - Enhance Twisted support by offering JSONification of non-structlog log entries.
