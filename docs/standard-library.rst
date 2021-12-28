@@ -11,7 +11,7 @@ If you're a heavy `logging` user, your `help <https://github.com/hynek/structlog
 Just Enough ``logging``
 -----------------------
 
-If you want to use ``structlog`` with `logging`, you still have to have at least fleeting understanding on how the standard library operates because ``structlog`` will *not* do any magic things in the background for you.
+If you want to use ``structlog`` with `logging`, you should have at least a fleeting understanding on how the standard library operates because ``structlog`` will *not* do any magic things in the background for you.
 Most importantly you have to *configure* the `logging` system *additionally* to configuring ``structlog``.
 
 Usually it is enough to use::
