@@ -15,6 +15,7 @@ from typing import Any, Callable, List, Optional
 import structlog
 
 from structlog.processors import CallsiteParameter
+from structlog.types import FilteringBoundLogger
 
 
 bl = structlog.get_logger()
@@ -279,3 +280,15 @@ structlog.configure(
 
 with structlog.threadlocal.bound_threadlocal(x=42):
     pass
+
+
+def typecheck_filtering_return() -> None:
+    fblogger: FilteringBoundLogger = structlog.get_logger(__name__)
+    fblog = fblogger.bind(key1="value1", key2="value2", key3="value3")
+    fblog.info("values bound")
+    fblog = fblog.unbind("key1")
+    fblog.debug("value unbound")
+    fblog = fblog.try_unbind("bad_key")
+    fblog.warn("no value unbound because key not defined")
+    fblog = fblog.new(new="value")
+    fblog.info("this is a whole new logger")
