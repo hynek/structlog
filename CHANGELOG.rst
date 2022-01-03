@@ -36,7 +36,7 @@ Deprecations:
 Changes:
 ^^^^^^^^
 
-- Overloaded the ``bind``, ``unbind``, ``try_unbind`` and ``new`` methods in the ``FilteringBoundLogger`` `Protocol <https://docs.python.org/3/library/typing.html#typing.Protocol>_`.
+- Overloaded the ``bind``, ``unbind``, ``try_unbind`` and ``new`` methods in the ``FilteringBoundLogger`` `Protocol <https://docs.python.org/3/library/typing.html#typing.Protocol>`_.
   This makes it easier to use objects of type ``FilteringBoundLogger`` in a typed context.
   `#392 <https://github.com/hynek/structlog/pull/392>`_
 
