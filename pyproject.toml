@@ -64,7 +64,7 @@ tests = [
     "coverage[toml]",
     "freezegun>=0.2.8",
     "pretend",
-    "pytest-asyncio",
+    "pytest-asyncio>=0.17",
     "pytest>=6.0",
     "simplejson",
 ]
@@ -94,7 +94,7 @@ dev = [
     "coverage[toml]",
     "freezegun>=0.2.8",
     "pretend",
-    "pytest-asyncio",
+    "pytest-asyncio>=0.17",
     "pytest>=6.0",
     "simplejson",
     "furo",
@@ -113,6 +113,7 @@ testpaths = "tests"
 filterwarnings = [
     "once::Warning",
 ]
+asyncio_mode = "strict"
 
 
 [tool.coverage.run]

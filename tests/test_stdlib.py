@@ -13,6 +13,7 @@ from io import StringIO
 from typing import Any, Callable, Collection, Dict, Optional, Set
 
 import pytest
+import pytest_asyncio
 
 from pretend import call_recorder, stub
 
@@ -1026,7 +1027,7 @@ class TestProcessorFormatter:
         )
 
 
-@pytest.fixture(name="abl")
+@pytest_asyncio.fixture(name="abl")
 async def _abl(cl):
     return AsyncBoundLogger(cl, context={}, processors=[])
 
