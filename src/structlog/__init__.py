@@ -7,7 +7,15 @@
 Structured Logging for Python
 """
 
-from structlog import dev, processors, stdlib, testing, threadlocal, types
+from structlog import (
+    contextvars,
+    dev,
+    processors,
+    stdlib,
+    testing,
+    threadlocal,
+    types,
+)
 from structlog._base import BoundLoggerBase, get_context
 from structlog._config import (
     configure,
@@ -35,11 +43,6 @@ try:
     from structlog import twisted
 except ImportError:
     twisted = None  # type: ignore
-
-try:
-    from structlog import contextvars
-except ImportError:
-    contextvars = None  # type: ignore
 
 
 __version__ = "22.1.0.dev0"

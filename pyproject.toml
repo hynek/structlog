@@ -9,7 +9,7 @@ build-backend = "flit_core.buildapi"
 name = "structlog"
 authors = [{name = "Hynek Schlawack", email = "hs@ox.cx"}]
 dynamic = ["version", "description"]
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 dependencies = ["typing-extensions; python_version<'3.8'"]
 license = { file = "LICENSE" }
 keywords = ["logging", "structured", "structure", "log"]
@@ -21,7 +21,6 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -108,12 +107,11 @@ dev = [
 
 
 [tool.pytest.ini_options]
-addopts = "-ra --strict-markers "
+addopts = "-ra --strict-markers"
 xfail_strict = true
 testpaths = "tests"
 filterwarnings = [
     "once::Warning",
-    "ignore:.*are you using python -O.*:pytest.PytestConfigWarning",
 ]
 
 
@@ -213,7 +211,7 @@ Project Information
 
 We collect useful third-party extension in `our wiki <https://github.com/hynek/structlog/wiki/Third-party-Extensions>`_.
 
-``structlog`` targets Python 3.6 and later.
+``structlog`` targets Python 3.7 and later.
 PyPy3 is known to work, but is not tested anymore.
 
 

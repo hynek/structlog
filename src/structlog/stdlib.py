@@ -10,6 +10,7 @@ See also :doc:`structlog's standard library support <standard-library>`.
 """
 
 import asyncio
+import contextvars
 import functools
 import logging
 import sys
@@ -33,12 +34,6 @@ from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .exceptions import DropEvent
 from .types import Context, EventDict, ExcInfo, Processor, WrappedLogger
-
-
-try:
-    import contextvars
-except ImportError:
-    contextvars = None  # type: ignore
 
 
 __all__ = [

@@ -7,20 +7,18 @@ repos:
     rev: 21.12b0
     hooks:
       - id: black
-        language_version: python3.10
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.31.0
     hooks:
       - id: pyupgrade
-        args: [--py36-plus]
+        args: [--py37-plus]
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
       - id: isort
         additional_dependencies: [toml]
-        language_version: python3.10
 
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1

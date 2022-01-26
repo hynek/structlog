@@ -24,7 +24,7 @@ Whenever there is a need to break compatibility, it is announced here in the cha
 Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*none*
+- Python 3.6 is not supported anymore.
 
 
 Deprecations:

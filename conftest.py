@@ -4,7 +4,6 @@
 # repository for complete details.
 
 import logging
-import sys
 
 from io import StringIO
 
@@ -69,7 +68,5 @@ def _cl():
 
 
 collect_ignore = []
-if sys.version_info[:2] < (3, 7):
-    collect_ignore.append("tests/test_contextvars.py")
 if twisted is None:
     collect_ignore.append("tests/test_twisted.py")
