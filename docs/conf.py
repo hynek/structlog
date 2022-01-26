@@ -52,18 +52,14 @@ exclude_patterns = ["_build"]
 default_role = "any"
 
 nitpick_ignore = [
-    ("py:class", "BinaryIO"),
+    ("py:class", "Context"),
     ("py:class", "ILogObserver"),
     ("py:class", "PlainFileObserver"),
-    ("py:class", "structlog.threadlocal.TLLogger"),
-    ("py:class", "TextIO"),
-    ("py:class", "TLLogger"),
-    ("py:class", "traceback"),
-    ("py:class", "structlog._base.BoundLoggerBase"),
+    ("py:class", "Processor"),
+    ("py:class", "WrappedLogger"),
     ("py:class", "structlog.dev._Styles"),
+    ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "structlog.types.EventDict"),
-    ("py:obj", "sync_bl"),
-    ("py:obj", "entries"),
 ]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
