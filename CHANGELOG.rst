@@ -25,6 +25,7 @@ Backward-incompatible changes:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Python 3.6 is not supported anymore.
+- Pickling is now only possible with protocol version 3 and newer.
 
 
 Deprecations:
