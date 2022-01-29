@@ -708,6 +708,18 @@ class TestStackInfoRenderer:
 
         assert 'ed = sir(None, None, {"stack_info": True})' in ed["stack"]
 
+    def test_additional_ignores(self):
+        """
+        Filtering of names works.
+        """
+        sir = StackInfoRenderer(["tests.additional_frame"])
+
+        ed = additional_frame(
+            functools.partial(sir, None, None, {"stack_info": True})
+        )
+
+        assert "additional_frame.py" not in ed["stack"]
+
 
 class TestFigureOutExcInfo:
     @pytest.mark.parametrize("true_value", [True, 1, 1.1])

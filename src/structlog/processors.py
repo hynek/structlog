@@ -526,20 +526,32 @@ class StackInfoRenderer:
     Add stack information with key ``stack`` if ``stack_info`` is `True`.
 
     Useful when you want to attach a stack dump to a log entry without
-    involving an exception.
+    involving an exception and works analogously to the *stack_info* argument
+    of the Python standard library logging.
 
-    It works analogously to the *stack_info* argument of the Python 3 standard
-    library logging.
+    :param additional_ignores: By default, stack frames coming from
+        ``structlog`` are ignored. With this argument you can add additional
+        names that are ignored, before the stack starts being rendered. They
+        are matched using ``startswith()``, so they don't have to match
+        exactly. The names are used to find the first relevant name, therefore
+        once a frame is found that doesn't start with ``structlog`` or one of
+        *additional_ignores*, **no filtering** is applied to subsequent frames.
 
     .. versionadded:: 0.4.0
+    .. versionadded:: 22.1.0  *additional_ignores*
     """
+
+    __slots__ = ["_additional_ignores"]
+
+    def __init__(self, additional_ignores: Optional[List[str]] = None) -> None:
+        self._additional_ignores = additional_ignores
 
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> EventDict:
         if event_dict.pop("stack_info", None):
             event_dict["stack"] = _format_stack(
-                _find_first_app_frame_and_name()[0]
+                _find_first_app_frame_and_name(self._additional_ignores)[0]
             )
 
         return event_dict

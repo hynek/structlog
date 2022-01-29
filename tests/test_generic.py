@@ -51,12 +51,10 @@ class TestGenericBoundLogger:
         assert "log", "foo" == b.log("foo")
         assert "gol", "bar" == b.gol("bar")
 
-    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
+    @pytest.mark.parametrize("proto", range(3, pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, proto):
         """
         Can be pickled and unpickled.
-
-        Works only on Python 3: TypeError: can't pickle instancemethod objects
         """
         b = BoundLogger(
             ReturnLogger(),
