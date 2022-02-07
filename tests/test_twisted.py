@@ -77,18 +77,15 @@ class TestBoundLogger:
         except ValueError:
             # Use str() for comparison to avoid tricky
             # deep-compares of Failures.
-            assert (
-                str(
-                    (
-                        (),
-                        {
-                            "_stuff": Failure(ValueError()),
-                            "_why": "foo=42 event='event'",
-                        },
-                    )
+            assert str(
+                (
+                    (),
+                    {
+                        "_stuff": Failure(ValueError()),
+                        "_why": "foo=42 event='event'",
+                    },
                 )
-                == str(bl.err("event", foo=42))
-            )
+            ) == str(bl.err("event", foo=42))
 
 
 class TestExtractStuffAndWhy:
