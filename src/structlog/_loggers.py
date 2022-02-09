@@ -12,6 +12,7 @@ import sys
 import threading
 
 from pickle import PicklingError
+from sys import stderr, stdout
 from typing import IO, Any, BinaryIO, Dict, Optional, TextIO
 
 from structlog._utils import until_not_interrupted
@@ -49,9 +50,7 @@ class PrintLogger:
     """
 
     def __init__(self, file: Optional[TextIO] = None):
-        self._file = file or sys.stdout
-        self._write = self._file.write
-        self._flush = self._file.flush
+        self._file = file or stdout
 
         self._lock = _get_lock_for_file(self._file)
 
@@ -59,10 +58,10 @@ class PrintLogger:
         """
         Our __getattr__ magic makes this necessary.
         """
-        if self._file is sys.stdout:
+        if self._file is stdout:
             return "stdout"
 
-        elif self._file is sys.stderr:
+        elif self._file is stderr:
             return "stderr"
 
         raise PicklingError(
@@ -74,19 +73,17 @@ class PrintLogger:
         Our __getattr__ magic makes this necessary.
         """
         if state == "stdout":
-            self._file = sys.stdout
+            self._file = stdout
         else:
-            self._file = sys.stderr
+            self._file = stderr
 
-        self._write = self._file.write
-        self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
     def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "PrintLogger":
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
-        if self._file not in (sys.stdout, sys.stderr):
+        if self._file not in (stdout, stderr):
             raise copy.error(
                 "Only PrintLoggers to sys.stdout and sys.stderr "
                 "can be deepcopied."
@@ -94,8 +91,6 @@ class PrintLogger:
 
         newself = self.__class__(self._file)
 
-        newself._write = newself._file.write
-        newself._flush = newself._file.flush
         newself._lock = _get_lock_for_file(newself._file)
 
         return newself
@@ -107,9 +102,9 @@ class PrintLogger:
         """
         Print *message*.
         """
+        f = self._file if self._file is not stdout else None
         with self._lock:
-            until_not_interrupted(self._write, message + "\n")
-            until_not_interrupted(self._flush)
+            until_not_interrupted(print, message, file=f, flush=True)
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg
