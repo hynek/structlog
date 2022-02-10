@@ -7,7 +7,7 @@ import copy
 import pickle
 import sys
 
-from io import BytesIO
+from io import BytesIO, StringIO
 
 import pytest
 
@@ -124,6 +124,20 @@ class TestPrintLogger:
                 copy.deepcopy(logger)
 
         assert "hello\n" == p.read_text()
+
+    def test_stdout_monkeypatch(self, monkeypatch, capsys):
+        """
+        If stdout gets monkeypatched, the new instance receives the output.
+        """
+        p = PrintLogger()
+        new_stdout = StringIO()
+        monkeypatch.setattr(sys, "stdout", new_stdout)
+        p.msg("hello")
+
+        out, err = capsys.readouterr()
+        assert "hello\n" == new_stdout.getvalue()
+        assert "" == out
+        assert "" == err
 
 
 class TestPrintLoggerFactory:
