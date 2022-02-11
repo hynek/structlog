@@ -47,6 +47,10 @@ class PrintLogger:
 
     Also very useful for testing and examples since logging is finicky in
     doctests.
+
+    .. versionchanged:: 22.1
+       The implementation has been switched to use `print` for better
+       monkeypatchability.
     """
 
     def __init__(self, file: Optional[TextIO] = None):

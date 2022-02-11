@@ -42,6 +42,8 @@ Changes:
   `#392 <https://github.com/hynek/structlog/pull/392>`_
 - ``structlog.processors.StackInfoRenderer`` now has an *additional_ignores* parameter that allows you to filter out your own logging layer.
   `#396 <https://github.com/hynek/structlog/issues/396>`_
+- ``structlog.PrintLogger`` -- that is used by default -- now uses ``print()`` for printing, making it a better citizen for interactive terminal applications.
+  `#399 <https://github.com/hynek/structlog/pull/399>`_
 
 
 ----
