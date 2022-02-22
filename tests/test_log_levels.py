@@ -34,11 +34,33 @@ class TestFilteringLogger:
 
     def test_one_below(self, bl, cl):
         """
-        if log level is exactly the min_level, log.
+        if log level is below the min_level, don't log.
         """
         bl.debug("nope")
 
         assert [] == cl.calls
+
+    def test_filter_bound_below_missing_event_string(self, bl, cl):
+        """
+        Missing event arg causes exception below min_level.
+        """
+        with pytest.raises(TypeError) as exc_info:
+            bl.debug(missing="event string!")
+        assert exc_info.type is TypeError
+
+        message = "missing 1 required positional argument: 'event'"
+        assert message in exc_info.value.args[0]
+
+    def test_filter_bound_exact_missing_event_string(self, bl, cl):
+        """
+        Missing event arg causes exception even at min_level.
+        """
+        with pytest.raises(TypeError) as exc_info:
+            bl.info(missing="event string!")
+        assert exc_info.type is TypeError
+
+        message = "missing 1 required positional argument: 'event'"
+        assert message in exc_info.value.args[0]
 
     def test_exception(self, bl, cl):
         """
