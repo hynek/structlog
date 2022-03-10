@@ -67,7 +67,7 @@ def add_log_level(
     return event_dict
 
 
-def _nop(*args: Any, **kw: Any) -> Any:
+def _nop(self: Any, event: str, **kw: Any) -> Any:
     return None
 
 

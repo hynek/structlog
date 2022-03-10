@@ -26,6 +26,9 @@ Backward-incompatible changes:
 
 - Python 3.6 is not supported anymore.
 - Pickling is now only possible with protocol version 3 and newer.
+- ``structlog.make_filtering_bound_logger()`` now returns a method with the same signature for all log levels, whether they are active or not.
+  This ensures that invalid calls to inactive log levels are caught immediately and don't explode once the log level changes.
+  `#401 <https://github.com/hynek/structlog/pull/401>`_
 
 
 Deprecations:
