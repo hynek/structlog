@@ -134,6 +134,112 @@ class PrintLoggerFactory:
         return PrintLogger(self._file)
 
 
+class WriteLogger:
+    """
+    Write events into a file.
+
+    :param file: File to print to. (default: `sys.stdout`)
+
+    >>> from structlog import WriteLogger
+    >>> WriteLogger().msg("hello")
+    hello
+
+    Useful if you follow
+    `current logging best practices <logging-best-practices>`.
+
+    Also very useful for testing and examples since logging is finicky in
+    doctests.
+
+    A little faster and a little less versatile than the PrintLogger.
+
+    .. versionadded:: 22.1
+    """
+
+    def __init__(self, file: Optional[TextIO] = None):
+        self._file = file or sys.stdout
+        self._write = self._file.write
+        self._flush = self._file.flush
+
+        self._lock = _get_lock_for_file(self._file)
+
+    def __getstate__(self) -> str:
+        """
+        Our __getattr__ magic makes this necessary.
+        """
+        if self._file is stdout:
+            return "stdout"
+
+        elif self._file is stderr:
+            return "stderr"
+
+        raise PicklingError(
+            "Only WriteLoggers to sys.stdout and sys.stderr can be pickled."
+        )
+
+    def __setstate__(self, state: Any) -> None:
+        """
+        Our __getattr__ magic makes this necessary.
+        """
+        if state == "stdout":
+            self._file = stdout
+        else:
+            self._file = stderr
+
+        self._lock = _get_lock_for_file(self._file)
+
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "PrintLogger":
+        """
+        Create a new WriteLogger with the same attributes. Similar to pickling.
+        """
+        if self._file not in (sys.stdout, sys.stderr):
+            raise copy.error(
+                "Only WriteLoggers to sys.stdout and sys.stderr "
+                "can be deepcopied."
+            )
+
+        newself = self.__class__(self._file)
+
+        newself._write = newself._file.write
+        newself._flush = newself._file.flush
+        newself._lock = _get_lock_for_file(newself._file)
+
+        return newself
+
+    def __repr__(self) -> str:
+        return f"<WriteLogger(file={self._file!r})>"
+
+    def msg(self, message: str) -> None:
+        """
+        Write and flush *message*.
+        """
+        with self._lock:
+            until_not_interrupted(self._write, message + "\n")
+            until_not_interrupted(self._flush)
+
+    log = debug = info = warn = warning = msg
+    fatal = failure = err = error = critical = exception = msg
+
+
+class WriteLoggerFactory:
+    r"""
+    Produce `WriteLogger`\ s.
+
+    To be used with `structlog.configure`\ 's ``logger_factory``.
+
+    :param file: File to print to. (default: `sys.stdout`)
+
+    Positional arguments are silently ignored.
+
+    .. versionadded:: 22.1
+    """
+
+    def __init__(self, file: Optional[TextIO] = None):
+        self._file = file
+
+    def __call__(self, *args: Any) -> WriteLogger:
+        return WriteLogger(self._file)
+
+
 class BytesLogger:
     r"""
     Writes bytes into a file.
