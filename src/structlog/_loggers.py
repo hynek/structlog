@@ -187,7 +187,7 @@ class WriteLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "PrintLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "WriteLogger":
         """
         Create a new WriteLogger with the same attributes. Similar to pickling.
         """
