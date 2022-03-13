@@ -27,7 +27,11 @@ from .utils import stdlib_log_methods
 class TestLoggers:
     """Tests common to the Print and WriteLoggers."""
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
+    @pytest.fixture(name="logger_cls", params=(WriteLogger, PrintLogger))
+    @staticmethod
+    def logger_cls(request):
+        return request.param
+
     def test_prints_to_stdout_by_default(self, logger_cls, capsys):
         """
         Instantiating without arguments gives conveniently a logger to standard
@@ -39,7 +43,6 @@ class TestLoggers:
         assert "hello\n" == out
         assert "" == err
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     def test_prints_to_correct_file(self, logger_cls, tmpdir, capsys):
         """
         Supplied files are respected.
@@ -53,7 +56,6 @@ class TestLoggers:
         fo.close()
         assert "hello\n" == f.read()
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     def test_lock(self, logger_cls, sio):
         """
         Creating a logger adds a lock to WRITE_LOCKS.
@@ -64,7 +66,6 @@ class TestLoggers:
 
         assert sio in WRITE_LOCKS
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     @pytest.mark.parametrize("method", stdlib_log_methods)
     def test_stdlib_methods_support(self, logger_cls, method, sio):
         """
@@ -74,7 +75,6 @@ class TestLoggers:
 
         assert "hello" in sio.getvalue()
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     @pytest.mark.parametrize("file", [None, sys.stdout, sys.stderr])
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, logger_cls, file, proto):
@@ -90,7 +90,6 @@ class TestLoggers:
         assert pl._file is rv._file
         assert pl._lock is rv._lock
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle_not_stdout_stderr(self, logger_cls, tmpdir, proto):
         """
@@ -104,7 +103,6 @@ class TestLoggers:
         with pytest.raises(pickle.PicklingError, match="Only (.+)Loggers to"):
             pickle.dumps(pl, proto)
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     def test_deepcopy(self, logger_cls, capsys):
         """
         Deepcopied logger works.
@@ -116,7 +114,6 @@ class TestLoggers:
         assert "hello\n" == out
         assert "" == err
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     def test_deepcopy_no_stdout(self, logger_cls, tmp_path):
         """
         Only loggers that log to stdout or stderr can be deepcopy-ed.
@@ -131,7 +128,6 @@ class TestLoggers:
 
         assert "hello\n" == p.read_text()
 
-    @pytest.mark.parametrize("logger_cls", [PrintLogger, WriteLogger])
     def test_repr(self, logger_cls):
         """
         __repr__ makes sense.
