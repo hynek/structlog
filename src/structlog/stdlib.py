@@ -523,7 +523,8 @@ class LoggerFactory:
     :param ignore_frame_names: When guessing the name of a logger, skip frames
         whose names *start* with one of these.  For example, in pyramid
         applications you'll want to set it to
-        ``["venusian", "pyramid.config"]``.
+        ``["venusian", "pyramid.config"]``. This argument is
+        called *additional_ignores* in other APIs throughout `structlog`.
     """
 
     def __init__(self, ignore_frame_names: Optional[List[str]] = None):
