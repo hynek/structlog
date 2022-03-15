@@ -7,6 +7,8 @@
 Logger wrapper and helper class.
 """
 
+from __future__ import annotations
+
 import copy
 import sys
 import threading
@@ -83,7 +85,7 @@ class PrintLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "PrintLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> PrintLogger:
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
@@ -187,7 +189,7 @@ class WriteLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "WriteLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> WriteLogger:
         """
         Create a new WriteLogger with the same attributes. Similar to pickling.
         """
@@ -289,7 +291,7 @@ class BytesLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> "BytesLogger":
+    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> BytesLogger:
         """
         Create a new BytesLogger with the same attributes. Similar to pickling.
         """
