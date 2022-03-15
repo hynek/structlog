@@ -25,11 +25,13 @@ from .utils import stdlib_log_methods
 
 
 class TestLoggers:
-    """Tests common to the Print and WriteLoggers."""
+    """
+    Tests common to the Print and WriteLoggers.
+    """
 
     @pytest.fixture(name="logger_cls", params=(WriteLogger, PrintLogger))
     @staticmethod
-    def logger_cls(request):
+    def _logger_cls(request):
         return request.param
 
     def test_prints_to_stdout_by_default(self, logger_cls, capsys):
