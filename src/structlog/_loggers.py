@@ -15,7 +15,7 @@ import threading
 
 from pickle import PicklingError
 from sys import stderr, stdout
-from typing import IO, Any, BinaryIO, Dict, Optional, TextIO
+from typing import IO, Any, BinaryIO, TextIO
 
 from structlog._utils import until_not_interrupted
 
