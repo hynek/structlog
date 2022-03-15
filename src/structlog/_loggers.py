@@ -20,7 +20,7 @@ from typing import IO, Any, BinaryIO, Dict, Optional, TextIO
 from structlog._utils import until_not_interrupted
 
 
-WRITE_LOCKS: Dict[IO[Any], threading.Lock] = {}
+WRITE_LOCKS: dict[IO[Any], threading.Lock] = {}
 
 
 def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
@@ -55,7 +55,7 @@ class PrintLogger:
        monkeypatchability.
     """
 
-    def __init__(self, file: Optional[TextIO] = None):
+    def __init__(self, file: TextIO | None = None):
         self._file = file or stdout
 
         self._lock = _get_lock_for_file(self._file)
@@ -85,7 +85,7 @@ class PrintLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> PrintLogger:
+    def __deepcopy__(self, memodict: dict[Any, Any] = {}) -> PrintLogger:
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
@@ -129,7 +129,7 @@ class PrintLoggerFactory:
     .. versionadded:: 0.4.0
     """
 
-    def __init__(self, file: Optional[TextIO] = None):
+    def __init__(self, file: TextIO | None = None):
         self._file = file
 
     def __call__(self, *args: Any) -> PrintLogger:
@@ -157,7 +157,7 @@ class WriteLogger:
     .. versionadded:: 22.1
     """
 
-    def __init__(self, file: Optional[TextIO] = None):
+    def __init__(self, file: TextIO | None = None):
         self._file = file or sys.stdout
         self._write = self._file.write
         self._flush = self._file.flush
@@ -189,7 +189,7 @@ class WriteLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> WriteLogger:
+    def __deepcopy__(self, memodict: dict[Any, Any] = {}) -> WriteLogger:
         """
         Create a new WriteLogger with the same attributes. Similar to pickling.
         """
@@ -235,7 +235,7 @@ class WriteLoggerFactory:
     .. versionadded:: 22.1
     """
 
-    def __init__(self, file: Optional[TextIO] = None):
+    def __init__(self, file: TextIO | None = None):
         self._file = file
 
     def __call__(self, *args: Any) -> WriteLogger:
@@ -257,7 +257,7 @@ class BytesLogger:
     """
     __slots__ = ("_file", "_write", "_flush", "_lock")
 
-    def __init__(self, file: Optional[BinaryIO] = None):
+    def __init__(self, file: BinaryIO | None = None):
         self._file = file or sys.stdout.buffer
         self._write = self._file.write
         self._flush = self._file.flush
@@ -291,7 +291,7 @@ class BytesLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: Dict[Any, Any] = {}) -> BytesLogger:
+    def __deepcopy__(self, memodict: dict[Any, Any] = {}) -> BytesLogger:
         """
         Create a new BytesLogger with the same attributes. Similar to pickling.
         """
@@ -338,7 +338,7 @@ class BytesLoggerFactory:
     """
     __slots__ = ("_file",)
 
-    def __init__(self, file: Optional[BinaryIO] = None):
+    def __init__(self, file: BinaryIO | None = None):
         self._file = file
 
     def __call__(self, *args: Any) -> BytesLogger:
