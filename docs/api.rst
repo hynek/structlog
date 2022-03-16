@@ -54,6 +54,11 @@ API Reference
 
 .. autoclass:: PrintLoggerFactory
 
+.. autoclass:: WriteLogger
+   :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
+
+.. autoclass:: WriteLoggerFactory
+
 .. autoclass:: BytesLogger
    :members: msg, err, debug, info, warning, error, critical, log, failure, fatal
 

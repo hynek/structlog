@@ -40,7 +40,7 @@ Here are a few hints how to get most out of ``structlog`` in production:
       Therefore, you can't set this option if you e.g. plan on passing loggers around using `multiprocessing`.
 
 #. Avoid sending your log entries through the standard library if you can: its dynamic nature and flexibility make it a major bottleneck.
-   Instead use `structlog.PrintLoggerFactory` or -- if your serializer returns bytes (e.g. orjson_) -- `structlog.BytesLoggerFactory`.
+   Instead use `structlog.WriteLoggerFactory` or -- if your serializer returns bytes (e.g. orjson_) -- `structlog.BytesLoggerFactory`.
 
    You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
 

@@ -11,8 +11,7 @@ from io import BytesIO, StringIO
 
 import pytest
 
-from structlog._loggers import (
-    WRITE_LOCKS,
+from structlog import (
     BytesLogger,
     BytesLoggerFactory,
     PrintLogger,
@@ -20,6 +19,7 @@ from structlog._loggers import (
     WriteLogger,
     WriteLoggerFactory,
 )
+from structlog._loggers import WRITE_LOCKS
 
 from .utils import stdlib_log_methods
 
