@@ -17,70 +17,75 @@ from structlog._loggers import (
     BytesLoggerFactory,
     PrintLogger,
     PrintLoggerFactory,
+    WriteLogger,
+    WriteLoggerFactory,
 )
 
 from .utils import stdlib_log_methods
 
 
-class TestPrintLogger:
-    def test_prints_to_stdout_by_default(self, capsys):
+class TestLoggers:
+    """
+    Tests common to the Print and WriteLoggers.
+    """
+
+    @pytest.fixture(name="logger_cls", params=(WriteLogger, PrintLogger))
+    @staticmethod
+    def _logger_cls(request):
+        return request.param
+
+    def test_prints_to_stdout_by_default(self, logger_cls, capsys):
         """
         Instantiating without arguments gives conveniently a logger to standard
         out.
         """
-        PrintLogger().msg("hello")
+        logger_cls().msg("hello")
 
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err
 
-    def test_prints_to_correct_file(self, tmpdir, capsys):
+    def test_prints_to_correct_file(self, logger_cls, tmpdir, capsys):
         """
         Supplied files are respected.
         """
         f = tmpdir.join("test.log")
         fo = f.open("w")
-        PrintLogger(fo).msg("hello")
+        logger_cls(fo).msg("hello")
         out, err = capsys.readouterr()
 
         assert "" == out == err
         fo.close()
         assert "hello\n" == f.read()
 
-    def test_repr(self):
-        """
-        __repr__ makes sense.
-        """
-        assert repr(PrintLogger()).startswith("<PrintLogger(file=")
-
-    def test_lock(self, sio):
+    def test_lock(self, logger_cls, sio):
         """
         Creating a logger adds a lock to WRITE_LOCKS.
         """
         assert sio not in WRITE_LOCKS
 
-        PrintLogger(sio)
+        logger_cls(sio)
 
         assert sio in WRITE_LOCKS
 
     @pytest.mark.parametrize("method", stdlib_log_methods)
-    def test_stdlib_methods_support(self, method, sio):
+    def test_stdlib_methods_support(self, logger_cls, method, sio):
         """
-        PrintLogger implements methods of stdlib loggers.
+        Print/WriteLogger implements methods of stdlib loggers.
         """
-        getattr(PrintLogger(sio), method)("hello")
+        getattr(logger_cls(sio), method)("hello")
 
         assert "hello" in sio.getvalue()
 
     @pytest.mark.parametrize("file", [None, sys.stdout, sys.stderr])
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
-    def test_pickle(self, file, proto):
+    def test_pickle(self, logger_cls, file, proto):
         """
         Can be pickled and unpickled for stdout and stderr.
 
         Can't compare output because capsys et all would confuse the logic.
         """
-        pl = PrintLogger(file=file)
+        pl = logger_cls(file=file)
 
         rv = pickle.loads(pickle.dumps(pl, proto))
 
@@ -88,42 +93,48 @@ class TestPrintLogger:
         assert pl._lock is rv._lock
 
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
-    def test_pickle_not_stdout_stderr(self, tmpdir, proto):
+    def test_pickle_not_stdout_stderr(self, logger_cls, tmpdir, proto):
         """
-        PrintLoggers with different files than stdout/stderr raise a
+        Loggers with different files than stdout/stderr raise a
         PickingError.
         """
         f = tmpdir.join("file.log")
         f.write("")
-        pl = PrintLogger(file=f.open())
+        pl = logger_cls(file=f.open())
 
-        with pytest.raises(pickle.PicklingError, match="Only PrintLoggers to"):
+        with pytest.raises(pickle.PicklingError, match="Only (.+)Loggers to"):
             pickle.dumps(pl, proto)
 
-    def test_deepcopy(self, capsys):
+    def test_deepcopy(self, logger_cls, capsys):
         """
-        Deepcopied PrintLogger works.
+        Deepcopied logger works.
         """
-        copied_logger = copy.deepcopy(PrintLogger())
+        copied_logger = copy.deepcopy(logger_cls())
         copied_logger.msg("hello")
 
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err
 
-    def test_deepcopy_no_stdout(self, tmp_path):
+    def test_deepcopy_no_stdout(self, logger_cls, tmp_path):
         """
-        Only PrintLoggers that log to stdout or stderr can be deepcopy-ed.
+        Only loggers that log to stdout or stderr can be deepcopy-ed.
         """
         p = tmp_path / "log.txt"
         with p.open(mode="w") as f:
-            logger = PrintLogger(f)
+            logger = logger_cls(f)
             logger.msg("hello")
 
             with pytest.raises(copy.error):
                 copy.deepcopy(logger)
 
         assert "hello\n" == p.read_text()
+
+    def test_repr(self, logger_cls):
+        """
+        __repr__ makes sense.
+        """
+        assert repr(logger_cls()).startswith(f"<{logger_cls.__name__}(file=")
 
     def test_stdout_monkeypatch(self, monkeypatch, capsys):
         """
@@ -163,6 +174,31 @@ class TestPrintLoggerFactory:
         the factory, they are not passed to the logger.
         """
         PrintLoggerFactory()(1, 2, 3)
+
+
+class TestWriteLoggerFactory:
+    def test_does_not_cache(self):
+        """
+        Due to doctest weirdness, we must not re-use WriteLoggers.
+        """
+        f = WriteLoggerFactory()
+
+        assert f() is not f()
+
+    def test_passes_file(self):
+        """
+        If a file is passed to the factory, it get passed on to the logger.
+        """
+        pl = WriteLoggerFactory(sys.stderr)()
+
+        assert sys.stderr is pl._file
+
+    def test_ignores_args(self):
+        """
+        WriteLogger doesn't take positional arguments.  If any are passed to
+        the factory, they are not passed to the logger.
+        """
+        WriteLoggerFactory()(1, 2, 3)
 
 
 class TestBytesLogger:

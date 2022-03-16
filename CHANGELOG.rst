@@ -47,6 +47,8 @@ Changes:
   `#396 <https://github.com/hynek/structlog/issues/396>`_
 - ``structlog.PrintLogger`` -- that is used by default -- now uses ``print()`` for printing, making it a better citizen for interactive terminal applications.
   `#399 <https://github.com/hynek/structlog/pull/399>`_
+- Added ``structlog.WriteLogger``, a faster but more low-level alternative to ``structlog.PrintLogger``.
+  `#403 <https://github.com/hynek/structlog/pull/403>`_
 
 
 ----
