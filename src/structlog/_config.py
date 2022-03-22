@@ -40,7 +40,10 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
     ConsoleRenderer(
-        colors=_use_colors and sys.stdout is not None and sys.stdout.isatty()
+        colors=_use_colors
+        and sys.stdout is not None
+        and hasattr(sys.stdout, "isatty")
+        and sys.stdout.isatty()
     ),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)
