@@ -50,6 +50,8 @@ Changes:
 - Added ``structlog.WriteLogger``, a faster -- but more low-level -- alternative to ``structlog.PrintLogger``.
   It works the way ``PrintLogger`` used to work in previous versions.
   `#403 <https://github.com/hynek/structlog/pull/403>`_
+- Added better support for monkeypatched ``sys.stdout``\ s.
+  `#404 <https://github.com/hynek/structlog/pull/404>`_
 
 
 ----
