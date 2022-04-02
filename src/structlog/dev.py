@@ -202,7 +202,7 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
 if rich is not None:
     default_exception_formatter = rich_traceback
-elif better_exceptions is not None:  # type: ignore
+elif better_exceptions is not None:
     default_exception_formatter = better_traceback
 else:
     default_exception_formatter = plain_traceback
