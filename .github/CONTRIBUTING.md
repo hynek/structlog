@@ -72,7 +72,7 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 
 ## Documentation
 
-- Use [semantic newlines] in [*reStructuredText*] files (files ending in `.rst`):
+- Use [semantic newlines] in [*reStructuredText*] and *Markdown* files (files ending in `.rst` and `.md`):
 
   ```rst
   This is a sentence.
@@ -97,10 +97,15 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 
 ### Changelog
 
-If your change is noteworthy, there needs to be a changelog entry in `CHANGELOG.rst` so our users can learn about it!
+If your change is noteworthy, there needs to be a changelog entry in [`CHANGELOG.md`](https://github.com/hynek/structlog/blob/main/CHANGELOG.md), so our users can learn about it!
 
+- The changelog follows the [*Keep a Changelog*](https://keepachangelog.com/en/1.0.0/) standard.
+  Please add the best-fitting section if it's missing for the current release.
+  We use the following order: `Security`, `Removed`, `Deprecated`, `Added`, `Changed`, `Fixed`.
 - As with other docs, please use [semantic newlines] in the changelog.
-- Wrap symbols like modules, functions, or classes into double backticks so they are rendered in a `monospace font`.
+- Make the last line a link to your pull request.
+  You probably have to open it first to know the number.
+- Wrap symbols like modules, functions, or classes into backticks so they are rendered in a `monospace font`.
 - Wrap arguments into asterisks like in docstrings:
   `Added new argument *an_argument*.`
 - If you mention functions or other callables, add parentheses at the end of their names:
@@ -112,18 +117,20 @@ If your change is noteworthy, there needs to be a changelog entry in `CHANGELOG.
   * Added `structlog.func()`.
   * `structlog.func()` now doesn't crash the Large Hadron Collider anymore when passed the *foobar* argument.
 
-Example entries:
+#### Example entries
 
-```rst
-Added ``structlog.func()``.
-The feature really *is* awesome.
+```markdown
+- Added `structlog.func()`.
+  The feature really *is* awesome.
+  [#1](https://github.com/hynek/structlog/pull/1)
 ```
 
 or:
 
-```rst
-``structlog.func()`` now doesn't crash the Large Hadron Collider anymore when passed the *foobar* argument.
-The bug really *was* nasty.
+```markdown
+- `structlog.func()` now doesn't crash the Large Hadron Collider anymore when passed the *foobar* argument.
+  The bug really *was* nasty.
+  [#1](https://github.com/hynek/structlog/pull/1)
 ```
 
 

@@ -70,6 +70,7 @@ tests = [
 ]
 docs = [
     "furo",
+    "myst-parser",
     "sphinx",
     "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
@@ -98,6 +99,7 @@ dev = [
     "pytest>=6.0",
     "simplejson",
     "furo",
+    "myst-parser",
     "sphinx",
     "sphinx-notfound-page",
     "sphinxcontrib-mermaid",

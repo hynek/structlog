@@ -13,6 +13,7 @@ suppress_warnings = ["image.nonlocal_uri"]
 # -- General configuration ----------------------------------------------------
 
 extensions = [
+    "myst_parser",
     "notfound.extension",
     "sphinx.ext.autodoc",
     "sphinx.ext.autodoc.typehints",
