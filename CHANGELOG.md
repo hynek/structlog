@@ -29,6 +29,7 @@ So please make sure to **always** properly configure your applications.
 
 - The entire `structlog.threadlocal` module is deprecated.
   Please use the primitives from `structlog.contextvars` instead.
+  [#409](https://github.com/hynek/structlog/pull/409)
 
 
 ### Added
