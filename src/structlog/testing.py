@@ -186,7 +186,9 @@ class CapturingLoggerFactory:
 
 
 @contextmanager
-def capture_configured_logger_calls() -> Generator[List[CapturedCall], None, None]:
+def capture_configured_logger_calls() -> Generator[
+    List[CapturedCall], None, None
+]:
     """
     Context manager that tracks calls to the logger while it is active.
     All configuration remains active, except for the ``logger_factory``,
@@ -194,11 +196,11 @@ def capture_configured_logger_calls() -> Generator[List[CapturedCall], None, Non
     """
     config = get_config()
     factory = CapturingLoggerFactory()
-    original_factory = config['logger_factory']
-    config['logger_factory'] = factory
+    original_factory = config["logger_factory"]
+    config["logger_factory"] = factory
     try:
         configure(**config)
         yield factory.logger.calls
     finally:
-        config['logger_factory'] = original_factory
+        config["logger_factory"] = original_factory
         configure(**config)

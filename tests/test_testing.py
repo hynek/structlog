@@ -4,9 +4,16 @@
 # repository for complete details.
 
 import pytest
+
 from freezegun import freeze_time
 
-from structlog import configure, get_config, get_logger, reset_defaults, testing
+from structlog import (
+    configure,
+    get_config,
+    get_logger,
+    reset_defaults,
+    testing,
+)
 from structlog.processors import TimeStamper
 from structlog.stdlib import LoggerFactory
 from structlog.testing import (
@@ -179,12 +186,20 @@ class TestCaptureConfiguredLoggerCalls:
             CapturedCall(
                 method_name="info",
                 args=(),
-                kwargs={"x": "y", "event": "hello", "timestamp": "1977-12-28T16:00:00Z"}
+                kwargs={
+                    "x": "y",
+                    "event": "hello",
+                    "timestamp": "1977-12-28T16:00:00Z",
+                },
             ),
             CapturedCall(
                 method_name="info",
                 args=(),
-                kwargs={"a": "b", "event": "goodbye", "timestamp": "1977-12-28T16:00:00Z"}
+                kwargs={
+                    "a": "b",
+                    "event": "goodbye",
+                    "timestamp": "1977-12-28T16:00:00Z",
+                },
             ),
         ] == calls
 
@@ -193,9 +208,7 @@ class TestCaptureConfiguredLoggerCalls:
         The formatter is patched within the contextmanager and restored on exit.
         """
         original_factory = LoggerFactory()
-        configure(
-            logger_factory=original_factory
-        )
+        configure(logger_factory=original_factory)
 
         with testing.capture_configured_logger_calls():
             assert original_factory is not self.get_active_factory()
@@ -207,9 +220,7 @@ class TestCaptureConfiguredLoggerCalls:
         The formatter is patched in the contextmanager and restored on errors.
         """
         original_factory = LoggerFactory()
-        configure(
-            logger_factory=original_factory
-        )
+        configure(logger_factory=original_factory)
 
         with pytest.raises(NotImplementedError):
             with testing.capture_configured_logger_calls():
