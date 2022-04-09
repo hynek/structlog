@@ -1,5 +1,12 @@
-Thread-Local Context
-====================
+Legacy Thread-local Context
+===========================
+
+.. warning::
+   The ``structlog.threadlocal`` module is deprecated as of ``structlog`` 22.1.0 in favor of :doc:`contextvars`.
+
+   The standard library :mod:`contextvars` module provides a more feature-rich superset of the thread-local APIs and works with thread-local data, async code, and greenlets.
+
+   Therefore, as of 22.1.0, the ``structlog.threadlocal`` is frozen and will be removed after May 2023.
 
 .. testsetup:: *
 
@@ -12,21 +19,6 @@ Thread-Local Context
 
    import structlog
    structlog.reset_defaults()
-
-
-Immutability
-------------
-
-   You should call some functions with some arguments.
-
-   --- David Reid
-
-``structlog`` does its best to have as little global state as possible to achieve its goals.
-In an ideal world, you would just stick to its immutable bound loggers and reap all the rewards of having purely `immutable state <https://en.wikipedia.org/wiki/Immutable_object>`_.
-
-However, we realize that passing loggers around is rather clunky and intrusive in practice.
-And since `practicality beats purity <https://www.python.org/dev/peps/pep-0020/>`_, ``structlog`` ships with the `structlog.threadlocal` module to help you to safely have global context storage.
-
 
 
 The ``merge_threadlocal`` Processor
@@ -43,55 +35,13 @@ The general flow of using these functions is:
   Loggers act as they always do, but the `structlog.threadlocal.merge_threadlocal` processor ensures that any thread-local binds get included in all of your log messages.
 - If you want to access the thread-local storage, you use `structlog.threadlocal.get_threadlocal` and `structlog.threadlocal.get_merged_threadlocal`.
 
-.. doctest::
+These functions map 1:1 to the :doc:`contextvars` APIs, so please use those instead:
 
-   >>> from structlog.threadlocal import (
-   ...     bind_threadlocal,
-   ...     bound_threadlocal,
-   ...     clear_threadlocal,
-   ...     get_merged_threadlocal,
-   ...     get_threadlocal,
-   ...     merge_threadlocal,
-   ...     unbind_threadlocal,
-   ... )
-   >>> from structlog import configure
-   >>> configure(
-   ...     processors=[
-   ...         merge_threadlocal,
-   ...         structlog.processors.KeyValueRenderer(),
-   ...     ]
-   ... )
-   >>> log = structlog.get_logger()
-   >>> # At the top of your request handler (or, ideally, some general
-   >>> # middleware), clear the thread-local context and bind some common
-   >>> # values:
-   >>> clear_threadlocal()
-   >>> bind_threadlocal(a=1, b=2)
-   >>> # Then use loggers as per normal
-   >>> # (perhaps by using structlog.get_logger() to create them).
-   >>> log.msg("hi")
-   a=1 b=2 event='hi'
-   >>> # Use unbind_threadlocal to remove a variable from the context.
-   >>> unbind_threadlocal("b")
-   >>> log.msg("hi")
-   a=1 event='hi'
-   >>> # You can also bind key/value pairs temporarily.
-   >>> with bound_threadlocal(b=2):
-   ...    log.msg("hi")
-   a=1 b=2 event='hi'
-   >>> # Now it's gone again.
-   >>> log.msg("hi")
-   a=1 event='hi'
-   >>> # You can access the current thread-local state.
-   >>> get_threadlocal()
-   {'a': 1}
-   >>> # Or get it merged with a bound logger.
-   >>> get_merged_threadlocal(log.bind(example=True))
-   {'a': 1, 'example': True}
-   >>> # And when we clear the thread-local state again, it goes away.
-   >>> clear_threadlocal()
-   >>> log.msg("hi there")
-   event='hi there'
+- `structlog.contextvars.merge_contextvars`
+- `structlog.contextvars.clear_contextvars`
+- `structlog.contextvars.bind_contextvars`
+- `structlog.contextvars.get_contextvars`
+- `structlog.contextvars.get_merged_contextvars`
 
 
 Thread-local Contexts
@@ -99,7 +49,8 @@ Thread-local Contexts
 
 ``structlog`` also provides thread-local context storage in a form that you may already know from `Flask <https://flask.palletsprojects.com/en/latest/design/#thread-locals>`_ and that makes the *entire context* global to your thread or greenlet.
 
-This makes its behavior more difficult to reason about which is why we generally recommend to use the `merge_threadlocal` route.
+This makes its behavior more difficult to reason about which is why we generally recommend to use the `merge_contextvars` route.
+Therefore, there are currently no plans to re-implement this behavior on top of context variables.
 
 
 Wrapped Dicts
@@ -200,8 +151,29 @@ The convenience of having a thread-local context comes at a price though:
      See `configuration` for more details.
    - It `doesn't play well <https://github.com/hynek/structlog/issues/296>`_ with `os.fork` and thus `multiprocessing` (unless configured to use the ``spawn`` start method).
 
-The general sentiment against thread-locals is that they're hard to test.
-In this case we feel like this is an acceptable trade-off.
-You can easily write deterministic tests using a call-capturing processor if you use the API properly (cf. warning above).
 
-This big red box is also what separates immutable local from mutable global data.
+
+API
+---
+
+.. module:: structlog.threadlocal
+
+.. autofunction:: bind_threadlocal
+
+.. autofunction:: unbind_threadlocal
+
+.. autofunction:: bound_threadlocal
+
+.. autofunction:: get_threadlocal
+
+.. autofunction:: get_merged_threadlocal
+
+.. autofunction:: merge_threadlocal
+
+.. autofunction:: clear_threadlocal
+
+.. autofunction:: wrap_dict
+
+.. autofunction:: tmp_bind(logger, **tmp_values)
+
+.. autofunction:: as_immutable

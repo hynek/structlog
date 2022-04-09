@@ -305,9 +305,10 @@ class TestJSONRenderer:
         """
         Our fallback handling handles properly ThreadLocalDictWrapper values.
         """
-        s = json.dumps(
-            wrap_dict(dict)({"a": 42}), default=_json_fallback_handler
-        )
+        with pytest.deprecated_call():
+            d = wrap_dict(dict)
+
+        s = json.dumps(d({"a": 42}), default=_json_fallback_handler)
 
         assert '{"a": 42}' == s
 

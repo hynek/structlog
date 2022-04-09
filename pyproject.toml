@@ -115,7 +115,7 @@ testpaths = "tests"
 filterwarnings = [
     "once::Warning",
 ]
-asyncio_mode = "strict"
+asyncio_mode = "auto"
 
 
 [tool.coverage.run]
@@ -129,6 +129,9 @@ source = ["src", ".tox/*/site-packages"]
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
+omit = [
+    "src/structlog/_greenlets.py",
+]
 exclude_lines = [
     # a more strict default pragma
     "\\# pragma: no cover\\b",

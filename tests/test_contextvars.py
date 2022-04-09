@@ -24,10 +24,6 @@ from structlog.contextvars import (
 )
 
 
-# All test coroutines will be treated as marked.
-pytestmark = pytest.mark.asyncio
-
-
 @pytest.fixture(autouse=True)
 def _clear_contextvars():
     """
