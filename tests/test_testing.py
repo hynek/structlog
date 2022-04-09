@@ -4,8 +4,11 @@
 # repository for complete details.
 
 import pytest
+from freezegun import freeze_time
 
-from structlog import get_config, get_logger, reset_defaults, testing
+from structlog import configure, get_config, get_logger, reset_defaults, testing
+from structlog.processors import TimeStamper
+from structlog.stdlib import LoggerFactory
 from structlog.testing import (
     CapturedCall,
     CapturingLogger,
@@ -149,3 +152,67 @@ class TestCapturingLogger:
                 kwargs={"foo": {"bar": "baz"}},
             ),
         ] == cl.calls
+
+
+class TestCaptureConfiguredLoggerCalls:
+    @classmethod
+    def teardown_class(cls):
+        reset_defaults()
+
+    def get_active_factory(self):
+        return get_config()["logger_factory"]
+
+    @freeze_time("1977-12-28 16:00:00")
+    def test_captures_logs_with_processors(self):
+        """
+        Log entries are captured and configured processors are maintained.
+        """
+        configure(
+            processors=[
+                TimeStamper(fmt="iso"),
+            ],
+        )
+        with testing.capture_configured_logger_calls() as calls:
+            get_logger().bind(x="y").info("hello")
+            get_logger().bind(a="b").info("goodbye")
+        assert [
+            CapturedCall(
+                method_name="info",
+                args=(),
+                kwargs={"x": "y", "event": "hello", "timestamp": "1977-12-28T16:00:00Z"}
+            ),
+            CapturedCall(
+                method_name="info",
+                args=(),
+                kwargs={"a": "b", "event": "goodbye", "timestamp": "1977-12-28T16:00:00Z"}
+            ),
+        ] == calls
+
+    def test_restores_formatter_on_success(self):
+        """
+        The formatter is patched within the contextmanager and restored on exit.
+        """
+        original_factory = LoggerFactory()
+        configure(
+            logger_factory=original_factory
+        )
+
+        with testing.capture_configured_logger_calls():
+            assert original_factory is not self.get_active_factory()
+
+        assert original_factory is self.get_active_factory()
+
+    def test_restores_processors_on_error(self):
+        """
+        The formatter is patched in the contextmanager and restored on errors.
+        """
+        original_factory = LoggerFactory()
+        configure(
+            logger_factory=original_factory
+        )
+
+        with pytest.raises(NotImplementedError):
+            with testing.capture_configured_logger_calls():
+                raise NotImplementedError("from test")
+
+        assert original_factory is self.get_active_factory()
