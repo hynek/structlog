@@ -205,7 +205,8 @@ class TestCaptureConfiguredLoggerCalls:
 
     def test_restores_formatter_on_success(self):
         """
-        The formatter is patched within the contextmanager and restored on exit.
+        The formatter is patched within the contextmanager
+        and restored on exit.
         """
         original_factory = LoggerFactory()
         configure(logger_factory=original_factory)
@@ -217,7 +218,8 @@ class TestCaptureConfiguredLoggerCalls:
 
     def test_restores_processors_on_error(self):
         """
-        The formatter is patched in the contextmanager and restored on errors.
+        The formatter is patched in the contextmanager
+        and restored on errors.
         """
         original_factory = LoggerFactory()
         configure(logger_factory=original_factory)
