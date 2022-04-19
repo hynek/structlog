@@ -59,12 +59,22 @@ def capture_logs() -> Generator[List[EventDict], None, None]:
     .. versionadded:: 20.1.0
     """
     cap = LogCapture()
-    old_processors = get_config()["processors"]
+    # Modify `_Configuration.default_processors` set via `configure` but always
+    # keep the list instance intact to not break references held by bound
+    # loggers.
+    processors = get_config()["processors"]
+    old_processors = processors.copy()
     try:
-        configure(processors=[cap])
+        # clear processors list and use LogCapture for testing
+        processors.clear()
+        processors.append(cap)
+        configure(processors=processors)
         yield cap.entries
     finally:
-        configure(processors=old_processors)
+        # remove LogCapture and restore original processors
+        processors.clear()
+        processors.extend(old_processors)
+        configure(processors=processors)
 
 
 class ReturnLogger:

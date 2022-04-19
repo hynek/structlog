@@ -10,6 +10,7 @@ from structlog.testing import (
     CapturedCall,
     CapturingLogger,
     CapturingLoggerFactory,
+    LogCapture,
     ReturnLogger,
     ReturnLoggerFactory,
 )
@@ -46,11 +47,16 @@ class TestCaptureLogs:
         exit.
         """
         orig_procs = self.get_active_procs()
+        assert len(orig_procs) > 1
 
         with testing.capture_logs():
-            assert orig_procs is not self.get_active_procs()
+            modified_procs = self.get_active_procs()
+            assert len(modified_procs) == 1
+            assert isinstance(modified_procs[0], LogCapture)
 
-        assert orig_procs is self.get_active_procs()
+        restored_procs = self.get_active_procs()
+        assert orig_procs is restored_procs
+        assert len(restored_procs) > 1
 
     def test_restores_processors_on_error(self):
         """
@@ -63,6 +69,26 @@ class TestCaptureLogs:
                 raise NotImplementedError("from test")
 
         assert orig_procs is self.get_active_procs()
+
+    def test_captures_bound_logers(self):
+        """
+        Even logs from already bound loggers are captured and their processors
+        restored on exit.
+        """
+        logger = get_logger("bound").bind(foo="bar")
+        logger.info("ensure logger is bound")
+
+        with testing.capture_logs() as logs:
+            logger.info("hello", answer=42)
+
+        assert logs == [
+            {
+                "event": "hello",
+                "answer": 42,
+                "foo": "bar",
+                "log_level": "info",
+            }
+        ]
 
 
 class TestReturnLogger:
