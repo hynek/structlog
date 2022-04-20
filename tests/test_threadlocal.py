@@ -39,27 +39,30 @@ def _clear_threadlocal():
     """
     Make sure all tests start with a clean slate.
     """
-    clear_threadlocal()
+    with pytest.deprecated_call():
+        clear_threadlocal()
 
 
-@pytest.fixture
-def D():
+@pytest.fixture(name="D")
+def _D():
     """
     Returns a dict wrapped in _ThreadLocalDictWrapper.
     """
-    return wrap_dict(dict)
+    with pytest.deprecated_call():
+        return wrap_dict(dict)
 
 
-@pytest.fixture
-def log(logger):
+@pytest.fixture(name="log")
+def _log(logger):
     """
     Returns a ReturnLogger with a freshly wrapped dict.
     """
-    return wrap_logger(logger, context_class=wrap_dict(dict))
+    with pytest.deprecated_call():
+        return wrap_logger(logger, context_class=wrap_dict(dict))
 
 
-@pytest.fixture
-def logger():
+@pytest.fixture(name="logger")
+def _logger():
     """
     Returns a simple logger stub with a *msg* method that takes one argument
     which gets returned.
@@ -73,7 +76,7 @@ class TestTmpBind:
         tmp_bind does not modify the thread-local state.
         """
         log = log.bind(y=23)
-        with tmp_bind(log, x=42, y="foo") as tmp_log:
+        with pytest.deprecated_call(), tmp_bind(log, x=42, y="foo") as tmp_log:
             assert (
                 {"y": "foo", "x": 42}
                 == tmp_log._context._dict
@@ -86,7 +89,7 @@ class TestTmpBind:
         tmp_bind cleans up properly on exceptions.
         """
         log = log.bind(y=23)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError), pytest.deprecated_call():
             with tmp_bind(log, x=42, y="foo") as tmp_log:
                 assert (
                     {"y": "foo", "x": 42}
@@ -104,7 +107,8 @@ class TestAsImmutable:
         A logger from as_mutable is independent from thread local state.
         """
         log = log.new(x=42)
-        il = as_immutable(log)
+        with pytest.deprecated_call():
+            il = as_immutable(log)
 
         assert isinstance(il._context, dict)
 
@@ -118,7 +122,8 @@ class TestAsImmutable:
         as_immutable converts a BoundLoggerLazyProxy into a concrete bound
         logger.
         """
-        il = as_immutable(log)
+        with pytest.deprecated_call():
+            il = as_immutable(log)
 
         assert isinstance(il._context, dict)
         assert isinstance(il, BoundLoggerBase)
@@ -127,9 +132,11 @@ class TestAsImmutable:
         """
         as_immutable on an as_immutable logger works.
         """
-        il = as_immutable(log)
+        with pytest.deprecated_call():
+            il = as_immutable(log)
 
-        assert isinstance(as_immutable(il), BoundLoggerBase)
+        with pytest.deprecated_call():
+            assert isinstance(as_immutable(il), BoundLoggerBase)
 
 
 class TestThreadLocalDict:
@@ -138,8 +145,9 @@ class TestThreadLocalDict:
         Each call to wrap_dict returns a distinct new class whose context is
         independent from others.
         """
-        D1 = wrap_dict(dict)
-        D2 = wrap_dict(dict)
+        with pytest.deprecated_call():
+            D1 = wrap_dict(dict)
+            D2 = wrap_dict(dict)
 
         assert D1 != D2
         assert D1 is not D2
@@ -167,7 +175,8 @@ class TestThreadLocalDict:
 
                 self._d["tl"] = 23
 
-        d = wrap_dict(dict)()
+        with pytest.deprecated_call():
+            d = wrap_dict(dict)()
         d["tl"] = 42
         t = TestThread(d)
         t.start()
@@ -186,7 +195,8 @@ class TestThreadLocalDict:
         assert {"a": 42, "b": 23} == d1._dict == d2._dict == d3._dict
         assert d1 == d2 == d3
 
-        D_ = wrap_dict(dict)
+        with pytest.deprecated_call():
+            D_ = wrap_dict(dict)
         d_ = D_({"a": 42, "b": 23})
 
         assert d1 != d_
@@ -230,7 +240,8 @@ class TestThreadLocalDict:
         """
         Context is shared between greenlets.
         """
-        d = wrap_dict(dict)()
+        with pytest.deprecated_call():
+            d = wrap_dict(dict)()
         d["switch"] = 42
 
         def run():
@@ -296,55 +307,70 @@ class TestNewThreadLocal:
         Binding a variable causes it to be included in the result of
         merge_threadlocal.
         """
-        bind_threadlocal(a=1)
+        with pytest.deprecated_call():
+            bind_threadlocal(a=1)
 
-        assert {"a": 1, "b": 2} == merge_threadlocal(None, None, {"b": 2})
+        with pytest.deprecated_call():
+            assert {"a": 1, "b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_clear(self):
         """
         The thread-local context can be cleared, causing any previously bound
         variables to not be included in merge_threadlocal's result.
         """
-        bind_threadlocal(a=1)
-        clear_threadlocal()
+        with pytest.deprecated_call():
+            bind_threadlocal(a=1)
 
-        assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
+        with pytest.deprecated_call():
+            clear_threadlocal()
+
+        with pytest.deprecated_call():
+            assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_merge_works_without_bind(self):
         """
         merge_threadlocal returns values as normal even when there has
         been no previous calls to bind_threadlocal.
         """
-        assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
+        with pytest.deprecated_call():
+            assert {"b": 2} == merge_threadlocal(None, None, {"b": 2})
 
     def test_multiple_binds(self):
         """
         Multiple calls to bind_threadlocal accumulate values instead of
         replacing them.
         """
-        bind_threadlocal(a=1, b=2)
-        bind_threadlocal(c=3)
+        with pytest.deprecated_call():
+            bind_threadlocal(a=1, b=2)
+            bind_threadlocal(c=3)
 
-        assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal(
-            None, None, {"b": 2}
-        )
+        with pytest.deprecated_call():
+            assert {"a": 1, "b": 2, "c": 3} == merge_threadlocal(
+                None, None, {"b": 2}
+            )
 
     def test_unbind_threadlocal(self):
         """
         Test that unbinding from threadlocal works for keys that exist
         and does not raise error when they do not exist.
         """
-        bind_threadlocal(a=234, b=34)
+        with pytest.deprecated_call():
+            bind_threadlocal(a=234, b=34)
 
-        assert {"a": 234, "b": 34} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {"a": 234, "b": 34} == get_threadlocal()
 
-        unbind_threadlocal("a")
+        with pytest.deprecated_call():
+            unbind_threadlocal("a")
 
-        assert {"b": 34} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {"b": 34} == get_threadlocal()
 
-        unbind_threadlocal("non-existing-key")
+        with pytest.deprecated_call():
+            unbind_threadlocal("non-existing-key")
 
-        assert {"b": 34} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {"b": 34} == get_threadlocal()
 
     def test_get_context_no_context(self):
         """
@@ -357,18 +383,21 @@ class TestNewThreadLocal:
         with pytest.raises(AttributeError):
             _CONTEXT.context
 
-        assert {} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {} == get_threadlocal()
 
     def test_get_merged(self):
         """
         Returns a copy of the threadlocal context merged with the logger's
         context.
         """
-        bind_threadlocal(x=1)
+        with pytest.deprecated_call():
+            bind_threadlocal(x=1)
 
         log = structlog.get_logger().bind(y=2)
 
-        assert {"x": 1, "y": 2} == get_merged_threadlocal(log)
+        with pytest.deprecated_call():
+            assert {"x": 1, "y": 2} == get_merged_threadlocal(log)
 
 
 class TestBoundThreadlocal:
@@ -376,44 +405,55 @@ class TestBoundThreadlocal:
         """
         Bindings are cleaned up
         """
-        with bound_threadlocal(x=42, y="foo"):
-            assert {"x": 42, "y": "foo"} == get_threadlocal()
+        with pytest.deprecated_call():
+            with bound_threadlocal(x=42, y="foo"):
+                assert {"x": 42, "y": "foo"} == get_threadlocal()
 
-        assert {} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {} == get_threadlocal()
 
     def test_cleanup_conflict(self):
         """
         Overwritten keys are restored after the clean up
         """
-        bind_threadlocal(x="original", z="unrelated")
-        with bound_threadlocal(x=42, y="foo"):
-            assert {"x": 42, "y": "foo", "z": "unrelated"} == get_threadlocal()
+        with pytest.deprecated_call():
+            bind_threadlocal(x="original", z="unrelated")
+            with bound_threadlocal(x=42, y="foo"):
+                assert {
+                    "x": 42,
+                    "y": "foo",
+                    "z": "unrelated",
+                } == get_threadlocal()
 
-        assert {"x": "original", "z": "unrelated"} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {"x": "original", "z": "unrelated"} == get_threadlocal()
 
     def test_preserve_independent_bind(self):
         """
         New bindings inside bound_threadlocal are preserved after the clean up
         """
-        with bound_threadlocal(x=42):
-            bind_threadlocal(y="foo")
-            assert {"x": 42, "y": "foo"} == get_threadlocal()
+        with pytest.deprecated_call():
+            with bound_threadlocal(x=42):
+                bind_threadlocal(y="foo")
+                assert {"x": 42, "y": "foo"} == get_threadlocal()
 
-        assert {"y": "foo"} == get_threadlocal()
+        with pytest.deprecated_call():
+            assert {"y": "foo"} == get_threadlocal()
 
     def test_nesting_works(self):
         """
         bound_threadlocal binds and unbinds even when nested
         """
-        with bound_threadlocal(l1=1):
-            assert {"l1": 1} == get_threadlocal()
+        with pytest.deprecated_call():
+            with bound_threadlocal(l1=1):
+                assert {"l1": 1} == get_threadlocal()
 
-            with bound_threadlocal(l2=2):
-                assert {"l1": 1, "l2": 2} == get_threadlocal()
+                with bound_threadlocal(l2=2):
+                    assert {"l1": 1, "l2": 2} == get_threadlocal()
 
-            assert {"l1": 1} == get_threadlocal()
+                assert {"l1": 1} == get_threadlocal()
 
-        assert {} == get_threadlocal()
+            assert {} == get_threadlocal()
 
     def test_as_decorator(self):
         """
@@ -424,10 +464,15 @@ class TestBoundThreadlocal:
         @bound_threadlocal(x=42)
         def wrapped(arg1):
             """Wrapped documentation"""
-            bind_threadlocal(y=arg1)
-            assert {"x": 42, "y": arg1} == get_threadlocal()
+            with pytest.deprecated_call():
+                bind_threadlocal(y=arg1)
 
-        wrapped(23)
+            with pytest.deprecated_call():
+                assert {"x": 42, "y": arg1} == get_threadlocal()
+
+        # I can't find a way for the warnings to be raised from the decorator.
+        with pytest.deprecated_call():
+            wrapped(23)
 
         assert "wrapped" == wrapped.__name__
         assert "(arg1)" == str(inspect.signature(wrapped))

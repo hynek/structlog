@@ -4,7 +4,7 @@ API Reference
 =============
 
 .. note::
-   The examples here use a very simplified configuration using the minimalistic `structlog.processors.KeyValueRenderer` for brevity and to enable doctests.
+   The examples here use a very simplified configuration using the minimalist `structlog.processors.KeyValueRenderer` for brevity and to enable doctests.
    The output is going to be different (nicer!) with the default configuration.
 
 
@@ -112,68 +112,6 @@ API Reference
 .. autoclass:: ReturnLoggerFactory
 
 
-
-`structlog.threadlocal` Module
-------------------------------
-
-.. automodule:: structlog.threadlocal
-
-
-Modern Approach
-~~~~~~~~~~~~~~~
-
-.. autofunction:: bind_threadlocal
-
-.. autofunction:: unbind_threadlocal
-
-.. autofunction:: bound_threadlocal
-
-.. autofunction:: get_threadlocal
-
-   >>> from structlog.threadlocal import bind_threadlocal, get_threadlocal
-   >>> bind_threadlocal(x=1)
-   >>> get_threadlocal()
-   {'x': 1}
-
-.. autofunction:: get_merged_threadlocal
-
-   >>> from structlog import get_logger
-   >>> from structlog.threadlocal import bind_threadlocal, get_merged_threadlocal
-   >>> bind_threadlocal(x=1)
-   >>> log = get_logger()
-   >>> log = log.bind(y=2)
-   >>> get_merged_threadlocal(log)
-   {'x': 1, 'y': 2}
-
-.. autofunction:: merge_threadlocal
-
-.. autofunction:: clear_threadlocal
-
-
-Old Approach
-~~~~~~~~~~~~
-
-The following APIs use a different approach, that we discourage nowadays.
-Please see :doc:`thread-local` for details.
-
-.. autofunction:: wrap_dict
-
-.. autofunction:: tmp_bind(logger, **tmp_values)
-
-   >>> from structlog import wrap_logger, PrintLogger
-   >>> from structlog.threadlocal import tmp_bind, wrap_dict
-   >>> logger = wrap_logger(PrintLogger(),  context_class=wrap_dict(dict))
-   >>> with tmp_bind(logger, x=5) as tmp_logger:
-   ...     logger = logger.bind(y=3)
-   ...     tmp_logger.msg("event")
-   x=5 y=3 event='event'
-   >>> logger.msg("event")
-   event='event'
-
-
-.. autofunction:: as_immutable
-
-
 `structlog.contextvars` Module
 ------------------------------
 
@@ -187,6 +125,12 @@ Please see :doc:`thread-local` for details.
 .. autofunction:: clear_contextvars
 .. autofunction:: unbind_contextvars
 .. autofunction:: reset_contextvars
+
+`structlog.threadlocal` Module
+------------------------------
+
+.. automodule:: structlog.threadlocal
+   :noindex:
 
 
 .. _procs:

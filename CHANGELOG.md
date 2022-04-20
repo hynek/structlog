@@ -25,6 +25,13 @@ So please make sure to **always** properly configure your applications.
 - Pickling is now only possible with protocol version 3 and newer.
 
 
+### Deprecated
+
+- The entire `structlog.threadlocal` module is deprecated.
+  Please use the primitives from `structlog.contextvars` instead.
+  [#409](https://github.com/hynek/structlog/pull/409)
+
+
 ### Added
 
 - `structlog.processors.StackInfoRenderer` now has an *additional_ignores* parameter that allows you to filter out your own logging layer.

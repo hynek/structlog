@@ -30,7 +30,6 @@ Basics
    loggers
    configuration
    testing
-   thread-local
    contextvars
    processors
    examples
@@ -60,6 +59,7 @@ Advanced Topics
 
    custom-wrappers
    performance
+   thread-local
 
 
 API Reference
