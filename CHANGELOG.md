@@ -50,6 +50,8 @@ So please make sure to **always** properly configure your applications.
   [#413](https://github.com/hynek/structlog/pull/413)
 - `structlog.PrintLogger` -- that is used by default -- now uses `print()` for printing, making it a better citizen for interactive terminal applications.
   [#399](https://github.com/hynek/structlog/pull/399)
+- `structlog.testing.capture_logs` now works for already initialized bound loggers.
+  [#408](https://github.com/hynek/structlog/pull/412)
 
 
 ### Fixed
