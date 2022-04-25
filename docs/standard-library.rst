@@ -168,9 +168,11 @@ A basic configuration to output structured logs in JSON format looks like this:
             structlog.processors.UnicodeDecoder(),
             # Add callsite parameters.
             structlog.processors.CallsiteParameterAdder(
-                CallsiteParameter.FILENAME,
-                CallsiteParameter.FUNC_NAME,
-                CallsiteParameter.LINENO,
+                {
+                    structlog.processors.CallsiteParameter.FILENAME,
+                    structlog.processors.CallsiteParameter.FUNC_NAME,
+                    structlog.processors.CallsiteParameter.LINENO,
+                }
             ),
             # Render the final event dict as JSON.
             structlog.processors.JSONRenderer()
