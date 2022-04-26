@@ -9,7 +9,7 @@ Extracted log level data used by both stdlib and native log level filters.
 
 import logging
 
-from typing import Any, Callable, Type
+from typing import Any, Callable, Dict, Type
 
 from ._base import BoundLoggerBase
 from .types import EventDict, FilteringBoundLogger
@@ -127,7 +127,13 @@ def _make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
 
         return meth
 
-    meths = {}
+    def log(self: Any, level: int, event: str, **kw: Any) -> Any:
+        if level < min_level:
+            return None
+        name = _LEVEL_TO_NAME[level]
+        return self._proxy_to_logger(name, event, **kw)
+
+    meths: Dict[str, Callable] = {"log": log}
     for lvl, name in _LEVEL_TO_NAME.items():
         meths[name] = make_method(lvl)
 

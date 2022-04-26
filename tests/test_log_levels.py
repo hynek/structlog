@@ -40,6 +40,22 @@ class TestFilteringLogger:
 
         assert [] == cl.calls
 
+    def test_log_exact_level(self, bl, cl):
+        """
+        if log level is exactly the min_level, log.
+        """
+        bl.log(logging.INFO, "yep")
+
+        assert [("info", (), {"event": "yep"})] == cl.calls
+
+    def test_log_one_below(self, bl, cl):
+        """
+        if log level is below the min_level, don't log.
+        """
+        bl.log(logging.DEBUG, "nope")
+
+        assert [] == cl.calls
+
     def test_filter_bound_below_missing_event_string(self, bl, cl):
         """
         Missing event arg causes exception below min_level.
