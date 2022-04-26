@@ -40,14 +40,15 @@ So please make sure to **always** properly configure your applications.
   It works the way `PrintLogger` used to work in previous versions.
   [#403](https://github.com/hynek/structlog/pull/403)
   [#404](https://github.com/hynek/structlog/pull/404)
+- `structlog.make_filtering_bound_logger()`-returned loggers now also have a `log()` method to match the `structlog.stdlib.BoundLogger` signature closer.
+  [#413](https://github.com/hynek/structlog/pull/413)
+
 
 ### Changed
 
 - `structlog.make_filtering_bound_logger()` now returns a method with the same signature for all log levels, whether they are active or not.
   This ensures that invalid calls to inactive log levels are caught immediately and don't explode once the log level changes.
   [#401](https://github.com/hynek/structlog/pull/401)
-- `structlog.make_filtering_bound_logger()` now returns a `log()` method to closer match BoundLogger signature
-  [#413](https://github.com/hynek/structlog/pull/413)
 - `structlog.PrintLogger` -- that is used by default -- now uses `print()` for printing, making it a better citizen for interactive terminal applications.
   [#399](https://github.com/hynek/structlog/pull/399)
 - `structlog.testing.capture_logs` now works for already initialized bound loggers.

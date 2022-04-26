@@ -84,6 +84,9 @@ def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
     The logger is optimized such that log levels below *min_level* only consist
     of a ``return None``.
 
+    Additionally it has a ``log(self, level: int, **kw: Any)`` method to mirror
+    `logging.Logger.log` and `structlog.stdlib.BoundLogger.log`.
+
     Compared to using ``structlog``'s standard library integration and the
     `structlog.stdlib.filter_by_level` processor:
 
@@ -101,6 +104,7 @@ def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
 
     .. versionadded:: 20.2.0
     .. versionchanged:: 21.1.0 The returned loggers are now pickleable.
+    .. versionadded:: 20.1.0 The ``log()`` method.
     """
 
     return _LEVEL_TO_FILTERING_LOGGER[min_level]
