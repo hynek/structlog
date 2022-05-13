@@ -61,7 +61,7 @@ Here's an example for a production-ready non-asyncio ``structlog`` configuration
       cache_logger_on_first_use=True,
       wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
       processors=[
-          structlog.threadlocal.merge_threadlocal,
+          structlog.contextvars.merge_contextvars,
           structlog.processors.add_log_level,
           structlog.processors.format_exc_info,
           structlog.processors.TimeStamper(fmt="iso", utc=True),
@@ -75,7 +75,7 @@ It has the following properties:
 - Caches all loggers on first use.
 - Filters all log entries below the ``info`` log level **very** efficiently.
   The ``debug`` method literally consists of ``return None``.
-- Supports `thread-local`.
+- Supports :doc:`contextvars` (thread-local contexts).
 - Adds the log level name.
 - Renders exceptions.
 - Adds an `ISO 8601 <https://en.wikipedia.org/wiki/ISO_8601>`_ timestamp under the ``timestamp`` key in the UTC timezone.
