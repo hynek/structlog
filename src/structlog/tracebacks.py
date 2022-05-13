@@ -6,6 +6,7 @@ https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py
 """
 import os
 import sys
+
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import TracebackType
@@ -169,15 +170,17 @@ def extract(
     return trace
 
 
-
 class JsonFormatter:
-    def __init__(self,
-    show_locals: bool = True,
-    locals_max_string: int = LOCALS_MAX_STRING,
-    max_frames: int = MAX_FRAMES,
-                ) -> None:
+    def __init__(
+        self,
+        show_locals: bool = True,
+        locals_max_string: int = LOCALS_MAX_STRING,
+        max_frames: int = MAX_FRAMES,
+    ) -> None:
         if locals_max_string < 0:
-            raise ValueError(f'"locals_max_string" must be >= 0: {locals_max_string}')
+            raise ValueError(
+                f'"locals_max_string" must be >= 0: {locals_max_string}'
+            )
         if max_frames < 2:
             raise ValueError(f'"max_frames" must be >= 2: {max_frames}')
         self.show_locals = show_locals
@@ -192,20 +195,28 @@ class JsonFormatter:
         :func:`extract()` and can be dumped to JSON.
         """
         trace = extract(
-            *exc_info, show_locals=self.show_locals, locals_max_string=self.locals_max_string
+            *exc_info,
+            show_locals=self.show_locals,
+            locals_max_string=self.locals_max_string,
         )
 
         for stack in trace.stacks:
             if len(stack.frames) <= self.max_frames:
                 continue
 
-            half = self.max_frames // 2  # Force int division to handle odd numbers correctly
+            half = (
+                self.max_frames // 2
+            )  # Force int division to handle odd numbers correctly
             fake_frame = Frame(
                 filename="",
                 lineno=-1,
                 name=f"Skipped frames: {len(stack.frames) - (2 * half)}",
             )
-            stack.frames[:] = [*stack.frames[:half], fake_frame, *stack.frames[-half:]]
+            stack.frames[:] = [
+                *stack.frames[:half],
+                fake_frame,
+                *stack.frames[-half:],
+            ]
 
         stack_dicts = [asdict(stack) for stack in trace.stacks]
         return stack_dicts

@@ -367,6 +367,7 @@ class ExceptionFormatter:
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
     """
+
     def __init__(
         self,
         exception_formatter: ProcessorExceptionFormatter = _format_exception,
@@ -383,7 +384,6 @@ class ExceptionFormatter:
             )
 
         return event_dict
-
 
 
 format_exc_info = ExceptionFormatter()
@@ -533,9 +533,11 @@ class ExceptionPrettyPrinter:
        Added support for passing exceptions as ``exc_info`` on Python 3.
     """
 
-    def __init__(self, file: Optional[TextIO] = None,
-    exception_formatter: ProcessorExceptionFormatter = _format_exception,
-                 ) -> None:
+    def __init__(
+        self,
+        file: Optional[TextIO] = None,
+        exception_formatter: ProcessorExceptionFormatter = _format_exception,
+    ) -> None:
         if file is not None:
             self._file = file
         else:

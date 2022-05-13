@@ -1,4 +1,5 @@
 import sys
+
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -386,7 +387,9 @@ def test_show_locals():
     try:
         foo(0)
     except Exception as e:
-        trace = tracebacks.extract(type(e), e, e.__traceback__, show_locals=True)
+        trace = tracebacks.extract(
+            type(e), e, e.__traceback__, show_locals=True
+        )
 
     stack_locals = [f.locals for f in trace.stacks[0].frames]
     # The first frames contain functions with "random" memory addresses, so we only
@@ -424,7 +427,9 @@ def test_recursive():
             frames=[],
         ),
     ]
-    assert len(frames) > sys.getrecursionlimit() - 50  # Buffer for frames from pytest
+    assert (
+        len(frames) > sys.getrecursionlimit() - 50
+    )  # Buffer for frames from pytest
     assert frames[0] == tracebacks.Frame(
         filename=__file__,
         lineno=411,
@@ -467,7 +472,9 @@ def test_json_traceback_locals_max_string():
         _var = "spamspamspam"
         1 / 0  # pylint: disable=pointless-statement
     except Exception as e:
-        format_json = tracebacks.JsonFormatter(show_locals=True, locals_max_string=4)
+        format_json = tracebacks.JsonFormatter(
+            show_locals=True, locals_max_string=4
+        )
         result = format_json(type(e), e, e.__traceback__)
         assert result == [
             {
@@ -514,7 +521,9 @@ def test_json_traceback_max_frames(
     try:
         bacon()
     except Exception as e:
-        format_json = tracebacks.JsonFormatter(show_locals=False, max_frames=max_frames)
+        format_json = tracebacks.JsonFormatter(
+            show_locals=False, max_frames=max_frames
+        )
         result = format_json(type(e), e, e.__traceback__)
         trace = result[0]
         assert len(trace["frames"]) == expected_frames, trace["frames"]
