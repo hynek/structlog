@@ -437,58 +437,12 @@ def test_recursive():
     )
 
 
-@pytest.mark.parametrize(
-    "fn",
-    [
-        lambda e: e,
-        lambda e: (type(e), e, e.__traceback__),
-        lambda e: True,
-        lambda e: 1,
-    ],
-)
-def test_get_exc_info(fn: Callable[[Exception], Any]):
-    """
-    Various inputs result in the same exc info tuple being returned
-    """
+def test_json_traceback(fn: Callable[[Exception], Any]):
     try:
         1 / 0
     except Exception as e:
-        result = tracebacks.get_exc_info(fn(e))
-        assert result == (type(e), e, e.__traceback__)
-
-
-def test_get_exc_info_false():
-    """
-    We can explicitly not return an exc tuple.
-    """
-    try:
-        1 / 0
-    except Exception:
-        result = tracebacks.get_exc_info(False)
-        assert result == (None, None, None)
-
-
-def test_get_exc_info_no_exc():
-    """
-    No exception -> no exc tuple
-    """
-    result = tracebacks.get_exc_info(True)
-    assert result == (None, None, None)
-
-
-@pytest.mark.parametrize(
-    "fn",
-    [
-        lambda e: e,
-        lambda e: (type(e), e, e.__traceback__),
-        lambda e: True,
-    ],
-)
-def test_get_traceback_dicts(fn: Callable[[Exception], Any]):
-    try:
-        1 / 0
-    except Exception as e:
-        result = tracebacks.get_traceback_dicts(fn(e), show_locals=False)
+        format_json = tracebacks.JsonFormatter(show_locals=False)
+        result = format_json(type(e), e, e.__traceback__)
         assert result == [
             {
                 "exc_type": "ZeroDivisionError",
@@ -499,7 +453,7 @@ def test_get_traceback_dicts(fn: Callable[[Exception], Any]):
                         "line": "",
                         "lineno": 489,
                         "locals": None,
-                        "name": "test_get_traceback_dicts",
+                        "name": "test_json_traceback",
                     }
                 ],
                 "is_cause": False,
@@ -508,20 +462,13 @@ def test_get_traceback_dicts(fn: Callable[[Exception], Any]):
         ]
 
 
-def test_get_traceback_dicts_no_error():
-    """
-    An empty list is returned if no error is passed or has happended.
-    """
-    result = tracebacks.get_traceback_dicts(exception=True)
-    assert result == []
-
-
-def test_get_traceback_dicts_locals_max_string():
+def test_json_traceback_locals_max_string():
     try:
         _var = "spamspamspam"
         1 / 0  # pylint: disable=pointless-statement
     except Exception as e:
-        result = tracebacks.get_traceback_dicts(e, show_locals=True, locals_max_string=4)
+        format_json = tracebacks.JsonFormatter(show_locals=True, locals_max_string=4)
+        result = format_json(type(e), e, e.__traceback__)
         assert result == [
             {
                 "exc_type": "ZeroDivisionError",
@@ -532,7 +479,7 @@ def test_get_traceback_dicts_locals_max_string():
                         "line": "",
                         "lineno": 522,
                         "locals": {"_var": "'spam'+8", "e": "'Zero'+33"},
-                        "name": "test_get_traceback_dicts_locals_max_string",
+                        "name": "test_json_traceback_locals_max_string",
                     }
                 ],
                 "is_cause": False,
@@ -552,7 +499,7 @@ def test_get_traceback_dicts_locals_max_string():
         (5, 4, -1, 0),
     ],
 )
-def test_get_traceback_dicts_max_frames(
+def test_json_traceback_max_frames(
     max_frames: int, expected_frames: int, skipped_idx: int, skipped_count: int
 ):
     def spam():
@@ -567,9 +514,8 @@ def test_get_traceback_dicts_max_frames(
     try:
         bacon()
     except Exception as e:
-        result = tracebacks.get_traceback_dicts(
-            e, show_locals=False, max_frames=max_frames
-        )
+        format_json = tracebacks.JsonFormatter(show_locals=False, max_frames=max_frames)
+        result = format_json(type(e), e, e.__traceback__)
         trace = result[0]
         assert len(trace["frames"]) == expected_frames, trace["frames"]
         if skipped_count:
@@ -593,5 +539,5 @@ def test_get_traceback_dicts_max_frames(
         {"max_frames": 1},
     ],
 )
-def test_get_traceback_dicts_value_error(kwargs: dict[str, Any]):
-    pytest.raises(ValueError, tracebacks.get_traceback_dicts, None, **kwargs)
+def test_json_traceback_value_error(kwargs: dict[str, Any]):
+    pytest.raises(ValueError, tracebacks.JsonFormatter, **kwargs)

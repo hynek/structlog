@@ -41,7 +41,12 @@ from ._frames import (
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
-from .types import EventDict, ExcInfo, WrappedLogger
+from .types import (
+    EventDict,
+    ExcInfo,
+    ProcessorExceptionFormatter,
+    WrappedLogger,
+)
 
 
 __all__ = [
@@ -343,11 +348,13 @@ def _json_fallback_handler(obj: Any) -> Any:
             return repr(obj)
 
 
-def format_exc_info(
-    logger: WrappedLogger, name: str, event_dict: EventDict
-) -> EventDict:
+class ExceptionFormatter:
     """
-    Replace an ``exc_info`` field by an ``exception`` string field:
+    Replace an ``exc_info`` field with an ``exception`` field:
+
+    The contents of that field depend on the return value of the
+    `ProcessorExceptionFormatter` that is used.  The default produces a
+    formatted string.
 
     If *event_dict* contains the key ``exc_info``, there are two possible
     behaviors:
@@ -360,13 +367,40 @@ def format_exc_info(
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
     """
-    exc_info = event_dict.pop("exc_info", None)
-    if exc_info:
-        event_dict["exception"] = _format_exception(
-            _figure_out_exc_info(exc_info)
-        )
+    def __init__(
+        self,
+        exception_formatter: ProcessorExceptionFormatter = _format_exception,
+    ) -> None:
+        self.format_exception = exception_formatter
 
-    return event_dict
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        exc_info = event_dict.pop("exc_info", None)
+        if exc_info:
+            event_dict["exception"] = self.format_exception(
+                _figure_out_exc_info(exc_info)
+            )
+
+        return event_dict
+
+
+
+format_exc_info = ExceptionFormatter()
+"""
+Replace an ``exc_info`` field with an ``exception`` string field:
+
+If *event_dict* contains the key ``exc_info``, there are two possible
+behaviors:
+
+- If the value is a tuple, render it into the key ``exception``.
+- If the value is an Exception render it into the key ``exception``.
+- If the value true but no tuple, obtain exc_info ourselves and render
+    that.
+
+If there is no ``exc_info`` key, the *event_dict* is not touched.
+This behavior is analogue to the one of the stdlib's logging.
+"""
 
 
 class TimeStamper:
@@ -499,7 +533,9 @@ class ExceptionPrettyPrinter:
        Added support for passing exceptions as ``exc_info`` on Python 3.
     """
 
-    def __init__(self, file: Optional[TextIO] = None) -> None:
+    def __init__(self, file: Optional[TextIO] = None,
+    exception_formatter: ProcessorExceptionFormatter = _format_exception,
+                 ) -> None:
         if file is not None:
             self._file = file
         else:
