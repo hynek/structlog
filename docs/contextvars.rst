@@ -78,6 +78,9 @@ We're sorry the word *context* means three different things in this itemization 
    event='hi there' a=None
 
 
+Support for contextvars.Token
+-----------------------------
+
 If e.g. your request handler calls a helper function that needs to temporarily override some contextvars before restoring them back to their original values, you can use the :class:`~contextvars.Token`\s returned by :func:`~structlog.contextvars.bind_contextvars` along with :func:`~structlog.contextvars.reset_contextvars` to accomplish this (much like how :meth:`contextvars.ContextVar.reset` works):
 
 .. code-block:: python
