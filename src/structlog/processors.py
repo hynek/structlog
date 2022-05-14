@@ -395,7 +395,7 @@ behaviors:
 
 - If the value is a tuple, render it into the key ``exception``.
 - If the value is an Exception render it into the key ``exception``.
-- If the value true but no tuple, obtain exc_info ourselves and render
+- If the value is true but no tuple, obtain exc_info ourselves and render
     that.
 
 If there is no ``exc_info`` key, the *event_dict* is not touched.
