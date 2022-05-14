@@ -287,17 +287,16 @@ class UnicodeDecoder:
 
 class JSONRenderer:
     """
-    Render the ``event_dict`` using ``serializer(event_dict, **json_kw)``.
+    Render the ``event_dict`` using ``serializer(event_dict, **dumps_kw)``.
 
-    :param json_kw: Are passed unmodified to *serializer*.  If *default*
+    :param dumps_kw: Are passed unmodified to *serializer*.  If *default*
         is passed, it will disable support for ``__structlog__``-based
         serialization.
     :param serializer: A :func:`json.dumps`-compatible callable that
         will be used to format the string.  This can be used to use alternative
-        JSON encoders like `simplejson
-        <https://pypi.org/project/simplejson/>`_ or `RapidJSON
-        <https://pypi.org/project/python-rapidjson/>`_ (faster but Python
-        3-only) (default: :func:`json.dumps`).
+        JSON encoders like `orjson <https://pypi.org/project/orjson/>`__ or
+        `RapidJSON <https://pypi.org/project/python-rapidjson/>`_  (default:
+        :func:`json.dumps`).
 
     .. versionadded:: 0.2.0
         Support for ``__structlog__`` serialization method.
