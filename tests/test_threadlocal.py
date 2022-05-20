@@ -273,7 +273,10 @@ class TestThreadLocalDict:
         with pytest.raises(AttributeError) as e:
             d._tl.__delattr__("does_not_exist")
 
-        assert "does_not_exist" == e.value.args[0]
+        assert e.value.args[0] in (
+            "does_not_exist",
+            "'_thread._local' object has no attribute 'does_not_exist'",
+        )
 
     def test_del(self, D):
         """
