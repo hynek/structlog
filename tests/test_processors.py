@@ -494,7 +494,8 @@ class TestFormatExcInfo:
             d = format_exc_info(None, None, {"exc_info": True})
 
         assert "exc_info" not in d
-        assert 'raise ValueError("test")\nValueError: test' in d["exception"]
+        assert 'raise ValueError("test")' in d["exception"]
+        assert "ValueError: test" in d["exception"]
 
     def test_exception_on_py3(self, monkeypatch):
         """
