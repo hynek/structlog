@@ -29,6 +29,11 @@ So please make sure to **always** properly configure your applications.
 
 - The entire `structlog.threadlocal` module is deprecated.
   Please use the primitives from `structlog.contextvars` instead.
+
+  If you're using the modern APIs (`bind_threadlocal()` / `merge_threadlocal()`) it's enough to replace them 1:1 with their `contextvars` counterparts.
+  The old approach around `wrap_dict()` has been discouraged for a while.
+
+  Currently there are no concrete plans to remove the module, but no patches against it will be accepted from now on.
   [#409](https://github.com/hynek/structlog/pull/409)
 
 
@@ -60,7 +65,7 @@ So please make sure to **always** properly configure your applications.
 - Overloaded the `bind`, `unbind`, `try_unbind` and `new` methods in the `FilteringBoundLogger` [Protocol](https://docs.python.org/3/library/typing.html#typing.Protocol).
   This makes it easier to use objects of type `FilteringBoundLogger` in a typed context.
   [#392](https://github.com/hynek/structlog/pull/392)
-- Monkeypatched `sys.stdout`s are now handled more gracefully.
+- Monkeypatched `sys.stdout`s are now handled more gracefully by `ConsoleRenderer` (that's used by default).
   [#404](https://github.com/hynek/structlog/pull/404)
 
 
