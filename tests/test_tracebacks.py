@@ -481,10 +481,9 @@ def test_json_traceback_locals_max_string():
         _var = "spamspamspam"  # noqa
         1 / 0
     except Exception as e:
-        format_json = tracebacks.JSONFormatter(
-            show_locals=True, locals_max_string=4
+        result = tracebacks.JSONFormatter(locals_max_string=4)(
+            (type(e), e, e.__traceback__)
         )
-        result = format_json((type(e), e, e.__traceback__))
         assert result == [
             {
                 "exc_type": "ZeroDivisionError",
@@ -497,7 +496,6 @@ def test_json_traceback_locals_max_string():
                         "locals": {
                             "_var": "'spam'+8",
                             "e": "'Zero'+33",
-                            "format_json": "'<str'+54",
                         },
                         "name": "test_json_traceback_locals_max_string",
                     }
