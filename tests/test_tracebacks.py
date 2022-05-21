@@ -1,7 +1,7 @@
 import sys
 
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Dict, Optional
 
 import pytest
 
@@ -87,7 +87,8 @@ def test_simple_exception():
 
 def test_raise_hide_cause():
     """
-    If "raise ... from None" is used, the trace looks like from a simple exception.
+    If "raise ... from None" is used, the trace looks like from a simple
+    exception.
     """
     try:
         try:
@@ -106,7 +107,7 @@ def test_raise_hide_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=96,
+                    lineno=97,
                     name="test_raise_hide_cause",
                     line="",
                     locals=None,
@@ -118,7 +119,8 @@ def test_raise_hide_cause():
 
 def test_raise_with_cause():
     """
-    If "raise ... from orig" is used, the orig trace is included and marked as cause.
+    If "raise ... from orig" is used, the orig trace is included and marked as
+    cause.
     """
     try:
         try:
@@ -137,7 +139,7 @@ def test_raise_with_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=127,
+                    lineno=129,
                     name="test_raise_with_cause",
                     line="",
                     locals=None,
@@ -152,7 +154,7 @@ def test_raise_with_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=125,
+                    lineno=127,
                     name="test_raise_with_cause",
                     line="",
                     locals=None,
@@ -180,7 +182,7 @@ def test_raise_with_cause_no_tb():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=170,
+                    lineno=172,
                     name="test_raise_with_cause_no_tb",
                     line="",
                     locals=None,
@@ -192,13 +194,14 @@ def test_raise_with_cause_no_tb():
 
 def test_raise_nested():
     """
-    If an exc is raised during handling another one, the orig trace is included.
+    If an exc is raised during handling another one, the orig trace is
+    included.
     """
     try:
         try:
             1 / 0
         except ArithmeticError:
-            raise ValueError("onoes")  # pylint: disable=raise-missing-from
+            raise ValueError("onoes")
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -211,7 +214,7 @@ def test_raise_nested():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=201,
+                    lineno=204,
                     name="test_raise_nested",
                     line="",
                     locals=None,
@@ -226,7 +229,7 @@ def test_raise_nested():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=199,
+                    lineno=202,
                     name="test_raise_nested",
                     line="",
                     locals=None,
@@ -238,7 +241,8 @@ def test_raise_nested():
 
 def test_raise_no_msg():
     """
-    If exception classes (not instances) are raised, "exc_value" is an empty string.
+    If exception classes (not instances) are raised, "exc_value" is an empty
+    string.
     """
     try:
         raise RuntimeError
@@ -254,7 +258,7 @@ def test_raise_no_msg():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=244,
+                    lineno=248,
                     name="test_raise_no_msg",
                     line="",
                     locals=None,
@@ -270,7 +274,7 @@ def test_syntax_error():
     """
     try:
         # raises SyntaxError: invalid syntax
-        eval("2 +* 2")  # nosec  # pylint: disable=eval-used
+        eval("2 +* 2")
     except SyntaxError as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -289,7 +293,7 @@ def test_syntax_error():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=273,
+                    lineno=277,
                     name="test_syntax_error",
                     line="",
                     locals=None,
@@ -304,9 +308,7 @@ def test_filename_with_bracket():
     Filenames with brackets (e.g., "<string>") are handled properly.
     """
     try:
-        exec(  # nosec  # pylint: disable=exec-used
-            compile("1/0", filename="<string>", mode="exec")
-        )
+        exec(compile("1/0", filename="<string>", mode="exec"))
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -319,7 +321,7 @@ def test_filename_with_bracket():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=307,
+                    lineno=311,
                     name="test_filename_with_bracket",
                     line="",
                     locals=None,
@@ -341,9 +343,7 @@ def test_filename_not_a_file():
     "Invalid" filenames are appended to CWD as if they were actual files.
     """
     try:
-        exec(  # nosec  # pylint: disable=exec-used
-            compile("1/0", filename="string", mode="exec")
-        )
+        exec(compile("1/0", filename="string", mode="exec"))
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -356,7 +356,7 @@ def test_filename_not_a_file():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=344,
+                    lineno=346,
                     name="test_filename_not_a_file",
                     line="",
                     locals=None,
@@ -392,8 +392,8 @@ def test_show_locals():
         )
 
     stack_locals = [f.locals for f in trace.stacks[0].frames]
-    # The first frames contain functions with "random" memory addresses, so we only
-    # check the variable names:
+    # The first frames contain functions with "random" memory addresses,
+    # so we only check the variable names:
     assert stack_locals[0].keys() == {"foo", "e", "bar"}
     assert stack_locals[1].keys() == {"a", "bar"}
     assert stack_locals[2] == {"a": "0"}
@@ -435,11 +435,20 @@ def test_recursive():
         lineno=414,
         name="test_recursive",
     )
-    assert frames[-1] == tracebacks.Frame(
-        filename=__file__,
-        lineno=408,
-        name="foo",
-    )
+    # Depending on whether we invoke pytest directly or run tox, either "foo()"
+    # or "bar()" is at the end of the stack.
+    assert frames[-1] in [
+        tracebacks.Frame(
+            filename=__file__,
+            lineno=408,
+            name="foo",
+        ),
+        tracebacks.Frame(
+            filename=__file__,
+            lineno=411,
+            name="bar",
+        ),
+    ]
 
 
 def test_json_traceback():
@@ -456,7 +465,7 @@ def test_json_traceback():
                     {
                         "filename": __file__,
                         "line": "",
-                        "lineno": 447,
+                        "lineno": 456,
                         "locals": None,
                         "name": "test_json_traceback",
                     }
@@ -469,8 +478,8 @@ def test_json_traceback():
 
 def test_json_traceback_locals_max_string():
     try:
-        _var = "spamspamspam"
-        1 / 0  # pylint: disable=pointless-statement
+        _var = "spamspamspam"  # noqa
+        1 / 0
     except Exception as e:
         format_json = tracebacks.JSONFormatter(
             show_locals=True, locals_max_string=4
@@ -484,7 +493,7 @@ def test_json_traceback_locals_max_string():
                     {
                         "filename": __file__,
                         "line": "",
-                        "lineno": 473,
+                        "lineno": 482,
                         "locals": {
                             "_var": "'spam'+8",
                             "e": "'Zero'+33",
@@ -552,5 +561,5 @@ def test_json_traceback_max_frames(
         {"max_frames": 1},
     ],
 )
-def test_json_traceback_value_error(kwargs: dict[str, Any]):
+def test_json_traceback_value_error(kwargs: Dict[str, Any]):
     pytest.raises(ValueError, tracebacks.JSONFormatter, **kwargs)

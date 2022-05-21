@@ -5,12 +5,11 @@ Copied and adapted from Rich:
 https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py
 """
 import os
-import sys
 
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import TracebackType
-from typing import Any, Optional, Tuple, Type, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from .types import ExcInfo
 
@@ -31,7 +30,6 @@ SHOW_LOCALS = True
 LOCALS_MAX_STRING = 80
 MAX_FRAMES = 50
 
-ExcInfo = Tuple[Type[BaseException], BaseException, Optional[TracebackType]]
 OptExcInfo = Union[ExcInfo, Tuple[None, None, None]]
 
 
@@ -41,7 +39,7 @@ class Frame:
     lineno: int
     name: str
     line: str = ""
-    locals: Optional[dict[str, str]] = None
+    locals: Optional[Dict[str, str]] = None
 
 
 @dataclass
@@ -59,12 +57,12 @@ class Stack:
     exc_value: str
     syntax_error: Optional[SyntaxError_] = None
     is_cause: bool = False
-    frames: list[Frame] = field(default_factory=list)
+    frames: List[Frame] = field(default_factory=list)
 
 
 @dataclass
 class Trace:
-    stacks: list[Stack]
+    stacks: List[Stack]
 
 
 def safe_str(_object: Any) -> str:
@@ -108,15 +106,16 @@ def extract(
         exc_value: Exception value.
         traceback: Python Traceback object.
         show_locals: Enable display of local variables. Defaults to False.
-        locals_max_string: Maximum length of string before truncating, or ``None`` to
-            disable.
+        locals_max_string: Maximum length of string before truncating,
+            or ``None`` to disable.
         max_frames: Maximum number of frames in each stack
 
     Returns:
-        Trace: A Trace instance which you can use to construct a :cls:`Traceback`.
+        Trace: A Trace instance which you can use to construct a
+        :cls:`Traceback`.
     """
 
-    stacks: list[Stack] = []
+    stacks: List[Stack] = []
     is_cause = False
 
     while True:
@@ -218,7 +217,7 @@ class JSONFormatter:
         self.locals_max_string = locals_max_string
         self.max_frames = max_frames
 
-    def __call__(self, exc_info: ExcInfo) -> list[dict[str, Any]]:
+    def __call__(self, exc_info: ExcInfo) -> List[Dict[str, Any]]:
         trace = extract(
             *exc_info,
             show_locals=self.show_locals,
