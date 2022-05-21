@@ -358,7 +358,7 @@ class ExceptionFormatter:
 
     - The default produces a formatted string via Python's built-in traceback
       formatting.
-    - The :class:`.structlog.traceback.JSONFormatter` a list of stack dicts
+    - The :class:`~structlog.tracebacks.JSONFormatter` a list of stack dicts
       that can be serialized to JSON.
 
     If *event_dict* contains the key ``exc_info``, there are three possible
@@ -372,9 +372,10 @@ class ExceptionFormatter:
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
 
-    Args:
-        exception_formatter: A callable that is used to format the exception
-            from the ``exc_info`` field.
+    :param exception_formatter: A callable that is used to format the exception
+        from the ``exc_info`` field.
+
+    .. versionadded:: 22.1
     """
 
     def __init__(

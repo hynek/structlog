@@ -109,12 +109,10 @@ class ProcessorExceptionFormatter(Protocol):
     Used by `structlog.processors.format_exc_info()` and
     `structlog.processors.ExceptionPrettyPrinter`.
 
-    Args:
-        exc_info: Is the exception tuple to format
+    :param exc_info: Is the exception tuple to format
 
-    Return:
-        Anything that can be rendered by the last processor in your change,
-        e.g. a string or a JSON structure.
+    :returns: Anything that can be rendered by the last processor in your
+        change, e.g. a string or a JSON structure.
 
     .. versionadded:: 22.1
     """

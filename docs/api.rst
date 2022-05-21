@@ -170,6 +170,29 @@ API Reference
    If you choose to pass a *default* parameter as part of *json_kw*, support for ``__structlog__`` is disabled.
    This can be useful when used together with more elegant serialization methods like :func:`functools.singledispatch`: `Better Python Object Serialization <https://hynek.me/articles/serialization/>`_.
 
+   .. tip::
+
+      If you use this processor, you may also wish to add structured tracebacks for exceptions.
+      You can do this by adding the :class:`~structlog.processors.ExceptionFormatter` with a :class:`~structlog.tracebacks.JSONFormatter` to your list of processors:
+
+      .. doctest::
+
+         >>> structlog.configure(
+         ...     processors=[
+         ...         structlog.processors.ExceptionFormatter(
+         ...             structlog.tracebacks.JSONFormatter()
+         ...         ),
+         ...         structlog.processors.JSONRenderer(),
+         ...     ],
+         ... )
+         >>> log = structlog.get_logger()
+         >>> var = "spam"
+         >>> try:
+         ...     1 / 0
+         ... except ZeroDivisionError as e:
+         ...     log.exception("Cannot compute!", exc_info=e)
+         {"event": "Cannot compute!", "exception": [{"exc_type": "ZeroDivisionError", "exc_value": "division by zero", "syntax_error": null, "is_cause": false, "frames": [{"filename": "<doctest default[3]>", "lineno": 2, "name": "<module>", "line": "", "locals": {..., "var": "spam", ...}}]}]}
+
 .. autoclass:: KeyValueRenderer
 
    .. doctest::
@@ -197,6 +220,8 @@ API Reference
 .. autoclass:: UnicodeDecoder
 
 .. autoclass:: UnicodeEncoder
+
+.. autoclass:: ExceptionFormatter
 
 .. autofunction:: format_exc_info
 
@@ -264,6 +289,19 @@ API Reference
    :members: wrap_for_formatter, remove_processors_meta
 
 
+`structlog.tracebacks` Module
+-----------------------------
+
+.. automodule:: structlog.tracebacks
+
+.. autofunction:: extract
+.. autoclass:: JSONFormatter
+.. autoclass:: Trace
+.. autoclass:: Stack
+.. autoclass:: Frame
+.. autoclass:: SyntaxError_
+
+
 `structlog.types` Module
 ------------------------
 
@@ -285,6 +323,12 @@ API Reference
      Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
 
 .. autoclass:: FilteringBoundLogger
+
+   .. note::
+
+     Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
+
+.. autoclass:: ProcessorExceptionFormatter
 
    .. note::
 
