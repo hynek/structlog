@@ -118,6 +118,7 @@ class ProcessorExceptionFormatter(Protocol):
 
     .. versionadded:: 22.1
     """
+
     def __call__(self, exc_info: ExcInfo) -> Any:
         ...
 
