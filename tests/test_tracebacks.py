@@ -75,7 +75,7 @@ def test_simple_exception():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=64,
+                    lineno=65,
                     name="test_simple_exception",
                     line="",
                     locals=None,
@@ -106,7 +106,7 @@ def test_raise_hide_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=95,
+                    lineno=96,
                     name="test_raise_hide_cause",
                     line="",
                     locals=None,
@@ -137,7 +137,7 @@ def test_raise_with_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=126,
+                    lineno=127,
                     name="test_raise_with_cause",
                     line="",
                     locals=None,
@@ -152,7 +152,7 @@ def test_raise_with_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=124,
+                    lineno=125,
                     name="test_raise_with_cause",
                     line="",
                     locals=None,
@@ -180,7 +180,7 @@ def test_raise_with_cause_no_tb():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=169,
+                    lineno=170,
                     name="test_raise_with_cause_no_tb",
                     line="",
                     locals=None,
@@ -211,7 +211,7 @@ def test_raise_nested():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=200,
+                    lineno=201,
                     name="test_raise_nested",
                     line="",
                     locals=None,
@@ -226,7 +226,7 @@ def test_raise_nested():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=198,
+                    lineno=199,
                     name="test_raise_nested",
                     line="",
                     locals=None,
@@ -254,7 +254,7 @@ def test_raise_no_msg():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=243,
+                    lineno=244,
                     name="test_raise_no_msg",
                     line="",
                     locals=None,
@@ -289,7 +289,7 @@ def test_syntax_error():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=272,
+                    lineno=273,
                     name="test_syntax_error",
                     line="",
                     locals=None,
@@ -319,7 +319,7 @@ def test_filename_with_bracket():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=306,
+                    lineno=307,
                     name="test_filename_with_bracket",
                     line="",
                     locals=None,
@@ -356,7 +356,7 @@ def test_filename_not_a_file():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=343,
+                    lineno=344,
                     name="test_filename_not_a_file",
                     line="",
                     locals=None,
@@ -432,22 +432,22 @@ def test_recursive():
     )  # Buffer for frames from pytest
     assert frames[0] == tracebacks.Frame(
         filename=__file__,
-        lineno=411,
+        lineno=414,
         name="test_recursive",
     )
     assert frames[-1] == tracebacks.Frame(
         filename=__file__,
-        lineno=405,
+        lineno=408,
         name="foo",
     )
 
 
-def test_json_traceback(fn: Callable[[Exception], Any]):
+def test_json_traceback():
     try:
         1 / 0
     except Exception as e:
-        format_json = tracebacks.JsonFormatter(show_locals=False)
-        result = format_json(type(e), e, e.__traceback__)
+        format_json = tracebacks.JSONFormatter(show_locals=False)
+        result = format_json((type(e), e, e.__traceback__))
         assert result == [
             {
                 "exc_type": "ZeroDivisionError",
@@ -456,7 +456,7 @@ def test_json_traceback(fn: Callable[[Exception], Any]):
                     {
                         "filename": __file__,
                         "line": "",
-                        "lineno": 489,
+                        "lineno": 447,
                         "locals": None,
                         "name": "test_json_traceback",
                     }
@@ -472,10 +472,10 @@ def test_json_traceback_locals_max_string():
         _var = "spamspamspam"
         1 / 0  # pylint: disable=pointless-statement
     except Exception as e:
-        format_json = tracebacks.JsonFormatter(
+        format_json = tracebacks.JSONFormatter(
             show_locals=True, locals_max_string=4
         )
-        result = format_json(type(e), e, e.__traceback__)
+        result = format_json((type(e), e, e.__traceback__))
         assert result == [
             {
                 "exc_type": "ZeroDivisionError",
@@ -484,8 +484,12 @@ def test_json_traceback_locals_max_string():
                     {
                         "filename": __file__,
                         "line": "",
-                        "lineno": 522,
-                        "locals": {"_var": "'spam'+8", "e": "'Zero'+33"},
+                        "lineno": 473,
+                        "locals": {
+                            "_var": "'spam'+8",
+                            "e": "'Zero'+33",
+                            "format_json": "'<str'+54",
+                        },
                         "name": "test_json_traceback_locals_max_string",
                     }
                 ],
@@ -521,10 +525,10 @@ def test_json_traceback_max_frames(
     try:
         bacon()
     except Exception as e:
-        format_json = tracebacks.JsonFormatter(
+        format_json = tracebacks.JSONFormatter(
             show_locals=False, max_frames=max_frames
         )
-        result = format_json(type(e), e, e.__traceback__)
+        result = format_json((type(e), e, e.__traceback__))
         trace = result[0]
         assert len(trace["frames"]) == expected_frames, trace["frames"]
         if skipped_count:
@@ -549,4 +553,4 @@ def test_json_traceback_max_frames(
     ],
 )
 def test_json_traceback_value_error(kwargs: dict[str, Any]):
-    pytest.raises(ValueError, tracebacks.JsonFormatter, **kwargs)
+    pytest.raises(ValueError, tracebacks.JSONFormatter, **kwargs)

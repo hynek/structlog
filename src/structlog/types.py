@@ -97,18 +97,29 @@ Used by `structlog.dev.ConsoleRenderer`.
 """
 
 
-ProcessorExceptionFormatter = Callable[[ExcInfo], Any]
-"""
-A callable that formats an `ExcInfo` into another datastructure.
+@runtime_checkable
+class ProcessorExceptionFormatter(Protocol):
+    """
+    **Protocol:** A callable that formats an `ExcInfo` into another
+    datastructure.
 
-The result should be something, that your renderer can work with, e.g., a
-``str`` or a JSON serializable ``dict``.
+    The result should be something, that your renderer can work with, e.g., a
+    ``str`` or a JSON serializable ``dict``.
 
-Used by `structlog.processors.format_exc_info()` and
-`structlog.processors.ExceptionPrettyPrinter`.
+    Used by `structlog.processors.format_exc_info()` and
+    `structlog.processors.ExceptionPrettyPrinter`.
 
-.. versionadded:: 22.1
-"""
+    Args:
+        exc_info: Is the exception tuple to format
+
+    Return:
+        Anything that can be rendered by the last processor in your change,
+        e.g. a string or a JSON structure.
+
+    .. versionadded:: 22.1
+    """
+    def __call__(self, exc_info: ExcInfo) -> Any:
+        ...
 
 
 @runtime_checkable

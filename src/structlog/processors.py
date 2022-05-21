@@ -350,13 +350,18 @@ def _json_fallback_handler(obj: Any) -> Any:
 
 class ExceptionFormatter:
     """
-    Replace an ``exc_info`` field with an ``exception`` field:
+    Replace an ``exc_info`` field with an ``exception`` field which is rendered
+    by *exception_formatter*.
 
-    The contents of that field depend on the return value of the
-    `ProcessorExceptionFormatter` that is used.  The default produces a
-    formatted string.
+    The contents of ``exception`` field depend on the return value of the
+    :class:`.ProcessorExceptionFormatter` that is used:
 
-    If *event_dict* contains the key ``exc_info``, there are two possible
+    - The default produces a formatted string via Python's built-in traceback
+      formatting.
+    - The :class:`.structlog.traceback.JSONFormatter` a list of stack dicts
+      that can be serialized to JSON.
+
+    If *event_dict* contains the key ``exc_info``, there are three possible
     behaviors:
 
     - If the value is a tuple, render it into the key ``exception``.
@@ -366,6 +371,10 @@ class ExceptionFormatter:
 
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
+
+    Args:
+        exception_formatter: A callable that is used to format the exception
+            from the ``exc_info`` field.
     """
 
     def __init__(
@@ -388,9 +397,10 @@ class ExceptionFormatter:
 
 format_exc_info = ExceptionFormatter()
 """
-Replace an ``exc_info`` field with an ``exception`` string field:
+Replace an ``exc_info`` field with an ``exception`` string field using
+Python's built-in traceback formatting.
 
-If *event_dict* contains the key ``exc_info``, there are two possible
+If *event_dict* contains the key ``exc_info``, there are tree possible
 behaviors:
 
 - If the value is a tuple, render it into the key ``exception``.
