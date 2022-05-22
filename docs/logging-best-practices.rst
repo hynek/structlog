@@ -58,9 +58,7 @@ Here is a simple example of how you can have pretty logs during development and 
    ...     # Print JSON when we run, e.g., in a Docker container.
    ...     # Also print structured tracebacks.
    ...     processors = shared_processors + [
-   ...         structlog.processors.ExceptionFormatter(
-   ...             structlog.tracebacks.JSONFormatter()
-   ...         ),
+   ...         structlog.processors.json_tracebacks,
    ...         structlog.processors.JSONRenderer(),
    ...     ]
    >>> structlog.configure(processors)

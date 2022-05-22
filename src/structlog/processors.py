@@ -41,6 +41,7 @@ from ._frames import (
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
+from .tracebacks import JSONFormatter as JSONExceptionFormatter
 from .types import (
     EventDict,
     ExcInfo,
@@ -411,6 +412,28 @@ behaviors:
 
 If there is no ``exc_info`` key, the *event_dict* is not touched.
 This behavior is analogue to the one of the stdlib's logging.
+"""
+
+json_tracebacks = ExceptionFormatter(JSONExceptionFormatter())
+"""
+Replace an ``exc_info`` field with an ``exception`` field containing structured
+tracebacks suiteable for JSON output.
+
+It is a shortcut for :class:`ExceptionFormatter` with a
+:class:`~structlog.tracebacks.JSONFormatter`.
+
+If *event_dict* contains the key ``exc_info``, there are tree possible
+behaviors:
+
+- If the value is a tuple, render it into the key ``exception``.
+- If the value is an Exception render it into the key ``exception``.
+- If the value is true but no tuple, obtain exc_info ourselves and render
+    that.
+
+If there is no ``exc_info`` key, the *event_dict* is not touched.
+This behavior is analogue to the one of the stdlib's logging.
+
+.. versionadded:: 22.1
 """
 
 

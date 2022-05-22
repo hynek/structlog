@@ -173,15 +173,13 @@ API Reference
    .. tip::
 
       If you use this processor, you may also wish to add structured tracebacks for exceptions.
-      You can do this by adding the :class:`~structlog.processors.ExceptionFormatter` with a :class:`~structlog.tracebacks.JSONFormatter` to your list of processors:
+      You can do this by adding the :class:`~structlog.processors.json_tracebacks` to your list of processors:
 
       .. doctest::
 
          >>> structlog.configure(
          ...     processors=[
-         ...         structlog.processors.ExceptionFormatter(
-         ...             structlog.tracebacks.JSONFormatter()
-         ...         ),
+         ...         structlog.processors.json_tracebacks,
          ...         structlog.processors.JSONRenderer(),
          ...     ],
          ... )
@@ -233,6 +231,17 @@ API Reference
       ... except ValueError:
       ...     format_exc_info(None, None, {"exc_info": True})  # doctest: +ELLIPSIS
       {'exception': 'Traceback (most recent call last):...
+
+.. autofunction:: json_tracebacks
+
+   .. doctest::
+
+      >>> from structlog.processors import json_tracebacks
+      >>> try:
+      ...     raise ValueError("onoes")
+      ... except ValueError:
+      ...     json_tracebacks(None, None, {"exc_info": True})  # doctest: +ELLIPSIS
+      {'exception': [{'exc_type': 'ValueError', 'exc_value': 'onoes', ..., 'frames': [{'filename': ...
 
 .. autoclass:: StackInfoRenderer
 
