@@ -61,9 +61,8 @@ So please make sure to **always** properly configure your applications.
   [#399](https://github.com/hynek/structlog/pull/399)
 - `structlog.testing.capture_logs` now works for already initialized bound loggers.
   [#408](https://github.com/hynek/structlog/pull/412)
-- `structlog.processors.format_exc_info()` is no longer a function but
-  an instance of `structlog.processors.ExceptionFormatter`.
-  Its behavior has not been changed.
+- `structlog.processors.format_exc_info()` is no longer a function, but an instance of `structlog.processors.ExceptionFormatter`.
+  Its behavior has not changed.
   [#407](https://github.com/hynek/structlog/pull/407)
 
 
