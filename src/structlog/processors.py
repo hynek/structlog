@@ -41,7 +41,7 @@ from ._frames import (
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
-from .tracebacks import JSONFormatter as JSONExceptionFormatter
+from .tracebacks import DictFormatter as DictExceptionFormatter
 from .types import (
     EventDict,
     ExcInfo,
@@ -59,6 +59,7 @@ __all__ = [
     "UnicodeDecoder",
     "JSONRenderer",
     "format_exc_info",
+    "dict_tracebacks",
     "ExceptionPrettyPrinter",
     "StackInfoRenderer",
     "CallsiteParameter",
@@ -359,7 +360,7 @@ class ExceptionFormatter:
 
     - The default produces a formatted string via Python's built-in traceback
       formatting.
-    - The :class:`~structlog.tracebacks.JSONFormatter` a list of stack dicts
+    - The :class:`~structlog.tracebacks.DictFormatter` a list of stack dicts
       that can be serialized to JSON.
 
     If *event_dict* contains the key ``exc_info``, there are three possible
@@ -414,13 +415,13 @@ If there is no ``exc_info`` key, the *event_dict* is not touched.
 This behavior is analogue to the one of the stdlib's logging.
 """
 
-json_tracebacks = ExceptionFormatter(JSONExceptionFormatter())
+dict_tracebacks = ExceptionFormatter(DictExceptionFormatter())
 """
 Replace an ``exc_info`` field with an ``exception`` field containing structured
-tracebacks suiteable for JSON output.
+tracebacks suiteable for, e.g., JSON output.
 
 It is a shortcut for :class:`ExceptionFormatter` with a
-:class:`~structlog.tracebacks.JSONFormatter`.
+:class:`~structlog.tracebacks.DictFormatter`.
 
 If *event_dict* contains the key ``exc_info``, there are tree possible
 behaviors:

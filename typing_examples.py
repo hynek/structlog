@@ -294,7 +294,7 @@ def typecheck_filtering_return() -> None:
     fblog.info("this is a whole new logger")
 
 
-# Structured tracebacks and ExceptionFormatter with JSONFormatter
+# Structured tracebacks and ExceptionFormatter with DictFormatter
 struct_tb: structlog.tracebacks.Trace = structlog.tracebacks.extract(
     ValueError, ValueError("onoes"), None
 )
@@ -305,7 +305,7 @@ except ValueError as e:
 structlog.configure(
     processors=[
         structlog.processors.ExceptionFormatter(
-            structlog.tracebacks.JSONFormatter()
+            structlog.tracebacks.DictFormatter()
         ),
         structlog.processors.JSONRenderer(),
     ]
