@@ -48,7 +48,7 @@ So please make sure to **always** properly configure your applications.
 - `structlog.make_filtering_bound_logger()`-returned loggers now also have a `log()` method to match the `structlog.stdlib.BoundLogger` signature closer.
   [#413](https://github.com/hynek/structlog/pull/413)
 - Added structured logging of tracebacks via the `structlog.tracebacks` module,
-  and most notably the `structlog.tracebacks.DictFormatter` which can be used with the new `structlog.processors.ExceptionFormatter` to render JSON tracebacks.
+  and most notably the `structlog.tracebacks.DictExceptionFormatter` which can be used with the new `structlog.processors.ExceptionFormatter` to render JSON tracebacks.
   [#407](https://github.com/hynek/structlog/pull/407)
 
 

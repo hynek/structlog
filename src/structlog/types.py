@@ -103,8 +103,8 @@ class ProcessorExceptionFormatter(Protocol):
     **Protocol:** A callable that formats an `ExcInfo` into another
     datastructure.
 
-    The result should be something, that your renderer can work with, e.g., a
-    ``str`` or a JSON serializable ``dict``.
+    The result should be something that your renderer can work with, e.g., a
+    ``str`` or a JSON-serializable ``dict``.
 
     Used by `structlog.processors.format_exc_info()` and
     `structlog.processors.ExceptionPrettyPrinter`.
@@ -112,7 +112,7 @@ class ProcessorExceptionFormatter(Protocol):
     :param exc_info: Is the exception tuple to format
 
     :returns: Anything that can be rendered by the last processor in your
-        change, e.g. a string or a JSON structure.
+        chain, e.g., a string or a JSON-serializable structure.
 
     .. versionadded:: 22.1
     """

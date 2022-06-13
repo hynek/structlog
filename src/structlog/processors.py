@@ -41,7 +41,7 @@ from ._frames import (
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
-from .tracebacks import DictFormatter as DictExceptionFormatter
+from .tracebacks import DictExceptionFormatter
 from .types import (
     EventDict,
     ExcInfo,
@@ -355,21 +355,21 @@ class ExceptionFormatter:
     Replace an ``exc_info`` field with an ``exception`` field which is rendered
     by *exception_formatter*.
 
-    The contents of ``exception`` field depend on the return value of the
+    The contents of the ``exception`` field depends on the return value of the
     :class:`.ProcessorExceptionFormatter` that is used:
 
     - The default produces a formatted string via Python's built-in traceback
       formatting.
-    - The :class:`~structlog.tracebacks.DictFormatter` a list of stack dicts
-      that can be serialized to JSON.
+    - The :class:`~structlog.tracebacks.DictExceptionFormatter` a list of stack
+      dicts that can be serialized to JSON.
 
     If *event_dict* contains the key ``exc_info``, there are three possible
     behaviors:
 
-    - If the value is a tuple, render it into the key ``exception``.
-    - If the value is an Exception render it into the key ``exception``.
-    - If the value true but no tuple, obtain exc_info ourselves and render
-      that.
+    1. If the value is a tuple, render it into the key ``exception``.
+    2. If the value is an Exception render it into the key ``exception``.
+    3. If the value true but no tuple, obtain exc_info ourselves and render
+       that.
 
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
@@ -403,13 +403,13 @@ format_exc_info = ExceptionFormatter()
 Replace an ``exc_info`` field with an ``exception`` string field using
 Python's built-in traceback formatting.
 
-If *event_dict* contains the key ``exc_info``, there are tree possible
+If *event_dict* contains the key ``exc_info``, there are three possible
 behaviors:
 
-- If the value is a tuple, render it into the key ``exception``.
-- If the value is an Exception render it into the key ``exception``.
-- If the value is true but no tuple, obtain exc_info ourselves and render
-    that.
+1. If the value is a tuple, render it into the key ``exception``.
+2. If the value is an Exception render it into the key ``exception``.
+3. If the value is true but no tuple, obtain exc_info ourselves and render
+   that.
 
 If there is no ``exc_info`` key, the *event_dict* is not touched.
 This behavior is analogue to the one of the stdlib's logging.
@@ -421,18 +421,9 @@ Replace an ``exc_info`` field with an ``exception`` field containing structured
 tracebacks suiteable for, e.g., JSON output.
 
 It is a shortcut for :class:`ExceptionFormatter` with a
-:class:`~structlog.tracebacks.DictFormatter`.
+:class:`~structlog.tracebacks.DictExceptionFormatter`.
 
-If *event_dict* contains the key ``exc_info``, there are tree possible
-behaviors:
-
-- If the value is a tuple, render it into the key ``exception``.
-- If the value is an Exception render it into the key ``exception``.
-- If the value is true but no tuple, obtain exc_info ourselves and render
-    that.
-
-If there is no ``exc_info`` key, the *event_dict* is not touched.
-This behavior is analogue to the one of the stdlib's logging.
+The treatment of the ``exc_info`` key is identical to `format_exc_info`.
 
 .. versionadded:: 22.1
 """

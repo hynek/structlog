@@ -506,7 +506,7 @@ class TestFormatExcInfo:
         assert 'raise ValueError("test")' in d["exception"]
         assert "ValueError: test" in d["exception"]
 
-    def test_exception_on_py3(self):
+    def test_exception(self):
         """
         Passing exceptions as exc_info is valid on Python 3.
         """

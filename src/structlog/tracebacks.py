@@ -15,7 +15,7 @@ from .types import ExcInfo
 
 
 __all__ = [
-    "DictFormatter",
+    "DictExceptionFormatter",
     "Frame",
     "Stack",
     "SyntaxError_",
@@ -197,7 +197,7 @@ def extract(
     return trace
 
 
-class DictFormatter:
+class DictExceptionFormatter:
     """
     Return a list of exception stack dictionaries for for an excpetion.
 

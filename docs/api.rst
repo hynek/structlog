@@ -187,9 +187,9 @@ API Reference
          >>> var = "spam"
          >>> try:
          ...     1 / 0
-         ... except ZeroDivisionError as e:
-         ...     log.exception("Cannot compute!", exc_info=e)
-         {"event": "Cannot compute!", "exception": [{"exc_type": "ZeroDivisionError", "exc_value": "division by zero", "syntax_error": null, "is_cause": false, "frames": [{"filename": "<doctest default[3]>", "lineno": 2, "name": "<module>", "line": "", "locals": {..., "var": "spam", ...}}]}]}
+         ... except ZeroDivisionError:
+         ...     log.exception("Cannot compute!")
+         {"event": "Cannot compute!", "exception": [{"exc_type": "ZeroDivisionError", "exc_value": "division by zero", "syntax_error": null, "is_cause": false, "frames": [{"filename": "<doctest default[3]>", "lineno": 2, "name": "<module>", "line": "", "locals": {..., "var": "spam"}}]}]}
 
 .. autoclass:: KeyValueRenderer
 
@@ -304,7 +304,7 @@ API Reference
 .. automodule:: structlog.tracebacks
 
 .. autofunction:: extract
-.. autoclass:: DictFormatter
+.. autoclass:: DictExceptionFormatter
 .. autoclass:: Trace
 .. autoclass:: Stack
 .. autoclass:: Frame
