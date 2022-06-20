@@ -87,7 +87,7 @@ An exception info tuple as returned by `sys.exc_info`.
 """
 
 
-ExceptionFormatter = Callable[[TextIO, ExcInfo], None]
+ExceptionRenderer = Callable[[TextIO, ExcInfo], None]
 """
 A callable that pretty-prints an `ExcInfo` into a file-like object.
 
@@ -98,9 +98,9 @@ Used by `structlog.dev.ConsoleRenderer`.
 
 
 @runtime_checkable
-class ProcessorExceptionFormatter(Protocol):
+class ExceptionTransformer(Protocol):
     """
-    **Protocol:** A callable that formats an `ExcInfo` into another
+    **Protocol:** A callable that transforms an `ExcInfo` into another
     datastructure.
 
     The result should be something that your renderer can work with, e.g., a

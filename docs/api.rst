@@ -219,7 +219,7 @@ API Reference
 
 .. autoclass:: UnicodeEncoder
 
-.. autoclass:: ExceptionFormatter
+.. autoclass:: ExceptionRenderer
 
 .. autofunction:: format_exc_info
 
@@ -304,7 +304,7 @@ API Reference
 .. automodule:: structlog.tracebacks
 
 .. autofunction:: extract
-.. autoclass:: DictExceptionFormatter
+.. autoclass:: ExceptionDictTransformer
 .. autoclass:: Trace
 .. autoclass:: Stack
 .. autoclass:: Frame
@@ -337,7 +337,7 @@ API Reference
 
      Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
 
-.. autoclass:: ProcessorExceptionFormatter
+.. autoclass:: ExceptionTransformer
 
    .. note::
 
@@ -348,7 +348,7 @@ API Reference
 .. autodata:: Processor
 .. autodata:: Context
 .. autodata:: ExcInfo
-.. autodata:: ExceptionFormatter
+.. autodata:: ExceptionRenderer
 
 
 `structlog.twisted` Module

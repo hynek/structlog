@@ -28,8 +28,8 @@ from structlog._utils import get_processname
 from structlog.processors import (
     CallsiteParameter,
     CallsiteParameterAdder,
-    ExceptionFormatter,
     ExceptionPrettyPrinter,
+    ExceptionRenderer,
     JSONRenderer,
     KeyValueRenderer,
     LogfmtRenderer,
@@ -464,7 +464,7 @@ class TestFormatExcInfo:
         try:
             raise ValueError("test")
         except ValueError as e:
-            formatter = ExceptionFormatter(lambda _: "There is no exception!")
+            formatter = ExceptionRenderer(lambda _: "There is no exception!")
             assert formatter(None, None, {"exc_info": e}) == {
                 "exception": "There is no exception!"
             }
@@ -474,19 +474,19 @@ class TestFormatExcInfo:
         """
         If exc_info is falsey, only remove the key.
         """
-        assert {} == ExceptionFormatter()(None, None, {"exc_info": ei})
+        assert {} == ExceptionRenderer()(None, None, {"exc_info": ei})
 
     def test_nop_missing(self):
         """
         If event dict doesn't contain exc_info, do nothing.
         """
-        assert {} == ExceptionFormatter()(None, None, {})
+        assert {} == ExceptionRenderer()(None, None, {})
 
     def test_formats_tuple(self):
         """
         If exc_info is a tuple, it is used.
         """
-        formatter = ExceptionFormatter(lambda exc_info: exc_info)
+        formatter = ExceptionRenderer(lambda exc_info: exc_info)
         d = formatter(None, None, {"exc_info": (None, None, 42)})
 
         assert {"exception": (None, None, 42)} == d
@@ -500,7 +500,7 @@ class TestFormatExcInfo:
         try:
             raise ValueError("test")
         except ValueError:
-            d = ExceptionFormatter()(None, None, {"exc_info": True})
+            d = ExceptionRenderer()(None, None, {"exc_info": True})
 
         assert "exc_info" not in d
         assert 'raise ValueError("test")' in d["exception"]
@@ -513,7 +513,7 @@ class TestFormatExcInfo:
         try:
             raise ValueError("test")
         except ValueError as e:
-            formatter = ExceptionFormatter(lambda exc_info: exc_info)
+            formatter = ExceptionRenderer(lambda exc_info: exc_info)
             d = formatter(None, None, {"exc_info": e})
 
             assert {"exception": (ValueError, e, e.__traceback__)} == d
@@ -524,7 +524,7 @@ class TestFormatExcInfo:
         """
         If an Exception is missing a traceback, render it anyway.
         """
-        rv = ExceptionFormatter()(
+        rv = ExceptionRenderer()(
             None, None, {"exc_info": Exception("no traceback!")}
         )
 
@@ -532,13 +532,13 @@ class TestFormatExcInfo:
 
     def test_format_exception(self):
         """
-        "format_exception" is the "ExceptionFormatter" with default settings.
+        "format_exception" is the "ExceptionRenderer" with default settings.
         """
         try:
             raise ValueError("test")
         except ValueError as e:
             a = format_exc_info(None, None, {"exc_info": e})
-            b = ExceptionFormatter()(None, None, {"exc_info": e})
+            b = ExceptionRenderer()(None, None, {"exc_info": e})
             assert a == b
 
 

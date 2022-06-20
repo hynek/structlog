@@ -41,13 +41,8 @@ from ._frames import (
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
-from .tracebacks import DictExceptionFormatter
-from .types import (
-    EventDict,
-    ExcInfo,
-    ProcessorExceptionFormatter,
-    WrappedLogger,
-)
+from .tracebacks import ExceptionDictTransformer
+from .types import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
 
 
 __all__ = [
@@ -350,18 +345,18 @@ def _json_fallback_handler(obj: Any) -> Any:
             return repr(obj)
 
 
-class ExceptionFormatter:
+class ExceptionRenderer:
     """
     Replace an ``exc_info`` field with an ``exception`` field which is rendered
     by *exception_formatter*.
 
     The contents of the ``exception`` field depends on the return value of the
-    :class:`.ProcessorExceptionFormatter` that is used:
+    :class:`.ExceptionTransformer` that is used:
 
     - The default produces a formatted string via Python's built-in traceback
       formatting.
-    - The :class:`~structlog.tracebacks.DictExceptionFormatter` a list of stack
-      dicts that can be serialized to JSON.
+    - The :class:`~structlog.tracebacks.ExceptionDictTransformer` a list of
+      stack dicts that can be serialized to JSON.
 
     If *event_dict* contains the key ``exc_info``, there are three possible
     behaviors:
@@ -382,7 +377,7 @@ class ExceptionFormatter:
 
     def __init__(
         self,
-        exception_formatter: ProcessorExceptionFormatter = _format_exception,
+        exception_formatter: ExceptionTransformer = _format_exception,
     ) -> None:
         self.format_exception = exception_formatter
 
@@ -398,7 +393,7 @@ class ExceptionFormatter:
         return event_dict
 
 
-format_exc_info = ExceptionFormatter()
+format_exc_info = ExceptionRenderer()
 """
 Replace an ``exc_info`` field with an ``exception`` string field using
 Python's built-in traceback formatting.
@@ -415,13 +410,13 @@ If there is no ``exc_info`` key, the *event_dict* is not touched.
 This behavior is analogue to the one of the stdlib's logging.
 """
 
-dict_tracebacks = ExceptionFormatter(DictExceptionFormatter())
+dict_tracebacks = ExceptionRenderer(ExceptionDictTransformer())
 """
 Replace an ``exc_info`` field with an ``exception`` field containing structured
 tracebacks suiteable for, e.g., JSON output.
 
-It is a shortcut for :class:`ExceptionFormatter` with a
-:class:`~structlog.tracebacks.DictExceptionFormatter`.
+It is a shortcut for :class:`ExceptionRenderer` with a
+:class:`~structlog.tracebacks.ExceptionDictTransformer`.
 
 The treatment of the ``exc_info`` key is identical to `format_exc_info`.
 
@@ -562,7 +557,7 @@ class ExceptionPrettyPrinter:
     def __init__(
         self,
         file: Optional[TextIO] = None,
-        exception_formatter: ProcessorExceptionFormatter = _format_exception,
+        exception_formatter: ExceptionTransformer = _format_exception,
     ) -> None:
         if file is not None:
             self._file = file

@@ -455,7 +455,7 @@ def test_json_traceback():
     try:
         1 / 0
     except Exception as e:
-        format_json = tracebacks.DictExceptionFormatter(show_locals=False)
+        format_json = tracebacks.ExceptionDictTransformer(show_locals=False)
         result = format_json((type(e), e, e.__traceback__))
         assert result == [
             {
@@ -481,7 +481,7 @@ def test_json_traceback_locals_max_string():
         _var = "spamspamspam"  # noqa
         1 / 0
     except Exception as e:
-        result = tracebacks.DictExceptionFormatter(locals_max_string=4)(
+        result = tracebacks.ExceptionDictTransformer(locals_max_string=4)(
             (type(e), e, e.__traceback__)
         )
         assert result == [
@@ -532,7 +532,7 @@ def test_json_traceback_max_frames(
     try:
         bacon()
     except Exception as e:
-        format_json = tracebacks.DictExceptionFormatter(
+        format_json = tracebacks.ExceptionDictTransformer(
             show_locals=False, max_frames=max_frames
         )
         result = format_json((type(e), e, e.__traceback__))
@@ -560,4 +560,4 @@ def test_json_traceback_max_frames(
     ],
 )
 def test_json_traceback_value_error(kwargs: Dict[str, Any]):
-    pytest.raises(ValueError, tracebacks.DictExceptionFormatter, **kwargs)
+    pytest.raises(ValueError, tracebacks.ExceptionDictTransformer, **kwargs)
