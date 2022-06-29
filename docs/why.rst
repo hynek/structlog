@@ -48,7 +48,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
    >>> log.info("user.logged_in", happy=True)
    2020-11-18 09:18.28 [info     ] user.logged_in    another_key=42 happy=True some_key=23 user=hynek
 
-You can also bind key/value pairs to `thread-local storage <https://www.structlog.org/en/stable/thread-local.html>`_ and `contextvars <https://www.structlog.org/en/stable/contextvars.html>`_.
+You can also bind key/value pairs to :doc:`context variables <contextvars>` that look global, but are local to your thread or *asyncio* context (i.e. often your request).
 
 
 Powerful Pipelines

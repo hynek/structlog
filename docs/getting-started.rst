@@ -113,7 +113,7 @@ For ``structlog``, a log entry is just a dictionary called *event dict[ionary]*:
   Convenient key-value-based logging is great to have on its own.
 - Python keeps dictionaries ordered by keys by default.
 - The recommended way of binding values is the one in these examples: creating new loggers with a new context.
-  If you're okay with giving up immutable local state for convenience, you can also use `thread/greenlet local storage <thread-local>` or :doc:`context variables <contextvars>` for the context.
+  If you're okay with giving up immutable local state for convenience, you can also use :doc:`context variables <contextvars>` for the context.
 
 
 Manipulating Log Entries in Flight
