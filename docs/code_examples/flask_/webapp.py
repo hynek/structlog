@@ -17,8 +17,8 @@ app = flask.Flask(__name__)
 def some_route():
     # You would put this into some kind of middleware or processor so it's set
     # automatically for all requests in all views.
-    structlog.threadlocal.clear_threadlocal()
-    structlog.threadlocal.bind_threadlocal(
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(
         view=flask.request.path,
         request_id=str(uuid.uuid4()),
         peer=flask.request.access_route[0],
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     )
     structlog.configure(
         processors=[
-            structlog.threadlocal.merge_threadlocal,  # <--!!!
+            structlog.contextvars.merge_contextvars,  # <--!!!
             structlog.processors.KeyValueRenderer(
                 key_order=["event", "view", "peer"]
             ),

@@ -9,7 +9,7 @@ This chapter is intended to give you a taste of realistic usage of ``structlog``
 Flask and Thread-Local Data
 ---------------------------
 
-Let's assume you want to bind a unique request ID, the URL path, and the peer's IP to every log entry:
+Let's assume you want to bind a unique request ID, the URL path, and the peer's IP to every log entry by storing it in thread-local storage that is managed by context variables:
 
 .. literalinclude:: code_examples/flask_/webapp.py
    :language: python
@@ -30,12 +30,12 @@ As you can see, ``view``, ``peer``, and ``request_id`` are present in **both** l
 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread-local storage for request-wide context:
 
-1. `structlog.threadlocal.clear_threadlocal()` ensures the thread-local storage is empty for each request.
-2. `structlog.threadlocal.bind_threadlocal()` puts your key-value pairs into thread-local storage.
-3. The `structlog.threadlocal.merge_threadlocal()` processor merges the thread-local context into the event dict.
+1. `structlog.contextvars.clear_contextvars()` ensures the thread-local storage is empty for each request.
+2. `structlog.contextvars.bind_contextvars()` puts your key-value pairs into thread-local storage.
+3. The `structlog.contextvars.merge_contextvars()` processor merges the thread-local context into the event dict.
 
 Please note that the ``user`` field is only present in the view because it wasn't bound into the thread-local storage.
-See `thread-local` for more details.
+See :doc:`contextvars` for more details.
 
 ----
 
