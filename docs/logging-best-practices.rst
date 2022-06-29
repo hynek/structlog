@@ -33,7 +33,7 @@ Pretty Printing vs. Structured Output
 Colorful and pretty printed log messages are nice during development when you locally run your code.
 
 However, in production you should emit structured output (like JSON) which is a lot easier to parse by log aggregators.
-Since you already log in a structured way, writing JSON output with structlogs comes very naturally.
+Since you already log in a structured way, writing JSON output with ``structlog`` comes naturally.
 You can even generate structured exception tracebacks.
 This makes analyzing errors easier, since log aggregators can render JSON much better than multiline strings with a lot escaped quotation marks.
 
