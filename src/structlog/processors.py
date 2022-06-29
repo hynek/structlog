@@ -41,7 +41,8 @@ from ._frames import (
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
-from .types import EventDict, ExcInfo, WrappedLogger
+from .tracebacks import ExceptionDictTransformer
+from .types import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
 
 
 __all__ = [
@@ -53,6 +54,7 @@ __all__ = [
     "UnicodeDecoder",
     "JSONRenderer",
     "format_exc_info",
+    "dict_tracebacks",
     "ExceptionPrettyPrinter",
     "StackInfoRenderer",
     "CallsiteParameter",
@@ -343,30 +345,83 @@ def _json_fallback_handler(obj: Any) -> Any:
             return repr(obj)
 
 
-def format_exc_info(
-    logger: WrappedLogger, name: str, event_dict: EventDict
-) -> EventDict:
+class ExceptionRenderer:
     """
-    Replace an ``exc_info`` field by an ``exception`` string field:
+    Replace an ``exc_info`` field with an ``exception`` field which is rendered
+    by *exception_formatter*.
 
-    If *event_dict* contains the key ``exc_info``, there are two possible
+    The contents of the ``exception`` field depends on the return value of the
+    :class:`.ExceptionTransformer` that is used:
+
+    - The default produces a formatted string via Python's built-in traceback
+      formatting.
+    - The :class:`~structlog.tracebacks.ExceptionDictTransformer` a list of
+      stack dicts that can be serialized to JSON.
+
+    If *event_dict* contains the key ``exc_info``, there are three possible
     behaviors:
 
-    - If the value is a tuple, render it into the key ``exception``.
-    - If the value is an Exception render it into the key ``exception``.
-    - If the value true but no tuple, obtain exc_info ourselves and render
-      that.
+    1. If the value is a tuple, render it into the key ``exception``.
+    2. If the value is an Exception render it into the key ``exception``.
+    3. If the value true but no tuple, obtain exc_info ourselves and render
+       that.
 
     If there is no ``exc_info`` key, the *event_dict* is not touched.
     This behavior is analogue to the one of the stdlib's logging.
-    """
-    exc_info = event_dict.pop("exc_info", None)
-    if exc_info:
-        event_dict["exception"] = _format_exception(
-            _figure_out_exc_info(exc_info)
-        )
 
-    return event_dict
+    :param exception_formatter: A callable that is used to format the exception
+        from the ``exc_info`` field.
+
+    .. versionadded:: 22.1
+    """
+
+    def __init__(
+        self,
+        exception_formatter: ExceptionTransformer = _format_exception,
+    ) -> None:
+        self.format_exception = exception_formatter
+
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        exc_info = event_dict.pop("exc_info", None)
+        if exc_info:
+            event_dict["exception"] = self.format_exception(
+                _figure_out_exc_info(exc_info)
+            )
+
+        return event_dict
+
+
+format_exc_info = ExceptionRenderer()
+"""
+Replace an ``exc_info`` field with an ``exception`` string field using
+Python's built-in traceback formatting.
+
+If *event_dict* contains the key ``exc_info``, there are three possible
+behaviors:
+
+1. If the value is a tuple, render it into the key ``exception``.
+2. If the value is an Exception render it into the key ``exception``.
+3. If the value is true but no tuple, obtain exc_info ourselves and render
+   that.
+
+If there is no ``exc_info`` key, the *event_dict* is not touched.
+This behavior is analogue to the one of the stdlib's logging.
+"""
+
+dict_tracebacks = ExceptionRenderer(ExceptionDictTransformer())
+"""
+Replace an ``exc_info`` field with an ``exception`` field containing structured
+tracebacks suiteable for, e.g., JSON output.
+
+It is a shortcut for :class:`ExceptionRenderer` with a
+:class:`~structlog.tracebacks.ExceptionDictTransformer`.
+
+The treatment of the ``exc_info`` key is identical to `format_exc_info`.
+
+.. versionadded:: 22.1
+"""
 
 
 class TimeStamper:
@@ -499,7 +554,11 @@ class ExceptionPrettyPrinter:
        Added support for passing exceptions as ``exc_info`` on Python 3.
     """
 
-    def __init__(self, file: Optional[TextIO] = None) -> None:
+    def __init__(
+        self,
+        file: Optional[TextIO] = None,
+        exception_formatter: ExceptionTransformer = _format_exception,
+    ) -> None:
         if file is not None:
             self._file = file
         else:

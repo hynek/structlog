@@ -18,7 +18,7 @@ from typing import Any, Iterable, Optional, TextIO, Type, Union
 from ._frames import _format_exception
 from .types import (
     EventDict,
-    ExceptionFormatter,
+    ExceptionRenderer,
     ExcInfo,
     Protocol,
     WrappedLogger,
@@ -277,7 +277,7 @@ class ConsoleRenderer:
         force_colors: bool = False,
         repr_native_str: bool = False,
         level_styles: Optional[Styles] = None,
-        exception_formatter: ExceptionFormatter = default_exception_formatter,
+        exception_formatter: ExceptionRenderer = default_exception_formatter,
         sort_keys: bool = True,
     ):
         styles: Styles

@@ -292,3 +292,21 @@ def typecheck_filtering_return() -> None:
     fblog.warn("no value unbound because key not defined")
     fblog = fblog.new(new="value")
     fblog.info("this is a whole new logger")
+
+
+# Structured tracebacks and ExceptionRenderer with ExceptionDictTransformer
+struct_tb: structlog.tracebacks.Trace = structlog.tracebacks.extract(
+    ValueError, ValueError("onoes"), None
+)
+try:
+    raise ValueError("onoes")
+except ValueError as e:
+    struct_tb = structlog.tracebacks.extract(type(e), e, e.__traceback__)
+structlog.configure(
+    processors=[
+        structlog.processors.ExceptionRenderer(
+            structlog.tracebacks.ExceptionDictTransformer()
+        ),
+        structlog.processors.JSONRenderer(),
+    ]
+)

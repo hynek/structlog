@@ -170,6 +170,27 @@ API Reference
    If you choose to pass a *default* parameter as part of *json_kw*, support for ``__structlog__`` is disabled.
    This can be useful when used together with more elegant serialization methods like :func:`functools.singledispatch`: `Better Python Object Serialization <https://hynek.me/articles/serialization/>`_.
 
+   .. tip::
+
+      If you use this processor, you may also wish to add structured tracebacks for exceptions.
+      You can do this by adding the :class:`~structlog.processors.dict_tracebacks` to your list of processors:
+
+      .. doctest::
+
+         >>> structlog.configure(
+         ...     processors=[
+         ...         structlog.processors.dict_tracebacks,
+         ...         structlog.processors.JSONRenderer(),
+         ...     ],
+         ... )
+         >>> log = structlog.get_logger()
+         >>> var = "spam"
+         >>> try:
+         ...     1 / 0
+         ... except ZeroDivisionError:
+         ...     log.exception("Cannot compute!")
+         {"event": "Cannot compute!", "exception": [{"exc_type": "ZeroDivisionError", "exc_value": "division by zero", "syntax_error": null, "is_cause": false, "frames": [{"filename": "<doctest default[3]>", "lineno": 2, "name": "<module>", "line": "", "locals": {..., "var": "spam"}}]}]}
+
 .. autoclass:: KeyValueRenderer
 
    .. doctest::
@@ -198,6 +219,8 @@ API Reference
 
 .. autoclass:: UnicodeEncoder
 
+.. autoclass:: ExceptionRenderer
+
 .. autofunction:: format_exc_info
 
    .. doctest::
@@ -208,6 +231,17 @@ API Reference
       ... except ValueError:
       ...     format_exc_info(None, None, {"exc_info": True})  # doctest: +ELLIPSIS
       {'exception': 'Traceback (most recent call last):...
+
+.. autofunction:: dict_tracebacks
+
+   .. doctest::
+
+      >>> from structlog.processors import dict_tracebacks
+      >>> try:
+      ...     raise ValueError("onoes")
+      ... except ValueError:
+      ...     dict_tracebacks(None, None, {"exc_info": True})  # doctest: +ELLIPSIS
+      {'exception': [{'exc_type': 'ValueError', 'exc_value': 'onoes', ..., 'frames': [{'filename': ...
 
 .. autoclass:: StackInfoRenderer
 
@@ -264,6 +298,19 @@ API Reference
    :members: wrap_for_formatter, remove_processors_meta
 
 
+`structlog.tracebacks` Module
+-----------------------------
+
+.. automodule:: structlog.tracebacks
+
+.. autofunction:: extract
+.. autoclass:: ExceptionDictTransformer
+.. autoclass:: Trace
+.. autoclass:: Stack
+.. autoclass:: Frame
+.. autoclass:: SyntaxError_
+
+
 `structlog.types` Module
 ------------------------
 
@@ -290,12 +337,18 @@ API Reference
 
      Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
 
+.. autoclass:: ExceptionTransformer
+
+   .. note::
+
+     Currently Sphinx has no support for Protocols, so please click ``[source]`` for this entry to see the full definition.
+
 .. autodata:: EventDict
 .. autodata:: WrappedLogger
 .. autodata:: Processor
 .. autodata:: Context
 .. autodata:: ExcInfo
-.. autodata:: ExceptionFormatter
+.. autodata:: ExceptionRenderer
 
 
 `structlog.twisted` Module

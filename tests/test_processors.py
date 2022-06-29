@@ -29,6 +29,7 @@ from structlog.processors import (
     CallsiteParameter,
     CallsiteParameterAdder,
     ExceptionPrettyPrinter,
+    ExceptionRenderer,
     JSONRenderer,
     KeyValueRenderer,
     LogfmtRenderer,
@@ -456,29 +457,37 @@ class TestTimeStamper:
 
 
 class TestFormatExcInfo:
+    def test_custom_formatter(self):
+        """
+        The exception formatter can be changed.
+        """
+        try:
+            raise ValueError("test")
+        except ValueError as e:
+            formatter = ExceptionRenderer(lambda _: "There is no exception!")
+            assert formatter(None, None, {"exc_info": e}) == {
+                "exception": "There is no exception!"
+            }
+
     @pytest.mark.parametrize("ei", [False, None, ""])
     def test_nop(self, ei):
         """
         If exc_info is falsey, only remove the key.
         """
-        assert {} == format_exc_info(None, None, {"exc_info": ei})
+        assert {} == ExceptionRenderer()(None, None, {"exc_info": ei})
 
     def test_nop_missing(self):
         """
         If event dict doesn't contain exc_info, do nothing.
         """
-        assert {} == format_exc_info(None, None, {})
+        assert {} == ExceptionRenderer()(None, None, {})
 
-    def test_formats_tuple(self, monkeypatch):
+    def test_formats_tuple(self):
         """
         If exc_info is a tuple, it is used.
         """
-        monkeypatch.setattr(
-            structlog.processors,
-            "_format_exception",
-            lambda exc_info: exc_info,
-        )
-        d = format_exc_info(None, None, {"exc_info": (None, None, 42)})
+        formatter = ExceptionRenderer(lambda exc_info: exc_info)
+        d = formatter(None, None, {"exc_info": (None, None, 42)})
 
         assert {"exception": (None, None, 42)} == d
 
@@ -491,25 +500,21 @@ class TestFormatExcInfo:
         try:
             raise ValueError("test")
         except ValueError:
-            d = format_exc_info(None, None, {"exc_info": True})
+            d = ExceptionRenderer()(None, None, {"exc_info": True})
 
         assert "exc_info" not in d
         assert 'raise ValueError("test")' in d["exception"]
         assert "ValueError: test" in d["exception"]
 
-    def test_exception_on_py3(self, monkeypatch):
+    def test_exception(self):
         """
         Passing exceptions as exc_info is valid on Python 3.
         """
-        monkeypatch.setattr(
-            structlog.processors,
-            "_format_exception",
-            lambda exc_info: exc_info,
-        )
         try:
             raise ValueError("test")
         except ValueError as e:
-            d = format_exc_info(None, None, {"exc_info": e})
+            formatter = ExceptionRenderer(lambda exc_info: exc_info)
+            d = formatter(None, None, {"exc_info": e})
 
             assert {"exception": (ValueError, e, e.__traceback__)} == d
         else:
@@ -519,11 +524,22 @@ class TestFormatExcInfo:
         """
         If an Exception is missing a traceback, render it anyway.
         """
-        rv = format_exc_info(
+        rv = ExceptionRenderer()(
             None, None, {"exc_info": Exception("no traceback!")}
         )
 
         assert {"exception": "Exception: no traceback!"} == rv
+
+    def test_format_exception(self):
+        """
+        "format_exception" is the "ExceptionRenderer" with default settings.
+        """
+        try:
+            raise ValueError("test")
+        except ValueError as e:
+            a = format_exc_info(None, None, {"exc_info": e})
+            b = ExceptionRenderer()(None, None, {"exc_info": e})
+            assert a == b
 
 
 class TestUnicodeEncoder:

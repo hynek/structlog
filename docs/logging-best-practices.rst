@@ -27,6 +27,42 @@ The less noise, the more insights.
 At Stripe, this concept is called `Canonical Log Lines <https://brandur.org/canonical-log-lines>`_.
 
 
+Pretty Printing vs. Structured Output
+=====================================
+
+Colorful and pretty printed log messages are nice during development when you locally run your code.
+
+However, in production you should emit structured output (like JSON) which is a lot easier to parse by log aggregators.
+Since you already log in a structured way, writing JSON output with structlogs comes very naturally.
+You can even generate structured exception tracebacks.
+This makes analyzing errors easier, since log aggregators can render JSON much better than multiline strings with a lot escaped quotation marks.
+
+Here is a simple example of how you can have pretty logs during development and JSON output when your app is running in a production context:
+
+.. doctest::
+
+   >>> import sys
+   >>> import structlog
+   >>>
+   >>> shared_processors = [
+   ...     # Processors that have nothing to do with output,
+   ...     # e.g., add timestamps or log level names.
+   ... ]
+   >>> if sys.stderr.isatty():
+   ...     # Pretty printing when we run in a terminal session.
+   ...     # Automatically prints pretty tracebacks when "rich" is installed
+   ...     processors = shared_processors + [
+   ...         structlog.dev.ConsoleRenderer(),
+   ...     ]
+   ... else:
+   ...     # Print JSON when we run, e.g., in a Docker container.
+   ...     # Also print structured tracebacks.
+   ...     processors = shared_processors + [
+   ...         structlog.processors.dict_tracebacks,
+   ...         structlog.processors.JSONRenderer(),
+   ...     ]
+   >>> structlog.configure(processors)
+
 
 Centralized Logging
 ===================
