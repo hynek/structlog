@@ -41,8 +41,8 @@ def _sio():
     return StringIO()
 
 
-@pytest.fixture
-def event_dict():
+@pytest.fixture(name="event_dict")
+def _event_dict():
     """
     An example event dictionary with multiple value types w/o the event itself.
     """

@@ -624,6 +624,34 @@ class TestRenderToLogKW:
 
         assert {"msg": "message", "extra": event_dict} == d
 
+    def test_handles_special_kw(self, event_dict):
+        """
+        "exc_info", "stack_info", and "stackLevel" aren't passed as extras.
+
+        Cf. https://github.com/hynek/structlog/issues/424
+        """
+        del event_dict["a"]  # needs a repr
+        event_dict["event"] = "message"
+
+        event_dict["exc_info"] = True
+        event_dict["stack_info"] = False
+        event_dict["stackLevel"] = 1
+
+        d = render_to_log_kwargs(None, None, event_dict)
+
+        assert {
+            "msg": "message",
+            "exc_info": True,
+            "stack_info": False,
+            "stackLevel": 1,
+            "extra": {
+                "b": [3, 4],
+                "x": 7,
+                "y": "test",
+                "z": (1, 2),
+            },
+        } == d
+
 
 @pytest.fixture(name="configure_for_processor_formatter")
 def _configure_for_processor_formatter():

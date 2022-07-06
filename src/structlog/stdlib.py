@@ -738,8 +738,18 @@ def render_to_log_kwargs(
     This allows you to defer formatting to `logging`.
 
     .. versionadded:: 17.1.0
+    .. versionchanged:: 22.1.0 ``exc_info``, ``stack_info``, and ``stackLevel``
+       are passed as proper kwargs and not put into ``extra``.
     """
-    return {"msg": event_dict.pop("event"), "extra": event_dict}
+    return {
+        "msg": event_dict.pop("event"),
+        "extra": event_dict,
+        **{
+            kw: event_dict.pop(kw)
+            for kw in ("exc_info", "stack_info", "stackLevel")
+            if kw in event_dict
+        },
+    }
 
 
 class ProcessorFormatter(logging.Formatter):

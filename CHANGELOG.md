@@ -73,6 +73,10 @@ So please make sure to **always** properly configure your applications.
   [#392](https://github.com/hynek/structlog/pull/392)
 - Monkeypatched `sys.stdout`s are now handled more gracefully by `ConsoleRenderer` (that's used by default).
   [#404](https://github.com/hynek/structlog/pull/404)
+- `structlog.stdlib.render_to_log_kwargs()` now correctly handles the presence of `exc_info`, `stack_info`, and `stackLevel` in the event dictionary.
+  They are transformed into proper keyword arguments instead of putting them into the `extra` dictionary.
+  [#424](https://github.com/hynek/structlog/issues/424),
+  [#427](https://github.com/hynek/structlog/issues/427)
 
 
 ## [21.5.0](https://github.com/hynek/structlog/compare/21.4.0...21.5.0) - 2021-12-16
