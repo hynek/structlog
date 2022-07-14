@@ -61,12 +61,12 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
 
     .. versionadded: 22.1
     """
-
     if log_level is not None:
         logging.basicConfig(
             format="%(message)s",
             stream=sys.stdout,
             level=log_level,
+            force=True,
         )
 
     _config.reset_defaults()
