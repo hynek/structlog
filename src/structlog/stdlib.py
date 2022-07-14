@@ -65,7 +65,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
         kw = {}
         # 3.7 doesn't have the force keyword and we don't care enough to
         # re-implement it.
-        if sys.version >= (3, 8):
+        if sys.version_info >= (3, 8):
             kw = {"force": True}
 
         logging.basicConfig(
