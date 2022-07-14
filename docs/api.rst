@@ -270,6 +270,8 @@ API Reference
 
 .. automodule:: structlog.stdlib
 
+.. autofunction:: recreate_defaults
+
 .. autofunction:: get_logger
 
 .. autoclass:: BoundLogger
