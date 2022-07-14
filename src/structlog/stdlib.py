@@ -59,7 +59,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
         need more control over `logging`, pass `None` here and configure it
         yourself.
 
-    .. versionadded: 22.1
+    .. versionadded:: 22.1
     """
     if log_level is not None:
         kw = {}
