@@ -52,6 +52,9 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
 
     The output looks the same, but goes through `logging`.
 
+    As with vanilla defaults, the backwards-compatibility guarantees don't
+    apply to the settings applied here.
+
     :param log_level: If `None`, don't configure standard library logging **at
         all**.
 
