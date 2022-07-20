@@ -226,7 +226,7 @@ If you prefer videos over reading, check out `Markus Holtermann <https://twitter
 Project Information
 ===================
 
-- **License**: dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_
+- **License**:  *dual* `Apache License, version 2 and MIT <https://www.structlog.org/en/stable/license.html>`_
 - **PyPI**: https://pypi.org/project/structlog/
 - **Source Code**: https://github.com/hynek/structlog
 - **Documentation**:  https://www.structlog.org/

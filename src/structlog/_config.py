@@ -24,6 +24,7 @@ from typing import (
 
 from ._log_levels import make_filtering_bound_logger
 from ._loggers import PrintLoggerFactory
+from .contextvars import merge_contextvars
 from .dev import ConsoleRenderer, _use_colors, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, add_log_level
 from .types import BindableLogger, Context, Processor, WrappedLogger
@@ -36,6 +37,7 @@ from .types import BindableLogger, Context, Processor, WrappedLogger
    - structlog.stdlib.recreate_defaults()'s docstring.
 """
 _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
+    merge_contextvars,
     add_log_level,
     StackInfoRenderer(),
     set_exc_info,

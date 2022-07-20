@@ -72,6 +72,8 @@ So please make sure to **always** properly configure your applications.
 - `structlog.processors.format_exc_info()` is no longer a function, but an instance of `structlog.processors.ExceptionRenderer`.
   Its behavior has not changed.
   [#407](https://github.com/hynek/structlog/pull/407)
+- The default configuration now includes the `structlog.contextvars.merge_contextvars` processor.
+  That means you can use [`structlog.contextvars`](https://www.structlog.org/en/stable/contextvars.html) features without configuring `structlog`.
 
 
 ### Fixed

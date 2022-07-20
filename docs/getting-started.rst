@@ -48,6 +48,7 @@ Using the defaults, as above, is equivalent to::
 
    structlog.configure(
        processors=[
+           structlog.contextvars.merge_contextvars,
            structlog.processors.add_log_level,
            structlog.processors.StackInfoRenderer(),
            structlog.dev.set_exc_info,

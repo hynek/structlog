@@ -20,13 +20,13 @@ import sys
 from functools import partial
 from typing import Any, Callable, Collection, Iterable, Sequence
 
-from structlog.processors import StackInfoRenderer
-
 from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
+from .contextvars import merge_contextvars
 from .exceptions import DropEvent
+from .processors import StackInfoRenderer
 from .types import Context, EventDict, ExcInfo, Processor, WrappedLogger
 
 
@@ -83,6 +83,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
     _config.reset_defaults()
     _config.configure(
         processors=[
+            merge_contextvars,
             add_log_level,
             StackInfoRenderer(),
             _config._BUILTIN_DEFAULT_PROCESSORS[-2],  # TimeStamper
