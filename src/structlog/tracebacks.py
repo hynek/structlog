@@ -1,7 +1,13 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
+# This file is dual licensed under the terms of the Apache License, Version
+# 2.0, and the MIT License.  See the LICENSE file in the root of this
+# repository for complete details.
+
 """
 Extract a structured traceback from an exception.
 
-Copied and adapted from Rich:
+Contributed by Will McGugan (see
+https://github.com/hynek/structlog/pull/407#issuecomment-1150926246) from Rich:
 https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py
 """
 
