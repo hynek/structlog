@@ -38,23 +38,17 @@ If you prefer videos over reading, check out `Markus Holtermann <https://twitter
 
 .. -begin-meta-
 
-Getting Help
-============
-
-Please use the ``structlog`` tag on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_ to get help.
-
-Answering questions of your fellow developers is also a great way to help the project!
-
-
 Project Information
 ===================
 
-``structlog`` is dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_, available from `PyPI <https://pypi.org/project/structlog/>`_, the source code can be found on `GitHub <https://github.com/hynek/structlog>`_, the documentation at https://www.structlog.org/.
-
-We collect useful third-party extension in `our wiki <https://github.com/hynek/structlog/wiki/Third-party-Extensions>`_.
-
-``structlog`` targets Python 3.7 and later.
-PyPy3 is known to work, but is not tested anymore.
+- **License**: dual-licensed under `Apache License, version 2 <https://choosealicense.com/licenses/apache/>`_ and `MIT <https://choosealicense.com/licenses/mit/>`_
+- **PyPI**: https://pypi.org/project/structlog/
+- **Source Code**: https://github.com/hynek/structlog
+- **Documentation**:  https://www.structlog.org/
+- **Changelog**: https://www.structlog.org/en/stable/changelog.html
+- **Get Help**: please use the ``structlog`` tag on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_
+- **Third-party Extensions**: https://github.com/hynek/structlog/wiki/Third-party-Extensions
+- **Supported Python Versions**: 3.7 and later
 
 
 ``structlog`` for Enterprise
@@ -62,5 +56,6 @@ PyPy3 is known to work, but is not tested anymore.
 
 Available as part of the Tidelift Subscription.
 
-The maintainers of structlog and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use.
+The maintainers of structlog and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications.
+Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use.
 `Learn more. <https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme>`_
