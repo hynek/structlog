@@ -58,9 +58,11 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
     :param log_level: If `None`, don't configure standard library logging **at
         all**.
 
-        Otherwise configure it to log to `sys.stdout` at *log_level*. If you
-        need more control over `logging`, pass `None` here and configure it
-        yourself.
+        Otherwise configure it to log to `sys.stdout` at *log_level*
+        (`logging.NOTSET` being the default).
+
+        If you need more control over `logging`, pass `None` here and configure
+        it yourself.
 
     .. versionadded:: 22.1
     """
