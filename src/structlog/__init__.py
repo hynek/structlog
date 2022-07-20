@@ -50,7 +50,7 @@ except ImportError:
     twisted = None  # type: ignore
 
 
-__version__ = "22.1.0.dev0"
+__version__ = "22.1.0"
 
 __title__ = "structlog"
 # __doc__ is None when running with PYTHONOPTIMIZE=2 / -OO

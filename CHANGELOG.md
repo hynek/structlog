@@ -17,7 +17,7 @@ So please make sure to **always** properly configure your applications.
 
 <!-- changelog follows -->
 
-## [Unreleased](https://github.com/hynek/structlog/compare/21.5.0...HEAD)
+## [22.1.0](https://github.com/hynek/structlog/compare/21.5.0...22.1.0) - 2022-07-20
 
 ### Removed
 
