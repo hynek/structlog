@@ -28,6 +28,7 @@ from structlog._utils import get_processname
 from structlog.processors import (
     CallsiteParameter,
     CallsiteParameterAdder,
+    EventRenamer,
     ExceptionPrettyPrinter,
     ExceptionRenderer,
     JSONRenderer,
@@ -1104,3 +1105,33 @@ class TestCallsiteParameterAdder:
             "process": os.getpid(),
             "process_name": get_processname(),
         }
+
+
+class TestRenameKey:
+    def test_rename_once(self):
+        """
+        Renaming event to something else works.
+        """
+        assert {"msg": "hi", "foo": "bar"} == EventRenamer("msg")(
+            None, None, {"event": "hi", "foo": "bar"}
+        )
+
+    def test_rename_twice(self):
+        """
+        Renaming both from and to `event` works.
+        """
+        assert {
+            "msg": "hi",
+            "event": "fabulous",
+            "foo": "bar",
+        } == EventRenamer("msg", "_event")(
+            None, None, {"event": "hi", "foo": "bar", "_event": "fabulous"}
+        )
+
+    def test_replace_by_key_is_optional(self):
+        """
+        The key that is renamed to `event` doesn't have to exist.
+        """
+        assert {"msg": "hi", "foo": "bar"} == EventRenamer("msg", "missing")(
+            None, None, {"event": "hi", "foo": "bar"}
+        )

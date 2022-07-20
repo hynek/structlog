@@ -85,7 +85,7 @@ class TestConsoleRenderer:
 
         assert (styles.timestamp + "42" + styles.reset + " " + unpadded) == rv
 
-    def test_event_stringified(self, cr, styles, unpadded):
+    def test_event_stringified(self, cr, unpadded):
         """
         Event is cast to string.
         """
@@ -94,6 +94,16 @@ class TestConsoleRenderer:
         rv = cr(None, None, {"event": not_a_string})
 
         assert unpadded == rv
+
+    def test_event_renamed(self):
+        """
+        Uses respects if the event key has been renamed.
+        """
+        cr = dev.ConsoleRenderer(colors=False, event_key="msg")
+
+        assert "new event name                 event=something custom" == cr(
+            None, None, {"msg": "new event name", "event": "something custom"}
+        )
 
     def test_level(self, cr, styles, padded):
         """

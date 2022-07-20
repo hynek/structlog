@@ -213,6 +213,17 @@ API Reference
       >>> LogfmtRenderer(key_order=["b", "a"], bool_as_flag=False)(None, None, event_dict)
       'b="[1, 2, 3]" a=42 flag=true'
 
+.. autoclass:: EventRenamer
+
+   So if you want your log message to be ``msg`` and use ``event`` for something custom:
+
+   .. doctest::
+
+      >>> from structlog.processors import EventRenamer
+      >>> event_dict = {"event": "something happened", "_event": "our event!"}
+      >>> EventRenamer("msg", "_event")(None, None, event_dict)
+      {'msg': 'something happened', 'event': 'our event!'}
+
 .. autofunction:: add_log_level
 
 .. autoclass:: UnicodeDecoder

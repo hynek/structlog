@@ -53,6 +53,11 @@ So please make sure to **always** properly configure your applications.
 - `structlog.stdlib.recreate_defaults(log_level=logging.NOTSET)` that recreates `structlog`'s defaults on top of standard library's `logging`.
   It optionally also configures `logging` to log to standard out at the passed log level.
   [#428](https://github.com/hynek/structlog/pull/428)
+- `structlog.processors.EventRenamer` allows you to rename the hitherto hard-coded event dict key `event` to something else.
+  Optionally, you can rename another key to `event` at the same time, too.
+  So adding `EventRenamer(to="msg", replace_by="_event")` to your processor pipeline will rename the standard `event` key to `msg` and then rename the `_event` key to `event`.
+  This allows you to use the `event` key in your own log files and to have consistent log message keys across languages.
+- `structlog.dev.ConsoleRenderer(event_key="event")` now allows to customize the name of the key that is used for the log message.
 
 
 ### Changed

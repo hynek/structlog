@@ -7,6 +7,8 @@
 Processors useful regardless of the logging framework.
 """
 
+from __future__ import annotations
+
 import datetime
 import enum
 import inspect
@@ -23,15 +25,9 @@ from typing import (
     Callable,
     ClassVar,
     Collection,
-    Dict,
-    List,
     NamedTuple,
-    Optional,
     Sequence,
-    Set,
     TextIO,
-    Tuple,
-    Union,
 )
 
 from ._frames import (
@@ -47,18 +43,19 @@ from .types import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
 
 __all__ = [
     "_NAME_TO_LEVEL",  # some people rely on it being here
-    "KeyValueRenderer",
-    "TimeStamper",
     "add_log_level",
-    "UnicodeEncoder",
-    "UnicodeDecoder",
-    "JSONRenderer",
-    "format_exc_info",
-    "dict_tracebacks",
-    "ExceptionPrettyPrinter",
-    "StackInfoRenderer",
     "CallsiteParameter",
     "CallsiteParameterAdder",
+    "dict_tracebacks",
+    "EventRenamer",
+    "ExceptionPrettyPrinter",
+    "format_exc_info",
+    "JSONRenderer",
+    "KeyValueRenderer",
+    "StackInfoRenderer",
+    "TimeStamper",
+    "UnicodeDecoder",
+    "UnicodeEncoder",
 ]
 
 
@@ -85,7 +82,7 @@ class KeyValueRenderer:
     def __init__(
         self,
         sort_keys: bool = False,
-        key_order: Optional[Sequence[str]] = None,
+        key_order: Sequence[str] | None = None,
         drop_missing: bool = False,
         repr_native_str: bool = True,
     ):
@@ -135,7 +132,7 @@ class LogfmtRenderer:
     def __init__(
         self,
         sort_keys: bool = False,
-        key_order: Optional[Sequence[str]] = None,
+        key_order: Sequence[str] | None = None,
         drop_missing: bool = False,
         bool_as_flag: bool = True,
     ):
@@ -146,7 +143,7 @@ class LogfmtRenderer:
         self, _: WrappedLogger, __: str, event_dict: EventDict
     ) -> str:
 
-        elements: List[str] = []
+        elements: list[str] = []
         for key, value in self._ordered_items(event_dict):
             if any(c <= " " for c in key):
                 raise ValueError(f'Invalid key: "{key}"')
@@ -173,9 +170,9 @@ class LogfmtRenderer:
 
 def _items_sorter(
     sort_keys: bool,
-    key_order: Optional[Sequence[str]],
+    key_order: Sequence[str] | None,
     drop_missing: bool,
-) -> Callable[[EventDict], List[Tuple[str, Any]]]:
+) -> Callable[[EventDict], list[tuple[str, Any]]]:
     """
     Return a function to sort items from an ``event_dict``.
 
@@ -184,7 +181,7 @@ def _items_sorter(
     # Use an optimized version for each case.
     if key_order and sort_keys:
 
-        def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
+        def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
             for key in key_order:  # type: ignore
                 value = event_dict.pop(key, None)
@@ -197,7 +194,7 @@ def _items_sorter(
 
     elif key_order:
 
-        def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
+        def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
             for key in key_order:  # type: ignore
                 value = event_dict.pop(key, None)
@@ -210,7 +207,7 @@ def _items_sorter(
 
     elif sort_keys:
 
-        def ordered_items(event_dict: EventDict) -> List[Tuple[str, Any]]:
+        def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             return sorted(event_dict.items())
 
     else:
@@ -313,7 +310,7 @@ class JSONRenderer:
 
     def __init__(
         self,
-        serializer: Callable[..., Union[str, bytes]] = json.dumps,
+        serializer: Callable[..., str | bytes] = json.dumps,
         **dumps_kw: Any,
     ) -> None:
         dumps_kw.setdefault("default", _json_fallback_handler)
@@ -322,7 +319,7 @@ class JSONRenderer:
 
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
-    ) -> Union[str, bytes]:
+    ) -> str | bytes:
         """
         The return type of this depends on the return type of self._dumps.
         """
@@ -441,7 +438,7 @@ class TimeStamper:
 
     def __init__(
         self,
-        fmt: Optional[str] = None,
+        fmt: str | None = None,
         utc: bool = True,
         key: str = "timestamp",
     ) -> None:
@@ -454,10 +451,10 @@ class TimeStamper:
     ) -> EventDict:
         return self._stamper(event_dict)
 
-    def __getstate__(self) -> Dict[str, Any]:
+    def __getstate__(self) -> dict[str, Any]:
         return {"fmt": self.fmt, "utc": self.utc, "key": self.key}
 
-    def __setstate__(self, state: Dict[str, Any]) -> None:
+    def __setstate__(self, state: dict[str, Any]) -> None:
         self.fmt = state["fmt"]
         self.utc = state["utc"]
         self.key = state["key"]
@@ -466,7 +463,7 @@ class TimeStamper:
 
 
 def _make_stamper(
-    fmt: Optional[str], utc: bool, key: str
+    fmt: str | None, utc: bool, key: str
 ) -> Callable[[EventDict], EventDict]:
     """
     Create a stamper function.
@@ -556,7 +553,7 @@ class ExceptionPrettyPrinter:
 
     def __init__(
         self,
-        file: Optional[TextIO] = None,
+        file: TextIO | None = None,
         exception_formatter: ExceptionTransformer = _format_exception,
     ) -> None:
         if file is not None:
@@ -601,7 +598,7 @@ class StackInfoRenderer:
 
     __slots__ = ["_additional_ignores"]
 
-    def __init__(self, additional_ignores: Optional[List[str]] = None) -> None:
+    def __init__(self, additional_ignores: list[str] | None = None) -> None:
         self._additional_ignores = additional_ignores
 
     def __call__(
@@ -692,7 +689,7 @@ class CallsiteParameterAdder:
     """
 
     _handlers: ClassVar[
-        Dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+        dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
     ] = {
         CallsiteParameter.PATHNAME: (
             lambda module, frame_info: frame_info.filename
@@ -722,7 +719,7 @@ class CallsiteParameterAdder:
             lambda module, frame_info: get_processname()
         ),
     }
-    _record_attribute_map: ClassVar[Dict[CallsiteParameter, str]] = {
+    _record_attribute_map: ClassVar[dict[CallsiteParameter, str]] = {
         CallsiteParameter.PATHNAME: "pathname",
         CallsiteParameter.FILENAME: "filename",
         CallsiteParameter.MODULE: "module",
@@ -734,7 +731,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.PROCESS_NAME: "processName",
     }
 
-    _all_parameters: ClassVar[Set[CallsiteParameter]] = set(CallsiteParameter)
+    _all_parameters: ClassVar[set[CallsiteParameter]] = set(CallsiteParameter)
 
     class _RecordMapping(NamedTuple):
         event_dict_key: str
@@ -749,7 +746,7 @@ class CallsiteParameterAdder:
     def __init__(
         self,
         parameters: Collection[CallsiteParameter] = _all_parameters,
-        additional_ignores: Optional[List[str]] = None,
+        additional_ignores: list[str] | None = None,
     ) -> None:
         if additional_ignores is None:
             additional_ignores = []
@@ -757,12 +754,10 @@ class CallsiteParameterAdder:
         # processor is used in ProcessorFormatter, and additionally the logging
         # module should not be logging using structlog.
         self._additional_ignores = ["logging", *additional_ignores]
-        self._active_handlers: List[
-            Tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+        self._active_handlers: list[
+            tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
         ] = []
-        self._record_mappings: List[
-            "CallsiteParameterAdder._RecordMapping"
-        ] = []
+        self._record_mappings: list[CallsiteParameterAdder._RecordMapping] = []
         for parameter in parameters:
             self._active_handlers.append(
                 (parameter, self._handlers[parameter])
@@ -777,8 +772,8 @@ class CallsiteParameterAdder:
     def __call__(
         self, logger: logging.Logger, name: str, event_dict: EventDict
     ) -> EventDict:
-        record: Optional[logging.LogRecord] = event_dict.get("_record")
-        from_structlog: Optional[bool] = event_dict.get("_from_structlog")
+        record: logging.LogRecord | None = event_dict.get("_record")
+        from_structlog: bool | None = event_dict.get("_from_structlog")
         # If the event dictionary has a record, but it comes from structlog,
         # then the callsite parameters of the record will not be correct.
         if record is not None and not from_structlog:
@@ -793,4 +788,43 @@ class CallsiteParameterAdder:
             frame_info = inspect.getframeinfo(frame)
             for parameter, handler in self._active_handlers:
                 event_dict[parameter.value] = handler(module, frame_info)
+        return event_dict
+
+
+class EventRenamer:
+    r"""
+    Rename the ``event`` key in event dicts.
+
+    This is useful if you want to use consistent log message keys across
+    platforms and/or use the ``event`` key for something custom.
+
+    .. warning::
+
+       It's recommended to put this processor right before the renderer, since
+       some processors may rely on the presence and meaning of the ``event``
+       key.
+
+    :param to: Rename ``event_dict["event"]`` to ``event_dict[to]``
+    :param replace_by: Rename ``event_dict[replace_by]`` to
+        ``event_dict["event"]``. *replace_by* missing from ``event_dict`` is
+        handled gracefully.
+
+    .. versionadded:: 22.1
+    """
+
+    def __init__(self, to: str, replace_by: str | None = None):
+        self.to = to
+        self.replace_by = replace_by
+
+    def __call__(
+        self, logger: logging.Logger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        event = event_dict.pop("event")
+        event_dict[self.to] = event
+
+        if self.replace_by is not None:
+            replace_by = event_dict.pop(self.replace_by, None)
+            if replace_by is not None:
+                event_dict["event"] = replace_by
+
         return event_dict

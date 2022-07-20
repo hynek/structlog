@@ -237,6 +237,8 @@ class ConsoleRenderer:
         `plain_traceback`, `better_traceback`, `rich_traceback`, or implement
         your own.
     :param sort_keys: Whether to sort keys when formatting. `True` by default.
+    :param event_key: The key to look for the main log message. Needed when
+        you rename it e.g. using `structlog.processors.EventRenamer`.
 
     Requires the colorama_ package if *colors* is `True` **on Windows**.
 
@@ -268,6 +270,7 @@ class ConsoleRenderer:
        non-Windows systems, and either True or False in Windows depending on
        whether colorama is installed.
     .. versionadded:: 21.3.0 *sort_keys*
+    .. versionadded:: 22.1 *event_key*
     """
 
     def __init__(
@@ -279,6 +282,7 @@ class ConsoleRenderer:
         level_styles: Optional[Styles] = None,
         exception_formatter: ExceptionRenderer = default_exception_formatter,
         sort_keys: bool = True,
+        event_key: str = "event",
     ):
         styles: Styles
         if colors:
@@ -321,6 +325,7 @@ class ConsoleRenderer:
         self._repr_native_str = repr_native_str
         self._exception_formatter = exception_formatter
         self._sort_keys = sort_keys
+        self._event_key = event_key
 
     def _repr(self, val: Any) -> str:
         """
@@ -361,7 +366,7 @@ class ConsoleRenderer:
             )
 
         # force event to str for compatibility with standard library
-        event = event_dict.pop("event", None)
+        event = event_dict.pop(self._event_key, None)
         if not isinstance(event, str):
             event = str(event)
 
