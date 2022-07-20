@@ -59,7 +59,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
         all**.
 
         Otherwise configure it to log to `sys.stdout` at *log_level*
-        (`logging.NOTSET` being the default).
+        (``logging.NOTSET`` being the default).
 
         If you need more control over `logging`, pass `None` here and configure
         it yourself.
