@@ -7,6 +7,8 @@
 Structured Logging for Python
 """
 
+from __future__ import annotations
+
 from structlog import (
     contextvars,
     dev,

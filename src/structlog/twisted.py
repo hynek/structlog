@@ -10,10 +10,12 @@ networking engine.
 See also :doc:`structlog's Twisted support <twisted>`.
 """
 
+from __future__ import annotations
+
 import json
 import sys
 
-from typing import Any, Callable, Dict, Optional, Sequence, TextIO, Tuple
+from typing import Any, Callable, Sequence, TextIO
 
 from twisted.python import log
 from twisted.python.failure import Failure
@@ -42,13 +44,13 @@ class BoundLogger(BoundLoggerBase):
 
     """
 
-    def msg(self, event: Optional[str] = None, **kw: Any) -> Any:
+    def msg(self, event: str | None = None, **kw: Any) -> Any:
         """
         Process event and call ``log.msg()`` with the result.
         """
         return self._proxy_to_logger("msg", event, **kw)
 
-    def err(self, event: Optional[str] = None, **kw: Any) -> Any:
+    def err(self, event: str | None = None, **kw: Any) -> Any:
         """
         Process event and call ``log.err()`` with the result.
         """
@@ -79,7 +81,7 @@ class LoggerFactory:
 _FAIL_TYPES = (BaseException, Failure)
 
 
-def _extractStuffAndWhy(eventDict: EventDict) -> Tuple[Any, Any, EventDict]:
+def _extractStuffAndWhy(eventDict: EventDict) -> tuple[Any, Any, EventDict]:
     """
     Removes all possible *_why*s and *_stuff*s, analyzes exc_info and returns
     a tuple of ``(_stuff, _why, eventDict)``.
@@ -173,7 +175,7 @@ class JSONRenderer(GenericJSONRenderer):
         logger: WrappedLogger,
         name: str,
         eventDict: EventDict,
-    ) -> Tuple[Sequence[Any], Dict[str, Any]]:
+    ) -> tuple[Sequence[Any], dict[str, Any]]:
         _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
         if name == "err":
             eventDict["event"] = _why
@@ -292,9 +294,8 @@ class EventAdapter:
 
     def __init__(
         self,
-        dictRenderer: Optional[
-            Callable[[WrappedLogger, str, EventDict], str]
-        ] = None,
+        dictRenderer: Callable[[WrappedLogger, str, EventDict], str]
+        | None = None,
     ) -> None:
         """
         :param dictRenderer: A processor used to format the log message.

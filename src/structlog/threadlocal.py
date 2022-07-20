@@ -12,13 +12,15 @@ See `thread-local`, but please use :doc:`contextvars` instead.
 .. deprecated:: 22.1.0
 """
 
+from __future__ import annotations
+
 import contextlib
 import sys
 import threading
 import uuid
 import warnings
 
-from typing import Any, Dict, Generator, Iterator, Type, TypeVar
+from typing import Any, Generator, Iterator, TypeVar
 
 import structlog
 
@@ -26,7 +28,7 @@ from ._config import BoundLoggerLazyProxy
 from .types import BindableLogger, Context, EventDict, WrappedLogger
 
 
-def _determine_threadlocal() -> Type[Any]:
+def _determine_threadlocal() -> type[Any]:
     """
     Return a dict-like threadlocal storage depending on whether we run with
     greenlets or not.
@@ -74,7 +76,7 @@ def _deprecated() -> None:
     )
 
 
-def wrap_dict(dict_class: Type[Context]) -> Type[Context]:
+def wrap_dict(dict_class: type[Context]) -> type[Context]:
     """
     Wrap a dict-like class and return the resulting class.
 
@@ -162,7 +164,7 @@ class _ThreadLocalDictWrapper:
     """
 
     _tl: Any
-    _dict_class: Type[Dict[str, Any]]
+    _dict_class: type[dict[str, Any]]
 
     def __init__(self, *args: Any, **kw: Any) -> None:
         """

@@ -7,6 +7,8 @@
 Generic utilities.
 """
 
+from __future__ import annotations
+
 import errno
 import sys
 

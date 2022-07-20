@@ -7,7 +7,9 @@
 Logger wrapper and helper class.
 """
 
-from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
+from __future__ import annotations
+
+from typing import Any, Iterable, Mapping, Sequence
 
 from structlog.exceptions import DropEvent
 
@@ -65,7 +67,7 @@ class BoundLoggerBase:
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
-    def bind(self, **new_values: Any) -> "BoundLoggerBase":
+    def bind(self, **new_values: Any) -> BoundLoggerBase:
         """
         Return a new logger with *new_values* added to the existing ones.
         """
@@ -75,7 +77,7 @@ class BoundLoggerBase:
             self._context.__class__(self._context, **new_values),
         )
 
-    def unbind(self, *keys: str) -> "BoundLoggerBase":
+    def unbind(self, *keys: str) -> BoundLoggerBase:
         """
         Return a new logger with *keys* removed from the context.
 
@@ -87,7 +89,7 @@ class BoundLoggerBase:
 
         return bl
 
-    def try_unbind(self, *keys: str) -> "BoundLoggerBase":
+    def try_unbind(self, *keys: str) -> BoundLoggerBase:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
@@ -99,7 +101,7 @@ class BoundLoggerBase:
 
         return bl
 
-    def new(self, **new_values: Any) -> "BoundLoggerBase":
+    def new(self, **new_values: Any) -> BoundLoggerBase:
         """
         Clear context and binds *initial_values* using `bind`.
 
@@ -114,8 +116,8 @@ class BoundLoggerBase:
     # Helper methods for sub-classing concrete BoundLoggers.
 
     def _process_event(
-        self, method_name: str, event: Optional[str], event_kw: Dict[str, Any]
-    ) -> Tuple[Sequence[Any], Mapping[str, Any]]:
+        self, method_name: str, event: str | None, event_kw: dict[str, Any]
+    ) -> tuple[Sequence[Any], Mapping[str, Any]]:
         """
         Combines creates an ``event_dict`` and runs the chain.
 
@@ -175,7 +177,7 @@ class BoundLoggerBase:
             )
 
     def _proxy_to_logger(
-        self, method_name: str, event: Optional[str] = None, **event_kw: Any
+        self, method_name: str, event: str | None = None, **event_kw: Any
     ) -> Any:
         """
         Run processor chain on event & call *method_name* on wrapped logger.

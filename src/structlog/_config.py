@@ -7,20 +7,12 @@
 Global state department.  Don't reload this module or everything breaks.
 """
 
+from __future__ import annotations
 
 import sys
 import warnings
 
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    Optional,
-    Sequence,
-    Type,
-    cast,
-)
+from typing import Any, Callable, Iterable, Sequence, Type, cast
 
 from ._log_levels import make_filtering_bound_logger
 from ._loggers import PrintLoggerFactory
@@ -62,7 +54,7 @@ class _Configuration:
 
     is_configured: bool = False
     default_processors: Iterable[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
-    default_context_class: Type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
+    default_context_class: type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
     logger_factory: Callable[
         ..., WrappedLogger
@@ -87,7 +79,7 @@ def is_configured() -> bool:
     return _CONFIG.is_configured
 
 
-def get_config() -> Dict[str, Any]:
+def get_config() -> dict[str, Any]:
     """
     Get a dictionary with the current configuration.
 
@@ -146,12 +138,12 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 
 def wrap_logger(
     logger: WrappedLogger,
-    processors: Optional[Iterable[Processor]] = None,
-    wrapper_class: Optional[Type[BindableLogger]] = None,
-    context_class: Optional[Type[Context]] = None,
-    cache_logger_on_first_use: Optional[bool] = None,
-    logger_factory_args: Optional[Iterable[Any]] = None,
-    **initial_values: Any
+    processors: Iterable[Processor] | None = None,
+    wrapper_class: type[BindableLogger] | None = None,
+    context_class: type[Context] | None = None,
+    cache_logger_on_first_use: bool | None = None,
+    logger_factory_args: Iterable[Any] | None = None,
+    **initial_values: Any,
 ) -> Any:
     """
     Create a new bound logger for an arbitrary *logger*.
@@ -189,11 +181,11 @@ def wrap_logger(
 
 
 def configure(
-    processors: Optional[Iterable[Processor]] = None,
-    wrapper_class: Optional[Type[BindableLogger]] = None,
-    context_class: Optional[Type[Context]] = None,
-    logger_factory: Optional[Callable[..., WrappedLogger]] = None,
-    cache_logger_on_first_use: Optional[bool] = None,
+    processors: Iterable[Processor] | None = None,
+    wrapper_class: type[BindableLogger] | None = None,
+    context_class: type[Context] | None = None,
+    logger_factory: Callable[..., WrappedLogger] | None = None,
+    cache_logger_on_first_use: bool | None = None,
 ) -> None:
     """
     Configures the **global** defaults.
@@ -239,11 +231,11 @@ def configure(
 
 
 def configure_once(
-    processors: Optional[Iterable[Processor]] = None,
-    wrapper_class: Optional[Type[BindableLogger]] = None,
-    context_class: Optional[Type[Context]] = None,
-    logger_factory: Optional[Callable[..., WrappedLogger]] = None,
-    cache_logger_on_first_use: Optional[bool] = None,
+    processors: Iterable[Processor] | None = None,
+    wrapper_class: type[BindableLogger] | None = None,
+    context_class: type[Context] | None = None,
+    logger_factory: Callable[..., WrappedLogger] | None = None,
+    cache_logger_on_first_use: bool | None = None,
 ) -> None:
     """
     Configures if structlog isn't configured yet.
@@ -298,11 +290,11 @@ class BoundLoggerLazyProxy:
     def __init__(
         self,
         logger: WrappedLogger,
-        wrapper_class: Optional[Type[BindableLogger]] = None,
-        processors: Optional[Iterable[Processor]] = None,
-        context_class: Optional[Type[Context]] = None,
-        cache_logger_on_first_use: Optional[bool] = None,
-        initial_values: Optional[Dict[str, Any]] = None,
+        wrapper_class: type[BindableLogger] | None = None,
+        processors: Iterable[Processor] | None = None,
+        context_class: type[Context] | None = None,
+        cache_logger_on_first_use: bool | None = None,
+        initial_values: dict[str, Any] | None = None,
         logger_factory_args: Any = None,
     ) -> None:
         self._logger = logger
@@ -398,13 +390,13 @@ class BoundLoggerLazyProxy:
 
         return getattr(bl, name)
 
-    def __getstate__(self) -> Dict[str, Any]:
+    def __getstate__(self) -> dict[str, Any]:
         """
         Our __getattr__ magic makes this necessary.
         """
         return self.__dict__
 
-    def __setstate__(self, state: Dict[str, Any]) -> None:
+    def __setstate__(self, state: dict[str, Any]) -> None:
         """
         Our __getattr__ magic makes this necessary.
         """

@@ -7,6 +7,8 @@
 Exceptions factored out to avoid import loops.
 """
 
+from __future__ import annotations
+
 
 class DropEvent(BaseException):
     """

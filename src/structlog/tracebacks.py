@@ -4,12 +4,15 @@ Extract a structured traceback from an exception.
 Copied and adapted from Rich:
 https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py
 """
+
+from __future__ import annotations
+
 import os
 
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Tuple, Union
 
 from .types import ExcInfo
 
@@ -43,7 +46,7 @@ class Frame:
     lineno: int
     name: str
     line: str = ""
-    locals: Optional[Dict[str, str]] = None
+    locals: dict[str, str] | None = None
 
 
 @dataclass
@@ -67,9 +70,9 @@ class Stack:
 
     exc_type: str
     exc_value: str
-    syntax_error: Optional[SyntaxError_] = None
+    syntax_error: SyntaxError_ | None = None
     is_cause: bool = False
-    frames: List[Frame] = field(default_factory=list)
+    frames: list[Frame] = field(default_factory=list)
 
 
 @dataclass
@@ -78,7 +81,7 @@ class Trace:
     Container for a list of stack traces.
     """
 
-    stacks: List[Stack]
+    stacks: list[Stack]
 
 
 def safe_str(_object: Any) -> str:
@@ -89,7 +92,7 @@ def safe_str(_object: Any) -> str:
         return f"<str-error {str(error)!r}>"
 
 
-def to_repr(obj: Any, max_string: Optional[int] = None) -> str:
+def to_repr(obj: Any, max_string: int | None = None) -> str:
     """Get repr string for an object, but catch errors."""
     if isinstance(obj, str):
         obj_repr = obj
@@ -107,9 +110,9 @@ def to_repr(obj: Any, max_string: Optional[int] = None) -> str:
 
 
 def extract(
-    exc_type: Type[BaseException],
+    exc_type: type[BaseException],
     exc_value: BaseException,
-    traceback: Optional[TracebackType],
+    traceback: TracebackType | None,
     *,
     show_locals: bool = False,
     locals_max_string: int = LOCALS_MAX_STRING,
@@ -131,7 +134,7 @@ def extract(
     .. versionadded:: 22.1
     """
 
-    stacks: List[Stack] = []
+    stacks: list[Stack] = []
     is_cause = False
 
     while True:
@@ -232,7 +235,7 @@ class ExceptionDictTransformer:
         self.locals_max_string = locals_max_string
         self.max_frames = max_frames
 
-    def __call__(self, exc_info: ExcInfo) -> List[Dict[str, Any]]:
+    def __call__(self, exc_info: ExcInfo) -> list[dict[str, Any]]:
         trace = extract(
             *exc_info,
             show_locals=self.show_locals,

@@ -54,11 +54,12 @@ default_role = "any"
 
 nitpick_ignore = [
     ("py:class", "Context"),
+    ("py:class", "EventDict"),
     ("py:class", "ILogObserver"),
     ("py:class", "PlainFileObserver"),
     ("py:class", "Processor"),
+    ("py:class", "Styles"),
     ("py:class", "WrappedLogger"),
-    ("py:class", "structlog.dev._Styles"),
     ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "structlog.types.EventDict"),
 ]

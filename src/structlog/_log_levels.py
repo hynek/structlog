@@ -7,9 +7,11 @@
 Extracted log level data used by both stdlib and native log level filters.
 """
 
+from __future__ import annotations
+
 import logging
 
-from typing import Any, Callable, Dict, Type
+from typing import Any, Callable
 
 from ._base import BoundLoggerBase
 from .types import EventDict, FilteringBoundLogger
@@ -77,7 +79,7 @@ def exception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
     return self.error(event, **kw)
 
 
-def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
+def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     """
     Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
 
@@ -110,7 +112,7 @@ def make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
     return _LEVEL_TO_FILTERING_LOGGER[min_level]
 
 
-def _make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
+def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     """
     Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
 
@@ -137,7 +139,7 @@ def _make_filtering_bound_logger(min_level: int) -> Type[FilteringBoundLogger]:
         name = _LEVEL_TO_NAME[level]
         return self._proxy_to_logger(name, event, **kw)
 
-    meths: Dict[str, Callable] = {"log": log}
+    meths: dict[str, Callable] = {"log": log}
     for lvl, name in _LEVEL_TO_NAME.items():
         meths[name] = make_method(lvl)
 

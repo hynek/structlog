@@ -9,6 +9,8 @@ greenlet-specific code that pretends to be a `threading.local`.
 Fails to import if not running under greenlet.
 """
 
+from __future__ import annotations
+
 from typing import Any
 from weakref import WeakKeyDictionary
 

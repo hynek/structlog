@@ -9,11 +9,13 @@ Helpers that make development with ``structlog`` more pleasant.
 See also the narrative documentation in `development`.
 """
 
+from __future__ import annotations
+
 import sys
 import warnings
 
 from io import StringIO
-from typing import Any, Iterable, Optional, TextIO, Type, Union
+from typing import Any, Iterable, TextIO, Type, Union
 
 from ._frames import _format_exception
 from .types import (
@@ -279,7 +281,7 @@ class ConsoleRenderer:
         colors: bool = _use_colors,
         force_colors: bool = False,
         repr_native_str: bool = False,
-        level_styles: Optional[Styles] = None,
+        level_styles: Styles | None = None,
         exception_formatter: ExceptionRenderer = default_exception_formatter,
         sort_keys: bool = True,
         event_key: str = "event",

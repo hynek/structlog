@@ -11,8 +11,10 @@ Helpers to test your application's logging behavior.
 See :doc:`testing`.
 """
 
+from __future__ import annotations
+
 from contextlib import contextmanager
-from typing import Any, Dict, Generator, List, NamedTuple, NoReturn, Tuple
+from typing import Any, Generator, NamedTuple, NoReturn
 
 from ._config import configure, get_config
 from .exceptions import DropEvent
@@ -33,7 +35,7 @@ class LogCapture:
     .. versionadded:: 20.1.0
     """
 
-    entries: List[EventDict]
+    entries: list[EventDict]
 
     def __init__(self) -> None:
         self.entries = []
@@ -48,7 +50,7 @@ class LogCapture:
 
 
 @contextmanager
-def capture_logs() -> Generator[List[EventDict], None, None]:
+def capture_logs() -> Generator[list[EventDict], None, None]:
     """
     Context manager that appends all logging statements to its yielded list
     while it is active. Disables all configured processors for the duration
@@ -137,8 +139,8 @@ class CapturedCall(NamedTuple):
     """
 
     method_name: str
-    args: Tuple[Any, ...]
-    kwargs: Dict[str, Any]
+    args: tuple[Any, ...]
+    kwargs: dict[str, Any]
 
 
 class CapturingLogger:
@@ -153,7 +155,7 @@ class CapturingLogger:
     .. versionadded:: 20.2.0
     """
 
-    calls: List[CapturedCall]
+    calls: list[CapturedCall]
 
     def __init__(self) -> None:
         self.calls = []

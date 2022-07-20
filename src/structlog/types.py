@@ -12,6 +12,8 @@ probably change to something more elegant.
 .. versionadded:: 20.2
 """
 
+from __future__ import annotations
+
 import sys
 
 from types import TracebackType
@@ -132,16 +134,16 @@ class BindableLogger(Protocol):
 
     _context: Context
 
-    def bind(self, **new_values: Any) -> "BindableLogger":
+    def bind(self, **new_values: Any) -> BindableLogger:
         ...
 
-    def unbind(self, *keys: str) -> "BindableLogger":
+    def unbind(self, *keys: str) -> BindableLogger:
         ...
 
-    def try_unbind(self, *keys: str) -> "BindableLogger":
+    def try_unbind(self, *keys: str) -> BindableLogger:
         ...
 
-    def new(self, **new_values: Any) -> "BindableLogger":
+    def new(self, **new_values: Any) -> BindableLogger:
         ...
 
 
@@ -154,28 +156,28 @@ class FilteringBoundLogger(BindableLogger, Protocol):
     .. versionadded:: 20.2.0
     """
 
-    def bind(self, **new_values: Any) -> "FilteringBoundLogger":
+    def bind(self, **new_values: Any) -> FilteringBoundLogger:
         """
         Return a new logger with *new_values* added to the existing ones.
 
         .. versionadded:: 22.1.0
         """
 
-    def unbind(self, *keys: str) -> "FilteringBoundLogger":
+    def unbind(self, *keys: str) -> FilteringBoundLogger:
         """
         Return a new logger with *keys* removed from the context.
 
         .. versionadded:: 22.1.0
         """
 
-    def try_unbind(self, *keys: str) -> "FilteringBoundLogger":
+    def try_unbind(self, *keys: str) -> FilteringBoundLogger:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
         .. versionadded:: 22.1.0
         """
 
-    def new(self, **new_values: Any) -> "FilteringBoundLogger":
+    def new(self, **new_values: Any) -> FilteringBoundLogger:
         """
         Clear context and binds *initial_values* using `bind`.
 

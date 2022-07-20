@@ -15,10 +15,12 @@ Python 3.7 as :mod:`contextvars`.
 See :doc:`contextvars`.
 """
 
+from __future__ import annotations
+
 import contextlib
 import contextvars
 
-from typing import Any, Dict, Generator, Mapping
+from typing import Any, Generator, Mapping
 
 import structlog
 
@@ -31,10 +33,10 @@ STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
 # See https://github.com/hynek/structlog/pull/302 for details.
-_CONTEXT_VARS: Dict[str, contextvars.ContextVar[Any]] = {}
+_CONTEXT_VARS: dict[str, contextvars.ContextVar[Any]] = {}
 
 
-def get_contextvars() -> Dict[str, Any]:
+def get_contextvars() -> dict[str, Any]:
     """
     Return a copy of the ``structlog``-specific context-local context.
 
@@ -50,7 +52,7 @@ def get_contextvars() -> Dict[str, Any]:
     return rv
 
 
-def get_merged_contextvars(bound_logger: BindableLogger) -> Dict[str, Any]:
+def get_merged_contextvars(bound_logger: BindableLogger) -> dict[str, Any]:
     """
     Return a copy of the current context-local context merged with the context
     from *bound_logger*.
@@ -100,7 +102,7 @@ def clear_contextvars() -> None:
             k.set(Ellipsis)
 
 
-def bind_contextvars(**kw: Any) -> "Mapping[str, contextvars.Token[Any]]":
+def bind_contextvars(**kw: Any) -> Mapping[str, contextvars.Token[Any]]:
     r"""
     Put keys and values into the context-local context.
 
@@ -129,7 +131,7 @@ def bind_contextvars(**kw: Any) -> "Mapping[str, contextvars.Token[Any]]":
     return rv
 
 
-def reset_contextvars(**kw: "contextvars.Token[Any]") -> None:
+def reset_contextvars(**kw: contextvars.Token[Any]) -> None:
     r"""
     Reset contextvars corresponding to the given Tokens.
 
