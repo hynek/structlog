@@ -24,6 +24,7 @@ from structlog import (
     get_context,
     reset_defaults,
 )
+from structlog._config import _CONFIG
 from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
@@ -41,6 +42,7 @@ from structlog.stdlib import (
     add_logger_name,
     filter_by_level,
     get_logger,
+    recreate_defaults,
     render_to_log_kwargs,
 )
 from structlog.testing import CapturedCall
@@ -1196,3 +1198,34 @@ class TestAsyncBoundLogger:
         } == json.loads(capsys.readouterr().out)
 
         reset_defaults()
+
+
+@pytest.mark.parametrize("log_level", [None, 45])
+def test_recreate_defaults(log_level):
+    """
+    Recreate defaults configures structlog and -- if asked -- logging.
+    """
+    reset_defaults()
+
+    logging.basicConfig(
+        stream=sys.stderr,
+        level=1,
+        force=True,
+    )
+
+    recreate_defaults(log_level=log_level)
+
+    assert BoundLogger is _CONFIG.default_wrapper_class
+    assert dict is _CONFIG.default_context_class
+    assert isinstance(_CONFIG.logger_factory, LoggerFactory)
+
+    # 3.7 doesn't have the force keyword and we don't care enough to
+    # re-implement it.
+    if sys.version_info < (3, 8):
+        return
+
+    log = get_logger().bind()
+    if log_level is not None:
+        assert log_level == log.getEffectiveLevel()
+    else:
+        assert 1 == log.getEffectiveLevel()

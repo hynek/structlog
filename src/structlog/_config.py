@@ -30,9 +30,10 @@ from .types import BindableLogger, Context, Processor, WrappedLogger
 
 
 """
-.. note::
+   Any changes to these defaults must be reflected in:
 
-   Any changes to these defaults must be reflected in `getting-started`.
+   - `getting-started`.
+   - structlog.stdlib.recreate_defaults()'s docstring.
 """
 _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     add_log_level,

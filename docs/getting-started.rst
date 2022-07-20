@@ -62,10 +62,13 @@ Using the defaults, as above, is equivalent to::
    log = structlog.get_logger()
 
 .. note::
-   For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic `structlog.processors.KeyValueRenderer()` without timestamps.
 
-   `structlog.make_filtering_bound_logger()` (re-)uses `logging`'s log levels, but doesn't use it at all.
-   The exposed API is `FilteringBoundLogger`.
+   - `structlog.stdlib.recreate_defaults()` allows you to switch ``structlog`` to using standard library's `logging` module for output for better interoperability with just one function call.
+
+   - `structlog.make_filtering_bound_logger()` (re-)uses `logging`'s log levels, but doesn't use it at all.
+     The exposed API is `FilteringBoundLogger`.
+
+   - For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic `structlog.processors.KeyValueRenderer()` without timestamps.
 
 There you go, structured logging!
 However, this alone wouldn't warrant its own package.

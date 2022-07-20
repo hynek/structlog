@@ -9,6 +9,8 @@ standard library <https://docs.python.org/>`_.
 See also :doc:`structlog's standard library support <standard-library>`.
 """
 
+from __future__ import annotations
+
 import asyncio
 import contextvars
 import functools
@@ -16,20 +18,12 @@ import logging
 import sys
 
 from functools import partial
-from typing import (
-    Any,
-    Callable,
-    Collection,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-)
+from typing import Any, Callable, Collection, Iterable, Sequence
 
+from structlog.processors import StackInfoRenderer
+
+from . import _config
 from ._base import BoundLoggerBase
-from ._config import get_logger as _generic_get_logger
 from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .exceptions import DropEvent
@@ -47,8 +41,56 @@ __all__ = [
     "LoggerFactory",
     "PositionalArgumentsFormatter",
     "ProcessorFormatter",
+    "recreate_defaults",
     "render_to_log_kwargs",
 ]
+
+
+def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
+    """
+    Recreate defaults on top of standard library's logging.
+
+    The output looks the same, but goes through `logging`.
+
+    As with vanilla defaults, the backwards-compatibility guarantees don't
+    apply to the settings applied here.
+
+    :param log_level: If `None`, don't configure standard library logging **at
+        all**.
+
+        Otherwise configure it to log to `sys.stdout` at *log_level*
+        (``logging.NOTSET`` being the default).
+
+        If you need more control over `logging`, pass `None` here and configure
+        it yourself.
+
+    .. versionadded:: 22.1
+    """
+    if log_level is not None:
+        kw = {}
+        # 3.7 doesn't have the force keyword and we don't care enough to
+        # re-implement it.
+        if sys.version_info >= (3, 8):
+            kw = {"force": True}
+
+        logging.basicConfig(
+            format="%(message)s",
+            stream=sys.stdout,
+            level=log_level,
+            **kw,  # type: ignore
+        )
+
+    _config.reset_defaults()
+    _config.configure(
+        processors=[
+            add_log_level,
+            StackInfoRenderer(),
+            _config._BUILTIN_DEFAULT_PROCESSORS[-2],  # TimeStamper
+            _config._BUILTIN_DEFAULT_PROCESSORS[-1],  # ConsoleRenderer
+        ],
+        wrapper_class=BoundLogger,
+        logger_factory=LoggerFactory(),
+    )
 
 
 _SENTINEL = object()
@@ -62,14 +104,14 @@ class _FixedFindCallerLogger(logging.Logger):
 
     def findCaller(
         self, stack_info: bool = False, stacklevel: int = 1
-    ) -> Tuple[str, int, str, Optional[str]]:
+    ) -> tuple[str, int, str, str | None]:
         """
         Finds the first caller frame outside of structlog so that the caller
         info is populated for wrapping stdlib.
 
         This logger gets set as the default one when using LoggerFactory.
         """
-        sinfo: Optional[str]
+        sinfo: str | None
         f, name = _find_first_app_frame_and_name(["logging"])
         if stack_info:
             sinfo = _format_stack(f)
@@ -98,13 +140,13 @@ class BoundLogger(BoundLoggerBase):
 
     _logger: logging.Logger
 
-    def bind(self, **new_values: Any) -> "BoundLogger":
+    def bind(self, **new_values: Any) -> BoundLogger:
         """
         Return a new logger with *new_values* added to the existing ones.
         """
         return super().bind(**new_values)  # type: ignore
 
-    def unbind(self, *keys: str) -> "BoundLogger":
+    def unbind(self, *keys: str) -> BoundLogger:
         """
         Return a new logger with *keys* removed from the context.
 
@@ -112,7 +154,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().unbind(*keys)  # type: ignore
 
-    def try_unbind(self, *keys: str) -> "BoundLogger":
+    def try_unbind(self, *keys: str) -> BoundLogger:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
@@ -120,7 +162,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().try_unbind(*keys)  # type: ignore
 
-    def new(self, **new_values: Any) -> "BoundLogger":
+    def new(self, **new_values: Any) -> BoundLogger:
         """
         Clear context and binds *initial_values* using `bind`.
 
@@ -130,21 +172,19 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().new(**new_values)  # type: ignore
 
-    def debug(self, event: Optional[str] = None, *args: Any, **kw: Any) -> Any:
+    def debug(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
         Process event and call `logging.Logger.debug` with the result.
         """
         return self._proxy_to_logger("debug", event, *args, **kw)
 
-    def info(self, event: Optional[str] = None, *args: Any, **kw: Any) -> Any:
+    def info(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
         Process event and call `logging.Logger.info` with the result.
         """
         return self._proxy_to_logger("info", event, *args, **kw)
 
-    def warning(
-        self, event: Optional[str] = None, *args: Any, **kw: Any
-    ) -> Any:
+    def warning(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
         Process event and call `logging.Logger.warning` with the result.
         """
@@ -152,22 +192,20 @@ class BoundLogger(BoundLoggerBase):
 
     warn = warning
 
-    def error(self, event: Optional[str] = None, *args: Any, **kw: Any) -> Any:
+    def error(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
         Process event and call `logging.Logger.error` with the result.
         """
         return self._proxy_to_logger("error", event, *args, **kw)
 
-    def critical(
-        self, event: Optional[str] = None, *args: Any, **kw: Any
-    ) -> Any:
+    def critical(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
         Process event and call `logging.Logger.critical` with the result.
         """
         return self._proxy_to_logger("critical", event, *args, **kw)
 
     def exception(
-        self, event: Optional[str] = None, *args: Any, **kw: Any
+        self, event: str | None = None, *args: Any, **kw: Any
     ) -> Any:
         """
         Process event and call `logging.Logger.error` with the result,
@@ -178,7 +216,7 @@ class BoundLogger(BoundLoggerBase):
         return self.error(event, *args, **kw)
 
     def log(
-        self, level: int, event: Optional[str] = None, *args: Any, **kw: Any
+        self, level: int, event: str | None = None, *args: Any, **kw: Any
     ) -> Any:
         """
         Process *event* and call the appropriate logging method depending on
@@ -191,7 +229,7 @@ class BoundLogger(BoundLoggerBase):
     def _proxy_to_logger(
         self,
         method_name: str,
-        event: Optional[str] = None,
+        event: str | None = None,
         *event_args: str,
         **event_kw: Any,
     ) -> Any:
@@ -262,7 +300,7 @@ class BoundLogger(BoundLoggerBase):
 
     def findCaller(
         self, stack_info: bool = False
-    ) -> Tuple[str, int, str, Optional[str]]:
+    ) -> tuple[str, int, str, str | None]:
         """
         Calls :meth:`logging.Logger.findCaller` with unmodified arguments.
         """
@@ -275,9 +313,9 @@ class BoundLogger(BoundLoggerBase):
         fn: str,
         lno: int,
         msg: str,
-        args: Tuple[Any, ...],
+        args: tuple[Any, ...],
         exc_info: ExcInfo,
-        func: Optional[str] = None,
+        func: str | None = None,
         extra: Any = None,
     ) -> logging.LogRecord:
         """
@@ -351,7 +389,7 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 
     .. versionadded:: 20.2.0
     """
-    return _generic_get_logger(*args, **initial_values)
+    return _config.get_logger(*args, **initial_values)
 
 
 class AsyncBoundLogger:
@@ -414,7 +452,7 @@ class AsyncBoundLogger:
     def _context(self) -> Context:
         return self.sync_bl._context
 
-    def bind(self, **new_values: Any) -> "AsyncBoundLogger":
+    def bind(self, **new_values: Any) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # logger, processors and context are within sync_bl. These
             # arguments are ignored if _sync_bl is passed. *vroom vroom* over
@@ -426,7 +464,7 @@ class AsyncBoundLogger:
             _loop=self._loop,
         )
 
-    def new(self, **new_values: Any) -> "AsyncBoundLogger":
+    def new(self, **new_values: Any) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # c.f. comment in bind
             logger=None,  # type: ignore
@@ -436,7 +474,7 @@ class AsyncBoundLogger:
             _loop=self._loop,
         )
 
-    def unbind(self, *keys: str) -> "AsyncBoundLogger":
+    def unbind(self, *keys: str) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # c.f. comment in bind
             logger=None,  # type: ignore
@@ -446,7 +484,7 @@ class AsyncBoundLogger:
             _loop=self._loop,
         )
 
-    def try_unbind(self, *keys: str) -> "AsyncBoundLogger":
+    def try_unbind(self, *keys: str) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # c.f. comment in bind
             logger=None,  # type: ignore
@@ -460,8 +498,8 @@ class AsyncBoundLogger:
         self,
         meth: Callable[..., Any],
         event: str,
-        args: Tuple[Any, ...],
-        kw: Dict[str, Any],
+        args: tuple[Any, ...],
+        kw: dict[str, Any],
     ) -> None:
         """
         Merge contextvars and log using the sync logger in a thread pool.
@@ -527,7 +565,7 @@ class LoggerFactory:
         called *additional_ignores* in other APIs throughout `structlog`.
     """
 
-    def __init__(self, ignore_frame_names: Optional[List[str]] = None):
+    def __init__(self, ignore_frame_names: list[str] | None = None):
         self._ignore = ignore_frame_names
         logging.setLoggerClass(_FixedFindCallerLogger)
 
@@ -688,7 +726,7 @@ class ExtraAdder:
 
     __slots__ = ["_copier"]
 
-    def __init__(self, allow: Optional[Collection[str]] = None) -> None:
+    def __init__(self, allow: Collection[str] | None = None) -> None:
         self._copier: Callable[[EventDict, logging.LogRecord], None]
         if allow is not None:
             # The contents of allow is copied to a new list so that changes to
@@ -701,7 +739,7 @@ class ExtraAdder:
     def __call__(
         self, logger: logging.Logger, name: str, event_dict: EventDict
     ) -> EventDict:
-        record: Optional[logging.LogRecord] = event_dict.get("_record")
+        record: logging.LogRecord | None = event_dict.get("_record")
         if record is not None:
             self._copier(event_dict, record)
         return event_dict
@@ -827,12 +865,12 @@ class ProcessorFormatter(logging.Formatter):
 
     def __init__(
         self,
-        processor: Optional[Processor] = None,
-        processors: Optional[Sequence[Processor]] = (),
-        foreign_pre_chain: Optional[Sequence[Processor]] = None,
+        processor: Processor | None = None,
+        processors: Sequence[Processor] | None = (),
+        foreign_pre_chain: Sequence[Processor] | None = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
-        logger: Optional[logging.Logger] = None,
+        logger: logging.Logger | None = None,
         pass_foreign_args: bool = False,
         *args: Any,
         **kwargs: Any,
@@ -931,7 +969,7 @@ class ProcessorFormatter(logging.Formatter):
     @staticmethod
     def wrap_for_formatter(
         logger: logging.Logger, name: str, event_dict: EventDict
-    ) -> Tuple[Tuple[EventDict], Dict[str, Dict[str, Any]]]:
+    ) -> tuple[tuple[EventDict], dict[str, dict[str, Any]]]:
         """
         Wrap *logger*, *name*, and *event_dict*.
 

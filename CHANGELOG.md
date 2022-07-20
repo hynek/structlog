@@ -50,6 +50,9 @@ So please make sure to **always** properly configure your applications.
 - Added structured logging of tracebacks via the `structlog.tracebacks` module,
   and most notably the `structlog.tracebacks.ExceptionDictTransformer` which can be used with the new `structlog.processors.ExceptionRenderer` to render JSON tracebacks.
   [#407](https://github.com/hynek/structlog/pull/407)
+- `structlog.stdlib.recreate_defaults(log_level=logging.NOTSET)` that recreates `structlog`'s defaults on top of standard library's `logging`.
+  It optionally also configures `logging` to log to standard out at the passed log level.
+  [#428](https://github.com/hynek/structlog/pull/428)
 
 
 ### Changed
