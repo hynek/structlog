@@ -145,7 +145,7 @@ epub_copyright = copyright
 
 # GitHub has rate limits
 linkcheck_ignore = [
-    r"https://github.com/.*/(issues|pull)/\d+",
+    r"https://github.com/.*/(issues|pull|compare)/\d+",
     r"https://twitter.com/.*",
 ]
 
