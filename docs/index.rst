@@ -70,12 +70,13 @@ API Reference
 
    api
 
-
 .. include:: ../README.rst
    :start-after: -begin-meta-
 
+
+.. stop Sphinx from complaints about orphaned docs, we link them elsewhere
 .. toctree::
-   :maxdepth: 1
+   :hidden:
 
    license
    changelog
