@@ -129,7 +129,8 @@ So please make sure to **always** properly configure your applications.
 
 ### Changed
 
-- `structlog` switched its packaging to [*flit*](https://flit.readthedocs.io/). Users shouldn't notice a difference, but (re-)packagers might.
+- `structlog` switched its packaging to [*flit*](https://flit.pypa.io/).
+  Users shouldn't notice a difference, but (re-)packagers might.
 - `structlog.stdlib.AsyncBoundLogger` now determines the running loop when logging, not on instantiation.
   That has a minor performance impact, but makes it more robust when loops change (e.g. `aiohttp.web.run_app()`), or you want to use `sync_bl` *before* a loop has started.
 
@@ -160,7 +161,7 @@ So please make sure to **always** properly configure your applications.
 - `structlog.contextvars.bind_contextvars()` now returns a mapping of keys to `contextvars.Token`s, allowing you to reset values using the new `structlog.contextvars.reset_contextvars()`.
   [#339](https://github.com/hynek/structlog/pull/339)
 - Exception rendering in `structlog.dev.ConsoleLogger` is now configurable using the `exception_formatter` setting.
-  If either the [*rich*](https://github.com/willmcgugan/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, `structlog` will use them for pretty-printing tracebacks.
+  If either the [*rich*](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, `structlog` will use them for pretty-printing tracebacks.
   *rich* takes precedence over *better-exceptions* if both are present.
 
   This only works if `format_exc_info` is **absent** in the processor chain.

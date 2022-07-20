@@ -30,7 +30,7 @@ Processors
 
 `structlog.twisted.EventAdapter`
    This is useful if you have an existing Twisted application and just want to wrap your loggers for now.
-   It takes care of transforming your event dictionary into something `twisted.python.log.err <https://twistedmatrix.com/documents/current/api/twisted.python.log.html#err>`_ can digest.
+   It takes care of transforming your event dictionary into something `twisted.python.log.err <https://docs.twisted.org/en/stable/api/twisted.python.log.html#err>`_ can digest.
 
    For example::
 

@@ -163,7 +163,7 @@ If you use standard library's logging, it makes sense to configure them next to 
    `Application constructor <https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
 
 **Twisted**
-   The `plugin definition <https://twistedmatrix.com/documents/current/core/howto/plugin.html>`_ is the best place.
-   If your app is not a plugin, put it into your `tac file <https://twistedmatrix.com/documents/current/core/howto/application.html>`_.
+   The `plugin definition <https://docs.twisted.org/en/stable/core/howto/plugin.html>`_ is the best place.
+   If your app is not a plugin, put it into your `tac file <https://docs.twisted.org/en/stable/core/howto/application.html>`_.
 
 If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your `structlog.configure` gets called more than once, ``structlog`` offers `structlog.configure_once` that raises a warning if ``structlog`` has been configured before (no matter whether using `structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.

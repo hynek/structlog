@@ -4,7 +4,7 @@
 # repository for complete details.
 
 """
-Processors and tools specific to the `Twisted <https://twistedmatrix.com/>`_
+Processors and tools specific to the `Twisted <https://twisted.org/>`_
 networking engine.
 
 See also :doc:`structlog's Twisted support <twisted>`.
@@ -150,8 +150,8 @@ class ReprWrapper:
 
 class JSONRenderer(GenericJSONRenderer):
     """
-    Behaves like `structlog.processors.JSONRenderer` except that it
-    formats tracebacks and failures itself if called with ``err()``.
+    Behaves like `structlog.processors.JSONRenderer` except that it formats
+    tracebacks and failures itself if called with ``err()``.
 
     .. note::
 
@@ -159,9 +159,9 @@ class JSONRenderer(GenericJSONRenderer):
         and *not* ``err()`` which renders failures in separate lines.
 
         Therefore it will break your tests that contain assertions using
-        `flushLoggedErrors <https://twistedmatrix.com/documents/
-        current/api/twisted.trial.unittest.SynchronousTestCase.html
-        #flushLoggedErrors>`_.
+        `flushLoggedErrors
+        <https://docs.twisted.org/en/stable/api/
+        twisted.trial.unittest.SynchronousTestCase.html#flushLoggedErrors>`_.
 
     *Not* an adapter like `EventAdapter` but a real formatter.  Also does *not*
     require to be adapted using it.
@@ -227,8 +227,8 @@ class JSONLogObserverWrapper:
 
     :param ILogObserver observer: Twisted log observer to wrap.  For example
         :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
-        <https://twistedmatrix.com/documents/current/api/twisted.python.log.
-        FileLogObserver.html>`_
+        <https://docs.twisted.org/en/stable/api/
+        twisted.python.log.FileLogObserver.html>`_
 
     .. versionadded:: 0.2.0
     """
@@ -281,8 +281,8 @@ class EventAdapter:
     Adapt an ``event_dict`` to Twisted logging system.
 
     Particularly, make a wrapped `twisted.python.log.err
-    <https://twistedmatrix.com/documents/current/
-    api/twisted.python.log.html#err>`_ behave as expected.
+    <https://docs.twisted.org/en/stable/api/twisted.python.log.html#err>`_
+    behave as expected.
 
     :param dictRenderer: Renderer that is used for the actual log message.
         Please note that structlog comes with a dedicated `JSONRenderer`.

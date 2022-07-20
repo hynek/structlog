@@ -205,6 +205,6 @@ If you want to see more code, make sure to check out the `examples`!
 
 .. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _recipe: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging
-.. _rich: https://github.com/willmcgugan/rich
+.. _rich: https://github.com/Textualize/rich
 .. _`better-exceptions`: https://github.com/qix-/better-exceptions
 .. _colorama: https://pypi.org/project/colorama/

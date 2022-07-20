@@ -98,7 +98,7 @@ Additionally, `Graylog's Extended Log Format`_ (GELF) allows for structured data
 .. _Logstash: https://www.elastic.co/logstash
 .. _Kibana: https://www.elastic.co/kibana
 .. _Elasticsearch: https://www.elastic.co/elasticsearch
-.. _`Graylog's Extended Log Format`: https://docs.graylog.org/en/latest/pages/gelf.html
+.. _`Graylog's Extended Log Format`: https://docs.graylog.org/docs/gelf
 .. _`standard out`: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 .. _syslogd: https://en.wikipedia.org/wiki/Syslogd
 .. _`twelve-factor app methodology`: https://12factor.net/logs
