@@ -7,10 +7,10 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "structlog"
+version = "22.2.0.dev0"
+description = "Structured Logging for Python"
 authors = [{name = "Hynek Schlawack", email = "hs@ox.cx"}]
-dynamic = ["version", "description"]
 requires-python = ">=3.7"
-dependencies = ["typing-extensions; python_version<'3.8'"]
 license = { file = "COPYRIGHT" }
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [
@@ -31,6 +31,10 @@ classifiers = [
     "Programming Language :: Python",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: System :: Logging",
+]
+dependencies = [
+    "typing-extensions; python_version<'3.8'",
+    "importlib_metadata;python_version<'3.8'",
 ]
 
 [project.urls]

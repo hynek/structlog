@@ -3,9 +3,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-"""
-Structured Logging for Python
-"""
 
 from __future__ import annotations
 
@@ -50,11 +47,7 @@ except ImportError:
     twisted = None  # type: ignore
 
 
-__version__ = "22.2.0.dev0"
-
 __title__ = "structlog"
-# __doc__ is None when running with PYTHONOPTIMIZE=2 / -OO
-__description__ = (__doc__ or "").strip()
 
 __uri__ = "https://www.structlog.org/"
 
@@ -97,3 +90,30 @@ __all__ = [
     "WriteLogger",
     "WriteLoggerFactory",
 ]
+
+
+def __getattr__(name: str) -> str:
+    dunder_to_metadata = {
+        "__version__": "version",
+        "__description__": "summary",
+    }
+    if name not in dunder_to_metadata.keys():
+        raise AttributeError(f"module {__name__} has no attribute {name}")
+
+    import sys
+    import warnings
+
+    if sys.version_info < (3, 8):
+        import importlib_metadata as metadata
+    else:
+        from importlib import metadata
+
+    warnings.warn(
+        f"Accessing structlog.{name} is deprecated and will be "
+        "removed in a future release. Use importlib.metadata directly "
+        "to query for structlog's version.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+    return metadata.metadata("structlog")[dunder_to_metadata[name]]
