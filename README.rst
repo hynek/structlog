@@ -44,7 +44,7 @@ If you prefer videos over reading, check out `Markus Holtermann <https://twitter
 Project Information
 ===================
 
-- **License**:  *dual* `Apache License, version 2 and MIT <https://www.structlog.org/en/stable/license.html>`_
+- **License**: *dual* `Apache License, version 2 and MIT <https://www.structlog.org/en/stable/license.html>`_
 - **PyPI**: https://pypi.org/project/structlog/
 - **Source Code**: https://github.com/hynek/structlog
 - **Documentation**:  https://www.structlog.org/
