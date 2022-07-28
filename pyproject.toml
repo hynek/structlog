@@ -79,35 +79,13 @@ docs = [
     "sphinxcontrib-mermaid",
     "twisted",
 ]
-
-# Combine tests and docs and a few more dev tools to a dev environment.
-# Refresh using `tox -e cog`
-
 dev = [
+    "structlog[tests,docs]",
     "pre-commit",
     "rich",
     "cogapp",
     "tomli",
-    # [[[cog
-    # import pathlib, tomli
-    # cfg = tomli.loads(pathlib.Path("pyproject.toml").read_text())
-    # opt = cfg["project"]["optional-dependencies"]
-    # for dep in opt["tests"] + opt["docs"]:
-    #     print(f'"{dep}",')
-    # ]]]
-    "coverage[toml]",
-    "freezegun>=0.2.8",
-    "pretend",
-    "pytest-asyncio>=0.17",
-    "pytest>=6.0",
-    "simplejson",
-    "furo",
-    "myst-parser",
-    "sphinx",
-    "sphinx-notfound-page",
-    "sphinxcontrib-mermaid",
-    "twisted",
-    # [[[end]]]
+    "mypy",
 ]
 
 
@@ -229,7 +207,7 @@ If you prefer videos over reading, check out `Markus Holtermann <https://twitter
 Project Information
 ===================
 
-- **License**:  *dual* `Apache License, version 2 and MIT <https://www.structlog.org/en/stable/license.html>`_
+- **License**: *dual* `Apache License, version 2 and MIT <https://www.structlog.org/en/stable/license.html>`_
 - **PyPI**: https://pypi.org/project/structlog/
 - **Source Code**: https://github.com/hynek/structlog
 - **Documentation**:  https://www.structlog.org/
