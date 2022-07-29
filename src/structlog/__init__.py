@@ -111,7 +111,7 @@ def __getattr__(name: str) -> str:
     warnings.warn(
         f"Accessing structlog.{name} is deprecated and will be "
         "removed in a future release. Use importlib.metadata directly "
-        "to query for structlog's version.",
+        "to query for structlog's packaging metadata.",
         DeprecationWarning,
         stacklevel=2,
     )
