@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 [build-system]
-requires = ["flit_core >=3.4,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 
 [project]
@@ -46,25 +46,6 @@ Funding = "https://github.com/sponsors/hynek"
 Tidelift = "https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=pypi"
 Ko-fi = "https://ko-fi.com/the_hynek"
 
-[tool.flit.sdist]
-include = [
-    ".pre-commit-config.yaml",
-    ".readthedocs.yml",
-    "*.ini",
-    "*.rst",
-    "COPYRIGHT",
-    "LICENSE*",
-    "NOTICE",
-    "docs",
-    "tests",
-    ".github",
-    "show_off.py",
-]
-exclude = [
-    "docs/_build",
-    "tests/__pycache__",
-    "tests/.mypy_cache",
-]
 
 [project.optional-dependencies]
 tests = [
