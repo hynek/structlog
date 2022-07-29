@@ -7,17 +7,9 @@ import errno
 import multiprocessing
 import sys
 
-
-if sys.version_info < (3, 8):
-    import importlib_metadata as metadata
-else:
-    from importlib import metadata
-
 import pytest
 
 from pretend import raiser
-
-import structlog
 
 from structlog._utils import get_processname, until_not_interrupted
 
@@ -105,28 +97,3 @@ class TestGetProcessname:
         )
 
         assert get_processname() == "n/a"
-
-
-class TestLegacyMetadataHack:
-    def test_version(self):
-        """
-        structlog.__version__ returns the correct version.
-        """
-        with pytest.deprecated_call():
-            assert metadata.version("structlog") == structlog.__version__
-
-    def test_description(self):
-        """
-        structlog.__description__ returns the correct description.
-        """
-        with pytest.deprecated_call():
-            assert "Structured Logging for Python" == structlog.__description__
-
-    def test_does_not_exist(self):
-        """
-        Asking for unsupported dunders raises an AttributeError.
-        """
-        with pytest.raises(
-            AttributeError, match="module structlog has no attribute __yolo__"
-        ):
-            structlog.__yolo__

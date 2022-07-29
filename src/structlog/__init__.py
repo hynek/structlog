@@ -49,10 +49,7 @@ except ImportError:
 
 __title__ = "structlog"
 
-__uri__ = "https://www.structlog.org/"
-
 __author__ = "Hynek Schlawack"
-__email__ = "hs@ox.cx"
 
 __license__ = "MIT or Apache License, Version 2.0"
 __copyright__ = "Copyright (c) 2013 " + __author__
@@ -96,6 +93,8 @@ def __getattr__(name: str) -> str:
     dunder_to_metadata = {
         "__version__": "version",
         "__description__": "summary",
+        "__uri__": "",
+        "__email__": "",
     }
     if name not in dunder_to_metadata.keys():
         raise AttributeError(f"module {__name__} has no attribute {name}")
@@ -104,9 +103,9 @@ def __getattr__(name: str) -> str:
     import warnings
 
     if sys.version_info < (3, 8):
-        import importlib_metadata as metadata
+        from importlib_metadata import metadata
     else:
-        from importlib import metadata
+        from importlib.metadata import metadata
 
     warnings.warn(
         f"Accessing structlog.{name} is deprecated and will be "
@@ -116,4 +115,11 @@ def __getattr__(name: str) -> str:
         stacklevel=2,
     )
 
-    return metadata.metadata("structlog")[dunder_to_metadata[name]]
+    meta = metadata("structlog")
+
+    if name == "__uri__":
+        return meta["Project-URL"].split(" ", 1)[-1]
+    elif name == "__email__":
+        return meta["Author-email"].split("<", 1)[1].rstrip(">")
+
+    return meta[dunder_to_metadata[name]]
