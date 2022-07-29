@@ -20,6 +20,11 @@ So please make sure to **always** properly configure your applications.
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/22.1.0...HEAD)
 
+### Changed
+
+- The build backend has been switched to [*Hatch*](https://hatch.pypa.io/).
+
+
 ## [22.1.0](https://github.com/hynek/structlog/compare/21.5.0...22.1.0) - 2022-07-20
 
 ### Removed
