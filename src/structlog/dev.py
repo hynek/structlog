@@ -219,11 +219,11 @@ class ConsoleRenderer:
     in colors and with extra context.
 
     :param pad_event: Pad the event to this many characters.
-    :param colors: Use colors for a nicer output. `True` by default if
-        colorama_ is installed.
+    :param colors: Use colors for a nicer output. `True` by default. On
+        Windows only if colorama_ is installed.
     :param force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
-        to be streamed to the console.
+        to be streamed to the console. Only meaningful on Windows.
     :param repr_native_str: When `True`, `repr` is also applied
         to native strings (i.e. unicode on Python 3 and bytes on Python 2).
         Setting this to `False` is useful if you want to have human-readable
