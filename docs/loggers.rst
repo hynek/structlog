@@ -16,6 +16,7 @@ It consists of three parts:
    This dictionary is *merged* into each log entry that is logged from *this logger specifically*.
    That means that every logger has it own context, but it is possible to have global contexts using :doc:`context variables <contextvars>`.
 #. A list of :doc:`processors <processors>` that are called on every log entry.
+   Each processor receives the return value of its predecessor passed as an argument.
 #. And finally a *logger* that it's wrapping.
    This wrapped logger is reponsible for the *output* of the log entry that has been returned by the last processor.
    This *can* be standard library's `logging.Logger`, but absolutely doesn't have to.
