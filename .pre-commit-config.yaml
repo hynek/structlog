@@ -2,6 +2,9 @@
 ci:
   autoupdate_schedule: monthly
 
+default_language_version:
+  python: python3.10
+
 repos:
   - repo: https://github.com/psf/black
     rev: 22.6.0
@@ -9,7 +12,7 @@ repos:
       - id: black
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
+    rev: v2.37.3
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
@@ -20,11 +23,15 @@ repos:
       - id: isort
         additional_dependencies: [toml]
 
+  - repo: https://github.com/asottile/yesqa
+    rev: v1.3.0
+    hooks:
+      - id: yesqa
+
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 5.0.2
     hooks:
     - id: flake8
-      language_version: python3.10
       exclude: docs/code_examples
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
