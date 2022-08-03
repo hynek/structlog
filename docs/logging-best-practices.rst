@@ -22,7 +22,7 @@ Canonical Log Lines
 Generally speaking, having as few log entries per request as possible is a good thing.
 The less noise, the more insights.
 
-``structlog``'s ability to :ref:`bind data to loggers incrementally <building-ctx>` -- plus :doc:`thread-local context storage <thread-local>` -- can help you to minimize the output to a *single log entry*.
+``structlog``'s ability to :ref:`bind data to loggers incrementally <building-ctx>` -- plus :doc:`loggers that are local to the current execution context <contextvars>` -- can help you to minimize the output to a *single log entry*.
 
 At Stripe, this concept is called `Canonical Log Lines <https://brandur.org/canonical-log-lines>`_.
 
