@@ -119,7 +119,7 @@ Suggested Configurations
    This is the price of flexibility and unfortunately -- given the different needs of our users -- we can't make it any simpler without compromising someone's use-cases.
    However, once it is set up, you can rely on not having to ever touch it again.
 
-Depending *where* you'd like to do your formatting, you can take one of three approaches:
+Depending *where* you'd like to do your formatting, you can take one of four approaches:
 
 
 Rendering Within ``structlog``
@@ -263,7 +263,7 @@ You can choose to use ``structlog`` only for building the event dictionary and l
     )
 
 Now you have the event dict available within each log record.
-If you want all your log entries (i.e. also those not from your app/``structlog``) to be formatted as JSON, you can use the `python-json-logger library <https://github.com/madzak/python-json-logger>`_:
+If you want all your log entries (i.e. also those not from your app/``structlog``) to be formatted as JSON, you can use the python-json-logger_ library:
 
 .. code-block:: python
 
@@ -528,4 +528,15 @@ If you leave ``foreign_pre_chain`` as `None`, formatting will be left to `loggin
 Meaning: you can define a ``format`` for `ProcessorFormatter` too!
 
 
+Don't Integrate
+^^^^^^^^^^^^^^^
+
+The most straight-forward option is to configure standard library `logging` close enough to what ``structlog`` is logging and leaving it at that.
+
+Since these are usually log entries from third parties that don't take advantage of ``structlog``'s features, this is surprisingly often a perfectly adequate approach.
+
+For instance, if you log JSON in production, configure `logging` to use python-json-logger_ to make it print JSON too, and then tweak the configuration to match their outputs.
+
+
 .. _`12 factor app`: https://12factor.net/logs
+.. _python-json-logger: https://github.com/madzak/python-json-logger>
