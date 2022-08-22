@@ -9,10 +9,9 @@ on:
   workflow_dispatch:
 
 env:
-  FORCE_COLOR: "1"  # Make tools pretty.
+  FORCE_COLOR: "1" # Make tools pretty.
   TOX_TESTENV_PASSENV: FORCE_COLOR
   PYTHON_LATEST: "3.10"
-
 
 jobs:
   tests:
@@ -45,7 +44,6 @@ jobs:
           path: .coverage.*
           if-no-files-found: ignore
 
-
   coverage:
     name: Combine & check coverage.
     runs-on: ubuntu-latest
@@ -77,14 +75,13 @@ jobs:
           path: htmlcov
         if: ${{ failure() }}
 
-
   package:
     name: Build & verify package
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - uses: hynek/build-and-inspect-python-package@v0.1
+      - uses: hynek/build-and-inspect-python-package@v1
 
   install-dev:
     name: Verify dev env
