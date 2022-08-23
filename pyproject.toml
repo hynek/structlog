@@ -57,6 +57,9 @@ tests = [
     "pytest>=6.0",
     "simplejson",
 ]
+# Need twisted & rich for stubs.
+# Otherwise mypy fails in tox.
+typing = ["mypy", "rich", "twisted"]
 docs = [
     "furo",
     "myst-parser",
@@ -65,7 +68,7 @@ docs = [
     "sphinxcontrib-mermaid",
     "twisted",
 ]
-dev = ["structlog[tests,docs]", "rich", "mypy"]
+dev = ["structlog[tests,typing,docs]"]
 
 
 [tool.pytest.ini_options]
