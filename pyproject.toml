@@ -65,7 +65,7 @@ docs = [
     "sphinxcontrib-mermaid",
     "twisted",
 ]
-dev = ["structlog[tests,docs]", "pre-commit", "rich", "mypy"]
+dev = ["structlog[tests,docs]", "rich", "mypy"]
 
 
 [tool.pytest.ini_options]

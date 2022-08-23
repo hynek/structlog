@@ -1,6 +1,6 @@
 # How To Contribute
 
-First off, thank you for considering contributing to `structlog`!
+Thank you for considering contributing to `structlog`!
 It's people like *you* who make it such a great tool for everyone.
 
 This document intends to make contribution more accessible by codifying tribal knowledge and expectations.
@@ -11,15 +11,23 @@ By participating in this project you agree to abide by its terms.
 Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 
 
+## Support
+
+In case you'd like to help out but don't want to deal with GitHub, there's a great opportunity:
+help your fellow developers on [Stack Overflow](https://stackoverflow.com/questions/tagged/structlog)!
+
+The official tag is `structlog` and helping out in support frees us up to improve `structlog` instead!
+
+
 ## Workflow
 
 - No contribution is too small!
   Please submit as many fixes for typos and grammar bloopers as you can!
 - Try to limit each pull request to *one* change only.
-- Since we squash on merge, it's up to you how you handle updates to the main branch.
-  Whether you prefer to rebase on main or merge main into your branch, do whatever is more comfortable for you.
+- Since we squash on merge, it's up to you how you handle updates to the `main branch.
+  Whether you prefer to rebase on `main` or merge `main` into your branch, do whatever is more comfortable for you.
 - *Always* add tests and docs for your code.
-  This is a hard rule; patches with missing tests or documentation can't be merged.
+  This is a hard rule; patches with missing tests or documentation won't be merged.
 - Make sure your changes pass our [CI].
   You won't get any feedback until it's green unless you ask for it.
   For the CI to pass, the coverage must be 100%.
@@ -29,13 +37,75 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 - Don’t break backwards-compatibility.
 
 
+## Local Development Environment
+
+You can (and should) run our test suite using [*tox*].
+However, you’ll probably want a more traditional environment as well.
+We highly recommend to develop using the latest Python release because we try to take advantage of modern features whenever possible.
+
+First create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation.
+It’s out of scope for this document to list all the ways to manage virtual environments in Python, but if you don’t already have a pet way, take some time to look at tools like [*direnv*](https://hynek.me/til/python-project-local-venvs/), [*virtualfish*](https://virtualfish.readthedocs.io/), and [*virtualenvwrapper*](https://virtualenvwrapper.readthedocs.io/).
+
+Next, get an up to date checkout of the *structlog* repository:
+
+```console
+$ git clone git@github.com:hynek/structlog.git
+```
+
+or if you prefer to use *Git* via `https`:
+
+```console
+$ git clone https://github.com/hynek/structlog.git
+```
+
+Change into the newly created directory and **after activating your virtual environment** install an editable version of *structlog* along with its tests and docs requirements:
+
+```console
+$ cd structlog
+$ pip install --upgrade pip wheel setuptools  # PLEASE don't skip this step
+$ pip install -e '.[dev]'
+```
+
+At this point,
+
+```console
+$ python -m pytest
+```
+
+should work and pass, as should:
+
+```console
+$ cd docs
+$ make html
+```
+
+The built documentation can then be found in `docs/_build/html/`.
+
+---
+
+To avoid committing code that violates our style guide, we strongly advise you to install [*pre-commit*] and its hooks:
+
+```console
+$ pre-commit install
+```
+
+This is not strictly necessary, because our [*tox*] file contains an environment that runs:
+
+```console
+$ pre-commit run --all-files
+```
+
+and our CI has integration with [pre-commit.ci](https://pre-commit.ci).
+But it's way more comfortable to run it locally and *git* catching avoidable errors.
+
+
 ## Code
 
 - Obey [PEP 8](https://www.python.org/dev/peps/pep-0008/) and [PEP 257](https://www.python.org/dev/peps/pep-0257/).
   We use the `"""`-on-separate-lines style for docstrings:
 
   ```python
-  def func(x):
+  def func(x: str) -> str:
       """
       Do something.
 
@@ -46,7 +116,7 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
   ```
 - If you add or change public APIs, tag the docstring using `..  versionadded:: 16.0.0 WHAT` or `..  versionchanged:: 16.2.0 WHAT`.
 - We use [*isort*](https://github.com/PyCQA/isort) to sort our imports, and we use [*Black*](https://github.com/psf/black) with line length of 79 characters to format our code.
-  As long as you run our full [*tox*] suite before committing, or install our [*pre-commit*] hooks (ideally you'll do both – see [*Local Development Environment*](#local-development-environment) below), you won't have to spend any time on formatting your code at all.
+  As long as you run our full [*tox*] suite before committing, or install our [*pre-commit*] hooks (ideally you'll do both – see [*Local Development Environment*](#local-development-environment) above), you won't have to spend any time on formatting your code at all.
   If you don't, [CI] will catch it for you – but that seems like a waste of your time!
 
 
@@ -72,7 +142,7 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 
 ## Documentation
 
-- Use [semantic newlines] in [*reStructuredText*] and *Markdown* files (files ending in `.rst` and `.md`):
+- Use [semantic newlines] in [*reStructuredText*] and [*Markdown*](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) files (files ending in `.rst` and `.md`):
 
   ```rst
   This is a sentence.
@@ -132,66 +202,6 @@ or:
   The bug really *was* nasty.
   [#1](https://github.com/hynek/structlog/pull/1)
 ```
-
-
-## Local Development Environment
-
-You can (and should) run our test suite using [*tox*].
-However, you’ll probably want a more traditional environment as well.
-We highly recommend to develop using the latest Python release because we try to take advantage of modern features whenever possible.
-
-First create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation.
-It’s out of scope for this document to list all the ways to manage virtual environments in Python, but if you don’t already have a pet way, take some time to look at tools like [*direnv*](https://hynek.me/til/python-project-local-venvs/), [*virtualfish*](https://virtualfish.readthedocs.io/), and [*virtualenvwrapper*](https://virtualenvwrapper.readthedocs.io/).
-
-Next, get an up to date checkout of the *structlog* repository:
-
-```console
-$ git clone git@github.com:hynek/structlog.git
-```
-
-or if you want to use git via `https`:
-
-```console
-$ git clone https://github.com/hynek/structlog.git
-```
-
-Change into the newly created directory and **after activating your virtual environment** install an editable version of *structlog* along with its tests and docs requirements:
-
-```console
-$ cd structlog
-$ pip install --upgrade pip setuptools  # PLEASE don't skip this step
-$ pip install -e '.[dev]'
-```
-
-At this point,
-
-```console
-$ python -m pytest
-```
-
-should work and pass, as should:
-
-```console
-$ cd docs
-$ make html
-```
-
-The built documentation can then be found in `docs/_build/html/`.
-
-To avoid committing code that violates our style guide, we strongly advise you to install [*pre-commit*] [^dev] hooks:
-
-```console
-$ pre-commit install
-```
-
-You can also run them anytime (as our tox does) using:
-
-```console
-$ pre-commit run --all-files
-```
-
-[^dev]: *pre-commit* should have been installed into your virtualenv automatically when you ran `pip install -e '.[dev]'` above.
-        If *pre-commit* is missing, your probably need to run `pip install -e '.[dev]'` again.
 
 
 [CI]: https://github.com/hynek/structlog/actions
