@@ -4,9 +4,10 @@ Structured Logging for Python
 
 Release v\ |release| (`What's new? <changelog>`)
 
-.. include:: ../README.rst
-   :start-after: -begin-short-
-   :end-before: -end-short-
+.. include:: ../README.md
+   :parser: myst_parser.sphinx_
+   :start-after: <!-- begin-short -->
+   :end-before: <!-- end-short -->
 
 
 First steps:
@@ -70,8 +71,13 @@ API Reference
 
    api
 
-.. include:: ../README.rst
-   :start-after: -begin-meta-
+
+Project Information
+===================
+
+.. include:: ../README.md
+   :parser: myst_parser.sphinx_
+   :start-after: # Project Information
 
 
 .. stop Sphinx from complaints about orphaned docs, we link them elsewhere

@@ -17,7 +17,6 @@ So please make sure to **always** properly configure your applications.
 
 <!-- changelog follows -->
 
-
 ## [Unreleased](https://github.com/hynek/structlog/compare/22.1.0...HEAD)
 
 ### Changed

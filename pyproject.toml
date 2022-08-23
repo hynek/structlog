@@ -1,15 +1,16 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
 
 [project]
+dynamic = ["readme"]
 name = "structlog"
 version = "22.2.0.dev0"
 description = "Structured Logging for Python"
-authors = [{name = "Hynek Schlawack", email = "hs@ox.cx"}]
+authors = [{ name = "Hynek Schlawack", email = "hs@ox.cx" }]
 requires-python = ">=3.7"
 license = { file = "COPYRIGHT" }
 keywords = ["logging", "structured", "structure", "log"]
@@ -34,7 +35,7 @@ classifiers = [
 ]
 dependencies = [
     "typing-extensions; python_version<'3.8'",
-    "importlib_metadata;python_version<'3.8'",
+    "importlib_metadata; python_version<'3.8'",
 ]
 
 [project.urls]
@@ -64,23 +65,14 @@ docs = [
     "sphinxcontrib-mermaid",
     "twisted",
 ]
-dev = [
-    "structlog[tests,docs]",
-    "pre-commit",
-    "rich",
-    "cogapp",
-    "tomli",
-    "mypy",
-]
+dev = ["structlog[tests,docs]", "pre-commit", "rich", "mypy"]
 
 
 [tool.pytest.ini_options]
-addopts = "-ra --strict-markers"
-xfail_strict = true
+addopts = ["-ra", "--strict-markers", "--strict-config"]
 testpaths = "tests"
-filterwarnings = [
-    "once::Warning",
-]
+xfail_strict = true
+filterwarnings = ["once::Warning"]
 asyncio_mode = "auto"
 
 
@@ -95,9 +87,7 @@ source = ["src", ".tox/*/site-packages"]
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
-omit = [
-    "src/structlog/_greenlets.py",
-]
+omit = ["src/structlog/_greenlets.py"]
 exclude_lines = [
     # a more strict default pragma
     "\\# pragma: no cover\\b",
@@ -143,72 +133,32 @@ module = "conftest.*"
 ignore_errors = true
 
 
-[project.readme]
-content-type = "text/x-rst"
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
 
-# Load README.rst, but remove header and badges.
-# Refresh using `tox -e cog`
-# Nothing except for the adapted README follows after this point.
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+text = '''<p align="center">
+    <img
+        src="https://www.structlog.org/en/stable/_static/structlog_logo_small_transparent.png"
+        alt="structlog mascot"
+    />
+</p>
+'''
 
-# [[[cog
-# import pathlib
-# print(
-#     'text = """'
-#     ".. image:: https://www.structlog.org/en/stable/_static/structlog_logo_small_transparent.png\n"
-#     "   :alt: structlog mascot\n"
-#     "   :align: center\n\n"
-#     + pathlib.Path("README.rst")
-#       .read_text()
-#       .split(".. -begin-short-")[1]
-#       .lstrip()
-#       .replace('"""', r'\"\"\"')
-#     + '"""',
-#     end=""
-# )
-# ]]]
-text = """.. image:: https://www.structlog.org/en/stable/_static/structlog_logo_small_transparent.png
-   :alt: structlog mascot
-   :align: center
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+start-after = "<!-- begin-short -->\n"
+end-before = "\n<!-- end-short -->"
 
-``structlog`` makes logging in Python **faster**, **less painful**, and **more powerful** by adding **structure** to your log entries.
-It has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio* or type hints along the way, and `influenced the design <https://twitter.com/sirupsen/status/638330548361019392>`_ of `structured logging packages in other ecosystems <https://github.com/sirupsen/logrus>`_.
-
-Thanks to its highly flexible design, it's up to you whether you want ``structlog`` to take care about the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's ``logging`` module.
-
-``structlog`` comes with support for JSON, `logfmt <https://brandur.org/logfmt>`_, as well as pretty console output out-of-the-box:
-
-.. image:: https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true
-
-.. -end-short-
-
-A short explanation on *why* structured logging is good for you, and why ``structlog`` is the right tool for the job can be found in the `Why chapter <https://www.structlog.org/en/stable/why.html>`_ of our documentation.
-
-Once you feel inspired to try it out, check out our friendly `Getting Started tutorial <https://www.structlog.org/en/stable/getting-started.html>`_ that also contains detailed installation instructions!
-
-If you prefer videos over reading, check out `Markus Holtermann <https://twitter.com/m_holtermann>`_'s DjangoCon Europe 2019 talk: `Logging Rethought 2: The Actions of Frank Taylor Jr. <https://www.youtube.com/watch?v=Y5eyEgyHLLo>`_
-
-.. -begin-meta-
-
-Project Information
-===================
-
-- **License**: *dual* `Apache License, version 2 and MIT <https://www.structlog.org/en/stable/license.html>`_
-- **PyPI**: https://pypi.org/project/structlog/
-- **Source Code**: https://github.com/hynek/structlog
-- **Documentation**:  https://www.structlog.org/
-- **Changelog**: https://www.structlog.org/en/stable/changelog.html
-- **Get Help**: please use the ``structlog`` tag on `StackOverflow <https://stackoverflow.com/questions/tagged/structlog>`_
-- **Third-party Extensions**: https://github.com/hynek/structlog/wiki/Third-party-Extensions
-- **Supported Python Versions**: 3.7 and later
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+text = """
 
 
-``structlog`` for Enterprise
-----------------------------
+## Release Information
 
-Available as part of the Tidelift Subscription.
-
-The maintainers of structlog and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications.
-Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use.
-`Learn more. <https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme>`_
 """
-# [[[end]]]
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "CHANGELOG.md"
+start-after = "<!-- changelog follows -->"
+pattern = "\n(###.+?)\n## "
