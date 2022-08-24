@@ -71,6 +71,12 @@ docs = [
 dev = ["structlog[tests,typing,docs]"]
 
 
+[tool.hatch.build]
+# Just a fake stub to make GitHub recognize us.
+# See the file for details.
+exclude = ["setup.py"]
+
+
 [tool.pytest.ini_options]
 addopts = ["-ra", "--strict-markers", "--strict-config"]
 testpaths = "tests"
