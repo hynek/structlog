@@ -1,14 +1,13 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 [build-system]
-requires = ["hatchling", "hatch-fancy-pypi-readme"]
+requires = ["hatchling", "hatch-vcs", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
 
 [project]
-dynamic = ["readme"]
+dynamic = ["readme", "version"]
 name = "structlog"
-version = "22.2.0.dev0"
 description = "Structured Logging for Python"
 authors = [{ name = "Hynek Schlawack", email = "hs@ox.cx" }]
 requires-python = ">=3.7"
@@ -69,6 +68,11 @@ docs = [
     "twisted",
 ]
 dev = ["structlog[tests,typing,docs]"]
+
+
+[tool.hatch.version]
+source = "vcs"
+raw-options = { version_scheme = "no-guess-dev" }
 
 
 [tool.hatch.build]
