@@ -80,9 +80,13 @@ jobs:
   package:
     name: Build & verify package
     runs-on: ubuntu-latest
+    env:
+      SETUPTOOLS_SCM_PRETEND_VERSION: ""
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # get correct version
       - uses: hynek/build-and-inspect-python-package@v1
       - run: python -m pip install hatch-fancy-pypi-readme
       - run: python -m hatch_fancy_pypi_readme
