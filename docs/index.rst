@@ -77,7 +77,7 @@ Project Information
 
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
-   :start-after: # Project Information
+   :start-after: ## Project Information
 
 
 .. stop Sphinx from complaints about orphaned docs, we link them elsewhere

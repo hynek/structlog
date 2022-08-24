@@ -1,8 +1,10 @@
-<p align="center">
-   <a href="https://www.structlog.org/">
-      <img src="./docs/_static/structlog_logo.png" width="35%" alt="structlog" />
-   </a>
-</p>
+<h1>
+    <p align="center">
+    <a href="https://www.structlog.org/">
+        <img src="./docs/_static/structlog_logo.png" width="35%" alt="structlog" />
+    </a>
+    </p>
+</h1>
 <p align="center">
    <a href="https://www.structlog.org/en/stable/?badge=stable">
        <img src="https://img.shields.io/badge/Docs-Read%20The%20Docs-black" alt="Documentation" />
@@ -37,7 +39,9 @@ Once you feel inspired to try it out, check out our friendly [Getting Started tu
 If you prefer videos over reading, check out [Markus Holtermann](https://twitter.com/m_holtermann)'s DjangoCon Europe 2019 talk: [*Logging Rethought 2: The Actions of Frank Taylor Jr.*](https://www.youtube.com/watch?v=Y5eyEgyHLLo)
 
 
-# Project Information
+<!-- begin-meta -->
+
+## Project Information
 
 - **License**: *dual* [Apache License, version 2 and MIT](https://www.structlog.org/en/stable/license.html)
 - **PyPI**: <https://pypi.org/project/structlog/>

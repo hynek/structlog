@@ -164,14 +164,29 @@ start-after = "<!-- begin-short -->\n"
 end-before = "\n<!-- end-short -->"
 
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+start-after = "<!-- begin-meta -->\n"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 text = """
 
 
-## Release Information
-
-"""
+## Release Information for """
 
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "CHANGELOG.md"
 start-after = "<!-- changelog follows -->"
-pattern = "\n(###.+?)\n## "
+# pattern = "\n## (.+?)\n### "
+pattern = "## ([^\n]+?\n\n)###"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "CHANGELOG.md"
+start-after = "<!-- changelog follows -->"
+pattern = "\n(###.+?\n)## "
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+text = "\n## Credits\n"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "AUTHORS.md"
+start-after = "# Authors\n"
