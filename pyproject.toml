@@ -176,7 +176,6 @@ text = """
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "CHANGELOG.md"
 start-after = "<!-- changelog follows -->"
-# pattern = "\n## (.+?)\n### "
 pattern = "## ([^\n]+?\n\n)###"
 
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]

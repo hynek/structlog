@@ -34,7 +34,7 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade pip wheel
           python -m pip install --upgrade virtualenv tox tox-gh-actions
 
       - run: python -m tox

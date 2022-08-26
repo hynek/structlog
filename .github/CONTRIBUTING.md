@@ -207,6 +207,6 @@ or:
 [CI]: https://github.com/hynek/structlog/actions
 [Hynek Schlawack]: https://hynek.me/about/
 [*pre-commit*]: https://pre-commit.com/
-[*tox*]: https://https://tox.wiki/
+[*tox*]: https://tox.wiki/
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
 [*reStructuredText*]: https://www.sphinx-doc.org/en/stable/usage/restructuredtext/basics.html
