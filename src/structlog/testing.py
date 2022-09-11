@@ -84,9 +84,9 @@ class ReturnLogger:
     Return the arguments that it's called with.
 
     >>> from structlog import ReturnLogger
-    >>> ReturnLogger().msg("hello")
+    >>> ReturnLogger().info("hello")
     'hello'
-    >>> ReturnLogger().msg("hello", when="again")
+    >>> ReturnLogger().info("hello", when="again")
     (('hello',), {'when': 'again'})
 
     .. versionchanged:: 0.3.0

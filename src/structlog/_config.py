@@ -104,7 +104,7 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
 
     >>> from structlog import get_logger
     >>> log = get_logger(y=23)
-    >>> log.msg("hello", x=42)
+    >>> log.info("hello", x=42)
     y=23 x=42 event='hello'
 
     :param args: *Optional* positional arguments that are passed unmodified to

@@ -40,7 +40,7 @@ Thus the :ref:`example <proc>` from the previous chapter could have been written
 
    >>> configure(processors=[proc])
    >>> log = get_logger()
-   >>> log.msg("hello world")
+   >>> log.info("hello world")
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
 
@@ -52,7 +52,7 @@ Configuration also applies to :func:`~structlog.wrap_logger` because that's what
 
    >>> configure(processors=[proc], context_class=dict)
    >>> log = wrap_logger(PrintLogger())
-   >>> log.msg("hello world")
+   >>> log.info("hello world")
    I got called with {'event': 'hello world'}
    {'event': 'hello world'}
 

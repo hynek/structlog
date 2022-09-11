@@ -41,7 +41,7 @@ class PrintLogger:
     :param file: File to print to. (default: `sys.stdout`)
 
     >>> from structlog import PrintLogger
-    >>> PrintLogger().msg("hello")
+    >>> PrintLogger().info("hello")
     hello
 
     Useful if you follow
@@ -143,7 +143,7 @@ class WriteLogger:
     :param file: File to print to. (default: `sys.stdout`)
 
     >>> from structlog import WriteLogger
-    >>> WriteLogger().msg("hello")
+    >>> WriteLogger().info("hello")
     hello
 
     Useful if you follow

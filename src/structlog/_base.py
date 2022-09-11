@@ -129,7 +129,7 @@ class BoundLoggerBase:
         :param event: The event -- usually the first positional argument to a
             logger.
         :param event_kw: Additional event keywords.  For example if someone
-            calls ``log.msg("foo", bar=42)``, *event* would to be ``"foo"``
+            calls ``log.info("foo", bar=42)``, *event* would to be ``"foo"``
             and *event_kw* ``{"bar": 42}``.
 
         :raises: `structlog.DropEvent` if log entry should be dropped.
@@ -192,7 +192,7 @@ class BoundLoggerBase:
         :param event: The event -- usually the first positional argument to a
             logger.
         :param event_kw: Additional event keywords.  For example if someone
-            calls ``log.msg("foo", bar=42)``, *event* would to be ``"foo"``
+            calls ``log.info("foo", bar=42)``, *event* would to be ``"foo"``
             and *event_kw* ``{"bar": 42}``.
 
         .. note::

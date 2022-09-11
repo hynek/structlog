@@ -27,12 +27,14 @@ And indeed, the simplest possible usage looks like this
 
    >>> import structlog
    >>> log = structlog.get_logger()
-   >>> log.msg("greeted", whom="world", more_than_a_string=[1, 2, 3])  # doctest: +SKIP
-   2016-09-17 10:13.45 greeted                        more_than_a_string=[1, 2, 3] whom='world'
+   >>> log.info("greeted", whom="world", more_than_a_string=[1, 2, 3])  # doctest: +SKIP
+   2022-09-11 11:58.26 [info     ] greeted              more_than_a_string=[1, 2, 3] whom=world
 
 Here, ``structlog`` takes full advantage of its hopefully useful default settings:
 
 - Output is sent to `standard out`_ instead of exploding into the user's face or doing nothing.
+- It imitates standard library `logging`'s log levels for familiarity -- even if you're not using any of your integrations.
+  By default, no level-based filtering is done, but it comes with a very fast filtering machinery in the form of `structlog.make_filtering_bound_logger()`.
 - All keywords are formatted using `structlog.dev.ConsoleRenderer`.
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects\ [*]_.
@@ -66,7 +68,7 @@ Using the defaults, as above, is equivalent to::
 
    - `structlog.stdlib.recreate_defaults()` allows you to switch ``structlog`` to using standard library's `logging` module for output for better interoperability with just one function call.
 
-   - `structlog.make_filtering_bound_logger()` (re-)uses `logging`'s log levels, but doesn't use it at all.
+   - `structlog.make_filtering_bound_logger()` (re-)uses `logging`'s log levels, but doesn't use `logging` at all.
      The exposed API is `FilteringBoundLogger`.
 
    - For brevity and to enable doctests, all further examples in ``structlog``'s documentation use the more simplistic `structlog.processors.KeyValueRenderer()` without timestamps.
@@ -93,7 +95,7 @@ At this point, you'll be tempted to write a closure like
 ::
 
    def log_closure(event):
-      log.msg(event, user_agent=user_agent, peer_ip=peer_ip)
+      log.info(event, user_agent=user_agent, peer_ip=peer_ip)
 
 inside of the view.
 Problem solved?
@@ -145,7 +147,7 @@ Now you have to tell ``structlog`` about your processor by `configuring <configu
 .. doctest::
 
   >>> structlog.configure(processors=[timestamper, structlog.processors.KeyValueRenderer()])
-  >>> structlog.get_logger().msg("hi")  # doctest: +SKIP
+  >>> structlog.get_logger().info("hi")  # doctest: +SKIP
   event='hi' time='2018-01-21T09:37:36.976816'
 
 
@@ -165,7 +167,7 @@ So assuming you want to follow `best practices <logging-best-practices>` and ren
 .. doctest::
 
   >>> structlog.configure(processors=[structlog.processors.JSONRenderer()])
-  >>> structlog.get_logger().msg("hi")
+  >>> structlog.get_logger().info("hi")
   {"event": "hi"}
 
 

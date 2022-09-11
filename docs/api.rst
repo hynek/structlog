@@ -97,11 +97,11 @@ API Reference
 
    >>> from pprint import pprint
    >>> cl = structlog.testing.CapturingLogger()
-   >>> cl.msg("hello")
-   >>> cl.msg("hello", when="again")
+   >>> cl.info("hello")
+   >>> cl.info("hello", when="again")
    >>> pprint(cl.calls)
-   [CapturedCall(method_name='msg', args=('hello',), kwargs={}),
-    CapturedCall(method_name='msg', args=('hello',), kwargs={'when': 'again'})]
+   [CapturedCall(method_name='info', args=('hello',), kwargs={}),
+    CapturedCall(method_name='info', args=('hello',), kwargs={'when': 'again'})]
 
 .. autoclass:: CapturingLoggerFactory
 .. autoclass:: CapturedCall

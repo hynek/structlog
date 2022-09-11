@@ -64,10 +64,10 @@ Additionally ``structlog`` also ships with a logger that just returns whatever i
 .. doctest::
 
    >>> from structlog import ReturnLogger
-   >>> ReturnLogger().msg(42) == 42
+   >>> ReturnLogger().info(42) == 42
    True
    >>> obj = ["hi"]
-   >>> ReturnLogger().msg(obj) is obj
+   >>> ReturnLogger().info(obj) is obj
    True
-   >>> ReturnLogger().msg("hello", when="again")
+   >>> ReturnLogger().info("hello", when="again")
    (('hello',), {'when': 'again'})

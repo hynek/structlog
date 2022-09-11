@@ -13,11 +13,11 @@ def view(request):
     if foo:
         log = log.bind(foo=foo)
     if something:
-        log.msg("something")
+        log.info("something")
         return "something"
     elif something_else:
-        log.msg("something_else")
+        log.info("something_else")
         return "something_else"
     else:
-        log.msg("else")
+        log.info("else")
         return "else"

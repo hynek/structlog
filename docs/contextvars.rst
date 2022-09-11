@@ -57,24 +57,24 @@ We're sorry the word *context* means three different things in this itemization 
    {'a': <Token var=<ContextVar name='structlog_a' default=Ellipsis at ...> at ...>, 'b': <Token var=<ContextVar name='structlog_b' default=Ellipsis at ...> at ...>}
    >>> # Then use loggers as per normal
    >>> # (perhaps by using structlog.get_logger() to create them).
-   >>> log.msg("hello")
+   >>> log.info("hello")
    event='hello' a=1 b=2
    >>> # Use unbind_contextvars to remove a variable from the context.
    >>> unbind_contextvars("b")
-   >>> log.msg("world")
+   >>> log.info("world")
    event='world' a=1
    >>> # You can also bind key/value pairs temporarily.
    >>> with bound_contextvars(b=2):
-   ...    log.msg("hi")
+   ...    log.info("hi")
    event='hi' a=1 b=2
    >>> # Now it's gone again.
-   >>> log.msg("hi")
+   >>> log.info("hi")
    event='hi' a=1
    >>> # And when we clear the contextvars state again, it goes away.
    >>> # a=None is printed due to the key_order argument passed to
    >>> # KeyValueRenderer, but it is NOT present anymore.
    >>> clear_contextvars()
-   >>> log.msg("hi there")
+   >>> log.info("hi there")
    event='hi there' a=None
 
 
@@ -88,9 +88,9 @@ If e.g. your request handler calls a helper function that needs to temporarily o
     def foo():
         bind_contextvars(a=1)
         _helper()
-        log.msg("a is restored!")  # a=1
+        log.info("a is restored!")  # a=1
 
     def _helper():
         tokens = bind_contextvars(a=2)
-        log.msg("a is overridden")  # a=2
+        log.info("a is overridden")  # a=2
         reset_contextvars(**tokens)
