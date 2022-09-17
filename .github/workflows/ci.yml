@@ -12,6 +12,8 @@ env:
   FORCE_COLOR: "1" # Make tools pretty.
   TOX_TESTENV_PASSENV: FORCE_COLOR
   SETUPTOOLS_SCM_PRETEND_VERSION: "1.0" # avoid warnings about shallow checkout
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+  PIP_NO_PYTHON_VERSION_WARNING: 1
   PYTHON_LATEST: "3.10"
 
 
@@ -34,7 +36,6 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade pip wheel
           python -m pip install --upgrade virtualenv tox tox-gh-actions
 
       - run: python -m tox
