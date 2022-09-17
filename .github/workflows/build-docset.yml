@@ -22,8 +22,9 @@ jobs:
       - run: pip install tox
 
       - run: tox -e docset
+      - run: tar --exclude='.DS_Store' -cvzf structlog.tgz structlog.docset
 
       - uses: actions/upload-artifact@v3
         with:
-          name: structlog.docset
-          path: structlog.docset
+          name: docset
+          path: structlog.tgz
