@@ -4,8 +4,6 @@ name: Build a documentation set bundle.
 on:
   push:
     tags: ["*"]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 env:
@@ -27,5 +25,4 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: docset
           path: structlog.docset
