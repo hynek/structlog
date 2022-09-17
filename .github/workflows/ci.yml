@@ -36,7 +36,7 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade virtualenv tox tox-gh-actions
+          python -m pip install --upgrade tox tox-gh-actions
 
       - run: python -m tox
 
