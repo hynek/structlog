@@ -1,5 +1,5 @@
 ---
-name: Build a documentation set bundle.
+name: Build docset
 
 on:
   push:
