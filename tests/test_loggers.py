@@ -45,18 +45,19 @@ class TestLoggers:
         assert "hello\n" == out
         assert "" == err
 
-    def test_prints_to_correct_file(self, logger_cls, tmpdir, capsys):
+    def test_prints_to_correct_file(self, logger_cls, tmp_path, capsys):
         """
         Supplied files are respected.
         """
-        f = tmpdir.join("test.log")
-        fo = f.open("w")
-        logger_cls(fo).msg("hello")
-        out, err = capsys.readouterr()
+        p = tmp_path / "test.log"
 
-        assert "" == out == err
-        fo.close()
-        assert "hello\n" == f.read()
+        with p.open("w") as f:
+            logger_cls(f).msg("hello")
+            out, err = capsys.readouterr()
+
+            assert "" == out == err
+
+        assert "hello\n" == p.read_text()
 
     def test_lock(self, logger_cls, sio):
         """
@@ -213,18 +214,19 @@ class TestBytesLogger:
         assert "hellö\n" == out
         assert "" == err
 
-    def test_prints_to_correct_file(self, tmpdir, capsys):
+    def test_prints_to_correct_file(self, tmp_path, capsys):
         """
         Supplied files are respected.
         """
-        f = tmpdir.join("test.log")
-        fo = f.open("wb")
-        BytesLogger(fo).msg(b"hello")
-        out, err = capsys.readouterr()
+        p = tmp_path / "test.log"
 
-        assert "" == out == err
-        fo.close()
-        assert "hello\n" == f.read()
+        with p.open("wb") as f:
+            BytesLogger(f).msg(b"hello")
+            out, err = capsys.readouterr()
+
+            assert "" == out == err
+
+        assert "hello\n" == p.read_text()
 
     def test_repr(self):
         """

@@ -246,10 +246,8 @@ class BoundLogger(BoundLoggerBase):
 
         return super()._proxy_to_logger(method_name, event=event, **event_kw)
 
-    #
-    # Pass-through attributes and methods to mimick the stdlib's logger
+    # Pass-through attributes and methods to mimic the stdlib's logger
     # interface.
-    #
 
     @property
     def name(self) -> str:
@@ -622,10 +620,10 @@ class PositionalArgumentsFormatter:
     ) -> EventDict:
         args = event_dict.get("positional_args")
 
-        # Mimick the formatting behaviour of the stdlib's logging
-        # module, which accepts both positional arguments and a single
-        # dict argument. The "single dict" check is the same one as the
-        # stdlib's logging module performs in LogRecord.__init__().
+        # Mimic the formatting behaviour of the stdlib's logging module, which
+        # accepts both positional arguments and a single dict argument. The
+        # "single dict" check is the same one as the stdlib's logging module
+        # performs in LogRecord.__init__().
         if args:
             if len(args) == 1 and isinstance(args[0], dict) and args[0]:
                 args = args[0]

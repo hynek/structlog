@@ -548,25 +548,25 @@ class TestUnicodeEncoder:
         """
         Unicode strings get encoded (as UTF-8 by default).
         """
-        ue = UnicodeEncoder()
+        e = UnicodeEncoder()
 
-        assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": "b\xe4r"})
+        assert {"foo": b"b\xc3\xa4r"} == e(None, None, {"foo": "b\xe4r"})
 
     def test_passes_arguments(self):
         """
         Encoding options are passed into the encoding call.
         """
-        ue = UnicodeEncoder("latin1", "xmlcharrefreplace")
+        e = UnicodeEncoder("latin1", "xmlcharrefreplace")
 
-        assert {"foo": b"&#8211;"} == ue(None, None, {"foo": "\u2013"})
+        assert {"foo": b"&#8211;"} == e(None, None, {"foo": "\u2013"})
 
     def test_bytes_nop(self):
         """
         If the string is already bytes, don't do anything.
         """
-        ue = UnicodeEncoder()
+        e = UnicodeEncoder()
 
-        assert {"foo": b"b\xc3\xa4r"} == ue(None, None, {"foo": b"b\xc3\xa4r"})
+        assert {"foo": b"b\xc3\xa4r"} == e(None, None, {"foo": b"b\xc3\xa4r"})
 
 
 class TestUnicodeDecoder:

@@ -854,7 +854,7 @@ class TestProcessorFormatter:
         configure_logging((test_processor,), renderer=KeyValueRenderer())
 
         try:
-            raise RuntimeError("oh noo")
+            raise RuntimeError("oh no")
         except Exception:
             logging.getLogger().exception("okay")
 
@@ -882,7 +882,7 @@ class TestProcessorFormatter:
         )
 
         try:
-            raise MyException("oh noo")
+            raise MyException("oh no")
         except Exception:
             logging.getLogger().error("okay")
 
@@ -938,7 +938,7 @@ class TestProcessorFormatter:
         logger.handlers[0].setFormatter(formatter)
 
         try:
-            raise RuntimeError("oh noo")
+            raise RuntimeError("oh no")
         except Exception:
             logging.getLogger().exception("seen worse")
 

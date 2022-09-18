@@ -18,7 +18,7 @@ It consists of three parts:
 #. A list of :doc:`processors <processors>` that are called on every log entry.
    Each processor receives the return value of its predecessor passed as an argument.
 #. And finally a *logger* that it's wrapping.
-   This wrapped logger is reponsible for the *output* of the log entry that has been returned by the last processor.
+   This wrapped logger is responsible for the *output* of the log entry that has been returned by the last processor.
    This *can* be standard library's `logging.Logger`, but absolutely doesn't have to.
    Bound loggers themselves do *not* do any I/O themselves.
 

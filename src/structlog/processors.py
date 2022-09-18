@@ -410,7 +410,7 @@ This behavior is analogue to the one of the stdlib's logging.
 dict_tracebacks = ExceptionRenderer(ExceptionDictTransformer())
 """
 Replace an ``exc_info`` field with an ``exception`` field containing structured
-tracebacks suiteable for, e.g., JSON output.
+tracebacks suitable for, e.g., JSON output.
 
 It is a shortcut for :class:`ExceptionRenderer` with a
 :class:`~structlog.tracebacks.ExceptionDictTransformer`.
@@ -628,7 +628,7 @@ class CallsiteParameter(enum.Enum):
     #: The basename part of the full path to the python source file of the
     #: callsite.
     FILENAME = "filename"
-    #: The python module the callsite was in. This mimicks the module attribute
+    #: The python module the callsite was in. This mimics the module attribute
     #: of `logging.LogRecord` objects and will be the basename, without
     #: extension, of the full path to the python source file of the callsite.
     MODULE = "module"
