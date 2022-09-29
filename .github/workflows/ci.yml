@@ -27,6 +27,11 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta - 3.11"]
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
@@ -53,6 +58,11 @@ jobs:
     needs: tests
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
@@ -85,6 +95,11 @@ jobs:
       SETUPTOOLS_SCM_PRETEND_VERSION: ""
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # get correct version
@@ -100,6 +115,11 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
