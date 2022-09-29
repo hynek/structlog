@@ -11,11 +11,10 @@ on:
 env:
   FORCE_COLOR: "1" # Make tools pretty.
   TOX_TESTENV_PASSENV: FORCE_COLOR
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_PYTHON_VERSION_WARNING: "1"
   SETUPTOOLS_SCM_PRETEND_VERSION: "1.0" # avoid warnings about shallow checkout
-  PIP_DISABLE_PIP_VERSION_CHECK: 1
-  PIP_NO_PYTHON_VERSION_WARNING: 1
   PYTHON_LATEST: "3.10"
-
 
 jobs:
   tests:
@@ -24,19 +23,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta - 3.11"]
+        python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "~3.11.0-0"
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python -VV
-          python -m site
-          python -m pip install --upgrade tox tox-gh-actions
+      - run: python -m pip install --upgrade wheel tox tox-gh-actions
 
       - run: python -m tox
 
@@ -78,6 +77,39 @@ jobs:
           path: htmlcov
         if: ${{ failure() }}
 
+  mypy:
+    name: mypy on ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "~3.11.0-0"
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --upgrade wheel tox
+
+      - run: python -m tox -e mypy
+
+  docs:
+    name: Build docs & run doctests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - run: python -m pip install --upgrade wheel tox
+
+      - run: python -m tox -e docs
+
   package:
     name: Build & verify package
     runs-on: ubuntu-latest
@@ -87,7 +119,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # get correct version
+          fetch-depth: 0 # get correct version
       - uses: hynek/build-and-inspect-python-package@v1
       - run: python -m pip install hatch-fancy-pypi-readme
       - run: python -m hatch_fancy_pypi_readme
@@ -106,3 +138,26 @@ jobs:
           python-version: ${{env.PYTHON_LATEST}}
       - run: python -m pip install -e .[dev]
       - run: python -c 'import structlog; print(structlog.__version__)'
+
+  # Ensure everything required is passing for branch protection.
+  required-checks-pass:
+    if: always()
+
+    needs:
+      - coverage
+      - docs
+      - install-dev
+      - package
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: block
+
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

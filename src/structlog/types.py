@@ -31,9 +31,6 @@ from typing import (
 )
 
 
-# This construct works better with Mypy.
-# Doing the obvious ImportError route leads to an 'Incompatible import of
-# "Protocol"' error.
 if sys.version_info >= (3, 8):
     from typing import Protocol, runtime_checkable
 else:

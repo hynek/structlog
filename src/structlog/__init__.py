@@ -44,7 +44,7 @@ from structlog.testing import ReturnLogger, ReturnLoggerFactory
 try:
     from structlog import twisted
 except ImportError:
-    twisted = None  # type: ignore
+    twisted = None  # type: ignore[assignment]
 
 
 __title__ = "structlog"

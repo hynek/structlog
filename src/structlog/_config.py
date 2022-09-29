@@ -225,7 +225,7 @@ def configure(
     if context_class is not None:
         _CONFIG.default_context_class = context_class
     if logger_factory is not None:
-        _CONFIG.logger_factory = logger_factory  # type: ignore
+        _CONFIG.logger_factory = logger_factory
     if cache_logger_on_first_use is not None:
         _CONFIG.cache_logger_on_first_use = cache_logger_on_first_use
 
@@ -267,7 +267,7 @@ def reset_defaults() -> None:
     _CONFIG.default_processors = _BUILTIN_DEFAULT_PROCESSORS[:]
     _CONFIG.default_wrapper_class = _BUILTIN_DEFAULT_WRAPPER_CLASS
     _CONFIG.default_context_class = _BUILTIN_DEFAULT_CONTEXT_CLASS
-    _CONFIG.logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY  # type: ignore
+    _CONFIG.logger_factory = _BUILTIN_DEFAULT_LOGGER_FACTORY
     _CONFIG.cache_logger_on_first_use = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
 
 
@@ -335,7 +335,9 @@ class BoundLoggerLazyProxy:
         cls = self._wrapper_class or _CONFIG.default_wrapper_class
         # Looks like Protocols ignore definitions of __init__ so we have to
         # silence Mypy here.
-        logger = cls(_logger, processors=procs, context=ctx)  # type: ignore
+        logger = cls(
+            _logger, processors=procs, context=ctx  # type: ignore[call-arg]
+        )
 
         def finalized_bind(**new_values: Any) -> BindableLogger:
             """
@@ -350,7 +352,7 @@ class BoundLoggerLazyProxy:
             self._cache_logger_on_first_use is None
             and _CONFIG.cache_logger_on_first_use is True
         ):
-            self.bind = finalized_bind  # type: ignore
+            self.bind = finalized_bind  # type: ignore[assignment]
 
         return finalized_bind(**new_values)
 

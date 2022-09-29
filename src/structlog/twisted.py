@@ -108,12 +108,12 @@ def _extractStuffAndWhy(eventDict: EventDict) -> tuple[Any, Any, EventDict]:
         _why = event
 
     if not _stuff and sys.exc_info() != (None, None, None):
-        _stuff = Failure()  # type: ignore
+        _stuff = Failure()  # type: ignore[no-untyped-call]
 
     # Either we used the error ourselves or the user supplied one for
     # formatting.  Avoid log.err() to dump another traceback into the log.
     if isinstance(_stuff, BaseException) and not isinstance(_stuff, Failure):
-        _stuff = Failure(_stuff)  # type: ignore
+        _stuff = Failure(_stuff)  # type: ignore[no-untyped-call]
 
     return _stuff, _why, eventDict
 
@@ -170,7 +170,7 @@ class JSONRenderer(GenericJSONRenderer):
     `plainJSONStdOutLogger` for pure-JSON logs.
     """
 
-    def __call__(  # type: ignore
+    def __call__(  # type: ignore[override]
         self,
         logger: WrappedLogger,
         name: str,
@@ -181,13 +181,13 @@ class JSONRenderer(GenericJSONRenderer):
             eventDict["event"] = _why
             if isinstance(_stuff, Failure):
                 eventDict["exception"] = _stuff.getTraceback(detail="verbose")
-                _stuff.cleanFailure()  # type: ignore
+                _stuff.cleanFailure()  # type: ignore[no-untyped-call]
         else:
             eventDict["event"] = _why
         return (
             (
                 ReprWrapper(
-                    GenericJSONRenderer.__call__(  # type: ignore
+                    GenericJSONRenderer.__call__(  # type: ignore[arg-type]
                         self, logger, name, eventDict
                     )
                 ),
@@ -215,7 +215,9 @@ class PlainFileLogObserver:
 
     def __call__(self, eventDict: EventDict) -> None:
         until_not_interrupted(
-            self._write, textFromEventDict(eventDict) + "\n"  # type: ignore
+            self._write,
+            textFromEventDict(eventDict)  # type: ignore[arg-type, operator]
+            + "\n",
         )
         until_not_interrupted(self._flush)
 
@@ -241,7 +243,9 @@ class JSONLogObserverWrapper:
             eventDict["message"] = (
                 json.dumps(
                     {
-                        "event": textFromEventDict(eventDict),  # type: ignore
+                        "event": textFromEventDict(
+                            eventDict  # type: ignore[arg-type]
+                        ),
                         "system": eventDict.get("system"),
                     }
                 ),
