@@ -139,7 +139,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         name = _LEVEL_TO_NAME[level]
         return self._proxy_to_logger(name, event, **kw)
 
-    meths: dict[str, Callable] = {"log": log}
+    meths: dict[str, Callable[..., Any]] = {"log": log}
     for lvl, name in _LEVEL_TO_NAME.items():
         meths[name] = make_method(lvl)
 

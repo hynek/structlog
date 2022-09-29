@@ -18,13 +18,13 @@ from io import StringIO
 from typing import Any, Iterable, TextIO, Type, Union
 
 from ._frames import _format_exception
-from .types import (
-    EventDict,
-    ExceptionRenderer,
-    ExcInfo,
-    Protocol,
-    WrappedLogger,
-)
+from .types import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
+
+
+if sys.version_info >= (3, 8):
+    from typing import Protocol
+else:
+    from typing_extensions import Protocol
 
 
 try:
@@ -43,7 +43,7 @@ try:
     from rich.console import Console
     from rich.traceback import Traceback
 except ImportError:
-    rich = None  # type: ignore
+    rich = None  # type: ignore[assignment]
 
 
 __all__ = [

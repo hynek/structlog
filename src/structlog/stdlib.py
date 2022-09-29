@@ -77,7 +77,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
             format="%(message)s",
             stream=sys.stdout,
             level=log_level,
-            **kw,  # type: ignore
+            **kw,  # type: ignore[arg-type]
         )
 
     _config.reset_defaults()
@@ -145,7 +145,7 @@ class BoundLogger(BoundLoggerBase):
         """
         Return a new logger with *new_values* added to the existing ones.
         """
-        return super().bind(**new_values)  # type: ignore
+        return super().bind(**new_values)  # type: ignore[return-value]
 
     def unbind(self, *keys: str) -> BoundLogger:
         """
@@ -153,7 +153,7 @@ class BoundLogger(BoundLoggerBase):
 
         :raises KeyError: If the key is not part of the context.
         """
-        return super().unbind(*keys)  # type: ignore
+        return super().unbind(*keys)  # type: ignore[return-value]
 
     def try_unbind(self, *keys: str) -> BoundLogger:
         """
@@ -161,7 +161,7 @@ class BoundLogger(BoundLoggerBase):
 
         .. versionadded:: 18.2.0
         """
-        return super().try_unbind(*keys)  # type: ignore
+        return super().try_unbind(*keys)  # type: ignore[return-value]
 
     def new(self, **new_values: Any) -> BoundLogger:
         """
@@ -171,7 +171,7 @@ class BoundLogger(BoundLoggerBase):
         those wrapped by `structlog.threadlocal.wrap_dict` when threads
         are re-used.
         """
-        return super().new(**new_values)  # type: ignore
+        return super().new(**new_values)  # type: ignore[return-value]
 
     def debug(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
@@ -447,7 +447,7 @@ class AsyncBoundLogger:
     # we're a BindableLogger.
     # Instances would've been correctly recognized as such, however the class
     # not and we need the class in `structlog.configure()`.
-    @property  # type: ignore
+    @property  # type: ignore[no-redef]
     def _context(self) -> Context:
         return self.sync_bl._context
 
@@ -456,7 +456,7 @@ class AsyncBoundLogger:
             # logger, processors and context are within sync_bl. These
             # arguments are ignored if _sync_bl is passed. *vroom vroom* over
             # purity.
-            logger=None,  # type: ignore
+            logger=None,  # type: ignore[arg-type]
             processors=(),
             context={},
             _sync_bl=self.sync_bl.bind(**new_values),
@@ -466,7 +466,7 @@ class AsyncBoundLogger:
     def new(self, **new_values: Any) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # c.f. comment in bind
-            logger=None,  # type: ignore
+            logger=None,  # type: ignore[arg-type]
             processors=(),
             context={},
             _sync_bl=self.sync_bl.new(**new_values),
@@ -476,7 +476,7 @@ class AsyncBoundLogger:
     def unbind(self, *keys: str) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # c.f. comment in bind
-            logger=None,  # type: ignore
+            logger=None,  # type: ignore[arg-type]
             processors=(),
             context={},
             _sync_bl=self.sync_bl.unbind(*keys),
@@ -486,7 +486,7 @@ class AsyncBoundLogger:
     def try_unbind(self, *keys: str) -> AsyncBoundLogger:
         return AsyncBoundLogger(
             # c.f. comment in bind
-            logger=None,  # type: ignore
+            logger=None,  # type: ignore[arg-type]
             processors=(),
             context={},
             _sync_bl=self.sync_bl.try_unbind(*keys),
@@ -875,7 +875,7 @@ class ProcessorFormatter(logging.Formatter):
         **kwargs: Any,
     ) -> None:
         fmt = kwargs.pop("fmt", "%(message)s")
-        super().__init__(*args, fmt=fmt, **kwargs)  # type: ignore
+        super().__init__(*args, fmt=fmt, **kwargs)  # type: ignore[misc]
 
         if processor and processors:
             raise TypeError(
@@ -917,12 +917,12 @@ class ProcessorFormatter(logging.Formatter):
             # Both attached by wrap_for_formatter
             if self.logger is not None:
                 logger = self.logger
-            meth_name = record._name  # type: ignore
+            meth_name = record._name  # type: ignore[attr-defined]
 
             # We need to copy because it's possible that the same record gets
             # processed by multiple logging formatters.  LogRecord.getMessage
             # would transform our dict into a str.
-            ed = record.msg.copy()  # type: ignore
+            ed = record.msg.copy()  # type: ignore[attr-defined]
             ed["_record"] = record
             ed["_from_structlog"] = True
         else:

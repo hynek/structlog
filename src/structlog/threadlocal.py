@@ -53,7 +53,9 @@ def _deprecated() -> None:
     callsite = ""
     try:
         f = sys._getframe()
-        callsite = f.f_back.f_back.f_globals["__name__"]  # type: ignore
+        callsite = f.f_back.f_back.f_globals[  # type: ignore[union-attr]
+            "__name__"
+        ]
     except Exception:  # pragma: no cover
         pass
 
@@ -90,8 +92,8 @@ def wrap_dict(dict_class: type[Context]) -> type[Context]:
     Wrapped = type(
         "WrappedDict-" + str(uuid.uuid4()), (_ThreadLocalDictWrapper,), {}
     )
-    Wrapped._tl = ThreadLocal()  # type: ignore
-    Wrapped._dict_class = dict_class  # type: ignore
+    Wrapped._tl = ThreadLocal()  # type: ignore[attr-defined]
+    Wrapped._dict_class = dict_class  # type: ignore[attr-defined]
 
     return Wrapped
 
@@ -112,15 +114,15 @@ def as_immutable(logger: TLLogger) -> TLLogger:
     """
     _deprecated()
     if isinstance(logger, BoundLoggerLazyProxy):
-        logger = logger.bind()  # type: ignore
+        logger = logger.bind()  # type: ignore[assignment]
 
     try:
-        ctx = logger._context._tl.dict_.__class__(  # type: ignore
-            logger._context._dict  # type: ignore
+        ctx = logger._context._tl.dict_.__class__(  # type: ignore[union-attr]
+            logger._context._dict  # type: ignore[union-attr]
         )
         bl = logger.__class__(
-            logger._logger,  # type: ignore
-            processors=logger._processors,  # type: ignore
+            logger._logger,  # type: ignore[attr-defined, call-arg]
+            processors=logger._processors,  # type: ignore[attr-defined]
             context={},
         )
         bl._context = ctx
@@ -145,7 +147,7 @@ def tmp_bind(
     _deprecated()
     saved = as_immutable(logger)._context
     try:
-        yield logger.bind(**tmp_values)  # type: ignore
+        yield logger.bind(**tmp_values)  # type: ignore[misc]
     finally:
         logger._context.clear()
         logger._context.update(saved)

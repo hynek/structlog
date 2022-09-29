@@ -183,7 +183,7 @@ def _items_sorter(
 
         def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
-            for key in key_order:  # type: ignore
+            for key in key_order:  # type: ignore[union-attr]
                 value = event_dict.pop(key, None)
                 if value is not None or not drop_missing:
                     items.append((key, value))
@@ -196,7 +196,7 @@ def _items_sorter(
 
         def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
-            for key in key_order:  # type: ignore
+            for key in key_order:  # type: ignore[union-attr]
                 value = event_dict.pop(key, None)
                 if value is not None or not drop_missing:
                     items.append((key, value))
@@ -211,7 +211,9 @@ def _items_sorter(
             return sorted(event_dict.items())
 
     else:
-        ordered_items = operator.methodcaller("items")  # type: ignore
+        ordered_items = operator.methodcaller(  # type: ignore[assignment]
+            "items"
+        )
 
     return ordered_items
 
@@ -507,7 +509,7 @@ def _make_stamper(
         return stamper_iso_local
 
     def stamper_fmt(event_dict: EventDict) -> EventDict:
-        event_dict[key] = now().strftime(fmt)  # type: ignore
+        event_dict[key] = now().strftime(fmt)  # type: ignore[arg-type]
 
         return event_dict
 
@@ -522,9 +524,9 @@ def _figure_out_exc_info(v: Any) -> ExcInfo:
     if isinstance(v, BaseException):
         return (v.__class__, v, v.__traceback__)
     elif isinstance(v, tuple):
-        return v  # type: ignore
+        return v  # type: ignore[return-value]
     elif v:
-        return sys.exc_info()  # type: ignore
+        return sys.exc_info()  # type: ignore[return-value]
 
     return v
 
