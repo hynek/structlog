@@ -158,7 +158,7 @@ Finally you want to have control over the actual format of your log entries.
 
 As you may have noticed in the previous section, renderers are just processors too.
 It's also important to note, that they do not necessarily have to render your event dictionary to a string.
-It depends on the *logger* that is wrapped by ``structlog`` what kind of input it should get.
+It depends on the input the *logger* that is wrapped by ``structlog`` should get.
 
 However, in most cases it's gonna be strings.
 
