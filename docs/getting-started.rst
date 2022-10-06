@@ -90,9 +90,7 @@ Imagine a hypothetical web application that wants to log out all relevant data w
    :language: python
 
 The calls themselves are nice and straight to the point, however you're repeating yourself all over the place.
-At this point, you'll be tempted to write a closure like
-
-::
+At this point, you'll be tempted to write a closure like::
 
    def log_closure(event):
       log.info(event, user_agent=user_agent, peer_ip=peer_ip)
