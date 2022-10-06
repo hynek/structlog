@@ -30,7 +30,7 @@ The general flow is:
   Loggers act as they always do, but the `structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
 - If you want to access the context-local storage, you use `structlog.contextvars.get_contextvars` and `structlog.contextvars.get_merged_contextvars`.
 
-We're sorry the word *context* means three different things in this itemization depending on...context.
+We're sorry the word *context* means three different things in this itemization depending on ... context.
 
 .. doctest::
 
