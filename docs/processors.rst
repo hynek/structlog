@@ -136,9 +136,11 @@ More examples can be found in the :ref:`examples <processors-examples>` chapter.
 For a list of shipped processors, check out the :ref:`API documentation <procs>`.
 
 
-Third Party Packages
+Third-Party Packages
 --------------------
 
+``structlog`` was specifically designed to be as composable and reusable as possible, so whatever you're missing:
+chances are, you can solve it with a processor!
 Since processors are self-contained callables, it's easy to write your own and to share them in separate packages.
 
 We collect those packages in our `GitHub Wiki <https://github.com/hynek/structlog/wiki/Third-Party-Extensions>`_ and encourage you to add your package too!

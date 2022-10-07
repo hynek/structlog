@@ -17,5 +17,5 @@ class ConditionalDropper:
         """
         if event_dict.get("peer") == self._peer_to_ignore:
             raise DropEvent
-        else:
-            return event_dict
+
+        return event_dict

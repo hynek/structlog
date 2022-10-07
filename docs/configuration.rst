@@ -144,26 +144,3 @@ The :ref:`Twisted example <twisted-example>` shows how easy it is for Twisted.
 
 Calling `structlog.get_logger` without configuration gives you a perfectly useful `structlog.PrintLogger`.
 We don't believe silent loggers are a sensible default.
-
-
-Where to Configure
-------------------
-
-The best place to perform your configuration varies with applications and frameworks.
-Ideally as late as possible but *before* non-framework (i.e. your) code is executed.
-If you use standard library's logging, it makes sense to configure them next to each other.
-
-**Django**
-   See `Third-Party Extensions <https://github.com/hynek/structlog/wiki/Third-Party-Extensions/>`_ in the wiki.
-
-**Flask**
-   See `Logging <https://flask.palletsprojects.com/en/latest/logging/>`_.
-
-**Pyramid**
-   `Application constructor <https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>`_.
-
-**Twisted**
-   The `plugin definition <https://docs.twisted.org/en/stable/core/howto/plugin.html>`_ is the best place.
-   If your app is not a plugin, put it into your `tac file <https://docs.twisted.org/en/stable/core/howto/application.html>`_.
-
-If you have no choice but *have* to configure on import time in module-global scope, or can't rule out for other reasons that that your `structlog.configure` gets called more than once, ``structlog`` offers `structlog.configure_once` that raises a warning if ``structlog`` has been configured before (no matter whether using `structlog.configure` or :func:`~structlog.configure_once`) but doesn't change anything.
