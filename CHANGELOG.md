@@ -19,6 +19,12 @@ So please make sure to **always** properly configure your applications.
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/22.1.0...HEAD)
 
+### Deprecated
+
+- Accessing package metadata as attributes on the `structlog` module is deprecated (e.g. `structlog.__version__`).
+  Please use [`importlib.metadata`](https://docs.python.org/3.10/library/importlib.metadata.html) instead (for Python 3.7: the [*importlib-metadata*](https://pypi.org/project/importlib-metadata/) PyPI package).
+
+
 ### Changed
 
 - The build backend has been switched to [*Hatch*](https://hatch.pypa.io/).
