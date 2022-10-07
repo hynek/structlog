@@ -65,8 +65,3 @@ def _stdlib_log_methods(request):
 @pytest.fixture(name="cl")
 def _cl():
     return CapturingLogger()
-
-
-collect_ignore = []
-if twisted is None:
-    collect_ignore.append("tests/test_twisted.py")

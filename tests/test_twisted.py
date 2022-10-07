@@ -8,23 +8,30 @@ import json
 import pytest
 
 from pretend import call_recorder
-from twisted.python.failure import Failure
-from twisted.python.log import ILogObserver
 
 from structlog import ReturnLogger
 from structlog._config import _CONFIG
 from structlog.processors import KeyValueRenderer
-from structlog.twisted import (
-    BoundLogger,
-    EventAdapter,
-    JSONLogObserverWrapper,
-    JSONRenderer,
-    LoggerFactory,
-    PlainFileLogObserver,
-    ReprWrapper,
-    _extractStuffAndWhy,
-    plainJSONStdOutLogger,
-)
+
+
+try:
+    from twisted.python.failure import Failure
+    from twisted.python.log import ILogObserver
+
+    from structlog.twisted import (
+        BoundLogger,
+        EventAdapter,
+        JSONLogObserverWrapper,
+        JSONRenderer,
+        LoggerFactory,
+        PlainFileLogObserver,
+        ReprWrapper,
+        _extractStuffAndWhy,
+        plainJSONStdOutLogger,
+    )
+
+except ImportError:
+    pytest.skip(allow_module_level=True)
 
 
 def test_LoggerFactory():

@@ -127,7 +127,6 @@ strict = true
 show_error_codes = true
 enable_error_code = ["ignore-without-code"]
 
-follow_imports = "normal"
 ignore_missing_imports = true
 
 warn_return_any = false
@@ -135,10 +134,6 @@ warn_return_any = false
 
 [[tool.mypy.overrides]]
 module = "tests.*"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "conftest.*"
 ignore_errors = true
 
 
