@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 [build-system]
-requires = ["hatchling", "hatch-vcs", "hatch-fancy-pypi-readme"]
+requires = ["hatchling", "hatch-vcs", "hatch-fancy-pypi-readme>=22.8.0"]
 build-backend = "hatchling.build"
 
 
@@ -162,12 +162,9 @@ start-after = "<!-- begin-meta -->\n"
 text = """
 
 
-## Release Information for """
+## Release Information
 
-[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
-path = "CHANGELOG.md"
-start-after = "<!-- changelog follows -->"
-pattern = "## ([^\n]+?\n\n)###"
+"""
 
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "CHANGELOG.md"
@@ -175,8 +172,6 @@ start-after = "<!-- changelog follows -->"
 pattern = "\n(###.+?\n)## "
 
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
-text = "\n## Credits\n"
-
-[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
-path = "AUTHORS.md"
-start-after = "# Authors\n"
+path = "README.md"
+start-at = "## Credits"
+end-before = "<!-- begin-meta -->"

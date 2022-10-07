@@ -43,11 +43,23 @@ Once you feel inspired to try it out, check out our friendly [Getting Started tu
 If you prefer videos over reading, check out [Markus Holtermann](https://twitter.com/m_holtermann)'s DjangoCon Europe 2019 talk: [*Logging Rethought 2: The Actions of Frank Taylor Jr.*](https://www.youtube.com/watch?v=Y5eyEgyHLLo)
 
 
+## Credits
+
+`structlog` is written and maintained by [Hynek Schlawack](https://hynek.me/).
+It’s inspired by previous work by [Jean-Paul Calderone](https://github.com/exarkun) and [David Reid](https://github.com/dreid).
+
+The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), ``structlog`` [Tidelift subscribers](https://tidelift.com/subscription/pkg/pypi-structlog), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
+
+A full list of contributors can be found in GitHub’s [overview](https://github.com/hynek/structlog/graphs/contributors).
+
+The `structlog` logo has been contributed by [Russell Keith-Magee](https://github.com/freakboy3742).
+
+
 <!-- begin-meta -->
 
 ## Project Information
 
-- **License**: *dual* [Apache License, version 2 and MIT](https://www.structlog.org/en/stable/license.html)
+- **License**: *dual* [Apache License, version 2 and MIT](https://www.structlog.org/en/latest/license.html)
 - **PyPI**: <https://pypi.org/project/structlog/>
 - **Source Code**: <https://github.com/hynek/structlog>
 - **Documentation**: <https://www.structlog.org/>

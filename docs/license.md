@@ -14,5 +14,10 @@ The full license texts can be also found in the source code repository:
 - [MIT](https://github.com/hynek/structlog/blob/main/LICENSE-MIT)
 
 
-```{include} ../AUTHORS.md
+## Credits
+
+```{include} ../README.md
+:parser: myst_parser.sphinx_
+:start-after: "## Credits"
+:end-before: <!-- begin-meta -->
 ```
