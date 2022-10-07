@@ -25,6 +25,18 @@ So please make sure to **always** properly configure your applications.
   Please use [`importlib.metadata`](https://docs.python.org/3.10/library/importlib.metadata.html) instead (for Python 3.7: the [*importlib-metadata*](https://pypi.org/project/importlib-metadata/) PyPI package).
 
 
+### Added
+
+- `FilteringBoundLogger` (used by default) now allows for string interpolation using positional arguments:
+
+  ```pycon
+  >>> log.info("Hello %s! The answer is %d.", "World", 42, x=1)
+  2022-10-07 10:04.31 [info     ] Hello World! The answer is 42. x=1
+  ```
+
+  [#454](https://github.com/hynek/structlog/pull/454)
+
+
 ### Changed
 
 - The build backend has been switched to [*Hatch*](https://hatch.pypa.io/).

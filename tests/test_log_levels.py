@@ -103,3 +103,11 @@ class TestFilteringLogger:
         bl = make_filtering_bound_logger(level)
 
         assert bl == pickle.loads(pickle.dumps(bl))
+
+    def test_pos_args(self, bl, cl):
+        """
+        Positional arguments are used for string interpolation.
+        """
+        bl.info("hello %s -- %d!", "world", 42)
+
+        assert [("info", (), {"event": "hello world -- 42!"})] == cl.calls
