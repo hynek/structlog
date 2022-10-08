@@ -30,6 +30,11 @@ So please make sure to **always** properly configure your applications.
 - The build backend has been switched to [*Hatch*](https://hatch.pypa.io/).
 
 
+### Fixed
+
+- The timestamps in the default configuration now use the correct separator (`:`) for seconds.
+
+
 ## [22.1.0](https://github.com/hynek/structlog/compare/21.5.0...22.1.0) - 2022-07-20
 
 ### Removed
