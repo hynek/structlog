@@ -24,15 +24,15 @@
    </a>
 </p>
 
-<!-- begin-short -->
-
 <p align="center"><em>Simple. Powerful. Fast. Pick three.</em></p>
+
+<!-- begin-short -->
 
 `structlog` makes logging in Python **less painful**, **more powerful**, and **much faster**, by adding **structure** to your log entries and moving control to simple **functions**.
 
 It has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio* or type hints along the way, and [while influencing the design](https://twitter.com/sirupsen/status/638330548361019392) of [structured logging packages in other ecosystems](https://github.com/sirupsen/logrus).
 
-Thanks to its highly flexible design, it's up to you whether you want `structlog` to take care of the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's `logging` module.
+Thanks to its highly flexible design, *you* choose whether you want `structlog` to take care of the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's `logging` module.
 
 `structlog` comes with support for JSON, [*logfmt*](https://brandur.org/logfmt), as well as pretty console output out-of-the-box:
 

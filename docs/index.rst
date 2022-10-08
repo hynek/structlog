@@ -2,7 +2,9 @@
 structlog
 =========
 
-Release v\ |release| (`What's new? <changelog>`)
+*Simple. Powerful. Fast. Pick three.*
+
+Release |release| (`What's new? <changelog>`)
 
 .. include:: ../README.md
    :parser: myst_parser.sphinx_

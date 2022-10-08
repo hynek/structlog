@@ -51,6 +51,9 @@ release = metadata.version("structlog")
 # The short X.Y version.
 version = release.rsplit(".", 1)[0]
 
+if "dev" in release:
+    release = version = "UNRELEASED"
+
 exclude_patterns = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all
