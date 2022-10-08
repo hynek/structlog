@@ -1,6 +1,6 @@
-=============================
-Structured Logging for Python
-=============================
+=========
+structlog
+=========
 
 Release v\ |release| (`What's new? <changelog>`)
 
