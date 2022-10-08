@@ -33,7 +33,7 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     add_log_level,
     StackInfoRenderer(),
     set_exc_info,
-    TimeStamper(fmt="%Y-%m-%d %H:%M.%S", utc=False),
+    TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
         colors=_use_colors
         and sys.stdout is not None
