@@ -310,3 +310,6 @@ structlog.configure(
         structlog.processors.JSONRenderer(),
     ]
 )
+
+fbl: FilteringBoundLogger = structlog.get_logger()
+fbl.info("Hello %s! The answer is %d.", "World", 42, x=1)

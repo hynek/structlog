@@ -151,6 +151,8 @@ class FilteringBoundLogger(BindableLogger, Protocol):
     The only way to instantiate one is using `make_filtering_bound_logger`.
 
     .. versionadded:: 20.2.0
+    .. versionadded:: 22.2.0
+       String interpolation using positional arguments.
     """
 
     def bind(self, **new_values: Any) -> FilteringBoundLogger:
@@ -181,53 +183,53 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         .. versionadded:: 22.1.0
         """
 
-    def debug(self, event: str, **kw: Any) -> Any:
+    def debug(self, event: str, *args: Any, **kw: Any) -> Any:
         """
-        Log *event* with **kw** at **debug** level.
-        """
-
-    def info(self, event: str, **kw: Any) -> Any:
-        """
-        Log *event* with **kw** at **info** level.
+        Log ``event % args`` with **kw** at **debug** level.
         """
 
-    def warning(self, event: str, **kw: Any) -> Any:
+    def info(self, event: str, *args: Any, **kw: Any) -> Any:
         """
-        Log *event* with **kw** at **warn** level.
-        """
-
-    def warn(self, event: str, **kw: Any) -> Any:
-        """
-        Log *event* with **kw** at **warn** level.
+        Log ``event % args`` with **kw** at **info** level.
         """
 
-    def error(self, event: str, **kw: Any) -> Any:
+    def warning(self, event: str, *args: Any, **kw: Any) -> Any:
         """
-        Log *event* with **kw** at **error** level.
-        """
-
-    def err(self, event: str, **kw: Any) -> Any:
-        """
-        Log *event* with **kw** at **error** level.
+        Log ``event % args`` with **kw** at **warn** level.
         """
 
-    def fatal(self, event: str, **kw: Any) -> Any:
+    def warn(self, event: str, *args: Any, **kw: Any) -> Any:
         """
-        Log *event* with **kw** at **critical** level.
-        """
-
-    def exception(self, event: str, **kw: Any) -> Any:
-        """
-        Log *event* with **kw** at **error** level and ensure that ``exc_info``
-        is set in the event dictionary.
+        Log ``event % args`` with **kw** at **warn** level.
         """
 
-    def critical(self, event: str, **kw: Any) -> Any:
+    def error(self, event: str, *args: Any, **kw: Any) -> Any:
         """
-        Log *event* with **kw** at **critical** level.
+        Log ``event % args`` with **kw** at **error** level.
         """
 
-    def msg(self, event: str, **kw: Any) -> Any:
+    def err(self, event: str, *args: Any, **kw: Any) -> Any:
         """
-        Log *event* with **kw** at **info** level.
+        Log ``event % args`` with **kw** at **error** level.
+        """
+
+    def fatal(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **critical** level.
+        """
+
+    def exception(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **error** level and ensure that
+        ``exc_info`` is set in the event dictionary.
+        """
+
+    def critical(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **critical** level.
+        """
+
+    def msg(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **info** level.
         """

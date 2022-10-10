@@ -26,8 +26,8 @@ As a result, the simplest possible usage looks like this:
 
    >>> import structlog
    >>> log = structlog.get_logger()
-   >>> log.info("greeted", whom="world", more_than_a_string=[1, 2, 3])  # doctest: +SKIP
-   2022-09-11 11:58:26 [info     ] greeted              more_than_a_string=[1, 2, 3] whom=world
+   >>> log.info("hello, %s!", "world", key="value!", more_than_strings=[1, 2, 3])  # doctest: +SKIP
+   2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_strings=[1, 2, 3]
 ```
 
 Here, `structlog` takes full advantage of its hopefully useful default settings:
@@ -35,6 +35,9 @@ Here, `structlog` takes full advantage of its hopefully useful default settings:
 - Output is sent to [standard out] instead of exploding into the user's face or doing nothing.
 - It imitates standard library {mod}`logging`'s log levels for familiarity -- even if you're not using any of your integrations.
   By default, no level-based filtering is done, but it comes with a very fast filtering machinery in the form of {func}`structlog.make_filtering_bound_logger()`.
+- Like `logging`, positional arguments are [interpolated into the message string using %](https://docs.python.org/3/library/stdtypes.html#old-string-formatting).
+  That might look dated, but it's *much* faster than using {any}`str.format` and allows ``structlog`` to be used as drop-in replacement for {mod}`logging` in more cases.
+  If you *know* that the log entry is *always* gonna be logged out, just use [f-strings](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) which are the fastest.
 - All keywords are formatted using {class}`structlog.dev.ConsoleRenderer`.
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects.
