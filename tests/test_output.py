@@ -19,7 +19,7 @@ from structlog import (
     WriteLogger,
     WriteLoggerFactory,
 )
-from structlog._loggers import WRITE_LOCKS
+from structlog._output import WRITE_LOCKS
 
 from .utils import stdlib_log_methods
 

@@ -29,7 +29,7 @@ from structlog._config import (
 )
 from structlog._generic import BoundLogger
 from structlog._log_levels import make_filtering_bound_logger
-from structlog._loggers import (
+from structlog._output import (
     BytesLogger,
     BytesLoggerFactory,
     PrintLogger,

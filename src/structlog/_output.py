@@ -4,7 +4,7 @@
 # repository for complete details.
 
 """
-Logger wrapper and helper class.
+Logger classes responsible for output.
 """
 
 from __future__ import annotations

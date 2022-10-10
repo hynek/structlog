@@ -162,7 +162,7 @@ class _ThreadLocalDictWrapper:
     Useful for short-lived threaded applications like requests in web app.
 
     Use :func:`wrap` to instantiate and use
-    :func:`structlog._loggers.BoundLogger.new` to clear the context.
+    :func:`structlog.BoundLogger.new` to clear the context.
     """
 
     _tl: Any
