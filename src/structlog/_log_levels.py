@@ -92,7 +92,7 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     Compared to using ``structlog``'s standard library integration and the
     `structlog.stdlib.filter_by_level` processor:
 
-    - It's faster because once the logger is built at program start, it's a
+    - It's faster because once the logger is built at program start; it's a
       static class.
     - For the same reason you can't change the log level once configured.
       Use the dynamic approach of `standard-library` instead, if you need this
