@@ -4,7 +4,7 @@
 
 ## Installation
 
-`structlog` can be easily installed using:
+The latest version of `structlog` is always on [PyPI](https://pypi.org/project/structlog/) and can be installed using *pip*:
 
 ```console
 $ pip install structlog
@@ -13,7 +13,7 @@ $ pip install structlog
 If you want pretty exceptions in development (you know you do!), additionally install either [*Rich*] or [*better-exceptions*].
 Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by *Rich*.
 
-On Windows, you also have to install [*colorama*] if you want colorful output beside exceptions.
+On Windows, you also have to install [*Colorama*] if you want colorful output beside exceptions.
 
 
 ## Your First Log Entry
@@ -33,7 +33,7 @@ As a result, the simplest possible usage looks like this:
 Here, `structlog` takes full advantage of its hopefully useful default settings:
 
 - Output is sent to [standard out] instead of exploding into the user's face or doing nothing.
-- It imitates standard library {mod}`logging`'s log levels for familiarity -- even if you're not using any of your integrations.
+- It imitates standard library {mod}`logging`'s log levels for familiarity -- even if you're not using any of our integrations.
   By default, no level-based filtering is done, but it comes with a very fast filtering machinery in the form of {func}`structlog.make_filtering_bound_logger()`.
 - Like `logging`, positional arguments are [interpolated into the message string using %](https://docs.python.org/3/library/stdtypes.html#old-string-formatting).
   That might look dated, but it's *much* faster than using {any}`str.format` and allows ``structlog`` to be used as drop-in replacement for {mod}`logging` in more cases.
@@ -41,7 +41,7 @@ Here, `structlog` takes full advantage of its hopefully useful default settings:
 - All keywords are formatted using {class}`structlog.dev.ConsoleRenderer`.
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects.
-- It's rendered in nice {doc}`colors <development>` (the [*colorama*] package is needed on Windows).
+- It's rendered in nice {doc}`colors <development>` (the [*Colorama*] package is needed on Windows).
 - If you have [*Rich*] or [*better-exceptions*] installed, exceptions will be rendered in colors and with additional helpful information.
 
 Please note that even in most complex logging setups the example would still look just like that thanks to {doc}`configuration`.
@@ -69,7 +69,7 @@ log = structlog.get_logger()
 ```
 
 :::{note}
-- `structlog.stdlib.recreate_defaults()` allows you to switch `structlog` to using standard library's `logging` module for output for better interoperability with just one function call.
+- {func}`structlog.stdlib.recreate_defaults()` allows you to switch `structlog` to using standard library's `logging` module for output for better interoperability with just one function call.
 - {func}`structlog.make_filtering_bound_logger()` (re-)uses {any}`logging`'s log levels, but doesn't use `logging` at all.
   The exposed API is {class}`structlog.types.FilteringBoundLogger`.
 - For brevity and to enable doctests, all further examples in `structlog`'s documentation use the more simplistic {class}`structlog.processors.KeyValueRenderer()` without timestamps.
@@ -195,7 +195,7 @@ Now you're all set for the rest of the user's guide and can start reading about 
 
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions
-[*colorama*]: https://pypi.org/project/colorama/
+[*Colorama*]: https://pypi.org/project/colorama/
 [recipe]: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging
 [*Rich*]: https://github.com/Textualize/rich
 [standard out]: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29

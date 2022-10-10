@@ -59,17 +59,17 @@ class TestConsoleRenderer:
     def test_missing_colorama(self):
         """
         ConsoleRenderer(colors=True) raises SystemError on initialization if
-        colorama is missing and _IS_WINDOWS is True.
+        Colorama is missing and _IS_WINDOWS is True.
         """
         with pytest.raises(SystemError) as e:
             dev.ConsoleRenderer(colors=True)
 
         assert (
-            "ConsoleRenderer with `colors=True` requires the colorama package "
+            "ConsoleRenderer with `colors=True` requires the Colorama package "
             "installed."
         ) in e.value.args[0]
 
-    def test_plain(self, cr, styles, unpadded):
+    def test_plain(self, cr, unpadded):
         """
         Works with a plain event_dict with only the event.
         """

@@ -208,9 +208,9 @@ So please make sure to **always** properly configure your applications.
   Make sure to remove `format_exc_info` from your processor chain if you configure `structlog` manually.
   This change is not really breaking, because the old use-case will keep working as before.
   However if you pass `pretty_exceptions=True` (which is the default if either `rich` or `better-exceptions` is installed), a warning will be raised and the exception will be rendered without prettification.
-- All use of [*colorama*](https://github.com/tartley/colorama) on non-Windows systems has been excised.
+- All use of [*Colorama*](https://github.com/tartley/colorama) on non-Windows systems has been excised.
   Thus, colors are now enabled by default in `structlog.dev.ConsoleRenderer` on non-Windows systems.
-  You can keep using *colorama* to customize colors, of course.
+  You can keep using *Colorama* to customize colors, of course.
   [#345](https://github.com/hynek/structlog/pull/345)
 
 
@@ -319,7 +319,7 @@ So please make sure to **always** properly configure your applications.
 
 - The logger created by `structlog.get_logger()` is not detected as an abstract method anymore, when attached to an abstract base class.
   [#229](https://github.com/hynek/structlog/issues/229)
-- *colorama* isn't initialized lazily on Windows anymore because it breaks rendering.
+- *Colorama* isn't initialized lazily on Windows anymore because it breaks rendering.
   [#232](https://github.com/hynek/structlog/issues/232),
   [#242](https://github.com/hynek/structlog/pull/242)
 
@@ -364,9 +364,9 @@ It has been unsupported by the Python core team for a while now and its PyPI dow
 
 ### Fixed
 
-- `structlog.dev.ConsoleRenderer` now uses no colors by default, if *colorama* is not available.
+- `structlog.dev.ConsoleRenderer` now uses no colors by default, if *Colorama* is not available.
   [#215](https://github.com/hynek/structlog/issues/215)
-- `structlog.dev.ConsoleRenderer` now initializes *colorama* lazily, to prevent accidental side-effects just by importing `structlog`.
+- `structlog.dev.ConsoleRenderer` now initializes *Colorama* lazily, to prevent accidental side-effects just by importing `structlog`.
   [#210](https://github.com/hynek/structlog/issues/210)
 - A best effort has been made to make as much of `structlog` pickleable as possible to make it friendlier with `multiprocessing` and similar libraries.
   Some classes can only be pickled on Python 3 or using the [dill](https://pypi.org/project/dill/) library though and that is very unlikely to change.

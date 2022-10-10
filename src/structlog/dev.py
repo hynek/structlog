@@ -80,9 +80,9 @@ if colorama is not None:
     GREEN = colorama.Fore.GREEN
     RED_BACK = colorama.Back.RED
 else:
-    # These are the same values as the colorama color codes. Redefining them
+    # These are the same values as the Colorama color codes. Redefining them
     # here allows users to specify that they want color without having to
-    # install colorama, which is only supposed to be necessary in Windows.
+    # install Colorama, which is only supposed to be necessary in Windows.
     RESET_ALL = "\033[0m"
     BRIGHT = "\033[1m"
     DIM = "\033[2m"
@@ -96,7 +96,7 @@ else:
 
 
 if _IS_WINDOWS:  # pragma: no cover
-    # On Windows, use colors by default only if colorama is installed.
+    # On Windows, use colors by default only if Colorama is installed.
     _use_colors = colorama is not None
 else:
     # On other OSes, use colors by default.
@@ -219,7 +219,7 @@ class ConsoleRenderer:
 
     :param pad_event: Pad the event to this many characters.
     :param colors: Use colors for a nicer output. `True` by default. On
-        Windows only if colorama_ is installed.
+        Windows only if Colorama_ is installed.
     :param force_colors: Force colors even for non-tty destinations.
         Use this option if your logs are stored in a file that is meant
         to be streamed to the console. Only meaningful on Windows.
@@ -229,7 +229,7 @@ class ConsoleRenderer:
         non-ASCII output on Python 2.  The ``event`` key is *never*
         `repr` -ed.
     :param level_styles: When present, use these styles for colors. This
-        must be a dict from level names (strings) to colorama styles. The
+        must be a dict from level names (strings) to Colorama styles. The
         default can be obtained by calling
         `ConsoleRenderer.get_default_level_styles`
     :param exception_formatter: A callable to render ``exc_infos``. If rich_
@@ -241,9 +241,9 @@ class ConsoleRenderer:
     :param event_key: The key to look for the main log message. Needed when
         you rename it e.g. using `structlog.processors.EventRenamer`.
 
-    Requires the colorama_ package if *colors* is `True` **on Windows**.
+    Requires the Colorama_ package if *colors* is `True` **on Windows**.
 
-    .. _colorama: https://pypi.org/project/colorama/
+    .. _Colorama: https://pypi.org/project/colorama/
     .. _better-exceptions: https://pypi.org/project/better-exceptions/
     .. _Rich: https://pypi.org/project/rich/
 
@@ -253,10 +253,10 @@ class ConsoleRenderer:
     .. versionadded:: 18.1 *force_colors*
     .. versionadded:: 18.1 *level_styles*
     .. versionchanged:: 19.2
-       ``colorama`` now initializes lazily to avoid unwanted initializations as
+       *Colorama now initializes lazily to avoid unwanted initializations as
        ``ConsoleRenderer`` is used by default.
     .. versionchanged:: 19.2 Can be pickled now.
-    .. versionchanged:: 20.1 ``colorama`` does not initialize lazily on Windows
+    .. versionchanged:: 20.1 *Colorama* does not initialize lazily on Windows
        anymore because it breaks rendering.
     .. versionchanged:: 21.1 It is additionally possible to set the logger name
        using the ``logger_name`` key in the ``event_dict``.
@@ -269,7 +269,7 @@ class ConsoleRenderer:
        for it.
     .. versionchanged:: 21.2 The colors keyword now defaults to True on
        non-Windows systems, and either True or False in Windows depending on
-       whether colorama is installed.
+       whether *Colorama* is installed.
     .. versionadded:: 21.3.0 *sort_keys*
     .. versionadded:: 22.1 *event_key*
     """
