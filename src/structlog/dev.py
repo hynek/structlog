@@ -165,7 +165,7 @@ def plain_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    Used by default if neither ``rich`` not ``better-exceptions`` are present.
+    Used by default if neither *Rich* not *better-exceptions* are present.
 
     .. versionadded:: 21.2
     """
@@ -174,11 +174,11 @@ def plain_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
 def rich_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
     """
-    Pretty-print *exc_info* to *sio* using the ``rich`` package.
+    Pretty-print *exc_info* to *sio* using the *Rich* package.
 
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    Used by default if ``rich`` is installed.
+    Used by default if *Rich* is installed.
 
     .. versionadded:: 21.2
     """
@@ -190,12 +190,11 @@ def rich_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
 def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
     """
-    Pretty-print *exc_info* to *sio* using the ``better-exceptions`` package.
+    Pretty-print *exc_info* to *sio* using the *better-exceptions* package.
 
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    Used by default if ``better-exceptions`` is installed and ``rich`` is
-    absent.
+    Used by default if *better-exceptions* is installed and *Rich* is absent.
 
     .. versionadded:: 21.2
     """
@@ -215,7 +214,7 @@ class ConsoleRenderer:
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
     If ``event_dict`` contains a true-ish ``exc_info`` key, it will be
-    rendered *after* the log line. If rich_ or better-exceptions_ are present,
+    rendered *after* the log line. If Rich_ or better-exceptions_ are present,
     in colors and with extra context.
 
     :param pad_event: Pad the event to this many characters.
@@ -246,7 +245,7 @@ class ConsoleRenderer:
 
     .. _colorama: https://pypi.org/project/colorama/
     .. _better-exceptions: https://pypi.org/project/better-exceptions/
-    .. _rich: https://pypi.org/project/rich/
+    .. _Rich: https://pypi.org/project/rich/
 
     .. versionadded:: 16.0
     .. versionadded:: 16.1 *colors*

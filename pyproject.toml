@@ -56,7 +56,7 @@ tests = [
     "pytest>=6.0",
     "simplejson",
 ]
-# Need twisted & rich for stubs.
+# Need Twisted & Rich for stubs.
 # Otherwise mypy fails in tox.
 typing = ["mypy", "rich", "twisted"]
 docs = [

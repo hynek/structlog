@@ -191,8 +191,8 @@ So please make sure to **always** properly configure your applications.
 - `structlog.contextvars.bind_contextvars()` now returns a mapping of keys to `contextvars.Token`s, allowing you to reset values using the new `structlog.contextvars.reset_contextvars()`.
   [#339](https://github.com/hynek/structlog/pull/339)
 - Exception rendering in `structlog.dev.ConsoleLogger` is now configurable using the `exception_formatter` setting.
-  If either the [*rich*](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, `structlog` will use them for pretty-printing tracebacks.
-  *rich* takes precedence over *better-exceptions* if both are present.
+  If either the [*Rich*](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, `structlog` will use them for pretty-printing tracebacks.
+  *Rich* takes precedence over *better-exceptions* if both are present.
 
   This only works if `format_exc_info` is **absent** in the processor chain.
   [#330](https://github.com/hynek/structlog/pull/330),

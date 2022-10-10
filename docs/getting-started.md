@@ -10,8 +10,8 @@
 $ pip install structlog
 ```
 
-If you want pretty exceptions in development (you know you do!), additionally install either [*rich*] or [*better-exceptions*].
-Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by *rich*.
+If you want pretty exceptions in development (you know you do!), additionally install either [*Rich*] or [*better-exceptions*].
+Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by *Rich*.
 
 On Windows, you also have to install [*colorama*] if you want colorful output beside exceptions.
 
@@ -42,7 +42,7 @@ Here, `structlog` takes full advantage of its hopefully useful default settings:
   That in turn uses `repr` to serialize all values to strings.
   Thus, it's easy to add support for logging of your own objects.
 - It's rendered in nice {doc}`colors <development>` (the [*colorama*] package is needed on Windows).
-- If you have [*rich*] or [*better-exceptions*] installed, exceptions will be rendered in colors and with additional helpful information.
+- If you have [*Rich*] or [*better-exceptions*] installed, exceptions will be rendered in colors and with additional helpful information.
 
 Please note that even in most complex logging setups the example would still look just like that thanks to {doc}`configuration`.
 Using the defaults, as above, is equivalent to:
@@ -197,5 +197,5 @@ Now you're all set for the rest of the user's guide and can start reading about 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions
 [*colorama*]: https://pypi.org/project/colorama/
 [recipe]: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging
-[*rich*]: https://github.com/Textualize/rich
+[*Rich*]: https://github.com/Textualize/rich
 [standard out]: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29

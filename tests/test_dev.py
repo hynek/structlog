@@ -484,13 +484,13 @@ class TestSetExcInfo:
 class TestRichTraceback:
     def test_default(self):
         """
-        If rich is present, it's the default.
+        If Rich is present, it's the default.
         """
         assert dev.default_exception_formatter is dev.rich_traceback
 
     def test_does_not_blow_up(self):
         """
-        We trust rich to do the right thing, so we just exercise the function
+        We trust Rich to do the right thing, so we just exercise the function
         and check the first new line that we add manually is present.
         """
         sio = StringIO()
@@ -508,7 +508,7 @@ class TestRichTraceback:
 class TestBetterTraceback:
     def test_default(self):
         """
-        If better-exceptions is present and rich is NOT present, it's the
+        If better-exceptions is present and Rich is NOT present, it's the
         default.
         """
         assert (
