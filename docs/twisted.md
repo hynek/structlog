@@ -25,7 +25,7 @@ In order to avoid that `structlog` disturbs your CamelCase harmony, it comes wit
 
 `structlog` comes with two Twisted-specific processors:
 
-`structlog.twisted.EventAdapter`
+{func}`structlog.twisted.EventAdapter`
 
 : This is useful if you have an existing Twisted application and just want to wrap your loggers for now.
   It takes care of transforming your event dictionary into something [twisted.python.log.err](https://docs.twisted.org/en/stable/api/twisted.python.log.html#err) can digest.
@@ -50,7 +50,7 @@ In order to avoid that `structlog` disturbs your CamelCase harmony, it comes wit
   The drawback of this approach is that Twisted will format your exceptions as multi-line log entries which is painful to parse.
   Therefore `structlog` comes with:
 
-`structlog.twisted.JSONRenderer`
+{func}`structlog.twisted.JSONRenderer`
 
 : Goes a step further and circumvents Twisted logger's Exception / Failure handling and renders it itself as JSON strings.
   That gives you regular and simple-to-parse single-line JSON log entries no matter what happens.
