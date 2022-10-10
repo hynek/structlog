@@ -232,7 +232,7 @@ As noted before, the fastest way to transform `structlog` into a `logging`-frien
 
 ## Liked what you saw?
 
-Now you're all set for the rest of the user's guide and can start reading about [bound loggers](loggers) -- the heart of `structlog`.
+Now you're all set for the rest of the user's guide and can start reading about [bound loggers](bound-loggers.md) -- the heart of `structlog`.
 
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions

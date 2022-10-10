@@ -1,7 +1,7 @@
 # Bound Loggers
 
 The centerpiece of `structlog` that you will interact with most is called a *bound logger*.
-It is what you get back from `structlog.get_logger()` and call your logging methods on.
+It is what you get back from {func}`structlog.get_logger()` and call your logging methods on.
 
 It consists of three parts:
 
