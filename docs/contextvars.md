@@ -16,22 +16,22 @@
 ```
 
 The {mod}`contextvars` module in the Python standard library allows having a global `structlog` context that is local to the current execution context.
-The execution context can be thread-local, concurrent code such as code using {mod}`asyncio`, or [*greenlet*](https://greenlet.readthedocs.io/).
+The execution context can be thread-local if using threads, or using primitives based on {mod}`asyncio`, or [*greenlet*](https://greenlet.readthedocs.io/) respectively.
 
 For example, you may want to bind certain values like a request ID or the peer's IP address at the beginning of a web request and have them logged out along with the local contexts you build within our views.
 
-For that `structlog` provides the `structlog.contextvars` module with a set of functions to bind variables to a context-local context.
+For that `structlog` provides the {mod}`structlog.contextvars` module with a set of functions to bind variables to a context-local context.
 This context is safe to be used both in threaded as well as asynchronous code.
 
 The general flow is:
 
-- Use `structlog.configure` with `structlog.contextvars.merge_contextvars` as your first processor.
-- Call `structlog.contextvars.clear_contextvars` at the beginning of your request handler (or whenever you want to reset the context-local context).
-- Call `structlog.contextvars.bind_contextvars` and `structlog.contextvars.unbind_contextvars` instead of your bound logger's `bind()` and `unbind()` when you want to bind and unbind key-value pairs to the context-local context.
-  You can also use the `structlog.contextvars.bound_contextvars` context manager/decorator.
+- Use {func}`structlog.configure` with {func}`structlog.contextvars.merge_contextvars` as your first processor (part of default configuration).
+- Call {func}`structlog.contextvars.clear_contextvars` at the beginning of your request handler (or whenever you want to reset the context-local context).
+- Call {func}`structlog.contextvars.bind_contextvars` and {func}`structlog.contextvars.unbind_contextvars` instead of your bound logger's `bind()` and `unbind()` when you want to bind and unbind key-value pairs to the context-local context.
+  You can also use the {func}`structlog.contextvars.bound_contextvars` context manager / decorator.
 - Use `structlog` as normal.
-  Loggers act as they always do, but the `structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
-- If you want to access the context-local storage, you use `structlog.contextvars.get_contextvars` and `structlog.contextvars.get_merged_contextvars`.
+  Loggers act as they always do, but the {func}`structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
+- If you want to access the context-local storage, you use {func}`structlog.contextvars.get_contextvars` and {func}`structlog.contextvars.get_merged_contextvars`.
 
 We're sorry the word *context* means three different things in this itemization depending on ... context.
 
@@ -80,8 +80,8 @@ We're sorry the word *context* means three different things in this itemization 
    >>> clear_contextvars()
    >>> log.info("hi there")
    event='hi there' a=None
-
 ```
+
 
 ## Support for `contextvars.Token`
 
@@ -126,15 +126,15 @@ As you can see, `view`, `peer`, and `request_id` are present in **both** log ent
 
 While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread-local storage for request-wide context:
 
-1. `structlog.contextvars.clear_contextvars()` ensures the thread-local storage is empty for each request.
-2. `structlog.contextvars.bind_contextvars()` puts your key-value pairs into thread-local storage.
-3. The `structlog.contextvars.merge_contextvars()` processor merges the thread-local context into the event dict.
+1. {func}`structlog.contextvars.clear_contextvars()` ensures the thread-local storage is empty for each request.
+2. {func}`structlog.contextvars.bind_contextvars()` puts your key-value pairs into thread-local storage.
+3. The {func}`structlog.contextvars.merge_contextvars()` processor merges the thread-local context into the event dict.
 
 Please note that the `user` field is only present in the view because it wasn't bound into the thread-local storage.
 See {doc}`contextvars` for more details.
 
 ___
 
-`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and does a `logging.getLogger` with it.
-It's used by `structlog.get_logger` to rid you of logging boilerplate in application code.
-If you prefer to name your standard library loggers explicitly, a positional argument to `structlog.get_logger` gets passed to the factory and used as the name.
+{func}`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and runs a {func}`logging.getLogger` with it.
+It's used by {func}`structlog.get_logger` to rid you of logging boilerplate in application code.
+If you prefer to name your standard library loggers explicitly, a positional argument to {func}`structlog.get_logger` gets passed to the factory and used as the name.
