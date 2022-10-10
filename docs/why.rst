@@ -36,7 +36,7 @@ You can stop writing prose and start thinking in terms of an event that happens 
 Each log entry is a meaningful dictionary instead of an opaque string now!
 
 That said, ``structlog`` is not taking anything away from you.
-You can still use string interpolation:
+You can still use string interpolation using positional arguments:
 
 .. code-block:: pycon
 
