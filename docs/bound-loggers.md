@@ -8,7 +8,7 @@ It consists of three parts:
 ```{image} _static/BoundLogger.svg
 ```
 
-1. A *context dictionary* that you can *bind* key/value pairs to.
+1. A *context dictionary* that you can *bind* key / value pairs to.
    This dictionary is *merged* into each log entry that is logged from *this logger specifically*.
    That means that every logger has it own context, but it is possible to have global contexts using {doc}`context variables <contextvars>`.
 2. A list of {doc}`processors <processors>` that are called on every log entry.

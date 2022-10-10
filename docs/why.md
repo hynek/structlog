@@ -19,7 +19,7 @@ Instead, you log *events* that happen in a *context* of key / value pairs.
 
 ## Easier Logging
 
-You can stop writing prose and start thinking in terms of an event that happens in the context of key/value pairs:
+You can stop writing prose and start thinking in terms of an event that happens in the context of key / value pairs:
 
 ```pycon
 >>> from structlog import get_logger
@@ -40,7 +40,7 @@ You can still use string interpolation using positional arguments:
 
 ## Data Binding
 
-Since log entries are dictionaries, you can start binding and re-binding key/value pairs to your loggers to ensure they are present in every following logging call:
+Since log entries are dictionaries, you can start binding and re-binding key / value pairs to your loggers to ensure they are present in every following logging call:
 
 ```pycon
 >>> log = log.bind(user="anonymous", some_key=23)
@@ -49,7 +49,7 @@ Since log entries are dictionaries, you can start binding and re-binding key/val
 2020-11-18 09:18:28 [info     ] user.logged_in    another_key=42 happy=True some_key=23 user=hynek
 ```
 
-You can also bind key/value pairs to {doc}`context variables <contextvars>` that look global, but are local to your thread or *asyncio* context (i.e. usually your request).
+You can also bind key / value pairs to {doc}`context variables <contextvars>` that look global, but are local to your thread or *asyncio* context (i.e. usually your request).
 
 
 ## Powerful Pipelines
@@ -76,7 +76,7 @@ There are [plenty of processors](structlog.processors) for most common tasks com
 `structlog` is completely flexible about *how* the resulting log entry is emitted.
 Since each log entry is a dictionary, it can be formatted to **any** format:
 
-- A colorful key/value format for [local development](https://www.structlog.org/en/stable/development.html),
+- A colorful key / value format for [local development](https://www.structlog.org/en/stable/development.html),
 - [JSON](https://www.structlog.org/en/stable/api.html#structlog.processors.JSONRenderer) for easy parsing,
 - or some standard format you have parsers for like *nginx* or Apache *httpd*.
 

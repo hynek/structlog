@@ -211,8 +211,8 @@ class TestContextvars:
 
     def test_get_only_gets_structlog_without_deleted(self):
         """
-        get_contextvars returns only the structlog-specific key/values with the
-        prefix removed. Deleted keys (= Ellipsis) are ignored.
+        get_contextvars returns only the structlog-specific key / values with
+        the prefix removed. Deleted keys (= Ellipsis) are ignored.
         """
         bind_contextvars(a=1, b=2)
         unbind_contextvars("b")
