@@ -1,6 +1,6 @@
-# Why…
+# Why …
 
-## …Structured Logging?
+## … Structured Logging?
 
 > I believe the widespread use of format strings in logging is based on two presumptions:
 >
@@ -15,7 +15,7 @@ Structured logging means that you don't write hard-to-parse and hard-to-keep-con
 Instead, you log *events* that happen in a *context* of key / value pairs.
 
 
-## …structlog?
+## … structlog?
 
 ## Easier Logging
 
