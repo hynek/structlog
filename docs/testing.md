@@ -41,7 +41,7 @@ def test_my_stuff(log_output):
     assert log_output.entries == [...]
 ```
 
-______________________________________________________________________
+---
 
 You can also use {class}`structlog.testing.CapturingLogger` (directly, or via {class}`~structlog.testing.CapturingLoggerFactory` that always returns the same logger) that is more low-level and great for unit tests:
 
@@ -64,7 +64,7 @@ You can also use {class}`structlog.testing.CapturingLogger` (directly, or via {c
    structlog.reset_defaults()
 ```
 
-______________________________________________________________________
+---
 
 Additionally `structlog` also ships with a logger that just returns whatever it gets passed into it: {class}`structlog.testing.ReturnLogger`.
 
