@@ -43,7 +43,7 @@ types
 
 ### Integration with Existing Systems
 
-`structlog` is both zero-config as well as highly flexible.
+`structlog` is both zero-config as well as highly configurable.
 You can use it on its own or integrate with existing systems.
 Dedicated support for the standard library and Twisted is shipped out-of-the-box.
 
