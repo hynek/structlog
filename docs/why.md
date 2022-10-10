@@ -11,7 +11,7 @@
 >
 > —<cite>[Paul Querna](https://paul.querna.org/articles/2011/12/26/log-for-machines-in-json/)</cite>
 
-Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your log.
+Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your log entries.
 Instead, you log *events* that happen in a *context* of key / value pairs.
 
 
