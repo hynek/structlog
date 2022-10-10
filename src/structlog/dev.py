@@ -253,7 +253,7 @@ class ConsoleRenderer:
     .. versionadded:: 18.1 *force_colors*
     .. versionadded:: 18.1 *level_styles*
     .. versionchanged:: 19.2
-       *Colorama now initializes lazily to avoid unwanted initializations as
+       *Colorama* now initializes lazily to avoid unwanted initializations as
        ``ConsoleRenderer`` is used by default.
     .. versionchanged:: 19.2 Can be pickled now.
     .. versionchanged:: 20.1 *Colorama* does not initialize lazily on Windows
