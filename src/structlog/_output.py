@@ -47,7 +47,7 @@ class PrintLogger:
     Useful if you follow
     `current logging best practices <logging-best-practices>`.
 
-    Also very useful for testing and examples since logging is finicky in
+    Also very useful for testing and examples since `logging` is finicky in
     doctests.
 
     .. versionchanged:: 22.1
@@ -149,10 +149,10 @@ class WriteLogger:
     Useful if you follow
     `current logging best practices <logging-best-practices>`.
 
-    Also very useful for testing and examples since logging is finicky in
+    Also very useful for testing and examples since `logging` is finicky in
     doctests.
 
-    A little faster and a little less versatile than the PrintLogger.
+    A little faster and a little less versatile than `structlog.PrintLogger`.
 
     .. versionadded:: 22.1
     """
