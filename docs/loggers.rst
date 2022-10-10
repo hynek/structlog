@@ -1,7 +1,6 @@
 Loggers
 =======
 
-
 Bound Loggers
 -------------
 
@@ -109,7 +108,7 @@ Additionally, the following arguments are allowed too:
    A class to use instead of :class:`~structlog.BoundLogger` for wrapping.
    This is useful if you want to sub-class BoundLogger and add custom logging methods.
    BoundLogger's bind/new methods are sub-classing-friendly so you won't have to re-implement them.
-   Please refer to the :ref:`related example <wrapper_class-example>` for how this may look.
+   Please refer to the :ref:`related example <wrapper-class-example>` for how this may look.
 
 **initial_values**
    The values that new wrapped loggers are automatically constructed with.
