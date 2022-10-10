@@ -15,15 +15,23 @@ It consists of three parts:
    Each processor receives the return value of its predecessor passed as an argument.
 3. And finally a *logger* that it's wrapping.
    This wrapped logger is responsible for the *output* of the log entry that has been returned by the last processor.
-   This *can* be standard library's {class}`logging.Logger`, but absolutely doesn't have to.
-   Bound loggers themselves do *not* do any I/O themselves.
+   This *can* be standard library's {class}`logging.Logger`, but absolutely doesn't have to:
+   By default it's `structlog`'s {class}`structlog.PrintLogger`.
 
-To manipulate the context dictionary, it offers to:
+:::{important}
+Bound loggers themselves do *not* do any I/O themselves.
 
-- Recreate itself with (optional) *additional* context data: {func}`~structlog.BoundLogger.bind` and {func}`~structlog.BoundLogger.new`.
-- Recreate itself with *less* context data: {func}`~structlog.BoundLogger.unbind`.
+All they do is managing the *context* and proxying log calls to a *wrapped logger*.
+:::
+
+To manipulate the context dictionary, a *bound logger* offers to:
+
+- Recreate itself with (optional) *additional* context data: {func}`~structlog.BoundLoggerBase.bind` and {func}`~structlog.BoundLoggerBase.new`.
+- Recreate itself with *less* context data: {func}`~structlog.BoundLoggerBase.unbind` and {func}`~structlog.BoundLoggerBase.try_unbind`.
 
 In any case, the original bound logger or its context are never mutated.
+
+---
 
 Finally, if you call *any other* method on {class}`~structlog.BoundLogger`, it will:
 
@@ -32,21 +40,23 @@ Finally, if you call *any other* method on {class}`~structlog.BoundLogger`, it w
 3. Add a new key `event` with the value of the first positional argument of the method call to the event dict.
 4. Run the processors successively on the event dict.
    Each processor receives the result of its predecessor.
-5. Finally, it takes the result of the final processor and calls the method with the same name – that got called on the bound logger – on the wrapped logger[^id3].
-   For flexibility, the final processor can return either a string[^id4] that is passed directly as a positional parameter, or a tuple `(args, kwargs)` that are passed as `wrapped_logger.log_method(*args, **kwargs)`.
+5. Finally, it takes the result of the final processor and calls the method with the same name – that got called on the bound logger – on the wrapped logger[^explicit].
+   For flexibility, the final processor can return either a string[^str] that is passed directly as a positional parameter, or a tuple `(args, kwargs)` that are passed as `wrapped_logger.log_method(*args, **kwargs)`.
 
-[^id3]: Since this is slightly magicy, `structlog` comes with concrete loggers for the `standard-library` and {doc}`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
+[^explicit]: Since this is slightly magical, `structlog` comes with concrete loggers for the `standard-library` and {doc}`twisted` that offer you explicit APIs for the supported logging methods but behave identically like the generic BoundLogger otherwise.
     Of course, you are free to implement your own bound loggers too.
 
-[^id4]: `str`, `bytes`, or `bytearray` to be exact.
+[^str]: `str`, `bytes`, or `bytearray` to be exact.
 
-## Creation
 
-You won't be instantiating bound loggers yourself.
-In practice you will configure `structlog` as explained in the `next chapter <configuration>` and then just call `structlog.get_logger`.
+## Wrapping Loggers Explicitly
 
-In some rare cases you may not want to do that.
-For that times there is the `structlog.wrap_logger` function that can be used to wrap a logger without any global state (i.e. configuration):
+In practice, you won't be instantiating bound loggers yourself.
+You will configure `structlog` as explained in the {doc}`next chapter <configuration>` and then just call {func}`structlog.get_logger`.
+
+However, in some rare cases you may not want to do that.
+For example because you don't control how you get the logger that you would like to wrap (famous example: *Celery*).
+For that times there is the {func}`structlog.wrap_logger` function that can be used to wrap a logger -- optionally without any global state (i.e. configuration):
 
 (proc)=
 
@@ -81,44 +91,3 @@ For that times there is the `structlog.wrap_logger` function that can be used to
    I got called with {'foo': 'but you can structure the event too', 'event': 'nothing bound anymore'}
    {'foo': 'but you can structure the event too', 'event': 'nothing bound anymore'}
 ```
-
-As you can see, it accepts one mandatory and a few optional arguments:
-
-**logger**
-
-: The one and only positional argument is the logger that you want to wrap and to which the log entries will be proxied.
-  If you wish to use a {ref}`configured logger factory <logger-factories>`, set it to `None`.
-
-**processors**
-
-: A list of callables that can {doc}`filter, mutate, and format <processors>` the log entry before it gets passed to the wrapped logger.
-
-  Default is `[`{class}`~structlog.processors.StackInfoRenderer`, {func}`~structlog.processors.format_exc_info`, {class}`~structlog.processors.TimeStamper`, {class}`~structlog.dev.ConsoleRenderer``]`.
-
-**context_class**
-
-: The class to save your context in.
-
-  Since all supported Python versions have ordered dictionaries, the default is a plain `dict`.
-
-Additionally, the following arguments are allowed too:
-
-**wrapper_class**
-
-: A class to use instead of {class}`~structlog.BoundLogger` for wrapping.
-  This is useful if you want to sub-class BoundLogger and add custom logging methods.
-  BoundLogger's bind/new methods are sub-classing-friendly so you won't have to re-implement them.
-  Please refer to the {ref}`related example <wrapper-class-example>` for how this may look.
-
-**initial_values**
-
-: The values that new wrapped loggers are automatically constructed with.
-  Useful, for example, if you want to have the module name as part of the context.
-
-:::{note}
-Free your mind from the preconception that log entries have to be serialized to strings eventually.
-All `structlog` cares about is a *dictionary* of *keys* and *values*.
-What happens to it depends on the logger you wrap and your processors alone.
-
-This gives you the power to log directly to databases, log aggregation servers, web services, and whatnot.
-:::

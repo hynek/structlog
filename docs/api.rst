@@ -67,7 +67,7 @@ API Reference
 .. autoexception:: DropEvent
 
 .. autoclass:: BoundLoggerBase
-   :members: new, bind, unbind, _logger, _process_event, _proxy_to_logger
+   :members: new, bind, unbind, try_unbind, _logger, _process_event, _proxy_to_logger
 
 
 `structlog.dev` Module

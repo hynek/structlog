@@ -29,7 +29,7 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 why
 getting-started
-loggers
+bound-loggers
 configuration
 processors
 contextvars
