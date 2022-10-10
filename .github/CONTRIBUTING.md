@@ -142,24 +142,24 @@ But it's way more comfortable to run it locally and *git* catching avoidable err
 
 ## Documentation
 
-- Use [semantic newlines] in [*reStructuredText*] and [*Markdown*](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) files (files ending in `.rst` and `.md`):
+- We use [*Markdown*] everywhere except in `docs/api.rst` and docstrings.
 
-  ```rst
+- Use [semantic newlines] in [*reStructuredText*] and [*Markdown*] files (files ending in `.rst` and `.md`):
+
+  ```markdown
   This is a sentence.
   This is another sentence.
   ```
 
 - If you start a new section, add two blank lines before and one blank line after the header, except if two headers follow immediately after each other:
 
-  ```rst
+  ```markdown
   Last line of previous section.
 
 
-  Header of New Top Section
-  -------------------------
+  ## Header of New Top Section
 
-  Header of New Section
-  ^^^^^^^^^^^^^^^^^^^^^
+  ###  Header of New Section
 
   First line of new section.
   ```
@@ -187,6 +187,7 @@ If your change is noteworthy, there needs to be a changelog entry in [`CHANGELOG
   * Added `structlog.func()`.
   * `structlog.func()` now doesn't crash the Large Hadron Collider anymore when passed the *foobar* argument.
 
+
 #### Example entries
 
 ```markdown
@@ -210,3 +211,4 @@ or:
 [*tox*]: https://tox.wiki/
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
 [*reStructuredText*]: https://www.sphinx-doc.org/en/stable/usage/restructuredtext/basics.html
+[*Markdown*]: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
