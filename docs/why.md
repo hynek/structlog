@@ -17,7 +17,7 @@ Instead, you log *events* that happen in a *context* of key-value pairs.
 
 ## … structlog?
 
-## Easier Logging
+### Easier Logging
 
 You can stop writing prose and start thinking in terms of an event that happens in the context of key-value pairs:
 
@@ -38,7 +38,7 @@ You can still use string interpolation using positional arguments:
 2022-10-10 07:19:25 [info     ] Hello, world!
 ```
 
-## Data Binding
+### Data Binding
 
 Since log entries are dictionaries, you can start binding and re-binding key-value pairs to your loggers to ensure they are present in every following logging call:
 
@@ -52,7 +52,7 @@ Since log entries are dictionaries, you can start binding and re-binding key-val
 You can also bind key-value pairs to {doc}`context variables <contextvars>` that look global, but are local to your thread or *asyncio* context (i.e. usually your request).
 
 
-## Powerful Pipelines
+### Powerful Pipelines
 
 Each log entry goes through a [processor pipeline](processors.md) that is just a chain of functions that receive a dictionary and return a new dictionary that gets fed into the next function.
 That allows for simple but powerful data manipulation:
@@ -71,7 +71,7 @@ There are [plenty of processors](structlog.processors) for most common tasks com
 - Flexible [timestamping](structlog.processors.TimeStamper).
 
 
-## Formatting
+### Formatting
 
 `structlog` is completely flexible about *how* the resulting log entry is emitted.
 Since each log entry is a dictionary, it can be formatted to **any** format:
@@ -84,7 +84,7 @@ Internally, formatters are processors whose return value (usually a string) is p
 `structlog` comes with multiple useful formatters out-of-the-box.
 
 
-## Output
+### Output
 
 `structlog` is also flexible with the final output of your log entries:
 
@@ -98,7 +98,7 @@ Internally, formatters are processors whose return value (usually a string) is p
   `structlog` passes you a dictionary and you can do with it whatever you want.
   Reported use cases are sending them out via network or saving them in a database.
 
-## Highly Testable
+### Highly Testable
 
 `structlog` is thoroughly tested and we see it as our duty to help you to achieve the same in *your* applications.
 That's why it ships with a [test helpers](https://www.structlog.org/en/stable/testing.html) to introspect your application's logging behavior with little-to-no boilerplate.
