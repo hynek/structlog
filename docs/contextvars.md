@@ -67,7 +67,7 @@ We're sorry the word *context* means three different things in this itemization 
    >>> unbind_contextvars("b")
    >>> log.info("world")
    event='world' a=1
-   >>> # You can also bind key / value pairs temporarily.
+   >>> # You can also bind key-value pairs temporarily.
    >>> with bound_contextvars(b=2):
    ...    log.info("hi")
    event='hi' a=1 b=2

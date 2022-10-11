@@ -138,7 +138,7 @@ So please make sure to **always** properly configure your applications.
 
 ### Added
 
-- Added the `structlog.threadlocal.bound_threadlocal` and `structlog.contextvars.bound_contextvars` decorator/context managers to temporarily bind key / value pairs to a thread-local and context-local context.
+- Added the `structlog.threadlocal.bound_threadlocal` and `structlog.contextvars.bound_contextvars` decorator/context managers to temporarily bind key-value pairs to a thread-local and context-local context.
   [#371](https://github.com/hynek/structlog/pull/371)
 
 
