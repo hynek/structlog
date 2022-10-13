@@ -92,8 +92,12 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
 
    Before it hits the last processor, the *event dict* looks something like `{"foo": "bar", "number": 42, "event": "Hello, world!", "level": "info", "timestamp": "2022-10-13 16:29:27"}` now.
 
-   The last processor is {class}`structlog.dev.ConsoleRenderer` and formats the *event dict* into a colorful string.
+   The last processor is {class}`structlog.dev.ConsoleRenderer` and formats the *event dict* into a colorful string[^json].
 5. Finally, the *wrapped logger*'s (a {class}`~structlog.PrintLogger`) `info()` method is called with that string.
+
+[^json]: Until this very step, the *event dict* was a dictionary.
+   By replacing the last processor, you decide on the **format** of your logs.
+   For example, if you wanted JSON logs, you just have to replace the last processor with {class}`structlog.processors.JSONRenderer`.
 
 
 ## Wrapping Loggers Explicitly
