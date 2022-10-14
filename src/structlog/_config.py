@@ -196,8 +196,7 @@ def configure(
     Can be called several times, keeping an argument at `None` leaves it
     unchanged from the current setting.
 
-    After calling for the first time, `is_configured` starts returning
-    `True`.
+    After calling for the first time, `is_configured` starts returning `True`.
 
     Use `reset_defaults` to undo your changes.
 
@@ -205,13 +204,15 @@ def configure(
     :param wrapper_class: Class to use for wrapping loggers instead of
         `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`, and
         `custom-wrappers`.
-    :param context_class: Class to be used for internal context keeping.
-    :param logger_factory: Factory to be called to create a new
-        logger that shall be wrapped.
-    :param cache_logger_on_first_use: `wrap_logger` doesn't return an
-        actual wrapped logger but a proxy that assembles one when it's first
-        used.  If this option is set to `True`, this assembled logger is
-        cached.  See `performance`.
+    :param context_class: Class to be used for internal context keeping. The
+        default is a `dict` and since dictionaries are ordered as of Python
+        3.6, there's few reasons to change this option.
+    :param logger_factory: Factory to be called to create a new logger that
+        shall be wrapped.
+    :param cache_logger_on_first_use: `wrap_logger` doesn't return an actual
+        wrapped logger but a proxy that assembles one when it's first used.  If
+        this option is set to `True`, this assembled logger is cached.  See
+        `performance`.
 
     .. versionadded:: 0.3.0
         *cache_logger_on_first_use*
