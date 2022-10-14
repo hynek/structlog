@@ -27,7 +27,7 @@ As a result, the simplest possible usage looks like this:
    >>> import structlog
    >>> log = structlog.get_logger()
    >>> log.info("hello, %s!", "world", key="value!", more_than_strings=[1, 2, 3])  # doctest: +SKIP
-   2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_strings=[1, 2, 3]
+   2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_than_strings=[1, 2, 3]
 ```
 
 Here, `structlog` takes advantage of its default settings:
