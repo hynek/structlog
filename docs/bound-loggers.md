@@ -78,7 +78,7 @@ log = logger.bind(foo="bar")
 ```
 
 Now `log` is a *bound logger* of type {class}`~structlog.types.FilteringBoundLogger` (but in the default config there's no filtering).
-`log`'s context is `{"foo": "bar"}` and it's wrapped logger is a {class}`structlog.PrintLogger`.
+`log`'s context is `{"foo": "bar"}` and its wrapped logger is a {class}`structlog.PrintLogger`.
 
 Now if you call `log.info("Hello, %s!", "world", number=42)` the following happens:
 
@@ -92,7 +92,7 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
 
    Before it hits the last processor, the *event dict* looks something like `{"foo": "bar", "number": 42, "event": "Hello, world!", "level": "info", "timestamp": "2022-10-13 16:29:27"}` now.
 
-   The last processor is {class}`structlog.dev.ConsoleRenderer` and formats the *event dict* into a colorful string[^json].
+   The last processor is {class}`structlog.dev.ConsoleRenderer` and renders the *event dict* into a colorful string[^json].
 5. Finally, the *wrapped logger*'s (a {class}`~structlog.PrintLogger`) `info()` method is called with that string.
 
 [^json]: Until this very step, the *event dict* was a dictionary.

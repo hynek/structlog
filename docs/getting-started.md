@@ -39,7 +39,7 @@ Here, `structlog` takes advantage of its default settings:
   That might look dated, but it's *much* faster than using {any}`str.format` and allows ``structlog`` to be used as drop-in replacement for {mod}`logging`.
   If you *know* that the log entry is *always* gonna be logged out, just use [f-strings](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) which are the fastest.
 - All keywords are formatted using {class}`structlog.dev.ConsoleRenderer`.
-  That in turn uses `repr` to serialize all values to strings.
+  That in turn uses {func}`repr` to serialize all values to strings.
 - It's rendered in nice {doc}`colors <development>` (the [*Colorama*] package is needed on Windows).
 - If you have [*Rich*] or [*better-exceptions*] installed, exceptions will be rendered in colors and with additional helpful information.
 
