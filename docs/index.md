@@ -33,7 +33,6 @@ bound-loggers
 configuration
 processors
 contextvars
-examples
 development
 testing
 types

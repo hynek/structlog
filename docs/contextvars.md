@@ -105,14 +105,70 @@ def _helper():
 
 Let's assume you want to bind a unique request ID, the URL path, and the peer's IP to every log entry by storing it in thread-local storage that is managed by context variables:
 
-```{literalinclude} code_examples/flask_/webapp.py
-:language: python
+```python
+import logging
+import sys
+import uuid
+
+import flask
+
+from .some_module import some_function
+
+import structlog
+
+logger = structlog.get_logger()
+app = flask.Flask(__name__)
+
+@app.route("/login", methods=["POST", "GET"])
+def some_route():
+    # You would put this into some kind of middleware or processor so it's set
+    # automatically for all requests in all views.
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(
+        view=flask.request.path,
+        request_id=str(uuid.uuid4()),
+        peer=flask.request.access_route[0],
+    )
+    # End of belongs-to-middleware.
+
+    log = logger.bind()
+    # do something
+    # ...
+    log.info("user logged in", user="test-user")
+    # ...
+    some_function()
+    # ...
+    return "logged in!"
+
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        format="%(message)s", stream=sys.stdout, level=logging.INFO
+    )
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,  # <--!!!
+            structlog.processors.KeyValueRenderer(
+                key_order=["event", "view", "peer"]
+            ),
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+    )
+    app.run()
+
 ```
 
-`some_module.py`
+`some_module.py`:
 
-```{literalinclude} code_examples/flask_/some_module.py
-:language: python
+```python
+from structlog import get_logger
+
+logger = get_logger()
+
+def some_function():
+    # ...
+    logger.error("user did something", something="shot_in_foot")
+    # ...
 ```
 
 This would result among other the following lines to be printed:
@@ -123,18 +179,3 @@ event='user did something' view='/login' peer='127.0.0.1' something='shot_in_foo
 ```
 
 As you can see, `view`, `peer`, and `request_id` are present in **both** log entries.
-
-While wrapped loggers are *immutable* by default, this example demonstrates how to circumvent that using a thread-local storage for request-wide context:
-
-1. {func}`structlog.contextvars.clear_contextvars()` ensures the thread-local storage is empty for each request.
-2. {func}`structlog.contextvars.bind_contextvars()` puts your key-value pairs into thread-local storage.
-3. The {func}`structlog.contextvars.merge_contextvars()` processor merges the thread-local context into the event dict.
-
-Please note that the `user` field is only present in the view because it wasn't bound into the thread-local storage.
-See {doc}`contextvars` for more details.
-
-___
-
-{func}`structlog.stdlib.LoggerFactory` is a totally magic-free class that just deduces the name of the caller's module and runs a {func}`logging.getLogger` with it.
-It's used by {func}`structlog.get_logger` to rid you of logging boilerplate in application code.
-If you prefer to name your standard library loggers explicitly, a positional argument to {func}`structlog.get_logger` gets passed to the factory and used as the name.
