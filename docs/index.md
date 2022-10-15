@@ -16,7 +16,7 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 The following chapters give you all the concepts that you need to use *structlog* productively.
 If you're already convinced that you want to play with it, skip ahead to our [Getting Started tutorial](getting-started.md)!
-The rest of the chapters builds gently on each other.
+The remaining chapters build gently on each other.
 
 
 ```{toctree}
