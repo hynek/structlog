@@ -324,10 +324,10 @@ API Reference
 .. autoclass:: SyntaxError_
 
 
-`structlog.types` Module
-------------------------
+`structlog.typing` Module
+-------------------------
 
-.. automodule:: structlog.types
+.. automodule:: structlog.typing
 
 .. autoclass:: BindableLogger
 

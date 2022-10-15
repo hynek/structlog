@@ -41,14 +41,14 @@ To manipulate the context dictionary, a *bound logger* offers to:
 In any case, the original bound logger or its context are never mutated.
 They always return a *copy* of the bound logger with a *new* context that reflects your changes.
 
-This part of the API is defined in the {class}`typing.Protocol` called {class}`structlog.types.BindableLogger`.
-N.B. that the protocol is marked {func}`typing.runtime_checkable` which means that you can check an object for being a *bound logger* using `isinstance(obj, structlog.types.BindableLogger)`.
+This part of the API is defined in the {class}`typing.Protocol` called {class}`structlog.typing.BindableLogger`.
+N.B. that the protocol is marked {func}`typing.runtime_checkable` which means that you can check an object for being a *bound logger* using `isinstance(obj, structlog.typing.BindableLogger)`.
 
 
 ## Logging
 
 Finally, a *bound logger* also **indirectly** exposes the logging methods of the *wrapped logger*.
-By default, that's a {class}`~structlog.types.FilteringBoundLogger` that is wrapping a {class}`~structlog.PrintLogger`.
+By default, that's a {class}`~structlog.typing.FilteringBoundLogger` that is wrapping a {class}`~structlog.PrintLogger`.
 They both share the set of log methods that's present in the standard library: `debug()`, `info()`, `warning()`, `error()`, and `critical()`.
 
 Whenever you call one of those methods on the *bound logger*, it will:
@@ -77,7 +77,7 @@ logger = structlog.get_logger()
 log = logger.bind(foo="bar")
 ```
 
-Now `log` is a *bound logger* of type {class}`~structlog.types.FilteringBoundLogger` (but in the default config there's no filtering).
+Now `log` is a *bound logger* of type {class}`~structlog.typing.FilteringBoundLogger` (but in the default config there's no filtering).
 `log`'s context is `{"foo": "bar"}` and its wrapped logger is a {class}`structlog.PrintLogger`.
 
 Now if you call `log.info("Hello, %s!", "world", number=42)` the following happens:

@@ -46,7 +46,7 @@ from structlog.stdlib import (
     render_to_log_kwargs,
 )
 from structlog.testing import CapturedCall
-from structlog.types import BindableLogger, EventDict
+from structlog.typing import BindableLogger, EventDict
 
 from .additional_frame import additional_frame
 

@@ -24,7 +24,7 @@ from typing import Any, Generator, Mapping
 
 import structlog
 
-from .types import BindableLogger, EventDict, WrappedLogger
+from .typing import BindableLogger, EventDict, WrappedLogger
 
 
 STRUCTLOG_KEY_PREFIX = "structlog_"

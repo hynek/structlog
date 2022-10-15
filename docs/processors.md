@@ -13,7 +13,7 @@ Each processors receives three positional arguments:
 **logger**
 
 : Your wrapped logger object.
-  For example {class}`logging.Logger` or {class}`structlog.types.FilteringBoundLogger` (default).
+  For example {class}`logging.Logger` or {class}`structlog.typing.FilteringBoundLogger` (default).
 
 **method_name**
 

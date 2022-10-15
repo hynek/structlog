@@ -27,7 +27,7 @@ from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .contextvars import merge_contextvars
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
-from .types import Context, EventDict, ExcInfo, Processor, WrappedLogger
+from .typing import Context, EventDict, ExcInfo, Processor, WrappedLogger
 
 
 __all__ = [

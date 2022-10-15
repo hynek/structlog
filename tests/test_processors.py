@@ -44,7 +44,7 @@ from structlog.processors import (
 )
 from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
-from structlog.types import EventDict
+from structlog.typing import EventDict
 from tests.additional_frame import additional_frame
 
 

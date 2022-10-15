@@ -15,6 +15,7 @@ from structlog import (
     threadlocal,
     tracebacks,
     types,
+    typing,
 )
 from structlog._base import BoundLoggerBase, get_context
 from structlog._config import (
@@ -83,6 +84,7 @@ __all__ = [
     "tracebacks",
     "twisted",
     "types",
+    "typing",
     "wrap_logger",
     "WriteLogger",
     "WriteLoggerFactory",

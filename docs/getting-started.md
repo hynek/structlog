@@ -70,7 +70,7 @@ log = structlog.get_logger()
 :::{note}
 - {func}`structlog.stdlib.recreate_defaults()` allows you to switch `structlog` to using standard library's `logging` module for output for better interoperability with just one function call.
 - {func}`~structlog.make_filtering_bound_logger()` (re-)uses {any}`logging`'s log levels, but doesn't use `logging` at all.
-  The exposed API is {class}`~structlog.types.FilteringBoundLogger`.
+  The exposed API is {class}`~structlog.typing.FilteringBoundLogger`.
 - For brevity and to enable doctests, all further examples in `structlog`'s documentation use the more simplistic {class}`~structlog.processors.KeyValueRenderer()` without timestamps.
 :::
 

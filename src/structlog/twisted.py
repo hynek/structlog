@@ -26,7 +26,7 @@ from ._base import BoundLoggerBase
 from ._config import _BUILTIN_DEFAULT_PROCESSORS
 from ._utils import until_not_interrupted
 from .processors import JSONRenderer as GenericJSONRenderer
-from .types import EventDict, WrappedLogger
+from .typing import EventDict, WrappedLogger
 
 
 class BoundLogger(BoundLoggerBase):

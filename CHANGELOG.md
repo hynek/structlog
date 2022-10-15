@@ -23,6 +23,8 @@ So please make sure to **always** properly configure your applications.
 
 - Accessing package metadata as attributes on the `structlog` module is deprecated (e.g. `structlog.__version__`).
   Please use [`importlib.metadata`](https://docs.python.org/3.10/library/importlib.metadata.html) instead (for Python 3.7: the [*importlib-metadata*](https://pypi.org/project/importlib-metadata/) PyPI package).
+- The `structlog.types` module is now deprecated in favor of the `structlog.typing` module.
+  It seems like the Python typing community is settling on this name.
 
 
 ### Added

@@ -15,7 +15,7 @@ from typing import Any, Callable, List, Optional
 import structlog
 
 from structlog.processors import CallsiteParameter
-from structlog.types import FilteringBoundLogger
+from structlog.typing import FilteringBoundLogger
 
 
 bl = structlog.get_logger()
@@ -114,7 +114,7 @@ root_logger.setLevel(logging.INFO)
 
 
 timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
-shared_processors: List[structlog.types.Processor] = [
+shared_processors: List[structlog.typing.Processor] = [
     structlog.stdlib.add_log_level,
     timestamper,
 ]

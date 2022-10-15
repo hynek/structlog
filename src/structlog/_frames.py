@@ -11,7 +11,7 @@ import traceback
 from io import StringIO
 from types import FrameType
 
-from .types import ExcInfo
+from .typing import ExcInfo
 
 
 def _format_exception(exc_info: ExcInfo) -> str:

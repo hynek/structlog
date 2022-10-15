@@ -23,7 +23,7 @@ This wrapper class is [configurable](configuration.md).
 Originally, `structlog` used a generic wrapper class {class}`structlog.BoundLogger` by default.
 That class still ships with `structlog` and can wrap *any* logger class by intercepting unknown method names and proxying them to the wrapped logger.
 
-Nowadays, the default is a {class}`structlog.types.FilteringBoundLogger` that imitates standard library's log levels with the possibility of efficiently filtering at a certain level (inactive log methods are a plain `return None` each).
+Nowadays, the default is a {class}`structlog.typing.FilteringBoundLogger` that imitates standard library's log levels with the possibility of efficiently filtering at a certain level (inactive log methods are a plain `return None` each).
 
 If you're integrating with {mod}`logging` or Twisted, you may was to use one of their specific *bound loggers* ({class}`structlog.stdlib.BoundLogger` and {class}`structlog.twisted.BoundLogger`, respectively).
 

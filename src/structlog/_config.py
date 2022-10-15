@@ -19,7 +19,7 @@ from ._output import PrintLoggerFactory
 from .contextvars import merge_contextvars
 from .dev import ConsoleRenderer, _use_colors, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, add_log_level
-from .types import BindableLogger, Context, Processor, WrappedLogger
+from .typing import BindableLogger, Context, Processor, WrappedLogger
 
 
 """

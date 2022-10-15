@@ -14,7 +14,7 @@ import logging
 from typing import Any, Callable
 
 from ._base import BoundLoggerBase
-from .types import EventDict, FilteringBoundLogger
+from .typing import EventDict, FilteringBoundLogger
 
 
 # Adapted from the stdlib

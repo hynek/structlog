@@ -18,7 +18,7 @@ from io import StringIO
 from typing import Any, Iterable, TextIO, Type, Union
 
 from ._frames import _format_exception
-from .types import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
+from .typing import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
 
 
 if sys.version_info >= (3, 8):

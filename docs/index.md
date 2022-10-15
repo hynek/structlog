@@ -35,7 +35,7 @@ processors
 contextvars
 development
 testing
-types
+typing
 ```
 
 (integration)=

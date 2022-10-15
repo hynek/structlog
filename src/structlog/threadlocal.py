@@ -25,7 +25,7 @@ from typing import Any, Generator, Iterator, TypeVar
 import structlog
 
 from ._config import BoundLoggerLazyProxy
-from .types import BindableLogger, Context, EventDict, WrappedLogger
+from .typing import BindableLogger, Context, EventDict, WrappedLogger
 
 
 def _determine_threadlocal() -> type[Any]:
@@ -105,7 +105,7 @@ def as_immutable(logger: TLLogger) -> TLLogger:
     """
     Extract the context from a thread local logger into an immutable logger.
 
-    :param structlog.types.BindableLogger logger: A logger with *possibly*
+    :param structlog.typing.BindableLogger logger: A logger with *possibly*
       thread local state.
 
     :returns: :class:`~structlog.BoundLogger` with an immutable context.

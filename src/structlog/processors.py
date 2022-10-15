@@ -38,7 +38,7 @@ from ._frames import (
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
 from .tracebacks import ExceptionDictTransformer
-from .types import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
+from .typing import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
 
 
 __all__ = [

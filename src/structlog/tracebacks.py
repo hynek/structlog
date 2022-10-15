@@ -20,7 +20,7 @@ from traceback import walk_tb
 from types import TracebackType
 from typing import Any, Tuple, Union
 
-from .types import ExcInfo
+from .typing import ExcInfo
 
 
 __all__ = [

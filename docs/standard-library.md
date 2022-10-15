@@ -42,7 +42,7 @@ If you want to take advantage of said type hints, you have to either annotate th
 Please note though, that it will neither configure nor verify your configuration.
 It will call `structlog.get_logger()` just like if you would've called it -- the only difference are the type hints.
 
-See also {doc}`types`.
+See also {doc}`typing`.
 
 
 ### `asyncio`
