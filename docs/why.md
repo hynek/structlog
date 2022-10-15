@@ -14,6 +14,10 @@
 Structured logging means that you don't write hard-to-parse and hard-to-keep-consistent prose in your log entries.
 Instead, you log *events* that happen in a *context* of key-value pairs.
 
+:::{tip}
+More general advice about production-grade logging can be found in the later chapter on {doc}`logging-best-practices`.
+:::
+
 
 ## … structlog?
 
