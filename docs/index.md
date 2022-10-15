@@ -1,5 +1,11 @@
 # structlog
 
+<p align=“center”>
+   <a href=“https://www.structlog.org/“>
+      <img src=“_static/structlog_logo_transparent.png” width=“35%” alt=“structlog” />
+   </a>
+</p>
+
 *Simple. Powerful. Fast. Pick three.*
 
 Release **{sub-ref}`release`**  ([What's new?](changelog))
