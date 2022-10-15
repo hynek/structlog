@@ -40,7 +40,7 @@ Thanks to its flexible design, *you* choose whether you want *structlog* to take
 
 The output format is just as flexible and *structlog* comes with support for JSON, [*logfmt*](https://brandur.org/logfmt), as well as pretty console output out-of-the-box:
 
-![image](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)
+[![image](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)
 
 *structlog* has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged.
 Its paradigms proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
