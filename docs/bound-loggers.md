@@ -105,7 +105,7 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
 ## Filtering by Log Levels
 
 Filtering based on log levels can be done in a processor very easily[^stdlib], however that means unnecessary performance overhead through function calls.
-We care a lot about performance and that's why *structlog*'s default logger implements level-filtering as close to the users as possible: in the *bound logger*'s logging methods.
+We care a lot about performance and that's why *structlog*'s default *bound logger* class implements level-filtering as close to the users as possible: in the *bound logger*'s logging methods *before* even creating an *event dict* and starting the processor chain.
 
 {func}`structlog.make_filtering_bound_logger` allows you to create a *bound logger* whose log methods with a log level beneath the configured one consist of a plain `return None`.
 
