@@ -29,6 +29,7 @@ Generally speaking: put it *before* instantiating `flask.Flask`.
 The [plugin definition](https://docs.twisted.org/en/stable/core/howto/plugin.html) is the best place.
 If your app is not a plugin, put it into your [tac file](https://docs.twisted.org/en/stable/core/howto/application.html).
 
+(custom-wrappers)=
 
 ## Custom Wrappers
 
