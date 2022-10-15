@@ -15,6 +15,7 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 ```
 
 If you’d like more information on why structured logging in general and *structlog* in particular are good ideas, we’ve prepared a [summary](why.md) just for you.
+Otherwise, let’s dive right in!
 
 ```{toctree}
 :hidden: true
