@@ -12,15 +12,12 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 ```
 
-
-## First Steps
-
-- If you're not sure whether *structlog* is for you, have a look at {doc}`why`.
-- If you can't wait to log your first entry, start at {doc}`getting-started` and then work yourself through our tutorial.
-- Once you have basic grasp of how *structlog* works, have a look on how it [integrates](integration) best with your existing frameworks.
-
-
 ## Basics
+
+The following chapters give you the all the concepts that you need to use *structlog* productively.
+If you're already convinced that you want to play with it, start with our [Getting Started tutorial](getting-started.md)!
+The rest of the chapters builds gently on each other.
+
 
 ```{toctree}
 :maxdepth: 2

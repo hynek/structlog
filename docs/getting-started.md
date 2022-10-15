@@ -4,7 +4,7 @@
 
 ## Installation
 
-The latest version of *structlog* is always on [PyPI](https://pypi.org/project/structlog/) and can be installed using *pip*:
+You can install *structlog* from [PyPI](https://pypi.org/project/structlog/) using *pip*:
 
 ```console
 $ python -m pip install structlog
@@ -13,7 +13,7 @@ $ python -m pip install structlog
 If you want pretty exceptions in development (you know you do!), additionally install either [*Rich*] or [*better-exceptions*].
 Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by *Rich*.
 
-On Windows, you also have to install [*Colorama*] if you want colorful output beside exceptions.
+On **Windows**, you also have to install [*Colorama*](https://pypi.org/project/colorama/) if you want colorful output beside exceptions.
 
 
 ## Your First Log Entry
@@ -32,16 +32,16 @@ As a result, the simplest possible usage looks like this:
 
 Here, *structlog* takes advantage of its default settings:
 
-- Output is sent to [standard out] instead doing nothing.
-- It imitates standard library {mod}`logging`'s log level names for familiarity.
+- Output is sent to **[standard out](https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29)** instead doing nothing.
+- It **imitates** standard library {mod}`logging`'s **log level names** for familiarity.
   By default, no level-based filtering is done, but it comes with a very fast filtering machinery in the form of {func}`~structlog.make_filtering_bound_logger()`.
-- Like in `logging`, positional arguments are [interpolated into the message string using %](https://docs.python.org/3/library/stdtypes.html#old-string-formatting).
+- Like in `logging`, **positional arguments are [interpolated into the message string using %](https://docs.python.org/3/library/stdtypes.html#old-string-formatting)**.
   That might look dated, but it's *much* faster than using {any}`str.format` and allows *structlog* to be used as drop-in replacement for {mod}`logging`.
   If you *know* that the log entry is *always* gonna be logged out, just use [f-strings](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) which are the fastest.
 - All keywords are formatted using {class}`structlog.dev.ConsoleRenderer`.
-  That in turn uses {func}`repr` to serialize all values to strings.
-- It's rendered in nice {doc}`colors <development>` (the [*Colorama*] package is needed on Windows).
-- If you have [*Rich*] or [*better-exceptions*] installed, exceptions will be rendered in colors and with additional helpful information.
+  That in turn uses {func}`repr` to serialize **any value to a string**.
+- It's rendered in **nice {doc}`colors <console-output>`**.
+- If you have [*Rich*] or [*better-exceptions*] installed, **exceptions** will be rendered in **colors** and with additional **helpful information**.
 
 Please note that even in most complex logging setups the example would still look just like that thanks to {doc}`configuration`.
 Using the defaults, as above, is equivalent to:
@@ -236,7 +236,5 @@ Now you're all set for the rest of the user's guide and can start reading about 
 
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions
-[*Colorama*]: https://pypi.org/project/colorama/
 [recipe]: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging
 [*Rich*]: https://github.com/Textualize/rich
-[standard out]: https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
