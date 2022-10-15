@@ -28,8 +28,7 @@
 
 <!-- begin-short -->
 
-*structlog* is *the* production-ready logging solution for Python.
-It's:
+*structlog* is *the* production-ready logging solution for Python:
 
 - **Simple**: At its core, everything is about **functions** that take and return **dictionaries** – all hidden behind **familiar APIs**.
 - **Powerful**: Functions and dictionaries aren’t just simple, they’re also powerful.
