@@ -8,12 +8,7 @@ The **first number** of the version is the year.
 The **second number** is incremented with each release, starting at 1 for each year.
 The **third number** is for emergencies when we need to start branches for older releases.
 
-You shouldn't ever be afraid to upgrade *structlog* if you're using its public APIs and pay attention to `DeprecationWarning`s.
-Whenever there is a need to break compatibility, it is announced here in the changelog and raises a `DeprecationWarning` for a year (if possible) before it's finally really broken.
-
-You cannot rely on the default settings and the `structlog.dev` module.
-They may be adjusted in the future to provide a better experience when starting to use *structlog*.
-So please make sure to **always** properly configure your applications.
+You can find out backwards-compatibility policy [here](https://github.com/hynek/structlog/blob/main/.github/SECURITY.md).
 
 <!-- changelog follows -->
 
