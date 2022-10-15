@@ -45,7 +45,7 @@ This part of the API is defined in the {class}`typing.Protocol` called {class}`s
 The protocol is marked {func}`typing.runtime_checkable` which means that you can check an object for being a *bound logger* using `isinstance(obj, structlog.typing.BindableLogger)`.
 
 
-## Logging
+## Output
 
 Finally, a *bound logger* also **indirectly** exposes the logging methods of the *wrapped logger*.
 By default, that's a {class}`~structlog.typing.FilteringBoundLogger` that is wrapping a {class}`~structlog.PrintLogger`.
