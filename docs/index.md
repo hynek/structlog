@@ -14,9 +14,18 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 ```
 
+If you’d like more information on why structured logging in general and *structlog* in particular are good ideas, we’ve prepared a [summary](why.md) just for you.
+
+```{toctree}
+:hidden: true
+
+why
+```
+
+
 ## Basics
 
-The following chapters give you all the concepts that you need to use *structlog* productively.
+The following chapters teach you all you need to use *structlog* productively.
 If you're already convinced that you want to play with it, skip ahead to our [Getting Started tutorial](getting-started.md)!
 The remaining chapters build gently on each other.
 
@@ -24,7 +33,6 @@ The remaining chapters build gently on each other.
 ```{toctree}
 :maxdepth: 2
 
-why
 getting-started
 bound-loggers
 configuration
