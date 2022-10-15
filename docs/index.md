@@ -8,9 +8,11 @@
 
 <p align="center">
     <em>Simple. Powerful. Fast. Pick three.</em>
-</p> 
+</p>
 
 Release **{sub-ref}`release`**  ([What's new?](changelog))
+
+---
 
 ```{eval-rst}
 .. include:: ../README.md

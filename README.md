@@ -33,7 +33,7 @@ It's:
 
 - **Simple**: At its core, everything is about **functions** that take and return **dictionaries** – all hidden behind **familiar APIs**.
 - **Powerful**: Functions and dictionaries aren’t just simple, they’re also powerful.
-  *structlog* leaves *you* in control. 
+  *structlog* leaves *you* in control.
 - **Fast**: *structlog* is not hamstrung by designs of yore.
   Its flexibility comes not at the price of performance.
 
