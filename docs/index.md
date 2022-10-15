@@ -25,9 +25,8 @@ why
 
 ## Basics
 
-The following chapters teach you all you need to use *structlog* productively.
-If you're already convinced that you want to play with it, skip ahead to our [Getting Started tutorial](getting-started.md)!
-The remaining chapters build gently on each other.
+The first chapters teach you all you need to use *structlog* productively.
+They build gently on each other, so ideally, read them in order.
 
 
 ```{toctree}
