@@ -99,11 +99,12 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
    By replacing the last processor, you decide on the **format** of your logs.
    For example, if you wanted JSON logs, you just have to replace the last processor with {class}`structlog.processors.JSONRenderer`.
 
+
 (filtering)=
 
-## Filtering Loggers
+## Filtering by Log Levels
 
-Filtering based on loggers could be done in a processor very easily[^stdlib], however that means unnecessary performance overhead through function calls.
+Filtering based on log levels can be done in a processor very easily[^stdlib], however that means unnecessary performance overhead through function calls.
 We care a lot about performance and that's why *structlog*'s default logger implements level-filtering as close to the users as possible: in the *bound logger*'s logging methods.
 
 {func}`structlog.make_filtering_bound_logger` allows you to create a *bound logger* whose log methods with a log level beneath the configured one consist of a plain `return None`.
