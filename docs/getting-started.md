@@ -174,7 +174,7 @@ See {doc}`contextvars` for more information and a more complete example.
 Now that your log events are dictionaries, it's also much easier to manipulate them than if they were plain strings.
 
 To facilitate that, *structlog* has the concept of {doc}`processor chains <processors>`.
-A processor is a callable like a function that receives the event dictionary along with two other arguments and returns a new event dictionary that may or may not differ from the one it got passed.
+A processor is a function that receives the event dictionary along with two other arguments and returns a new event dictionary that may or may not differ from the one it got passed.
 The next processor in the chain receives that returned dictionary instead of the original one.
 
 Let's assume you wanted to add a timestamp to every event dict.
@@ -199,6 +199,7 @@ Now you have to tell *structlog* about your processor by {doc}`configuring <conf
   >>> structlog.get_logger().info("hi")  # doctest: +SKIP
   event='hi' time='2018-01-21T09:37:36.976816'
 ```
+
 
 ## Rendering
 
