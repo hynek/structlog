@@ -15,6 +15,7 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 ```
 
 If you’d like more information on why structured logging in general and *structlog* in particular are good ideas, we’ve prepared a [summary](why.md) just for you.
+
 Otherwise, let’s dive right in!
 
 ```{toctree}
@@ -70,7 +71,7 @@ twisted
 
 ## *structlog* in Practice
 
-The following chapters deal with consideration of using *structlog* in the real world.
+The following chapters deal with considerations of using *structlog* in the real world.
 
 
 ```{toctree}
@@ -109,7 +110,7 @@ api
 
 ```
 
-% stop Sphinx from complaints about orphaned docs, we link them elsewhere
+% stop Sphinx from complaining about orphaned docs, we link them elsewhere
 
 ```{toctree}
 :hidden: true
