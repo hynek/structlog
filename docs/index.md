@@ -70,13 +70,15 @@ twisted
 
 ## *structlog* in Practice
 
+The following chapters deal with consideration of using *structlog* in the real world.
+
+
 ```{toctree}
 :maxdepth: 2
 
 recipes
 logging-best-practices
 performance
-custom-wrappers
 ```
 
 
