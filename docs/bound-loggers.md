@@ -99,6 +99,50 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
    By replacing the last processor, you decide on the **format** of your logs.
    For example, if you wanted JSON logs, you just have to replace the last processor with {class}`structlog.processors.JSONRenderer`.
 
+(filtering)=
+
+## Filtering Loggers
+
+Filtering based on loggers could be done in a processor very easily[^stdlib], however that means unnecessary performance overhead through function calls.
+We care a lot about performance and that's why *structlog*'s default logger implements level-filtering as close to the users as possible: in the *bound logger*'s logging methods.
+
+{func}`structlog.make_filtering_bound_logger` allows you to create a *bound logger* whose log methods with a log level beneath the configured one consist of a plain `return None`.
+
+Here's an example:
+
+```pycon
+>>> import structlog
+>>> logger = structlog.get_logger()
+>>> logger.debug("hi!")
+2022-10-15 11:39:03 [debug    ] hi!
+>>> import logging
+>>> structlog.configure(wrapper_class=structlog.make_filtering_bound_logger(logging.INFO))
+>>> logger.debug("hi!")
+# no output!
+```
+
+In this example, we first log out using the default logger that doesn't filter at all.
+Then we change the configuration to filtering at the info level and try again:
+no log output!
+
+Let's have a look at the `debug` method:
+
+```pycon
+>>> import inspect
+>>> print(inspect.getsource(logger.debug))
+def _nop(self: Any, event: str, **kw: Any) -> Any:
+    return None
+```
+
+This is as effective as it gets and usually as flexible as the vast majority of users need.
+
+:::{important}
+*structlog* uses the constants from {mod}`logging`, but does **not** share any code.
+Passing `20` instead of `logging.INFO` would have worked too.
+:::
+
+[^stdlib]: And it's in fact supported for standard library logging with the {func}`structlog.stdlib.filter_by_level` processor.
+
 
 ## Wrapping Loggers Manually
 

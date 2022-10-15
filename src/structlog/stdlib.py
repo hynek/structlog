@@ -659,8 +659,8 @@ def filter_by_level(
     """
     if logger.isEnabledFor(_NAME_TO_LEVEL[method_name]):
         return event_dict
-    else:
-        raise DropEvent
+
+    raise DropEvent
 
 
 def add_log_level_number(
