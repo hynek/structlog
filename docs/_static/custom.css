@@ -9,8 +9,8 @@ div.admonition>p {
 }
 
 p.admonition-title {
-    font-size: 15px;
-    line-height: 20px;
+    font-size: 15px !important;
+    line-height: 20px !important;
 }
 
 article>li>a {
