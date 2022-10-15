@@ -76,7 +76,7 @@ In the simplest case, it's a function that returns a logger -- or just a class.
 But you can also pass in an instance of a class with a `__call__` method for more complicated setups.
 
 These will be passed to the logger factories.
-For example, if you use run `structlog.get_logger("a name")` and configure *structlog* to use the standard library {class}`~structlog.stdlib.LoggerFactory`,which has support for positional parameters, the returned logger will have the name `"a name"`.
+For example, if you use `structlog.get_logger("a name")` and configure *structlog* to use the standard library {class}`~structlog.stdlib.LoggerFactory`, which has support for positional parameters, the returned logger will have the name `"a name"`.
 
 For the common cases of standard library logging and Twisted logging, *structlog* comes with two factories built right in:
 
