@@ -1,13 +1,13 @@
 # structlog
 
-<p align=“center”>
-   <a href=“https://www.structlog.org/“>
-      <img src=“https://www.structlog.org/en/latest/_static/structlog_logo_transparent.png” width=“35%” alt=“structlog” />
+<p align="center">
+   <a href="https://www.structlog.org/">
+      <img src="_static/structlog_logo_transparent.png" width="35%" alt="structlog" />
    </a>
 </p>
 
-<p align=“center”>
- *Simple. Powerful. Fast. Pick three.*
+<p align="center">
+*Simple. Powerful. Fast. Pick three.*
 </p> 
 
 Release **{sub-ref}`release`**  ([What's new?](changelog))
