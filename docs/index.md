@@ -17,7 +17,7 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 - If you're not sure whether *structlog* is for you, have a look at {doc}`why`.
 - If you can't wait to log your first entry, start at {doc}`getting-started` and then work yourself through our tutorial.
-- Once you have basic grasp of how *structlog* works, acquaint yourself with the [integrations](integration) *structlog* is shipping with.
+- Once you have basic grasp of how *structlog* works, have a look on how it [integrates](integration) best with your existing frameworks.
 
 
 ## User's Guide
@@ -49,17 +49,17 @@ Dedicated support for the standard library and Twisted is shipped out-of-the-box
 ```{toctree}
 :maxdepth: 2
 
-frameworks
 standard-library
 twisted
 ```
 
 
-### Advanced Topics
+### *structlog* in Practice
 
 ```{toctree}
 :maxdepth: 2
 
+recipes
 logging-best-practices
 performance
 custom-wrappers
