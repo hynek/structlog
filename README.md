@@ -63,14 +63,14 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 
 ## Project Information
 
-- **License**: *dual* [Apache License, version 2 and MIT](https://www.structlog.org/en/latest/license.html)
-- **PyPI**: <https://pypi.org/project/structlog/>
-- **Source Code**: <https://github.com/hynek/structlog>
-- **Documentation**: <https://www.structlog.org/>
-- **Changelog**: [Changelog](https://www.structlog.org/en/stable/changelog.html)
+- **License**: *dual* [Apache License, version 2 **and** MIT](https://www.structlog.org/en/latest/license.html)
 - **Get Help**: please use the `structlog` tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
-- **Third-party Extensions**: [Wiki page](https://github.com/hynek/structlog/wiki/Third-party-Extensions)
 - **Supported Python Versions**: 3.7 and later
+- [**PyPI**](https://pypi.org/project/structlog/)
+- [**Source Code**](https://github.com/hynek/structlog)
+- [**Documentation**](https://www.structlog.org/)
+- [**Changelog**](https://www.structlog.org/en/stable/changelog.html)
+- [**Third-party Extensions**](https://github.com/hynek/structlog/wiki/Third-party-Extensions)
 
 
 ## `structlog` for Enterprise
