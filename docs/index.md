@@ -42,7 +42,7 @@ contextvars
 ```
 
 
-## In-Development Affordances
+## Development Affordances
 
 *structlog*'s focus is production systems, but it comes with **pretty console logging** and handy in-development helpers both for your **comfort** and your code's **quality**.
 
