@@ -62,7 +62,7 @@ Whenever you call one of those methods on the *bound logger*, it will:
 
    For flexibility, the final processor can return either a string[^str] that is passed directly as a positional parameter, or a tuple `(args, kwargs)` that are passed as `wrapped_logger.log_method(*args, **kwargs)`.
 
-[^str]: `str`, `bytes`, or `bytearray` to be exact.
+[^str]: {any}`str`, {any}`bytes`, or {any}`bytearray` to be exact.
 
 
 ### Step-by-Step Example
