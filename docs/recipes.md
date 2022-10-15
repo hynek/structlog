@@ -77,17 +77,17 @@ It’s easiest to demonstrate with an example:
    >>> from structlog import BoundLoggerBase, PrintLogger, wrap_logger
    >>> class SemanticLogger(BoundLoggerBase):
    ...    def info(self, event, **kw):
-   ...        if not “status” in kw:
-   ...            return self._proxy_to_logger(“info”, event, status=“ok”, **kw)
+   ...        if not "status" in kw:
+   ...            return self._proxy_to_logger("info", event, status="ok", **kw)
    ...        else:
-   ...            return self._proxy_to_logger(“info”, event, **kw)
+   ...            return self._proxy_to_logger("info", event, **kw)
    ...
    ...    def user_error(self, event, **kw):
-   ...        self.info(event, status=“user_error”, **kw)
+   ...        self.info(event, status="user_error", **kw)
    >>> log = wrap_logger(PrintLogger(), wrapper_class=SemanticLogger)
-   >>> log = log.bind(user=“fprefect”)
-   >>> log.user_error(“user.forgot_towel”)
-   user=‘fprefect’ status=‘user_error’ event=‘user.forgot_towel’
+   >>> log = log.bind(user="fprefect")
+   >>> log.user_error("user.forgot_towel")
+   user='fprefect' status='user_error' event='user.forgot_towel'
 ```
 
 You can observe the following:
