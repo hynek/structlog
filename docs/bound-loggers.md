@@ -33,7 +33,7 @@ All they do is manage the *context* and proxy log calls to a *wrapped logger*.
 
 ## Context
 
-To manipulate the context dictionary, a *bound logger* offers to:
+To manipulate the context dictionary, a *bound logger* can:
 
 - Recreate itself with (optional) *additional* context data: {func}`~structlog.BoundLoggerBase.bind` and {func}`~structlog.BoundLoggerBase.new`.
 - Recreate itself with *less* context data: {func}`~structlog.BoundLoggerBase.unbind` and {func}`~structlog.BoundLoggerBase.try_unbind`.
@@ -42,7 +42,7 @@ In any case, the original bound logger or its context are never mutated.
 They always return a *copy* of the bound logger with a *new* context that reflects your changes.
 
 This part of the API is defined in the {class}`typing.Protocol` called {class}`structlog.typing.BindableLogger`.
-N.B. that the protocol is marked {func}`typing.runtime_checkable` which means that you can check an object for being a *bound logger* using `isinstance(obj, structlog.typing.BindableLogger)`.
+The protocol is marked {func}`typing.runtime_checkable` which means that you can check an object for being a *bound logger* using `isinstance(obj, structlog.typing.BindableLogger)`.
 
 
 ## Logging
