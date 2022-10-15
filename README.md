@@ -68,7 +68,7 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 - **Source Code**: <https://github.com/hynek/structlog>
 - **Documentation**: <https://www.structlog.org/>
 - **Changelog**: [Changelog](https://www.structlog.org/en/stable/changelog.html)
-- **Get Help**: please use the `structlog` tag on [StackOverflow](https://stackoverflow.com/questions/tagged/structlog)
+- **Get Help**: please use the `structlog` tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
 - **Third-party Extensions**: [Wiki page](https://github.com/hynek/structlog/wiki/Third-party-Extensions)
 - **Supported Python Versions**: 3.7 and later
 
