@@ -1,4 +1,4 @@
-# Development
+# Console Output
 
 To make development a more pleasurable experience, *structlog* comes with the {mod}`structlog.dev` module.
 

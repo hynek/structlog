@@ -31,7 +31,16 @@ bound-loggers
 configuration
 processors
 contextvars
-development
+```
+
+
+## In-Development Affordances
+
+*structlog*'s focus are production systems, but it comes with **pretty console logging** and handy in-development helpers for **comfort** and **better results**.
+
+```{toctree}
+:maxdepth: 2
+console-output
 testing
 typing
 ```
