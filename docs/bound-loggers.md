@@ -1,10 +1,10 @@
 # Bound Loggers
 
-The centerpiece of `structlog` that you will interact with most is called a *bound logger*.
+The centerpiece of *structlog* that you will interact with most is called a *bound logger*.
 
 It's what you get back from {func}`structlog.get_logger()` and it's called a *bound logger* because you can *bind* key-value pairs to it.
 
-As far as `structlog` is concerned, it consists of three parts:
+As far as *structlog* is concerned, it consists of three parts:
 
 ```{image} _static/BoundLogger.svg
 ```
@@ -20,7 +20,7 @@ As far as `structlog` is concerned, it consists of three parts:
 3. And finally a *logger* that it's wrapping.
    This wrapped logger is responsible for the *output* of the log entry that has been returned by the last processor.
    This *can* be standard library's {class}`logging.Logger` like in the image above, but absolutely doesn't have to:
-   By default it's `structlog`'s {class}`~structlog.PrintLogger`.
+   By default it's *structlog*'s {class}`~structlog.PrintLogger`.
 
    This wrapped logger also is usually set using {doc}`configuration`.
 
@@ -103,7 +103,7 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
 ## Wrapping Loggers Explicitly
 
 In practice, you won't be instantiating bound loggers yourself.
-You will configure `structlog` as explained in the {doc}`next chapter <configuration>` and then just call {func}`structlog.get_logger`.
+You will configure *structlog* as explained in the {doc}`next chapter <configuration>` and then just call {func}`structlog.get_logger`.
 
 However, in some rare cases you may not want to do that.
 For example because you don't control how you get the logger that you would like to wrap (famous example: *Celery*).

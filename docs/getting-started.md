@@ -4,7 +4,7 @@
 
 ## Installation
 
-The latest version of `structlog` is always on [PyPI](https://pypi.org/project/structlog/) and can be installed using *pip*:
+The latest version of *structlog* is always on [PyPI](https://pypi.org/project/structlog/) and can be installed using *pip*:
 
 ```console
 $ python -m pip install structlog
@@ -18,7 +18,7 @@ On Windows, you also have to install [*Colorama*] if you want colorful output be
 
 ## Your First Log Entry
 
-A lot of effort went into making `structlog` accessible without reading pages of documentation.
+A lot of effort went into making *structlog* accessible without reading pages of documentation.
 As a result, the simplest possible usage looks like this:
 
 ```{eval-rst}
@@ -30,13 +30,13 @@ As a result, the simplest possible usage looks like this:
    2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_than_strings=[1, 2, 3]
 ```
 
-Here, `structlog` takes advantage of its default settings:
+Here, *structlog* takes advantage of its default settings:
 
 - Output is sent to [standard out] instead doing nothing.
 - It imitates standard library {mod}`logging`'s log level names for familiarity.
   By default, no level-based filtering is done, but it comes with a very fast filtering machinery in the form of {func}`~structlog.make_filtering_bound_logger()`.
 - Like in `logging`, positional arguments are [interpolated into the message string using %](https://docs.python.org/3/library/stdtypes.html#old-string-formatting).
-  That might look dated, but it's *much* faster than using {any}`str.format` and allows ``structlog`` to be used as drop-in replacement for {mod}`logging`.
+  That might look dated, but it's *much* faster than using {any}`str.format` and allows *structlog* to be used as drop-in replacement for {mod}`logging`.
   If you *know* that the log entry is *always* gonna be logged out, just use [f-strings](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) which are the fastest.
 - All keywords are formatted using {class}`structlog.dev.ConsoleRenderer`.
   That in turn uses {func}`repr` to serialize all values to strings.
@@ -68,10 +68,10 @@ log = structlog.get_logger()
 ```
 
 :::{note}
-- {func}`structlog.stdlib.recreate_defaults()` allows you to switch `structlog` to using standard library's `logging` module for output for better interoperability with just one function call.
+- {func}`structlog.stdlib.recreate_defaults()` allows you to switch *structlog* to using standard library's `logging` module for output for better interoperability with just one function call.
 - {func}`~structlog.make_filtering_bound_logger()` (re-)uses {any}`logging`'s log levels, but doesn't use `logging` at all.
   The exposed API is {class}`~structlog.typing.FilteringBoundLogger`.
-- For brevity and to enable doctests, all further examples in `structlog`'s documentation use the more simplistic {class}`~structlog.processors.KeyValueRenderer()` without timestamps.
+- For brevity and to enable doctests, all further examples in *structlog*'s documentation use the more simplistic {class}`~structlog.processors.KeyValueRenderer()` without timestamps.
 :::
 
 Here you go, structured logging!
@@ -146,7 +146,7 @@ Suddenly your logger becomes your closure!
 
 ---
 
-To `structlog`, a log entry is just a dictionary called *event dict\[ionary\]*:
+To *structlog*, a log entry is just a dictionary called *event dict\[ionary\]*:
 
 - You can pre-build a part of the dictionary step by step.
   These pre-saved values are called the *context*.
@@ -158,7 +158,7 @@ The last point is very clean and easy to reason about, but sometimes it's useful
 
 In our example above the peer IP comes to mind.
 There's no point in extracting it in every view!
-For that, `structlog` gives you thread-local context storage based on the {mod}`contextvars` module:
+For that, *structlog* gives you thread-local context storage based on the {mod}`contextvars` module:
 
 ```pycon
 >>> structlog.contextvars.bind_contextvars(peer_ip="1.2.3.4")
@@ -173,7 +173,7 @@ See {doc}`contextvars` for more information and a more complete example.
 
 Now that your log events are dictionaries, it's also much easier to manipulate them than if they were plain strings.
 
-To facilitate that, `structlog` has the concept of {doc}`processor chains <processors>`.
+To facilitate that, *structlog* has the concept of {doc}`processor chains <processors>`.
 A processor is a callable like a function that receives the event dictionary along with two other arguments and returns a new event dictionary that may or may not differ from the one it got passed.
 The next processor in the chain receives that returned dictionary instead of the original one.
 
@@ -190,7 +190,7 @@ The processor would look like this:
 ```
 
 Plain Python, plain dictionaries.
-Now you have to tell `structlog` about your processor by {doc}`configuring <configuration>` it:
+Now you have to tell *structlog* about your processor by {doc}`configuring <configuration>` it:
 
 ```{eval-rst}
 .. doctest::
@@ -205,10 +205,10 @@ Now you have to tell `structlog` about your processor by {doc}`configuring <conf
 Finally you want to have control over the actual format of your log entries.
 
 As you may have noticed in the previous section, renderers are just processors too.
-The type of the return value that is required from the renderer depends on the input that the *logger* that is wrapped by `structlog` needs.
+The type of the return value that is required from the renderer depends on the input that the *logger* that is wrapped by *structlog* needs.
 While usually it's a string or bytes, there's no rule saying it _has_ to be a string!
 
-So assuming you want to follow [best practices](logging-best-practices.md) and render your event dictionary to JSON that is picked up by a log aggregation system like ELK or Graylog, `structlog` comes with batteries included -- you just have to tell it to use its {class}`~structlog.processors.JSONRenderer`:
+So assuming you want to follow [best practices](logging-best-practices.md) and render your event dictionary to JSON that is picked up by a log aggregation system like ELK or Graylog, *structlog* comes with batteries included -- you just have to tell it to use its {class}`~structlog.processors.JSONRenderer`:
 
 ```{eval-rst}
 .. doctest::
@@ -219,20 +219,20 @@ So assuming you want to follow [best practices](logging-best-practices.md) and r
 ```
 
 
-## `structlog` and Standard Library's `logging`
+## *structlog* and Standard Library's `logging`
 
-While `structlog`'s loggers are very fast and sufficient for the majority of our users, you're not bound to them.
+While *structlog*'s loggers are very fast and sufficient for the majority of our users, you're not bound to them.
 Instead, it's been designed from day one to wrap your *existing* loggers and **add** *structure* and *incremental context building* to them.
 
 The most prominent example of such an "existing logger" is certainly the logging module in the standard library.
-To make this common case as simple as possible, `structlog` comes with [some tools](standard-library.md) to help you.
+To make this common case as simple as possible, *structlog* comes with [some tools](standard-library.md) to help you.
 
-As noted before, the fastest way to transform `structlog` into a `logging`-friendly package is calling {func}`structlog.stdlib.recreate_defaults()`.
+As noted before, the fastest way to transform *structlog* into a `logging`-friendly package is calling {func}`structlog.stdlib.recreate_defaults()`.
 
 
 ## Liked what you saw?
 
-Now you're all set for the rest of the user's guide and can start reading about [bound loggers](bound-loggers.md) -- the heart of `structlog`.
+Now you're all set for the rest of the user's guide and can start reading about [bound loggers](bound-loggers.md) -- the heart of *structlog*.
 
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions

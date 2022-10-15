@@ -1,20 +1,20 @@
 # Standard Library Logging
 
-Ideally, `structlog` should be able to be used as a drop-in replacement for standard library's {mod}`logging` by wrapping it.
-In other words, you should be able to replace your call to {func}`logging.getLogger` by a call to {func}`structlog.get_logger` and things should keep working as before (if `structlog` is configured right, see {ref}`stdlib-config` below).
+Ideally, *structlog* should be able to be used as a drop-in replacement for standard library's {mod}`logging` by wrapping it.
+In other words, you should be able to replace your call to {func}`logging.getLogger` by a call to {func}`structlog.get_logger` and things should keep working as before (if *structlog* is configured right, see {ref}`stdlib-config` below).
 
 If you run into incompatibilities, it is a *bug* so please take the time to [report it](https://github.com/hynek/structlog/issues)!
 If you're a heavy `logging` user, your [help](https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib) to ensure a better compatibility would be highly appreciated!
 
 :::{note}
-The quickest way to get started with `structlog` and `logging` is {func}`structlog.stdlib.recreate_defaults()` that will recreate the default configuration on top of `logging` and optionally configure `logging` for you.
+The quickest way to get started with *structlog* and `logging` is {func}`structlog.stdlib.recreate_defaults()` that will recreate the default configuration on top of `logging` and optionally configure `logging` for you.
 :::
 
 
 ## Just Enough `logging`
 
-If you want to use `structlog` with `logging`, you should have at least a fleeting understanding on how the standard library operates because `structlog` will *not* do any magic things in the background for you.
-Most importantly you have to *configure* the `logging` system *additionally* to configuring `structlog`.
+If you want to use *structlog* with `logging`, you should have at least a fleeting understanding on how the standard library operates because *structlog* will *not* do any magic things in the background for you.
+Most importantly you have to *configure* the `logging` system *additionally* to configuring *structlog*.
 
 Usually it is enough to use:
 
@@ -36,7 +36,7 @@ If you require more complex behavior, please refer to the standard library's `lo
 
 ## Concrete Bound Logger
 
-`structlog` ships a stdlib-specific [*bound logger*](bound-loggers.md) that  mirrors the log methods of standard library's {any}`logging.Logger` with correct type hints.
+*structlog* ships a stdlib-specific [*bound logger*](bound-loggers.md) that  mirrors the log methods of standard library's {any}`logging.Logger` with correct type hints.
 
 If you want to take advantage of said type hints, you have to either annotate the logger coming from {func}`structlog.get_logger`, or use {func}`structlog.stdlib.get_logger()` that has the appropriate type hints.
 Please note though, that it will neither configure nor verify your configuration.
@@ -48,16 +48,16 @@ See also {doc}`typing`.
 ### `asyncio`
 
 For `asyncio` applications, you may not want your whole application to block while your processor chain is formatting your log entries.
-For that use case `structlog` comes with {class}`structlog.stdlib.AsyncBoundLogger` that will do all processing in a thread pool executor.
+For that use case *structlog* comes with {class}`structlog.stdlib.AsyncBoundLogger` that will do all processing in a thread pool executor.
 
 This means an increased computational cost per log entry but your application will never block because of logging.
 
-To use it, {doc}`configure <configuration>` `structlog` to use `AsyncBoundLogger` as `wrapper_class`.
+To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger` as `wrapper_class`.
 
 
 ## Processors
 
-`structlog` comes with a few standard library-specific processors:
+*structlog* comes with a few standard library-specific processors:
 
 {func}`~structlog.stdlib.render_to_log_kwargs`:
 
@@ -103,14 +103,14 @@ To use it, {doc}`configure <configuration>` `structlog` to use `AsyncBoundLogger
 
 : This processes and formats positional arguments (if any) passed to log methods in the same way the `logging` module would do, e.g. `logger.info("Hello, %s", name)`.
 
-`structlog` also comes with {class}`~structlog.stdlib.ProcessorFormatter` which is a `logging.Formatter` that enables you to format non-`structlog` log entries using `structlog` renderers *and* multiplex `structlog`’s output with different renderers (see [below](processor-formatter) for an example).
+*structlog* also comes with {class}`~structlog.stdlib.ProcessorFormatter` which is a `logging.Formatter` that enables you to format non-*structlog* log entries using *structlog* renderers *and* multiplex *structlog*’s output with different renderers (see [below](processor-formatter) for an example).
 
 (stdlib-config)=
 
 ## Suggested Configurations
 
 :::{note}
-We do appreciate that fully integrating `structlog` with standard library's `logging` is fiddly when done for the first time.
+We do appreciate that fully integrating *structlog* with standard library's `logging` is fiddly when done for the first time.
 
 This is the price of flexibility and unfortunately -- given the different needs of our users -- we can't make it any simpler without compromising someone's use-cases.
 However, once it is set up, you can rely on not having to ever touch it again.
@@ -121,16 +121,16 @@ Depending *where* you'd like to do your formatting, you can take one of four app
 
 ### Don't Integrate
 
-The most straight-forward option is to configure standard library `logging` close enough to what `structlog` is logging and leaving it at that.
+The most straight-forward option is to configure standard library `logging` close enough to what *structlog* is logging and leaving it at that.
 
-Since these are usually log entries from third parties that don't take advantage of `structlog`'s features, this is surprisingly often a perfectly adequate approach.
+Since these are usually log entries from third parties that don't take advantage of *structlog*'s features, this is surprisingly often a perfectly adequate approach.
 
 For instance, if you log JSON in production, configure `logging` to use [*python-json-logger*] to make it print JSON too, and then tweak the configuration to match their outputs.
 
 
-### Rendering Within `structlog`
+### Rendering Within *structlog*
 
-This is the simplest approach where `structlog` does all the heavy lifting and passes a fully-formatted string to `logging`.
+This is the simplest approach where *structlog* does all the heavy lifting and passes a fully-formatted string to `logging`.
 Chances are, this is all you need.
 
 ```{eval-rst}
@@ -227,7 +227,7 @@ hello
 
 ### Rendering Using `logging`-based Formatters
 
-You can choose to use `structlog` only for building the event dictionary and leave all formatting -- additionally to the output -- to the standard library.
+You can choose to use *structlog* only for building the event dictionary and leave all formatting -- additionally to the output -- to the standard library.
 
 ```{eval-rst}
 .. mermaid::
@@ -273,7 +273,7 @@ structlog.configure(
 ```
 
 Now you have the event dict available within each log record.
-If you want all your log entries (i.e. also those not from your app/`structlog`) to be formatted as JSON, you can use the [*python-json-logger*] library:
+If you want all your log entries (i.e. also those not from your application / *structlog*) to be formatted as JSON, you can use the [*python-json-logger*] library:
 
 ```python
 import logging
@@ -287,7 +287,7 @@ root_logger = logging.getLogger()
 root_logger.addHandler(handler)
 ```
 
-Now both `structlog` and `logging` will emit JSON logs:
+Now both *structlog* and `logging` will emit JSON logs:
 
 ```pycon
 >>> structlog.get_logger("test").warning("hello")
@@ -306,10 +306,10 @@ Keep this in mind if you only get the event name without any context, and except
 
 (processor-formatter)=
 
-### Rendering Using `structlog`-based Formatters Within `logging`
+### Rendering Using *structlog*-based Formatters Within `logging`
 
 Finally, the most ambitious approach.
-Here, you use `structlog`'s {class}`~structlog.stdlib.ProcessorFormatter` as a {any}`logging.Formatter` for both `logging` as well as `structlog` log entries.
+Here, you use *structlog*'s {class}`~structlog.stdlib.ProcessorFormatter` as a {any}`logging.Formatter` for both `logging` as well as *structlog* log entries.
 
 Consequently, the output is the duty of the standard library too.
 
@@ -337,7 +337,7 @@ Consequently, the output is the duty of the standard library too.
 
 {class}`~structlog.stdlib.ProcessorFormatter` has two parts to its API:
 
-1. On the `structlog` side, the {doc}`processor chain <processors>` must be configured to end with {func}`structlog.stdlib.ProcessorFormatter.wrap_for_formatter` as the renderer.
+1. On the *structlog* side, the {doc}`processor chain <processors>` must be configured to end with {func}`structlog.stdlib.ProcessorFormatter.wrap_for_formatter` as the renderer.
    It converts the processed event dictionary into something that `ProcessorFormatter` understands.
 
 2. On the `logging` side, you must configure `ProcessorFormatter` as your formatter of choice.
@@ -384,9 +384,9 @@ amazing  _from_structlog=True _record=<LogRecord:...> events=oh yes
 ```
 
 Of course, you probably want timestamps and log levels in your output.
-The `ProcessorFormatter` has a `foreign_pre_chain` argument which is responsible for adding properties to events from the standard library -- i.e. that do not originate from a `structlog` logger -- and which should in general match the `processors` argument to {func}`structlog.configure` so you get a consistent output.
+The `ProcessorFormatter` has a `foreign_pre_chain` argument which is responsible for adding properties to events from the standard library -- i.e. that do not originate from a *structlog* logger -- and which should in general match the `processors` argument to {func}`structlog.configure` so you get a consistent output.
 
-`_from_structlog` and `_record` allow your processors to determine whether the log entry is coming from `structlog`, and to extract information from `logging.LogRecord`s and add them to the event dictionary.
+`_from_structlog` and `_record` allow your processors to determine whether the log entry is coming from *structlog*, and to extract information from `logging.LogRecord`s and add them to the event dictionary.
 However, you probably don't want to have them in your log files, thus we've added the `ProcessorFormatter.remove_processors_meta` processor to do so conveniently.
 
 For example, to add timestamps, log levels, and traceback handling to your logs without `_from_structlog` and `_record` noise you should do:
@@ -517,9 +517,9 @@ structlog.configure(
 
 This defines two formatters: one plain and one colored.
 Both are run for each log entry.
-Log entries that do not originate from `structlog`, are additionally pre-processed using a cached `timestamper` and {func}`~structlog.stdlib.add_log_level`.
+Log entries that do not originate from *structlog*, are additionally pre-processed using a cached `timestamper` and {func}`~structlog.stdlib.add_log_level`.
 
-Additionally, for both `logging` and `structlog` -- but only for the colorful logger -- we also extract some data from {class}`logging.LogRecord`:
+Additionally, for both `logging` and *structlog* -- but only for the colorful logger -- we also extract some data from {class}`logging.LogRecord`:
 
 ```pycon
 >>> logging.getLogger().warning("bar")

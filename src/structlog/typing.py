@@ -4,7 +4,7 @@
 # repository for complete details.
 
 """
-Type information used throughout ``structlog``.
+Type information used throughout *structlog*.
 
 For now, they are considered provisional. Especially `BindableLogger` will
 probably change to something more elegant.
@@ -42,7 +42,7 @@ WrappedLogger = Any
 A logger that is wrapped by a bound logger and is ultimately responsible for
 the output of the log entries.
 
-``structlog`` makes *no* assumptions about it.
+*structlog* makes *no* assumptions about it.
 
 .. versionadded:: 20.2
 """
@@ -124,7 +124,7 @@ class ExceptionTransformer(Protocol):
 class BindableLogger(Protocol):
     """
     **Protocol**: Methods shared among all bound loggers and that are relied on
-    by ``structlog``.
+    by *structlog*.
 
     .. versionadded:: 20.2
     """

@@ -28,19 +28,19 @@
 
 <!-- begin-short -->
 
-`structlog` makes logging in Python **less painful**, **more powerful**, and **much faster**, by adding **structure** to your log entries and moving control to simple **functions**.
+*structlog* makes logging in Python **less painful**, **more powerful**, and **much faster**, by adding **structure** to your log entries and moving control to simple **functions**.
 
 It has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged. Its design proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
 
-Thanks to its highly flexible design, *you* choose whether you want `structlog` to take care of the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's `logging` module.
+Thanks to its highly flexible design, *you* choose whether you want *structlog* to take care of the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's `logging` module.
 
-The output format is just as flexible and `structlog` comes with support for JSON, [*logfmt*](https://brandur.org/logfmt), as well as pretty console output out-of-the-box:
+The output format is just as flexible and *structlog* comes with support for JSON, [*logfmt*](https://brandur.org/logfmt), as well as pretty console output out-of-the-box:
 
 ![image](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)
 
 <!-- end-short -->
 
-A short explanation on *why* structured logging is good for you, and why `structlog` is the right tool for the job can be found in the [Why chapter](https://www.structlog.org/en/stable/why.html) of our documentation.
+A short explanation on *why* structured logging is good for you, and why *structlog* is the right tool for the job can be found in the [Why chapter](https://www.structlog.org/en/stable/why.html) of our documentation.
 
 Once you feel inspired to try it out, check out our friendly [Getting Started tutorial](https://www.structlog.org/en/stable/getting-started.html).
 
@@ -49,10 +49,10 @@ If you prefer videos over reading, check out [Markus Holtermann](https://twitter
 
 ## Credits
 
-`structlog` is written and maintained by [Hynek Schlawack](https://hynek.me/).
+*structlog* is written and maintained by [Hynek Schlawack](https://hynek.me/).
 The idea of bound loggers is inspired by previous work by [Jean-Paul Calderone](https://github.com/exarkun) and [David Reid](https://github.com/dreid).
 
-The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), `structlog`’s [Tidelift subscribers](https://tidelift.com/subscription/pkg/pypi-structlog), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
+The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com/subscription/pkg/pypi-structlog), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
 
 A full list of contributors can be found in GitHub’s [overview](https://github.com/hynek/structlog/graphs/contributors).
 
@@ -64,7 +64,7 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 ## Project Information
 
 - **License**: *dual* [Apache License, version 2 **and** MIT](https://www.structlog.org/en/latest/license.html)
-- **Get Help**: please use the `structlog` tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
+- **Get Help**: please use the *structlog* tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
 - **Supported Python Versions**: 3.7 and later
 - [**PyPI**](https://pypi.org/project/structlog/)
 - [**Source Code**](https://github.com/hynek/structlog)
@@ -73,8 +73,8 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 - [**Third-party Extensions**](https://github.com/hynek/structlog/wiki/Third-party-Extensions)
 
 
-## `structlog` for Enterprise
+## *structlog* for Enterprise
 
 Available as part of the Tidelift Subscription.
 
-The maintainers of `structlog` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. [Learn more.](https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme)
+The maintainers of *structlog* and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. [Learn more.](https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme)

@@ -1,9 +1,9 @@
 # Type Hints
 
 Static type hints -- together with a type checker like [*Mypy*](https://mypy.readthedocs.io/en/stable/) -- are an excellent way to make your code more robust, self-documenting, and maintainable in the long run.
-And as of 20.2.0, `structlog` comes with type hints for all of its APIs.
+And as of 20.2.0, *structlog* comes with type hints for all of its APIs.
 
-Since `structlog` is highly configurable and tries to give a clean facade to its users, adding types without breaking compatibility -- while remaining useful! -- was a formidable task.
+Since *structlog* is highly configurable and tries to give a clean façade to its users, adding types without breaking compatibility -- while remaining useful! -- was a formidable task.
 
 ---
 

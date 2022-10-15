@@ -20,7 +20,7 @@ This is why the popular [*Twelve-Factor App* methodology](https://12factor.net/l
 Generally speaking, having as few log entries per request as possible is a good thing.
 The less noise, the more insights.
 
-`structlog`'s ability to {ref}`bind data to loggers incrementally <building-ctx>` -- plus {doc}`loggers that are local to the current execution context <contextvars>` -- can help you to minimize the output to a *single log entry*.
+*structlog*'s ability to {ref}`bind data to loggers incrementally <building-ctx>` -- plus {doc}`loggers that are local to the current execution context <contextvars>` -- can help you to minimize the output to a *single log entry*.
 
 At Stripe, this concept is called [Canonical Log Lines](https://brandur.org/canonical-log-lines).
 
@@ -30,7 +30,7 @@ At Stripe, this concept is called [Canonical Log Lines](https://brandur.org/cano
 Colorful and pretty printed log messages are nice during development when you locally run your code.
 
 However, in production you should emit structured output (like JSON) which is a lot easier to parse by log aggregators.
-Since you already log in a structured way, writing JSON output with `structlog` comes naturally.
+Since you already log in a structured way, writing JSON output with *structlog* comes naturally.
 You can even generate structured exception tracebacks.
 This makes analyzing errors easier, since log aggregators can render JSON much better than multiline strings with a lot escaped quotation marks.
 
@@ -87,7 +87,7 @@ All you have to do is to tell [*Logstash*] either that your log entries are prep
 
 [Graylog](https://www.graylog.org/) goes one step further.
 It not only supports everything those above do (and then some); you can also directly log JSON entries towards it -- optionally even through an AMQP server (like [*RabbitMQ*](https://www.rabbitmq.com/)) for better reliability.
-Additionally, [Graylog's Extended Log Format](https://docs.graylog.org/docs/gelf) (GELF) allows for structured data which makes it an obvious choice to use together with `structlog`.
+Additionally, [Graylog's Extended Log Format](https://docs.graylog.org/docs/gelf) (GELF) allows for structured data which makes it an obvious choice to use together with *structlog*.
 
 
 [*elasticsearch*]: https://www.elastic.co/elasticsearch

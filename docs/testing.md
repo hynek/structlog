@@ -1,6 +1,6 @@
 # Testing
 
-`structlog` comes with tools for testing the logging behavior of your application.
+*structlog* comes with tools for testing the logging behavior of your application.
 
 If you need functionality similar to {meth}`unittest.TestCase.assertLogs`, or you want to capture all logs for some other reason, you can use the {func}`structlog.testing.capture_logs` context manager:
 
@@ -66,7 +66,7 @@ You can also use {class}`structlog.testing.CapturingLogger` (directly, or via {c
 
 ---
 
-Additionally `structlog` also ships with a logger that just returns whatever it gets passed into it: {class}`structlog.testing.ReturnLogger`.
+Additionally *structlog* also ships with a logger that just returns whatever it gets passed into it: {class}`structlog.testing.ReturnLogger`.
 
 ```{eval-rst}
 .. doctest::

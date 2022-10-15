@@ -89,7 +89,7 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     Additionally it has a ``log(self, level: int, **kw: Any)`` method to mirror
     `logging.Logger.log` and `structlog.stdlib.BoundLogger.log`.
 
-    Compared to using ``structlog``'s standard library integration and the
+    Compared to using *structlog*'s standard library integration and the
     `structlog.stdlib.filter_by_level` processor:
 
     - It's faster because once the logger is built at program start; it's a

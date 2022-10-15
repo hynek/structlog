@@ -38,7 +38,7 @@ _CONTEXT_VARS: dict[str, contextvars.ContextVar[Any]] = {}
 
 def get_contextvars() -> dict[str, Any]:
     """
-    Return a copy of the ``structlog``-specific context-local context.
+    Return a copy of the *structlog*-specific context-local context.
 
     .. versionadded:: 21.2.0
     """

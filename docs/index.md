@@ -15,9 +15,9 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 ## First Steps
 
-- If you're not sure whether `structlog` is for you, have a look at {doc}`why`.
+- If you're not sure whether *structlog* is for you, have a look at {doc}`why`.
 - If you can't wait to log your first entry, start at {doc}`getting-started` and then work yourself through our tutorial.
-- Once you have basic grasp of how `structlog` works, acquaint yourself with the [integrations](integration) `structlog` is shipping with.
+- Once you have basic grasp of how *structlog* works, acquaint yourself with the [integrations](integration) *structlog* is shipping with.
 
 
 ## User's Guide
@@ -42,7 +42,7 @@ typing
 
 ### Integration with Existing Systems
 
-`structlog` is both zero-config as well as highly configurable.
+*structlog* is both zero-config as well as highly configurable.
 You can use it on its own or integrate with existing systems.
 Dedicated support for the standard library and Twisted is shipped out-of-the-box.
 

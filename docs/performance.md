@@ -1,18 +1,18 @@
 # Performance
 
-`structlog`'s default configuration tries to be as unsurprising to new developers as possible.
+*structlog*'s default configuration tries to be as unsurprising to new developers as possible.
 Some of the choices made come with an avoidable performance price tag -- although its impact is debatable.
 
-Here are a few hints how to get most out of `structlog` in production:
+Here are a few hints how to get most out of *structlog* in production:
 
 1. Use a specific wrapper class instead of the generic one.
-   `structlog` comes with ones for the {doc}`standard-library` and for {doc}`twisted`:
+   *structlog* comes with ones for the {doc}`standard-library` and for {doc}`twisted`:
 
    ```python
    configure(wrapper_class=structlog.stdlib.BoundLogger)
    ```
 
-   `structlog` also comes with native log levels that are based on the ones from the standard library (read: we've copy and pasted them), but don't involve `logging`'s dynamic machinery.
+   *structlog* also comes with native log levels that are based on the ones from the standard library (read: we've copy and pasted them), but don't involve `logging`'s dynamic machinery.
    That makes them *much* faster with a very similar API.
    You can use {func}`structlog.make_filtering_bound_logger()` to create one.
 
@@ -51,7 +51,7 @@ Here are a few hints how to get most out of `structlog` in production:
 
 ## Example
 
-Here's an example for a production-ready non-*asyncio* `structlog` configuration that's as fast as it gets:
+Here's an example for a production-ready non-*asyncio* *structlog* configuration that's as fast as it gets:
 
 ```python
 import logging
@@ -92,7 +92,7 @@ Therefore a log entry might look like this:
 
 ---
 
-If you need standard library support for external projects, you can either just use a JSON formatter like [*python-json-logger*](https://pypi.org/project/python-json-logger/), or pipe them through `structlog` as documented in {doc}`standard-library`.
+If you need standard library support for external projects, you can either just use a JSON formatter like [*python-json-logger*](https://pypi.org/project/python-json-logger/), or pipe them through *structlog* as documented in {doc}`standard-library`.
 
 [*orjson*]: https://github.com/ijl/orjson
 [*rapidjson*]: https://pypi.org/project/python-rapidjson/

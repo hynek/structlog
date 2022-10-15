@@ -30,7 +30,7 @@ You can stop writing prose and start thinking in terms of an event that happens 
 
 Each log entry is a meaningful dictionary instead of an opaque string now!
 
-That said, `structlog` is not taking anything away from you.
+That said, *structlog* is not taking anything away from you.
 You can still use string interpolation using positional arguments:
 
 ```pycon
@@ -64,7 +64,7 @@ def timestamper(logger, log_method, event_dict):
     return event_dict
 ```
 
-There are [plenty of processors](structlog.processors) for most common tasks coming with `structlog`:
+There are [plenty of processors](structlog.processors) for most common tasks coming with *structlog*:
 
 - Collectors of [call stack information](structlog.processors.StackInfoRenderer) ("How did this log entry happen?"),
 - …and [exceptions](structlog.processors.format_exc_info) ("What happened‽").
@@ -73,7 +73,7 @@ There are [plenty of processors](structlog.processors) for most common tasks com
 
 ### Formatting
 
-`structlog` is completely flexible about *how* the resulting log entry is emitted.
+*structlog* is completely flexible about *how* the resulting log entry is emitted.
 Since each log entry is a dictionary, it can be formatted to **any** format:
 
 - A colorful key-value format for [local development](https://www.structlog.org/en/stable/development.html),
@@ -81,24 +81,25 @@ Since each log entry is a dictionary, it can be formatted to **any** format:
 - or some standard format you have parsers for like *nginx* or Apache *httpd*.
 
 Internally, formatters are processors whose return value (usually a string) is passed into loggers that are responsible for the output of your message.
-`structlog` comes with multiple useful formatters out-of-the-box.
+*structlog* comes with multiple useful formatters out-of-the-box.
 
 
 ### Output
 
-`structlog` is also flexible with the final output of your log entries:
+*structlog* is also flexible with the final output of your log entries:
 
 - A **built-in** lightweight printer like in the examples above.
   Easy to use and fast.
 - Use the [**standard library**](standard-library.md)'s or [**Twisted**](twisted.md)'s logging modules for compatibility.
-  In this case `structlog` works like a wrapper that formats a string and passes them off into existing systems that won't know that `structlog` even exists.
+  In this case *structlog* works like a wrapper that formats a string and passes them off into existing systems that won't know that *structlog* even exists.
 
-  Or the other way round: `structlog` comes with a `logging` formatter that allows for processing third party log records.
+  Or the other way round: *structlog* comes with a `logging` formatter that allows for processing third party log records.
 - Don't format it to a string at all!
-  `structlog` passes you a dictionary and you can do with it whatever you want.
+  *structlog* passes you a dictionary and you can do with it whatever you want.
   Reported use cases are sending them out via network or saving them in a database.
+
 
 ### Highly Testable
 
-`structlog` is thoroughly tested and we see it as our duty to help you to achieve the same in *your* applications.
+*structlog* is thoroughly tested and we see it as our duty to help you to achieve the same in *your* applications.
 That's why it ships with a [test helpers](https://www.structlog.org/en/stable/testing.html) to introspect your application's logging behavior with little-to-no boilerplate.

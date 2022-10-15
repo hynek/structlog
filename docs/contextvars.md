@@ -15,12 +15,12 @@
    structlog.reset_defaults()
 ```
 
-The {mod}`contextvars` module in the Python standard library allows having a global `structlog` context that is local to the current execution context.
+The {mod}`contextvars` module in the Python standard library allows having a global *structlog* context that is local to the current execution context.
 The execution context can be thread-local if using threads, or using primitives based on {mod}`asyncio`, or [*greenlet*](https://greenlet.readthedocs.io/) respectively.
 
 For example, you may want to bind certain values like a request ID or the peer's IP address at the beginning of a web request and have them logged out along with the local contexts you build within our views.
 
-For that `structlog` provides the {mod}`structlog.contextvars` module with a set of functions to bind variables to a context-local context.
+For that *structlog* provides the {mod}`structlog.contextvars` module with a set of functions to bind variables to a context-local context.
 This context is safe to be used both in threaded as well as asynchronous code.
 
 The general flow is:
@@ -29,7 +29,7 @@ The general flow is:
 - Call {func}`structlog.contextvars.clear_contextvars` at the beginning of your request handler (or whenever you want to reset the context-local context).
 - Call {func}`structlog.contextvars.bind_contextvars` and {func}`structlog.contextvars.unbind_contextvars` instead of your bound logger's `bind()` and `unbind()` when you want to bind and unbind key-value pairs to the context-local context.
   You can also use the {func}`structlog.contextvars.bound_contextvars` context manager / decorator.
-- Use `structlog` as normal.
+- Use *structlog* as normal.
   Loggers act as they always do, but the {func}`structlog.contextvars.merge_contextvars` processor ensures that any context-local binds get included in all of your log messages.
 - If you want to access the context-local storage, you use {func}`structlog.contextvars.get_contextvars` and {func}`structlog.contextvars.get_merged_contextvars`.
 

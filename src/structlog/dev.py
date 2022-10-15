@@ -4,7 +4,7 @@
 # repository for complete details.
 
 """
-Helpers that make development with ``structlog`` more pleasant.
+Helpers that make development with *structlog* more pleasant.
 
 See also the narrative documentation in `development`.
 """

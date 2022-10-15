@@ -100,7 +100,7 @@ _SENTINEL = object()
 class _FixedFindCallerLogger(logging.Logger):
     """
     Change the behavior of `logging.Logger.findCaller` to cope with
-    ``structlog``'s extra frames.
+    *structlog*'s extra frames.
     """
 
     def findCaller(
@@ -382,7 +382,7 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 
     .. warning::
 
-       Does **not** check whether you've configured ``structlog`` correctly!
+       Does **not** check whether you've configured *structlog* correctly!
 
        See :doc:`standard-library` for details.
 
@@ -561,7 +561,7 @@ class LoggerFactory:
         whose names *start* with one of these.  For example, in pyramid
         applications you'll want to set it to
         ``["venusian", "pyramid.config"]``. This argument is
-        called *additional_ignores* in other APIs throughout `structlog`.
+        called *additional_ignores* in other APIs throughout *structlog*.
     """
 
     def __init__(self, ignore_frame_names: list[str] | None = None):
@@ -791,35 +791,35 @@ def render_to_log_kwargs(
 
 class ProcessorFormatter(logging.Formatter):
     r"""
-    Call ``structlog`` processors on `logging.LogRecord`\s.
+    Call *structlog* processors on `logging.LogRecord`\s.
 
     This is an implementation of a `logging.Formatter` that can be used to
-    format log entries from both ``structlog`` and `logging`.
+    format log entries from both *structlog* and `logging`.
 
     Its static method `wrap_for_formatter` must be the final processor in
-    ``structlog``'s processor chain.
+    *structlog*'s processor chain.
 
     Please refer to :ref:`processor-formatter` for examples.
 
     :param foreign_pre_chain:
         If not `None`, it is used as a processor chain that is applied to
-        **non**-``structlog`` log entries before the event dictionary is passed
+        **non**-*structlog* log entries before the event dictionary is passed
         to *processors*. (default: `None`)
     :param processors:
-        A chain of ``structlog`` processors that is used to process **all** log
+        A chain of *structlog* processors that is used to process **all** log
         entries. The last one must render to a `str` which then gets passed on
         to `logging` for output.
 
-        Compared to ``structlog``'s regular processor chains, there's a few
+        Compared to *structlog*'s regular processor chains, there's a few
         differences:
 
         - The event dictionary contains two additional keys:
 
           #. ``_record``: a `logging.LogRecord` that either was created using
-             `logging` APIs, **or** is a wrapped ``structlog`` log entry
+             `logging` APIs, **or** is a wrapped *structlog* log entry
              created by `wrap_for_formatter`.
           #. ``_from_structlog``: a `bool` that indicates whether or not
-             ``_record`` was created by a ``structlog`` logger.
+             ``_record`` was created by a *structlog* logger.
 
           Since you most likely don't want ``_record`` and
           ``_from_structlog`` in your log files,  we've added
@@ -834,14 +834,14 @@ class ProcessorFormatter(logging.Formatter):
         ``True`` to keep it on the `logging.LogRecord`. (default: False)
     :param keep_stack_info: Same as *keep_exc_info* except for ``stack_info``.
         (default: False)
-    :param logger: Logger which we want to push through the ``structlog``
+    :param logger: Logger which we want to push through the *structlog*
         processor chain. This parameter is necessary for some of the
         processors like `filter_by_level`. (default: None)
     :param pass_foreign_args: If True, pass a foreign log record's
         ``args`` attribute to the ``event_dict`` under ``positional_args`` key.
         (default: False)
     :param processor:
-        A single ``structlog`` processor used for rendering the event
+        A single *structlog* processor used for rendering the event
         dictionary before passing it off to `logging`. Must return a `str`.
         The event dictionary does **not** contain ``_record`` and
         ``_from_structlog``.
@@ -901,7 +901,7 @@ class ProcessorFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """
-        Extract ``structlog``'s `event_dict` from ``record.msg`` and format it.
+        Extract *structlog*'s `event_dict` from ``record.msg`` and format it.
 
         *record* has been patched by `wrap_for_formatter` first though, so the
          type isn't quite right.

@@ -70,9 +70,9 @@ Global defaults used when arguments to `wrap_logger` are omitted.
 
 def is_configured() -> bool:
     """
-    Return whether ``structlog`` has been configured.
+    Return whether *structlog* has been configured.
 
-    If `False`, ``structlog`` is running with builtin defaults.
+    If `False`, *structlog* is running with builtin defaults.
 
     .. versionadded: 18.1
     """
@@ -85,7 +85,7 @@ def get_config() -> dict[str, Any]:
 
     .. note::
 
-       Changes to the returned dictionary do *not* affect ``structlog``.
+       Changes to the returned dictionary do *not* affect *structlog*.
 
     .. versionadded: 18.1
     """

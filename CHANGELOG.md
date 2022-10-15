@@ -8,11 +8,11 @@ The **first number** of the version is the year.
 The **second number** is incremented with each release, starting at 1 for each year.
 The **third number** is for emergencies when we need to start branches for older releases.
 
-You shouldn't ever be afraid to upgrade `structlog` if you're using its public APIs and pay attention to `DeprecationWarning`s.
+You shouldn't ever be afraid to upgrade *structlog* if you're using its public APIs and pay attention to `DeprecationWarning`s.
 Whenever there is a need to break compatibility, it is announced here in the changelog and raises a `DeprecationWarning` for a year (if possible) before it's finally really broken.
 
 You cannot rely on the default settings and the `structlog.dev` module.
-They may be adjusted in the future to provide a better experience when starting to use `structlog`.
+They may be adjusted in the future to provide a better experience when starting to use *structlog*.
 So please make sure to **always** properly configure your applications.
 
 <!-- changelog follows -->
@@ -21,7 +21,7 @@ So please make sure to **always** properly configure your applications.
 
 ### Deprecated
 
-- Accessing package metadata as attributes on the `structlog` module is deprecated (e.g. `structlog.__version__`).
+- Accessing package metadata as attributes on the *structlog* module is deprecated (e.g. `structlog.__version__`).
   Please use [`importlib.metadata`](https://docs.python.org/3.10/library/importlib.metadata.html) instead (for Python 3.7: the [*importlib-metadata*](https://pypi.org/project/importlib-metadata/) PyPI package).
 - The `structlog.types` module is now deprecated in favor of the `structlog.typing` module.
   It seems like the Python typing community is settling on this name.
@@ -82,7 +82,7 @@ So please make sure to **always** properly configure your applications.
 - Added structured logging of tracebacks via the `structlog.tracebacks` module,
   and most notably the `structlog.tracebacks.ExceptionDictTransformer` which can be used with the new `structlog.processors.ExceptionRenderer` to render JSON tracebacks.
   [#407](https://github.com/hynek/structlog/pull/407)
-- `structlog.stdlib.recreate_defaults(log_level=logging.NOTSET)` that recreates `structlog`'s defaults on top of standard library's `logging`.
+- `structlog.stdlib.recreate_defaults(log_level=logging.NOTSET)` that recreates *structlog*'s defaults on top of standard library's `logging`.
   It optionally also configures `logging` to log to standard out at the passed log level.
   [#428](https://github.com/hynek/structlog/pull/428)
 - `structlog.processors.EventRenamer` allows you to rename the hitherto hard-coded event dict key `event` to something else.
@@ -105,7 +105,7 @@ So please make sure to **always** properly configure your applications.
   Its behavior has not changed.
   [#407](https://github.com/hynek/structlog/pull/407)
 - The default configuration now includes the `structlog.contextvars.merge_contextvars` processor.
-  That means you can use [`structlog.contextvars`](https://www.structlog.org/en/stable/contextvars.html) features without configuring `structlog`.
+  That means you can use [`structlog.contextvars`](https://www.structlog.org/en/stable/contextvars.html) features without configuring *structlog*.
 
 
 ### Fixed
@@ -161,7 +161,7 @@ So please make sure to **always** properly configure your applications.
 
 ### Changed
 
-- `structlog` switched its packaging to [*flit*](https://flit.pypa.io/).
+- *structlog* switched its packaging to [*flit*](https://flit.pypa.io/).
   Users shouldn't notice a difference, but (re-)packagers might.
 - `structlog.stdlib.AsyncBoundLogger` now determines the running loop when logging, not on instantiation.
   That has a minor performance impact, but makes it more robust when loops change (e.g. `aiohttp.web.run_app()`), or you want to use `sync_bl` *before* a loop has started.
@@ -175,7 +175,7 @@ So please make sure to **always** properly configure your applications.
 - `structlog.stdlib.ProcessorFormatter` now has a *processors* argument that allows to define a processor chain to run over *all* log entries.
 
   Before running the chain, two additional keys are added to the event dictionary: `_record` and `_from_structlog`.
-  With them it's possible to extract information from `logging.LogRecord`s and differentiate between `structlog` and `logging` log entries while processing them.
+  With them it's possible to extract information from `logging.LogRecord`s and differentiate between *structlog* and `logging` log entries while processing them.
 
   The old *processor* (singular) parameter is now deprecated, but no plans exist to remove it.
   [#365](https://github.com/hynek/structlog/pull/365)
@@ -193,7 +193,7 @@ So please make sure to **always** properly configure your applications.
 - `structlog.contextvars.bind_contextvars()` now returns a mapping of keys to `contextvars.Token`s, allowing you to reset values using the new `structlog.contextvars.reset_contextvars()`.
   [#339](https://github.com/hynek/structlog/pull/339)
 - Exception rendering in `structlog.dev.ConsoleLogger` is now configurable using the `exception_formatter` setting.
-  If either the [*Rich*](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, `structlog` will use them for pretty-printing tracebacks.
+  If either the [*Rich*](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, *structlog* will use them for pretty-printing tracebacks.
   *Rich* takes precedence over *better-exceptions* if both are present.
 
   This only works if `format_exc_info` is **absent** in the processor chain.
@@ -207,7 +207,7 @@ So please make sure to **always** properly configure your applications.
 
 - To implement pretty exceptions (see Changes below), `structlog.dev.ConsoleRenderer` now formats exceptions itself.
 
-  Make sure to remove `format_exc_info` from your processor chain if you configure `structlog` manually.
+  Make sure to remove `format_exc_info` from your processor chain if you configure *structlog* manually.
   This change is not really breaking, because the old use-case will keep working as before.
   However if you pass `pretty_exceptions=True` (which is the default if either `rich` or `better-exceptions` is installed), a warning will be raised and the exception will be rendered without prettification.
 - All use of [*Colorama*](https://github.com/tartley/colorama) on non-Windows systems has been excised.
@@ -218,7 +218,7 @@ So please make sure to **always** properly configure your applications.
 
 ### Fixed
 
-- `structlog` is now importable if `sys.stdout` is `None` (e.g. when running using `pythonw`). [#313](https://github.com/hynek/structlog/issues/313)
+- *structlog* is now importable if `sys.stdout` is `None` (e.g. when running using `pythonw`). [#313](https://github.com/hynek/structlog/issues/313)
 
 
 ## [21.1.0](https://github.com/hynek/structlog/compare/20.2.0...21.1.0) - 2021-02-18
@@ -256,8 +256,8 @@ So please make sure to **always** properly configure your applications.
 
 ### Added
 
-- `structlog` has now type hints for all of its APIs!
-  Since `structlog` is highly dynamic and configurable, this led to a few concessions like a specialized `structlog.stdlib.get_logger()` whose only difference to `structlog.get_logger()` is that it has the correct type hints.
+- *structlog* has now type hints for all of its APIs!
+  Since *structlog* is highly dynamic and configurable, this led to a few concessions like a specialized `structlog.stdlib.get_logger()` whose only difference to `structlog.get_logger()` is that it has the correct type hints.
 
   We consider them provisional for the time being – i.e. the backwards-compatibility does not apply to them in its full strength until we feel we got it right.
   Please feel free to provide feedback!
@@ -279,7 +279,7 @@ So please make sure to **always** properly configure your applications.
 
 ### Changed
 
-- The default bound logger (`wrapper_class`) if you don't configure `structlog` has changed.
+- The default bound logger (`wrapper_class`) if you don't configure *structlog* has changed.
   It's mostly compatible with the old one but a few uncommon methods like `log`, `failure`, or `err` don't exist anymore.
 
   You can regain the old behavior by using `structlog.configure(wrapper_class=structlog.BoundLogger)`.
@@ -306,7 +306,7 @@ So please make sure to **always** properly configure your applications.
 
 ### Added
 
-- Added a new module `structlog.contextvars` that allows to have a global but context-local `structlog` context the same way as with `structlog.threadlocal` since 19.2.0.
+- Added a new module `structlog.contextvars` that allows to have a global but context-local *structlog* context the same way as with `structlog.threadlocal` since 19.2.0.
   [#201](https://github.com/hynek/structlog/issues/201),
   [#236](https://github.com/hynek/structlog/pull/236)
 - Added a new module `structlog.testing` for first class testing support.
@@ -333,7 +333,7 @@ So please make sure to **always** properly configure your applications.
 - Python 3.4 is not supported anymore.
 It has been unsupported by the Python core team for a while now and its PyPI downloads are negligible.
 
-  It's very unlikely that `structlog` will break under 3.4 anytime soon, but we don't test it anymore.
+  It's very unlikely that *structlog* will break under 3.4 anytime soon, but we don't test it anymore.
 
 
 ### Added
@@ -368,9 +368,9 @@ It has been unsupported by the Python core team for a while now and its PyPI dow
 
 - `structlog.dev.ConsoleRenderer` now uses no colors by default, if *Colorama* is not available.
   [#215](https://github.com/hynek/structlog/issues/215)
-- `structlog.dev.ConsoleRenderer` now initializes *Colorama* lazily, to prevent accidental side-effects just by importing `structlog`.
+- `structlog.dev.ConsoleRenderer` now initializes *Colorama* lazily, to prevent accidental side-effects just by importing *structlog*.
   [#210](https://github.com/hynek/structlog/issues/210)
-- A best effort has been made to make as much of `structlog` pickleable as possible to make it friendlier with `multiprocessing` and similar libraries.
+- A best effort has been made to make as much of *structlog* pickleable as possible to make it friendlier with `multiprocessing` and similar libraries.
   Some classes can only be pickled on Python 3 or using the [dill](https://pypi.org/project/dill/) library though and that is very unlikely to change.
 
   So far, the configuration proxy, `structlog.processor.TimeStamper`, `structlog.BoundLogger`, `structlog.PrintLogger` and `structlog.dev.ConsoleRenderer` have been made pickleable.
@@ -390,7 +390,7 @@ It has been unsupported by the Python core team for a while now and its PyPI dow
 
 - As announced in 18.1.0, `pip install -e .[dev]` now installs all development dependencies.
   Sorry for the inconveniences this undoubtedly will cause!
-- `structlog` now tolerates passing through `dict`s to stdlib logging.
+- *structlog* now tolerates passing through `dict`s to stdlib logging.
   [#187](https://github.com/hynek/structlog/issues/187),
   [#188](https://github.com/hynek/structlog/pull/188),
   [#189](https://github.com/hynek/structlog/pull/189)
@@ -421,9 +421,9 @@ It has been unsupported by the Python core team for a while now and its PyPI dow
 
 ### Deprecated
 
-- The meaning of the `structlog[dev]` installation target will change from "colorful output" to "dependencies to develop `structlog`" in 19.1.0.
+- The meaning of the `structlog[dev]` installation target will change from "colorful output" to "dependencies to develop *structlog*" in 19.1.0.
 
-  The main reason behind this decision is that it's impossible to have a `structlog` in your normal dependencies and additionally a `structlog[dev]` for development (`pip` will report an error).
+  The main reason behind this decision is that it's impossible to have a *structlog* in your normal dependencies and additionally a `structlog[dev]` for development (`pip` will report an error).
 
 
 ### Added
@@ -433,7 +433,7 @@ It has been unsupported by the Python core team for a while now and its PyPI dow
 - `structlog.dev.ConsoleRenderer` now accepts a *level_styles* argument for overriding the colors for individual levels, as well as to add new levels.
   See the docs for `ConsoleRenderer.get_default_level_styles()` for usage.
   [#139](https://github.com/hynek/structlog/pull/139)
-- Added `structlog.is_configured()` to check whether or not `structlog` has been configured.
+- Added `structlog.is_configured()` to check whether or not *structlog* has been configured.
 - Added `structlog.get_config()` to introspect current configuration.
 
 
@@ -480,7 +480,7 @@ Special thanks go to [Fabian Büchler](https://github.com/fabianbuechler), [Gilb
 - Added `structlog.stdlib.render_to_log_kwargs()`.
   This allows you to use `logging`-based formatters to take care of rendering your entries.
   [#98](https://github.com/hynek/structlog/issues/98)
-- Added `structlog.stdlib.ProcessorFormatter` which does the opposite: This allows you to run `structlog` processors on arbitrary `logging.LogRecords`.
+- Added `structlog.stdlib.ProcessorFormatter` which does the opposite: This allows you to run *structlog* processors on arbitrary `logging.LogRecords`.
   [#79](https://github.com/hynek/structlog/issues/79),
   [#105](https://github.com/hynek/structlog/issues/105)
 - Added *repr_native_str* to `structlog.processors.KeyValueRenderer` and `structlog.dev.ConsoleRenderer`.
@@ -493,7 +493,7 @@ Special thanks go to [Fabian Büchler](https://github.com/fabianbuechler), [Gilb
 
 ### Changed
 
-- The default renderer now is `structlog.dev.ConsoleRenderer` if you don't configure `structlog`.
+- The default renderer now is `structlog.dev.ConsoleRenderer` if you don't configure *structlog*.
   Colors are used if available and human-friendly timestamps are prepended.
   This is in line with our backwards-compatibility policy that explicitly excludes default settings.
 - UNIX epoch timestamps from `structlog.processors.TimeStamper` are more precise now.
@@ -586,7 +586,7 @@ Special thanks go to [Fabian Büchler](https://github.com/fabianbuechler), [Gilb
 - Allow empty lists of processors.
   This is a valid use case since [#26](https://github.com/hynek/structlog/issues/26) has been merged.
   Before, supplying an empty list resulted in the defaults being used.
-- Better support of `logging.Logger.exception` within `structlog`.
+- Better support of `logging.Logger.exception` within *structlog*.
   [#52](https://github.com/hynek/structlog/pull/52)
 
 
@@ -618,8 +618,8 @@ Special thanks go to [Fabian Büchler](https://github.com/fabianbuechler), [Gilb
 
 - Pass positional arguments to stdlib wrapped loggers that use string formatting.
   [#19](https://github.com/hynek/structlog/pull/19)
-- `structlog` is now dually licensed under the [Apache License, Version 2](https://choosealicense.com/licenses/apache/) and the [MIT](https://choosealicense.com/licenses/mit/) license.
-  Therefore it is now legal to use `structlog` with [GPLv2](https://choosealicense.com/licenses/gpl-2.0/)-licensed projects.
+- *structlog* is now dually licensed under the [Apache License, Version 2](https://choosealicense.com/licenses/apache/) and the [MIT](https://choosealicense.com/licenses/mit/) license.
+  Therefore it is now legal to use *structlog* with [GPLv2](https://choosealicense.com/licenses/gpl-2.0/)-licensed projects.
   [#28](https://github.com/hynek/structlog/pull/28)
 
 

@@ -587,11 +587,11 @@ class StackInfoRenderer:
     of the Python standard library logging.
 
     :param additional_ignores: By default, stack frames coming from
-        ``structlog`` are ignored. With this argument you can add additional
+        *structlog* are ignored. With this argument you can add additional
         names that are ignored, before the stack starts being rendered. They
         are matched using ``startswith()``, so they don't have to match
         exactly. The names are used to find the first relevant name, therefore
-        once a frame is found that doesn't start with ``structlog`` or one of
+        once a frame is found that doesn't start with *structlog* or one of
         *additional_ignores*, **no filtering** is applied to subsequent frames.
 
     .. versionadded:: 0.4.0
@@ -660,7 +660,7 @@ class CallsiteParameterAdder:
         async functions.
 
     If the event dictionary has an embedded `logging.LogRecord` object and did
-    not originate from `structlog` then the callsite information will be
+    not originate from *structlog* then the callsite information will be
     determined from the `logging.LogRecord` object. For event dictionaries
     without an embedded `logging.LogRecord` object the callsite will be
     determined from the stack trace, ignoring all intra-structlog calls, calls

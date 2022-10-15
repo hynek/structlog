@@ -1,6 +1,6 @@
 # Processors
 
-The true power of `structlog` lies in its *combinable log processors*.
+The true power of *structlog* lies in its *combinable log processors*.
 A log processor is a regular callable, i.e. a function or an instance of a class with a `__call__()` method.
 
 (chains)=
@@ -28,7 +28,7 @@ Each processors receives three positional arguments:
 The return value of each processor is passed on to the next one as `event_dict` until finally the return value of the last processor gets passed into the wrapped logging method.
 
 :::{note}
-`structlog` only looks at the return value of the **last** processor.
+*structlog* only looks at the return value of the **last** processor.
 That means that as long as you control the next processor in the chain (i.e. the processor that will get your return value passed as an argument), you can return whatever you want.
 
 Returning a modified event dictionary from your processors is just a convention to make processors composable.
@@ -75,7 +75,7 @@ def timestamper(logger, log_method, event_dict):
 You're explicitly allowed to modify the `event_dict` parameter, because a copy has been created before calling the first processor.
 :::
 
-Please note that `structlog` comes with such a processor built in: {class}`~structlog.processors.TimeStamper`.
+Please note that *structlog* comes with such a processor built in: {class}`~structlog.processors.TimeStamper`.
 
 
 ## Filtering
@@ -118,7 +118,7 @@ class ConditionalDropper:
         return event_dict
 ```
 
-Since it's so common to filter by the log level, `structlog` comes with {func}`structlog.make_filtering_bound_logger` that filters log entries before they even enter the processor chain.
+Since it's so common to filter by the log level, *structlog* comes with {func}`structlog.make_filtering_bound_logger` that filters log entries before they even enter the processor chain.
 It does **not** use the standard library, but it does use its names and order of log levels.
 
 (adapting)=
@@ -136,7 +136,7 @@ It can return one of three types:
 
 Therefore `return "hello world"` is a shortcut for `return (("hello world",), {})` (the example in {ref}`chains` assumes this shortcut has been taken).
 
-This should give you enough power to use `structlog` with any logging system while writing agnostic processors that operate on dictionaries.
+This should give you enough power to use *structlog* with any logging system while writing agnostic processors that operate on dictionaries.
 
 :::{versionchanged} 14.0.0 Allow final processor to return a {any}`dict`.
 :::
@@ -157,7 +157,7 @@ For a list of shipped processors, check out the {ref}`API documentation <procs>`
 
 ## Third-Party Packages
 
-`structlog` was specifically designed to be as composable and reusable as possible, so whatever you're missing:
+*structlog* was specifically designed to be as composable and reusable as possible, so whatever you're missing:
 chances are, you can solve it with a processor!
 Since processors are self-contained callables, it's easy to write your own and to share them in separate packages.
 

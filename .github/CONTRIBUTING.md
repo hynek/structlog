@@ -1,6 +1,6 @@
 # How To Contribute
 
-Thank you for considering contributing to `structlog`!
+Thank you for considering contributing to *structlog*!
 It's people like *you* who make it such a great tool for everyone.
 
 This document intends to make contribution more accessible by codifying tribal knowledge and expectations.
@@ -16,7 +16,7 @@ Please report any harm to [Hynek Schlawack] in any way you find appropriate.
 In case you'd like to help out but don't want to deal with GitHub, there's a great opportunity:
 help your fellow developers on [Stack Overflow](https://stackoverflow.com/questions/tagged/structlog)!
 
-The official tag is `structlog` and helping out in support frees us up to improve `structlog` instead!
+The official tag is `structlog` and helping out in support frees us up to improve *structlog* instead!
 
 
 ## Workflow
