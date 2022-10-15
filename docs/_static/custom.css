@@ -3,6 +3,11 @@ div.article-container>article {
     line-height: 31px;
 }
 
+div.admonition>p {
+    font-size: 19px;
+    line-height: 31px;
+}
+
 p.admonition-title {
     font-size: 15px;
     line-height: 20px;
