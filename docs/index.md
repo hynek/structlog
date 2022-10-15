@@ -20,9 +20,7 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 - Once you have basic grasp of how *structlog* works, have a look on how it [integrates](integration) best with your existing frameworks.
 
 
-## User's Guide
-
-### Basics
+## Basics
 
 ```{toctree}
 :maxdepth: 2
@@ -40,7 +38,7 @@ typing
 
 (integration)=
 
-### Integration with Existing Systems
+## Integration with Existing Systems
 
 *structlog* is both zero-config as well as highly configurable.
 You can use it on its own or integrate with existing systems.
@@ -54,7 +52,7 @@ twisted
 ```
 
 
-### *structlog* in Practice
+## *structlog* in Practice
 
 ```{toctree}
 :maxdepth: 2
@@ -66,7 +64,7 @@ custom-wrappers
 ```
 
 
-### Deprecated Features
+## Deprecated Features
 
 ```{toctree}
 :maxdepth: 1
