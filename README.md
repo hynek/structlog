@@ -49,6 +49,8 @@ Its paradigms proved influential enough to [help design](https://twitter.com/sir
 
 <!-- end-short -->
 
+---
+
 A short explanation on *why* structured logging is good for you, and why *structlog* is the right tool for the job can be found in the [Why chapter](https://www.structlog.org/en/stable/why.html) of our documentation.
 
 Once you feel inspired to try it out, check out our friendly [Getting Started tutorial](https://www.structlog.org/en/stable/getting-started.html).
