@@ -92,6 +92,8 @@ html_theme = "furo"
 html_theme_options = {}
 html_logo = "_static/structlog_logo_small_transparent.png"
 html_static_path = ["_static"]
+html_css_files = ["custom.css"]
+
 htmlhelp_basename = "structlogdoc"
 
 _logo = (
