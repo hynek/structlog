@@ -100,7 +100,7 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
    For example, if you wanted JSON logs, you just have to replace the last processor with {class}`structlog.processors.JSONRenderer`.
 
 
-## Wrapping Loggers Explicitly
+## Wrapping Loggers Manually
 
 In practice, you won't be instantiating bound loggers yourself.
 You will configure *structlog* as explained in the {doc}`next chapter <configuration>` and then just call {func}`structlog.get_logger`.
