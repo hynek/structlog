@@ -35,7 +35,7 @@ Here, *structlog* takes advantage of its default settings:
 - Output is sent to **[standard out](https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29)** instead doing nothing.
 - It **imitates** standard library {mod}`logging`'s **log level names** for familiarity.
   By default, no level-based filtering is done, but it comes with a **very fast [filtering machinery](filtering)**.
-- Like in `logging`, **positional arguments are [interpolated into the message string using %](https://docs.python.org/3/library/stdtypes.html#old-string-formatting)**.
+- Like in `logging`, positional arguments are [**interpolated into the message string using %**](https://docs.python.org/3/library/stdtypes.html#old-string-formatting).
   That might look dated, but it's *much* faster than using {any}`str.format` and allows *structlog* to be used as drop-in replacement for {mod}`logging`.
   If you *know* that the log entry is *always* gonna be logged out, just use [f-strings](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) which are the fastest.
 - All keywords are formatted using {class}`structlog.dev.ConsoleRenderer`.
