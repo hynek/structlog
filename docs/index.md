@@ -14,8 +14,8 @@ Release **{sub-ref}`release`**  ([What's new?](changelog))
 
 ## Basics
 
-The following chapters give you the all the concepts that you need to use *structlog* productively.
-If you're already convinced that you want to play with it, start with our [Getting Started tutorial](getting-started.md)!
+The following chapters give you all the concepts that you need to use *structlog* productively.
+If you're already convinced that you want to play with it, skip ahead to our [Getting Started tutorial](getting-started.md)!
 The rest of the chapters builds gently on each other.
 
 
@@ -33,7 +33,7 @@ contextvars
 
 ## In-Development Affordances
 
-*structlog*'s focus are production systems, but it comes with **pretty console logging** and handy in-development helpers for **comfort** and **better results**.
+*structlog*'s focus is production systems, but it comes with **pretty console logging** and handy in-development helpers both for your **comfort** and your code's **quality**.
 
 ```{toctree}
 :maxdepth: 2
