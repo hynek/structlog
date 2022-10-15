@@ -35,7 +35,7 @@ It's:
 - **Powerful**: Functions and dictionaries aren’t just simple, they’re also powerful.
   *structlog* leaves *you* in control. 
 - **Fast**: *structlog* is not hamstrung by designs of yore.
-  It’s flexibility comes not at the price of performance.
+  Its flexibility comes not at the price of performance.
 
 *structlog* has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged.
 Its paradigms proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
