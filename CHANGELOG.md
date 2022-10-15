@@ -41,6 +41,9 @@ So please make sure to **always** properly configure your applications.
 
 ### Changed
 
+- The documentation has been **heavily** overhauled.
+  Have a look, if you haven't lately!
+  Especially the graphs in the [standard library chapter](https://www.structlog.org/en/latest/standard-library.html) are both surprising and useful to many.
 - The build backend has been switched to [*Hatch*](https://hatch.pypa.io/).
 
 

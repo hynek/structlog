@@ -6,8 +6,9 @@ In other words, you should be able to replace your call to {func}`logging.getLog
 If you run into incompatibilities, it is a *bug* so please take the time to [report it](https://github.com/hynek/structlog/issues)!
 If you're a heavy `logging` user, your [help](https://github.com/hynek/structlog/issues?q=is%3Aopen+is%3Aissue+label%3Astdlib) to ensure a better compatibility would be highly appreciated!
 
-:::{note}
-The quickest way to get started with *structlog* and `logging` is {func}`structlog.stdlib.recreate_defaults()` that will recreate the default configuration on top of `logging` and optionally configure `logging` for you.
+:::{important}
+The quickest way to get started with *structlog* and `logging` is {func}`structlog.stdlib.recreate_defaults()`.
+It will recreate the default configuration on top of `logging` and optionally configure `logging` for you.
 :::
 
 
