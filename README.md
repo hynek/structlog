@@ -28,9 +28,17 @@
 
 <!-- begin-short -->
 
-*structlog* makes logging in Python **less painful**, **more powerful**, and **much faster**, by adding **structure** to your log entries and moving control to simple **functions**.
+*structlog* is *the* production-ready logging solution for Python.
+It's:
 
-It has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged. Its design proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
+- **Simple**: At its core, everything is about **functions** that take and return **dictionaries** – all hidden behind familiar APIs.
+- **Powerful**: Functions and dictionaries aren’t just simple, they’re also powerful.
+  *structlog* leaves *you* in control. 
+- **Fast**: *structlog* is not hamstrung by designs of yore.
+  It’s flexibility comes not at the price of performance.
+
+*structlog* has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged.
+Its paradigms proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
 
 Thanks to its flexible design, *you* choose whether you want *structlog* to take care of the **output** of your log entries or whether you prefer to **forward** them to an existing logging system like the standard library's `logging` module.
 
