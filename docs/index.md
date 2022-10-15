@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-*Simple. Powerful. Fast. Pick three.*
+    <em>Simple. Powerful. Fast. Pick three.</em>
 </p> 
 
 Release **{sub-ref}`release`**  ([What's new?](changelog))
