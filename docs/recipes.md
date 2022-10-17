@@ -1,8 +1,9 @@
 # Recipes
 
 Thanks to the fact that *structlog* is entirely based on dictionaries and callables, the sky is the limit with what you an achieve.
-In the beginning that can be daunting, so here a few examples of issues that have come up a few times.
+In the beginning that can be daunting, so here are a few examples of tasks that have come up repeatedly.
 
+Please note that recipes related to integration with frameworks have an [own chapter](frameworks.md).
 
 (rename-event)=
 
@@ -20,6 +21,7 @@ With the {class}`structlog.processors.EventRenamer` processor you can for instan
 {'msg': 'something happened', 'event': 'our event!'}
 ```
 
+(finer-filtering)=
 
 ## Fine-Grained Log-Level Filtering
 

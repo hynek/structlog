@@ -94,9 +94,11 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
 
     - It's faster because once the logger is built at program start; it's a
       static class.
-    - For the same reason you can't change the log level once configured.
-      Use the dynamic approach of `standard-library` instead, if you need this
+    - For the same reason you can't change the log level once configured. Use
+      the dynamic approach of `standard-library` instead, if you need this
       feature.
+    - You *can* have (much) more fine-grained filtering by :ref:`writing a
+      simple processor <finer-filtering>`.
 
     :param min_level: The log level as an integer. You can use the constants
         from `logging` like ``logging.INFO`` or pass the values directly. See
