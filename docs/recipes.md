@@ -21,6 +21,59 @@ With the {class}`structlog.processors.EventRenamer` processor you can for instan
 ```
 
 
+## Fine-Grained Log-Level Filtering
+
+*structlog*'s native log levels as provided by {func}`structlog.make_filtering_bound_logger` only know **one** log level – the one that is passed to `make_filtering_bound_logger()`.
+Sometimes it can be useful to filter more strictly for certain modules or even functions.
+
+You can achieve that with the `~structlog.processors.CallsiteParameterAdder` processor and and  your own one that acts on the data.
+
+Let's assume you have the following code:
+
+```python
+logger = structlog.get_logger()
+
+def f():
+    logger.info("f called")
+
+def g():
+    logger.info("g called")
+
+f()
+g()
+```
+
+And you don't want to see log entries from function `f`.
+You add {class}`~structlog.processors.CallsiteParameterAdder` to the processor chain and then look at the `func_name` field in the *event dict*:
+
+```python
+def filter_f(_, __, event_dict):
+    if event_dict["func_name"] == "f":
+        raise structlog.DropEvent
+
+    return event_dict
+
+structlog.configure(
+    processors=[
+        structlog.processors.CallsiteParameterAdder(
+            [structlog.processors.CallsiteParameter.FUNC_NAME]
+        ),
+        filter_f,
+        structlog.processors.KeyValueRenderer(),
+    ]
+)
+```
+
+Running this gives you:
+
+```
+event='g called' func_name='g'
+```
+
+{class}`~structlog.processors.CallsiteParameterAdder` is *very* powerful in what info it can add, so your possibilities are limitless.
+Pick the data you're interested in from the {class}`structlog.processors.CallsiteParameter` {class}`~enum.Enum`.
+
+
 (custom-wrappers)=
 
 ## Custom Wrappers
