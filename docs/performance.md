@@ -40,6 +40,12 @@ Here are a few hints how to get the best performance out of *structlog* in produ
 - Use a faster JSON serializer than the standard library.
   Possible alternatives are among others are [*orjson*] or [*RapidJSON*].
 
+- Be conscious about whether and how you use *structlog*'s *asyncio* support.
+  While it's true that moving log processing into separate threads prevents your application from hanging, it also comes with a performance cost.
+
+  Decide judiciously whether or not you're willing to pay that price.
+  If your processor chain has a good and predictable performance without external dependencies (as it should), it might not be worth it.
+
 
 ## Example
 
