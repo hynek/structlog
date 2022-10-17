@@ -64,6 +64,7 @@ Dedicated support for the standard library and Twisted is shipped out-of-the-box
 ```{toctree}
 :maxdepth: 2
 
+frameworks
 standard-library
 twisted
 ```
