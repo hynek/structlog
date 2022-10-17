@@ -1,4 +1,4 @@
-# Integration with Frameworks
+# Frameworks
 
 To have consistent log output, it makes sense to configure *structlog* *before* any logging is done.
 The best place to perform your configuration varies with applications and frameworks.
@@ -14,7 +14,31 @@ If you use standard library's logging, it makes sense to configure them next to 
 
 See Flask's [Logging docs](https://flask.palletsprojects.com/en/latest/logging/).
 
-Generally speaking: put it *before* instantiating `flask.Flask`.
+Generally speaking: configure *structlog* *before* instantiating `flask.Flask`.
+
+Here's a [signal handler](https://flask.palletsprojects.com/en/latest/signals/) that binds various request details into [*context variables*](contextvars.md):
+
+```python
+def bind_request_details(sender: Flask, **extras: dict[str, Any]) -> None:
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(
+        request_id=request.headers.get("X-Unique-ID", "NONE"),
+        peer=peer,
+    )
+
+    if current_user.is_authenticated:
+        structlog.contextvars.bind_contextvars(
+            user_id=current_user.get_id(),
+        )
+```
+
+You add it to an existing `app` like this:
+
+```python
+from flask import request_started
+
+request_started.connect(bind_request_details, app)
+```
 
 
 ## Pyramid
@@ -30,6 +54,7 @@ class StructLogTween:
     registry: Registry
 
     def __call__(self, request: Request) -> Response:
+        structlog.contextvars.clear_contextvars()
         structlog.contextvars.bind_contextvars(
             peer=request.client_addr,
             request_id=request.headers.get("X-Unique-ID", "NONE"),
