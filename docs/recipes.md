@@ -1,5 +1,26 @@
 # Recipes
 
+Thanks to the fact that *structlog* is entirely based on dictionaries and callables, the sky is the limit with what you an achieve.
+In the beginning that can be daunting, so here a few examples of issues that have come up a few times.
+
+
+(rename-event)=
+
+## Renaming the `event` Key
+
+The name of the event is hard-coded in *structlog* to `event`.
+But that doesn't mean it has to be called that in your logs.
+
+With the {class}`structlog.processors.EventRenamer` processor you can for instance rename  the log message to `msg` and use `event` for something custom, that you bind to `_event` in your code:
+
+```pycon
+>>> from structlog.processors import EventRenamer
+>>> event_dict = {"event": "something happened", "_event": "our event!"}
+>>> EventRenamer("msg", "_event")(None, None, event_dict)
+{'msg': 'something happened', 'event': 'our event!'}
+```
+
+
 (custom-wrappers)=
 
 ## Custom Wrappers

@@ -812,6 +812,8 @@ class EventRenamer:
         handled gracefully.
 
     .. versionadded:: 22.1
+
+    See also the :ref:`rename-event` recipe.
     """
 
     def __init__(self, to: str, replace_by: str | None = None):
