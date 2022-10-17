@@ -2,43 +2,44 @@
 
 Here are a few hints how to get the best performance out of *structlog* in production:
 
-1. Use *structlog*'s native *BoundLogger* (created using {func}`structlog.make_filtering_bound_logger`) if you want to use level-based filtering.
-   `return None` is hard to beat.
+- Use *structlog*'s native *BoundLogger* (created using {func}`structlog.make_filtering_bound_logger`) if you want to use level-based filtering.
+  `return None` is hard to beat.
 
-2. Avoid (frequently) calling log methods on loggers you get back from {func}`structlog.get_logger` or {func}`structlog.wrap_logger`.
-   Since those functions are usually called in module scope and thus before you are able to configure them, they return a proxy object that assembles the correct logger on demand.
+- Avoid (frequently) calling log methods on loggers you get back from {func}`structlog.get_logger` or {func}`structlog.wrap_logger`.
+  Since those functions are usually called in module scope and thus before you are able to configure them, they return a proxy object that assembles the correct logger on demand.
 
-   Create a local logger if you expect to log frequently without binding:
+  Create a local logger if you expect to log frequently without binding:
 
-   ```python
-   logger = structlog.get_logger()
-   def f():
+  ```python
+  logger = structlog.get_logger()
+  def f():
       log = logger.bind()
       for i in range(1000000000):
          log.info("iterated", i=i)
-   ```
+  ```
 
-   Since global scope lookups are expensive in Python, it's generally a good idea to copy frequently-used symbols into local scope.
+  Since global scope lookups are expensive in Python, it's generally a good idea to copy frequently-used symbols into local scope.
 
-3. Set the *cache_logger_on_first_use* option to `True` so the aforementioned on-demand loggers will be assembled only once and cached for future uses:
+- Set the *cache_logger_on_first_use* option to `True` so the aforementioned on-demand loggers will be assembled only once and cached for future uses:
 
-   ```python
-   configure(cache_logger_on_first_use=True)
-   ```
+  ```python
+  configure(cache_logger_on_first_use=True)
+  ```
 
-   This has two drawbacks:
+  This has two drawbacks:
 
-   1. Later calls of {func}`~structlog.configure` don't have any effect on already cached loggers -- that shouldn't matter outside of {doc}`testing <testing>` though.
-   2. The resulting bound logger is not pickleable.
+  1. Later calls of {func}`~structlog.configure` don't have any effect on already cached loggers -- that shouldn't matter outside of {doc}`testing <testing>` though.
+  2. The resulting bound logger is not pickleable.
       Therefore, you can't set this option if you e.g. plan on passing loggers around using `multiprocessing`.
 
-4. Avoid sending your log entries through the standard library if you can: its dynamic nature and flexibility make it a major bottleneck.
-   Instead use {class}`structlog.WriteLoggerFactory` or -- if your serializer returns bytes (e.g. [*orjson*]) -- {class}`structlog.BytesLoggerFactory`.
+- Avoid sending your log entries through the standard library if you can: its dynamic nature and flexibility make it a major bottleneck.
+  Instead use {class}`structlog.WriteLoggerFactory` or -- if your serializer returns bytes (e.g. [*orjson*]) -- {class}`structlog.BytesLoggerFactory`.
 
-   You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
+  You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
 
-5. Use a faster JSON serializer than the standard library.
-   Possible alternatives are among others are [*orjson*] or [*RapidJSON*].
+- Use a faster JSON serializer than the standard library.
+  Possible alternatives are among others are [*orjson*] or [*RapidJSON*].
+
 
 ## Example
 
