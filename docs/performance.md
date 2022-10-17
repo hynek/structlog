@@ -1,23 +1,12 @@
 # Performance
 
-*structlog*'s default configuration tries to be as unsurprising to new developers as possible.
-Some of the choices made come with an avoidable performance price tag -- although its impact is debatable.
+Here are a few hints how to get the best performance out of *structlog* in production:
 
-Here are a few hints how to get most out of *structlog* in production:
-
-1. Use a specific wrapper class instead of the generic one.
-   *structlog* comes with ones for the {doc}`standard-library` and for {doc}`twisted`:
-
-   ```python
-   configure(wrapper_class=structlog.stdlib.BoundLogger)
-   ```
-
-   *structlog* also comes with native log levels that are based on the ones from the standard library (read: we've copy and pasted them), but don't involve `logging`'s dynamic machinery.
-   That makes them *much* faster with a very similar API.
-   You can use {func}`structlog.make_filtering_bound_logger()` to create one.
+1. Use *structlog*'s native *BoundLogger* (created using {func}`structlog.make_filtering_bound_logger`) if you want to use level-based filtering.
+   `return None` is hard to beat.
 
 2. Avoid (frequently) calling log methods on loggers you get back from {func}`structlog.get_logger` or {func}`structlog.wrap_logger`.
-   Since those functions are usually called in module scope and thus before you are able to configure them, they return a proxy that assembles the correct logger on demand.
+   Since those functions are usually called in module scope and thus before you are able to configure them, they return a proxy object that assembles the correct logger on demand.
 
    Create a local logger if you expect to log frequently without binding:
 
@@ -28,6 +17,8 @@ Here are a few hints how to get most out of *structlog* in production:
       for i in range(1000000000):
          log.info("iterated", i=i)
    ```
+
+   Since global scope lookups are expensive in Python, it's generally a good idea to copy frequently-used symbols into local scope.
 
 3. Set the *cache_logger_on_first_use* option to `True` so the aforementioned on-demand loggers will be assembled only once and cached for future uses:
 
