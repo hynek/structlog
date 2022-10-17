@@ -19,7 +19,27 @@ Generally speaking: put it *before* instantiating `flask.Flask`.
 
 ## Pyramid
 
-[Application constructor](https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process>).
+Configure it in the [application constructor](https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process).
+
+Here's an example for a *Pyramid* [*Tween*](https://kapeli.com/dash_share?docset_file=pyramid&docset_name=pyramid&path=narr/hooks.html%23registering-tweens&platform=pyramid) that stores various request-specific data into [*context variables*](contextvars.md):
+
+```python
+@dataclass
+class StructLogTween:
+    handler: Callable[[Request], Response]
+    registry: Registry
+
+    def __call__(self, request: Request) -> Response:
+        structlog.contextvars.bind_contextvars(
+            peer=request.client_addr,
+            request_id=request.headers.get("X-Unique-ID", "NONE"),
+            user_agent=request.environ.get("HTTP_USER_AGENT", "UNKNOWN"),
+            user=request.authenticated_userid,
+        )
+
+        return self.handler(request)
+
+```
 
 
 ## Twisted
