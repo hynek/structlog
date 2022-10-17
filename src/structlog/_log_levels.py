@@ -9,6 +9,8 @@ Extracted log level data used by both stdlib and native log level filters.
 
 from __future__ import annotations
 
+import asyncio
+import contextvars
 import logging
 
 from typing import Any, Callable
@@ -73,10 +75,24 @@ def _nop(self: Any, event: str, **kw: Any) -> Any:
     return None
 
 
+async def _anop(self: Any, event: str, **kw: Any) -> Any:
+    return None
+
+
 def exception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
     kw.setdefault("exc_info", True)
 
     return self.error(event, **kw)
+
+
+async def aexception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
+    kw.setdefault("exc_info", True)
+    ctx = contextvars.copy_context()
+
+    return await asyncio.get_running_loop().run_in_executor(
+        None,
+        lambda: ctx.run(lambda: self.error(event, **kw)),
+    )
 
 
 def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
@@ -122,33 +138,63 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     of a ``return None``.
     """
 
-    def make_method(level: int) -> Callable[..., Any]:
+    def make_method(
+        level: int,
+    ) -> tuple[Callable[..., Any], Callable[..., Any]]:
         if level < min_level:
-            return _nop
+            return _nop, _anop
 
         name = _LEVEL_TO_NAME[level]
 
         def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
             return self._proxy_to_logger(name, event % args, **kw)
 
+        async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+            await asyncio.get_running_loop().run_in_executor(
+                None,
+                lambda: contextvars.copy_context().run(
+                    lambda: self._proxy_to_logger(name, event % args, **kw)
+                ),
+            )
+
         meth.__name__ = name
+        ameth.__name__ = f"a{name}"
 
-        return meth
+        return meth, ameth
 
-    def log(self: Any, level: int, event: str, **kw: Any) -> Any:
+    def log(self: Any, level: int, event: str, *args: Any, **kw: Any) -> Any:
         if level < min_level:
             return None
         name = _LEVEL_TO_NAME[level]
-        return self._proxy_to_logger(name, event, **kw)
 
-    meths: dict[str, Callable[..., Any]] = {"log": log}
+        return self._proxy_to_logger(name, event % args, **kw)
+
+    async def alog(
+        self: Any, level: int, event: str, *args: Any, **kw: Any
+    ) -> Any:
+        if level < min_level:
+            return None
+        name = _LEVEL_TO_NAME[level]
+
+        return await asyncio.get_running_loop().run_in_executor(
+            None,
+            lambda: contextvars.copy_context().run(
+                lambda: self._proxy_to_logger(name, event % args, **kw)
+            ),
+        )
+
+    meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
     for lvl, name in _LEVEL_TO_NAME.items():
-        meths[name] = make_method(lvl)
+        meths[name], meths[f"a{name}"] = make_method(lvl)
 
     meths["exception"] = exception
+    meths["aexception"] = aexception
     meths["fatal"] = meths["error"]
+    meths["afatal"] = meths["aerror"]
     meths["warn"] = meths["warning"]
+    meths["awarn"] = meths["awarning"]
     meths["msg"] = meths["info"]
+    meths["amsg"] = meths["ainfo"]
 
     return type(
         "BoundLoggerFilteringAt%s"
