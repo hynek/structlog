@@ -33,6 +33,11 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 
   [#454](https://github.com/hynek/structlog/pull/454)
 
+- `FilteringBoundLogger` now also has support for *asyncio*-based logging.
+  Instead of a wrapper class, async equivalents have been added for all logging methods.
+  So instead of `log.info("hello")` you can also write `await log.ainfo("hello")` in async functions and methods.
+  [#457](https://github.com/hynek/structlog/pull/457)
+
 
 ### Changed
 
