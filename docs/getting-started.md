@@ -231,6 +231,28 @@ To make this common case as simple as possible, *structlog* comes with [some too
 As noted before, the fastest way to transform *structlog* into a `logging`-friendly package is calling {func}`structlog.stdlib.recreate_defaults()`.
 
 
+## asyncio
+
+*structlog* comes with two approaches to support asynchronous logging.
+
+The default *bound logger* that you get back from {func}`structlog.get_logger()` doesn't have just the familiar log methods like `debug()` or `info()`, but also their async cousins, that simply prefix the name with an a:
+
+```pycon
+>>> import asyncio
+>>> logger = structlog.get_logger()
+>>> async def f():
+...     await logger.ainfo("hi!")
+...
+>>> asyncio.run(f())
+2022-10-18 13:23:37 [info     ] hi!
+```
+
+You can use the sync and async logging methods interchangeably within the same application.
+
+---
+
+The standard library integration on the other hand offers an asynchronous wrapper class {class}`structlog.stdlib.AsyncBoundLogger`.
+
 ## Liked what you saw?
 
 Now you're all set for the rest of the user's guide and can start reading about [bound loggers](bound-loggers.md) -- the heart of *structlog*.
