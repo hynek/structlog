@@ -87,11 +87,12 @@ def exception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
 
 async def aexception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
     kw.setdefault("exc_info", True)
-    ctx = contextvars.copy_context()
 
     return await asyncio.get_running_loop().run_in_executor(
         None,
-        lambda: ctx.run(lambda: self.error(event, **kw)),
+        lambda: contextvars.copy_context().run(
+            lambda: self.error(event, **kw)
+        ),
     )
 
 
