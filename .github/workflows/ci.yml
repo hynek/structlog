@@ -91,6 +91,11 @@ jobs:
         run: |
           python -m coverage combine
           python -m coverage html --skip-covered --skip-empty
+
+          # Report and write to summary.
+          python -m coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+
+          # Report again and fail if under 100%.
           python -m coverage report --fail-under=100
 
       - name: Upload HTML report if check failed.
