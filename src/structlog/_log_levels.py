@@ -103,6 +103,10 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     The logger is optimized such that log levels below *min_level* only consist
     of a ``return None``.
 
+    All familiar log methods are present, with async variants of each that are
+    prefixed by an ``a``. Therefore, the async version of ``log.info("hello")``
+    is ``await log.ainfo("hello")``.
+
     Additionally it has a ``log(self, level: int, **kw: Any)`` method to mirror
     `logging.Logger.log` and `structlog.stdlib.BoundLogger.log`.
 
@@ -126,6 +130,8 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     .. versionadded:: 20.2.0
     .. versionchanged:: 21.1.0 The returned loggers are now pickleable.
     .. versionadded:: 20.1.0 The ``log()`` method.
+    .. versionadded:: 22.2.0
+       Async variants ``alog()``, ``adebug()``, ``ainfo()``, and so forth.
     """
 
     return _LEVEL_TO_FILTERING_LOGGER[min_level]
