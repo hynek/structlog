@@ -32,11 +32,27 @@ class TestFilteringLogger:
 
         assert [("info", (), {"event": "yep"})] == cl.calls
 
+    async def test_async_exact_level(self, bl, cl):
+        """
+        if log level is exactly the min_level, log.
+        """
+        await bl.ainfo("yep")
+
+        assert [("info", (), {"event": "yep"})] == cl.calls
+
     def test_one_below(self, bl, cl):
         """
         if log level is below the min_level, don't log.
         """
         bl.debug("nope")
+
+        assert [] == cl.calls
+
+    async def test_async_one_below(self, bl, cl):
+        """
+        if log level is below the min_level, don't log.
+        """
+        await bl.adebug("nope")
 
         assert [] == cl.calls
 
@@ -48,11 +64,27 @@ class TestFilteringLogger:
 
         assert [("info", (), {"event": "yep"})] == cl.calls
 
+    async def test_alog_exact_level(self, bl, cl):
+        """
+        if log level is exactly the min_level, log.
+        """
+        await bl.alog(logging.INFO, "yep")
+
+        assert [("info", (), {"event": "yep"})] == cl.calls
+
     def test_log_one_below(self, bl, cl):
         """
         if log level is below the min_level, don't log.
         """
         bl.log(logging.DEBUG, "nope")
+
+        assert [] == cl.calls
+
+    async def test_alog_one_below(self, bl, cl):
+        """
+        if log level is below the min_level, don't log.
+        """
+        await bl.alog(logging.DEBUG, "nope")
 
         assert [] == cl.calls
 
@@ -78,7 +110,7 @@ class TestFilteringLogger:
         message = "missing 1 required positional argument: 'event'"
         assert message in exc_info.value.args[0]
 
-    def test_exception(self, bl, cl):
+    def test_exception(self, bl):
         """
         exception ensures that exc_info is set to True, unless it's already
         set.
@@ -87,11 +119,28 @@ class TestFilteringLogger:
 
         assert [("error", (), {"event": "boom", "exc_info": True})]
 
+    async def test_async_exception(self, bl):
+        """
+        exception ensures that exc_info is set to True, unless it's already
+        set.
+        """
+        await bl.aexception("boom")
+
+        assert [("error", (), {"event": "boom", "exc_info": True})]
+
     def test_exception_passed(self, bl, cl):
         """
         exception if exc_info has a value, exception doesn't tamper with it.
         """
         bl.exception("boom", exc_info=42)
+
+        assert [("error", (), {"event": "boom", "exc_info": 42})]
+
+    async def test_async_exception_passed(self, bl, cl):
+        """
+        exception if exc_info has a value, exception doesn't tamper with it.
+        """
+        await bl.aexception("boom", exc_info=42)
 
         assert [("error", (), {"event": "boom", "exc_info": 42})]
 
@@ -109,5 +158,13 @@ class TestFilteringLogger:
         Positional arguments are used for string interpolation.
         """
         bl.info("hello %s -- %d!", "world", 42)
+
+        assert [("info", (), {"event": "hello world -- 42!"})] == cl.calls
+
+    async def test_async_pos_args(self, bl, cl):
+        """
+        Positional arguments are used for string interpolation.
+        """
+        await bl.ainfo("hello %s -- %d!", "world", 42)
 
         assert [("info", (), {"event": "hello world -- 42!"})] == cl.calls

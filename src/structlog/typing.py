@@ -153,6 +153,8 @@ class FilteringBoundLogger(BindableLogger, Protocol):
     .. versionadded:: 20.2.0
     .. versionadded:: 22.2.0
        String interpolation using positional arguments.
+    .. versionadded:: 22.2.0
+       Async variants ``alog()``, ``adebug()``, ``ainfo()``, and so forth.
     """
 
     def bind(self, **new_values: Any) -> FilteringBoundLogger:
@@ -188,9 +190,23 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         Log ``event % args`` with **kw** at **debug** level.
         """
 
+    async def adebug(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **debug** level.
+
+        ..versionadded:: 22.2.0
+        """
+
     def info(self, event: str, *args: Any, **kw: Any) -> Any:
         """
         Log ``event % args`` with **kw** at **info** level.
+        """
+
+    async def ainfo(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **info** level.
+
+        ..versionadded:: 22.2.0
         """
 
     def warning(self, event: str, *args: Any, **kw: Any) -> Any:
@@ -198,14 +214,35 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         Log ``event % args`` with **kw** at **warn** level.
         """
 
+    async def awarning(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **warn** level.
+
+        ..versionadded:: 22.2.0
+        """
+
     def warn(self, event: str, *args: Any, **kw: Any) -> Any:
         """
         Log ``event % args`` with **kw** at **warn** level.
         """
 
+    async def awarn(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **warn** level.
+
+        ..versionadded:: 22.2.0
+        """
+
     def error(self, event: str, *args: Any, **kw: Any) -> Any:
         """
         Log ``event % args`` with **kw** at **error** level.
+        """
+
+    async def aerror(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **error** level.
+
+        ..versionadded:: 22.2.0
         """
 
     def err(self, event: str, *args: Any, **kw: Any) -> Any:
@@ -218,15 +255,37 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         Log ``event % args`` with **kw** at **critical** level.
         """
 
+    async def afatal(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **critical** level.
+
+        ..versionadded:: 22.2.0
+        """
+
     def exception(self, event: str, *args: Any, **kw: Any) -> Any:
         """
         Log ``event % args`` with **kw** at **error** level and ensure that
         ``exc_info`` is set in the event dictionary.
         """
 
+    async def aexception(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **error** level and ensure that
+        ``exc_info`` is set in the event dictionary.
+
+        ..versionadded:: 22.2.0
+        """
+
     def critical(self, event: str, *args: Any, **kw: Any) -> Any:
         """
         Log ``event % args`` with **kw** at **critical** level.
+        """
+
+    async def acritical(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **critical** level.
+
+        ..versionadded:: 22.2.0
         """
 
     def msg(self, event: str, *args: Any, **kw: Any) -> Any:
