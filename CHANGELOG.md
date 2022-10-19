@@ -37,7 +37,7 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
   Instead of a wrapper class like `structlog.stdlib.AsyncBoundLogger`, async equivalents have been added for all logging methods.
   So instead of `log.info("hello")` you can also write `await log.ainfo("hello")` in async functions and methods.
 
-  This seems like the better approach and if it's like by the community, `structlog.stdlib.BoundLogger` will grow those methods too.
+  This seems like the better approach and if it's liked by the community, `structlog.stdlib.BoundLogger` will get those methods too.
   [#457](https://github.com/hynek/structlog/pull/457)
 
 
