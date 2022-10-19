@@ -382,7 +382,8 @@ def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
 
     .. warning::
 
-       Does **not** check whether you've configured *structlog* correctly!
+       Does **not** check whether -- or ensure that -- you've configured
+       *structlog* for standard library :mod:`logging`!
 
        See :doc:`standard-library` for details.
 
