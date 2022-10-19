@@ -1,19 +1,19 @@
 div.article-container>article {
     font-size: 19px;
-    line-height: 31px;
+    line-height: 30px;
 }
 
 div.admonition {
     font-size: 19px;
-    line-height: 31px;
+    line-height: 30px;
 }
 
 p.admonition-title {
     font-size: 15px !important;
-    line-height: 20px !important;
+    line-height: 21px !important;
 }
 
 article>li>a {
     font-size: 19px;
-    line-height: 31px;
+    line-height: 30px;
 }
