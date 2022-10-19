@@ -5,6 +5,28 @@ The best place to perform your configuration varies with applications and framew
 If you use standard library's logging, it makes sense to configure them next to each other.
 
 
+## OpenTelemetry
+
+The [Python *OpenTelemetry* SDK](https://opentelemetry.io/docs/instrumentation/python/) offers an easy API to get the current span, so you can enrich your logs with a straight-forward processor:
+
+```python
+from opentelemetry import trace
+
+def add_open_telemetry_spans(_, __, event_dict):
+    span = trace.get_current_span()
+    ctx = span.get_span_context()
+    parent = span.parent
+
+    event_dict["span"] = {
+        "span_id": hex(ctx.span_id),
+        "trace_id": hex(ctx.trace_id),
+        "parent_span_id": None if not parent else hex(parent.span_id),
+    }
+
+    return event_dict
+```
+
+
 ## Django
 
 [*django-structlog*](https://pypi.org/project/django-structlog/) is a popular and well-maintained package that does all the heavy lifting.
