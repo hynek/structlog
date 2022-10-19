@@ -13,6 +13,13 @@ article>li>a {
     line-height: 1.6rem;
 }
 
+article ul>li>p {
+    font-size: 19px;
+    line-height: 1.6rem;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
 p.admonition-title {
     font-size: 15px !important;
     line-height: 1rem !important;
