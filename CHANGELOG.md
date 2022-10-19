@@ -44,8 +44,8 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 ### Changed
 
 - The documentation has been **heavily** overhauled.
-  Have a look, if you haven't lately!
-  Especially the graphs in the [standard library chapter](https://www.structlog.org/en/latest/standard-library.html) are both surprising and useful to many.
+  Have a look if you haven't lately!
+  Especially the graphs in the [standard library chapter](https://www.structlog.org/en/latest/standard-library.html) have proven valuable to many.
 - The build backend has been switched to [*Hatch*](https://hatch.pypa.io/).
 
 
