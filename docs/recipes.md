@@ -26,9 +26,9 @@ With the {class}`structlog.processors.EventRenamer` processor you can for instan
 ## Fine-Grained Log-Level Filtering
 
 *structlog*'s native log levels as provided by {func}`structlog.make_filtering_bound_logger` only know **one** log level – the one that is passed to `make_filtering_bound_logger()`.
-Sometimes it can be useful to filter more strictly for certain modules or even functions.
+Sometimes, that can be a bit too coarse, though.
 
-You can achieve that with by adding the {class}`~structlog.processors.CallsiteParameterAdder` processor and writing a simple own one that acts on the data you get:
+You can achieve that with by adding the {class}`~structlog.processors.CallsiteParameterAdder` processor and writing a simple processor that acts on the data you get.
 
 Let's assume you have the following code:
 
