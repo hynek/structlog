@@ -100,7 +100,7 @@ Internally, formatters are processors whose return value (usually a string) is p
   Or the other way round: *structlog* comes with a `logging` formatter that allows for processing third party log records.
 - Don't format it to a string at all!
   *structlog* passes you a dictionary and you can do with it whatever you want.
-  Reported use cases are sending them out via network or saving them in a database.
+  Reported use cases are sending them out via network or saving them to a database.
 
 
 ### Highly Testable
