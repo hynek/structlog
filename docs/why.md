@@ -80,8 +80,8 @@ There are [plenty of processors](structlog.processors) for most common tasks com
 *structlog* is completely flexible about *how* the resulting log entry is emitted.
 Since each log entry is a dictionary, it can be formatted to **any** format:
 
-- A colorful key-value format for [local development](https://www.structlog.org/en/stable/development.html),
-- [JSON](https://www.structlog.org/en/stable/api.html#structlog.processors.JSONRenderer) for easy parsing,
+- A colorful key-value format for [local development](console-output.md),
+- [JSON](structlog.processors.JSONRenderer) of [*logfmt*](structlog.processors.LogfmtRenderer) for easy parsing,
 - or some standard format you have parsers for like *nginx* or Apache *httpd*.
 
 Internally, formatters are processors whose return value (usually a string) is passed into loggers that are responsible for the output of your message.
@@ -106,4 +106,4 @@ Internally, formatters are processors whose return value (usually a string) is p
 ### Highly Testable
 
 *structlog* is thoroughly tested and we see it as our duty to help you to achieve the same in *your* applications.
-That's why it ships with a [test helpers](https://www.structlog.org/en/stable/testing.html) to introspect your application's logging behavior with little-to-no boilerplate.
+That's why it ships with a [test helpers](testing.md) to introspect your application's logging behavior with little-to-no boilerplate.
