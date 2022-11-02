@@ -146,3 +146,42 @@ You can observe the following:
 These two methods and one attribute are all you need to write own *bound loggers*.
 
 [dry]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+
+
+(passing-context)=
+## Passing Context to Worker Threads
+
+When using Threads to process work in parallel, there is a need to pass global information, such as `request_id` to the worker threads.  Outside of the Thread world, it is easy enough to use `bind_contextvars()` for this purpose, but how to do the same for Threads?  One way is to retrieve the context vars and pass them along to the worker threads.  Inside of the worker, re-bind them using `bind_contextvars`.  A small example may help here. This example uses `pathos` to create a ThreadPoool.  The context vars are retrieved and passed as the first argument to the partial function.  The pool invokes the partial function, once for each element of `workers`.  Inside of `do_some_work`, the context vars are bound and a message about the great work being performed is logged.
+
+
+```
+from functools import partial
+
+import structlog
+from pathos.threading import ThreadPool
+from structlog.contextvars import bind_contextvars
+
+
+def do_some_work(ctx: dict, this_worker: str):
+    logger = structlog.get_logger(__name__)
+    bind_contextvars(**ctx)
+    logger.info("WorkerDidSomeWork", worker=this_worker)
+
+
+def structlog_with_threadpool(f):
+    ctx = structlog.contextvars.get_contextvars()
+    func = partial(f, ctx)
+    workers = "12345"
+    with ThreadPool() as pool:
+        return list(pool.map(func, workers))
+
+
+def manager(request_id: str):
+    bind_contextvars(request_id="my-request-id")
+    logger = structlog.get_logger(__name__)
+    logger.info("StartingWorkers")
+    structlog_with_threadpool(do_some_work)
+
+```
+
+See [Example of passing context variables to worker threads](https://github.com/hynek/structlog/issues/425) for a more complete example.
