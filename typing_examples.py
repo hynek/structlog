@@ -292,6 +292,21 @@ def typecheck_filtering_return() -> None:
     fblog.warn("no value unbound because key not defined")
     fblog = fblog.new(new="value")
     fblog.info("this is a whole new logger")
+    fblog.log(logging.CRITICAL, "this is synchronously CRITICAL")
+
+
+async def typecheck_filtering_return_async() -> None:
+    fblogger: FilteringBoundLogger = structlog.get_logger(__name__)
+    await fblogger.adebug("async debug")
+    await fblogger.ainfo("async info")
+    await fblogger.awarning("async warning")
+    await fblogger.awarn("async warn")
+    await fblogger.aerror("async error")
+    await fblogger.afatal("fatal error")
+    await fblogger.aexception("async exception")
+    await fblogger.acritical("async critical")
+    await fblogger.amsg("async msg")
+    await fblogger.alog(logging.CRITICAL, "async log")
 
 
 # Structured tracebacks and ExceptionRenderer with ExceptionDictTransformer

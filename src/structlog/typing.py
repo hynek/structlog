@@ -292,3 +292,18 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         """
         Log ``event % args`` with **kw** at **info** level.
         """
+
+    async def amsg(self, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at **info** level.
+        """
+
+    def log(self, level: int, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at *level*.
+        """
+
+    async def alog(self, level: int, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        Log ``event % args`` with **kw** at *level*.
+        """
