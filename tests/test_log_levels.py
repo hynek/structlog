@@ -10,6 +10,11 @@ import pytest
 
 from structlog import make_filtering_bound_logger
 from structlog._log_levels import _LEVEL_TO_NAME
+from structlog.contextvars import (
+    bind_contextvars,
+    clear_contextvars,
+    merge_contextvars,
+)
 from structlog.testing import CapturingLogger
 
 
@@ -168,3 +173,21 @@ class TestFilteringLogger:
         await bl.ainfo("hello %s -- %d!", "world", 42)
 
         assert [("info", (), {"event": "hello world -- 42!"})] == cl.calls
+
+    @pytest.mark.parametrize(
+        "meth,args",
+        [
+            ("aexception", ("ev",)),
+            ("ainfo", ("ev",)),
+            ("alog", (logging.INFO, "ev")),
+        ],
+    )
+    async def test_async_contextvars_merged(self, meth, args, cl):
+        clear_contextvars()
+        bl = make_filtering_bound_logger(logging.INFO)(
+            cl, [merge_contextvars], {}
+        )
+        bind_contextvars(context_included="yep")
+        await getattr(bl, meth)(*args)
+        assert len(cl.calls) == 1
+        assert "context_included" in cl.calls[0].kwargs

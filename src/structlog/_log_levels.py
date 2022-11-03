@@ -88,11 +88,10 @@ def exception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
 async def aexception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
     kw.setdefault("exc_info", True)
 
+    ctx = contextvars.copy_context()
     return await asyncio.get_running_loop().run_in_executor(
         None,
-        lambda: contextvars.copy_context().run(
-            lambda: self.error(event, **kw)
-        ),
+        lambda: ctx.run(lambda: self.error(event, **kw)),
     )
 
 
@@ -157,9 +156,10 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             return self._proxy_to_logger(name, event % args, **kw)
 
         async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+            ctx = contextvars.copy_context()
             await asyncio.get_running_loop().run_in_executor(
                 None,
-                lambda: contextvars.copy_context().run(
+                lambda: ctx.run(
                     lambda: self._proxy_to_logger(name, event % args, **kw)
                 ),
             )
@@ -183,9 +183,10 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             return None
         name = _LEVEL_TO_NAME[level]
 
+        ctx = contextvars.copy_context()
         return await asyncio.get_running_loop().run_in_executor(
             None,
-            lambda: contextvars.copy_context().run(
+            lambda: ctx.run(
                 lambda: self._proxy_to_logger(name, event % args, **kw)
             ),
         )
