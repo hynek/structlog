@@ -93,7 +93,7 @@ class TestFilteringLogger:
 
         assert [] == cl.calls
 
-    def test_filter_bound_below_missing_event_string(self, bl, cl):
+    def test_filter_bound_below_missing_event_string(self, bl):
         """
         Missing event arg causes exception below min_level.
         """
@@ -104,7 +104,7 @@ class TestFilteringLogger:
         message = "missing 1 required positional argument: 'event'"
         assert message in exc_info.value.args[0]
 
-    def test_filter_bound_exact_missing_event_string(self, bl, cl):
+    def test_filter_bound_exact_missing_event_string(self, bl):
         """
         Missing event arg causes exception even at min_level.
         """
@@ -115,23 +115,23 @@ class TestFilteringLogger:
         message = "missing 1 required positional argument: 'event'"
         assert message in exc_info.value.args[0]
 
-    def test_exception(self, bl):
+    def test_exception(self, bl, cl):
         """
         exception ensures that exc_info is set to True, unless it's already
         set.
         """
         bl.exception("boom")
 
-        assert [("error", (), {"event": "boom", "exc_info": True})]
+        assert [("error", (), {"event": "boom", "exc_info": True})] == cl.calls
 
-    async def test_async_exception(self, bl):
+    async def test_async_exception(self, bl, cl):
         """
         exception ensures that exc_info is set to True, unless it's already
         set.
         """
         await bl.aexception("boom")
 
-        assert [("error", (), {"event": "boom", "exc_info": True})]
+        assert [("error", (), {"event": "boom", "exc_info": True})] == cl.calls
 
     def test_exception_passed(self, bl, cl):
         """
@@ -139,7 +139,7 @@ class TestFilteringLogger:
         """
         bl.exception("boom", exc_info=42)
 
-        assert [("error", (), {"event": "boom", "exc_info": 42})]
+        assert [("error", (), {"event": "boom", "exc_info": 42})] == cl.calls
 
     async def test_async_exception_passed(self, bl, cl):
         """
@@ -147,7 +147,7 @@ class TestFilteringLogger:
         """
         await bl.aexception("boom", exc_info=42)
 
-        assert [("error", (), {"event": "boom", "exc_info": 42})]
+        assert [("error", (), {"event": "boom", "exc_info": 42})] == cl.calls
 
     @pytest.mark.parametrize("level", tuple(_LEVEL_TO_NAME.keys()))
     def test_pickle(self, level):
