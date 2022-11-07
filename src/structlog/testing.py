@@ -21,7 +21,15 @@ from .exceptions import DropEvent
 from .typing import EventDict, WrappedLogger
 
 
-__all__ = ["LogCapture", "capture_logs"]
+__all__ = [
+    "CapturedCall",
+    "CapturingLogger",
+    "CapturingLoggerFactory",
+    "LogCapture",
+    "ReturnLogger",
+    "ReturnLoggerFactory",
+    "capture_logs",
+]
 
 
 class LogCapture:
