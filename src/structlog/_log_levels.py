@@ -64,5 +64,3 @@ def add_log_level(
     event_dict["level"] = method_name
 
     return event_dict
-
-

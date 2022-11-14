@@ -278,4 +278,3 @@ class BoundLogger(BoundLoggerBase):
         Calls :meth:`logging.Logger.getChild` with unmodified arguments.
         """
         return self._logger.getChild(suffix)
-

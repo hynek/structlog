@@ -15,7 +15,16 @@ import contextvars
 from typing import Any, Callable
 
 from ._boundlogger import BoundLogger
-from ._log_levels import _LEVEL_TO_NAME, CRITICAL, FATAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from ._log_levels import (
+    _LEVEL_TO_NAME,
+    CRITICAL,
+    DEBUG,
+    ERROR,
+    FATAL,
+    INFO,
+    NOTSET,
+    WARNING,
+)
 from .typing import FilteringBoundLogger
 
 
@@ -41,8 +50,6 @@ async def aexception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
         None,
         lambda: ctx.run(lambda: self.error(event, **kw)),
     )
-
-
 
 
 def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
@@ -178,4 +185,3 @@ _LEVEL_TO_FILTERING_LOGGER = {
     DEBUG: BoundLoggerFilteringAtDebug,
     NOTSET: BoundLoggerFilteringAtNotset,
 }
-
