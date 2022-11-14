@@ -182,6 +182,13 @@ class BoundLogger(BoundLoggerBase):
         return self._logger.handlers
 
     @property
+    def filters(self) -> Any:
+        """
+        Returns :attr:`logging.Logger.filters`
+        """
+        return self._logger.filters
+
+    @property
     def disabled(self) -> int:
         """
         Returns :attr:`logging.Logger.disabled`
