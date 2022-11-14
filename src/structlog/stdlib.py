@@ -21,14 +21,13 @@ from functools import partial
 from typing import Any, Callable, Collection, Iterable, Sequence
 
 from . import _config
-from ._base import BoundLoggerBase
 from ._boundlogger import BoundLogger
 from ._frames import _find_first_app_frame_and_name, _format_stack
-from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
+from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from .contextvars import merge_contextvars
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
-from .typing import Context, EventDict, ExcInfo, Processor, WrappedLogger
+from .typing import Context, EventDict, Processor, WrappedLogger
 
 
 __all__ = [

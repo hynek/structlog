@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 
-from .typing import EventDict, FilteringBoundLogger
+from .typing import EventDict
 
 
 # Adapted from the stdlib

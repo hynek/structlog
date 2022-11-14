@@ -20,7 +20,6 @@ from ._log_levels import (
     CRITICAL,
     DEBUG,
     ERROR,
-    FATAL,
     INFO,
     NOTSET,
     WARNING,
