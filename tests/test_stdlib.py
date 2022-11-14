@@ -223,7 +223,15 @@ class TestBoundLogger:
 
     @pytest.mark.parametrize(
         "attribute_name",
-        ["name", "level", "parent", "propagate", "handlers", "disabled"],
+        [
+            "name",
+            "level",
+            "parent",
+            "propagate",
+            "handlers",
+            "disabled",
+            "filters",
+        ],
     )
     def test_stdlib_passthrough_attributes(self, attribute_name):
         """
