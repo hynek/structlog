@@ -42,13 +42,36 @@ The output format is just as flexible and *structlog* comes with support for JSO
 
 [![image](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)
 
+
+## Sponsors
+
+*structlog* would not be possible without our [amazing sponsors](https://github.com/sponsors/hynek).
+Especially those generously sponsoring us at the *The Organization* level and higher:
+
+<p align="center">
+   <a href="https://www.variomedia.de/">
+      <img src="./docs/_static/sponsors/Variomedia.svg" width="200" height="60"></img>
+   </a>
+
+   <a href="https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme">
+      <img src="./docs/_static/sponsors/Tidelift.svg" width="200" height="60"></img>
+   </a>
+
+   <a href="https://filepreviews.io/">
+      <img src="./docs/_static/sponsors/FilePreviews.svg" width="200" height="60"></img>
+   </a>
+</p>
+
+<p align="center">
+   <strong>For a limited time, you can add your logo here for <a href="https://github.com/sponsors/hynek">as little as $50 per month!</a></strong>
+</p>
+
+---
+
 *structlog* has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged.
 Its paradigms proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
 
-
 <!-- end-short -->
-
----
 
 A short explanation on *why* structured logging is good for you, and why *structlog* is the right tool for the job can be found in the [Why chapter](https://www.structlog.org/en/stable/why.html) of our documentation.
 
