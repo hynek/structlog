@@ -50,15 +50,15 @@ Especially those generously sponsoring us at the *The Organization* level and hi
 
 <p align="center">
    <a href="https://www.variomedia.de/">
-      <img src="./docs/_static/sponsors/Variomedia.svg" width="200" height="60"></img>
+      <img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/Variomedia.svg" width="200" height="60"></img>
    </a>
 
    <a href="https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme">
-      <img src="./docs/_static/sponsors/Tidelift.svg" width="200" height="60"></img>
+      <img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/Tidelift.svg" width="200" height="60"></img>
    </a>
 
    <a href="https://filepreviews.io/">
-      <img src="./docs/_static/sponsors/FilePreviews.svg" width="200" height="60"></img>
+      <img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/FilePreviews.svg" width="200" height="60"></img>
    </a>
 </p>
 
@@ -67,6 +67,8 @@ Especially those generously sponsoring us at the *The Organization* level and hi
 </p>
 
 ---
+
+<!-- continue-short -->
 
 *structlog* has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged.
 Its paradigms proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
