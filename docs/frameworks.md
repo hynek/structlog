@@ -14,8 +14,12 @@ from opentelemetry import trace
 
 def add_open_telemetry_spans(_, __, event_dict):
     span = trace.get_current_span()
+    if not span.is_recording():
+        event_dict["span"] = None
+        return event_dict
+
     ctx = span.get_span_context()
-    parent = span.parent
+    parent = getattr(span, "parent", None)
 
     event_dict["span"] = {
         "span_id": hex(ctx.span_id),
