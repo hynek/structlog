@@ -105,6 +105,16 @@ from celery.utils.log import get_task_logger
 logger = structlog.wrap_logger(get_task_logger(__name__))
 ```
 
+If you want to automatically bind task metadata to your {doc}`contextvars`, you can use [*Celery*'s signals](https://docs.celeryq.dev/en/stable/userguide/signals.html):
+
+```python
+from celery import signals
+
+@signals.task_prerun.connect
+def on_task_prerun(sender, task_id, task, args, kwargs, **_):
+    structlog.contextvars.bind_contextvars(task_id=task_id, task_name=task.name)
+```
+
 See [this issue](https://github.com/hynek/structlog/issues/287) for more details.
 
 
