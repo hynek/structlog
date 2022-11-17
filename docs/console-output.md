@@ -45,3 +45,8 @@ structlog.configure(
     cache_logger_on_first_use=True,
 )
 ```
+
+
+## Disabling Exception Pretty-Printing
+
+If you prefer the default terse Exception rendering, but still want *Rich* installed, you can disable the pretty-printing by instantiating {class}`structlog.dev.ConsoleRenderer()` yourself and passing `exception_formatter=structlog.dev.plain_traceback`.
