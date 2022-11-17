@@ -95,8 +95,7 @@ class StructLogTween:
 ## Celery
 
 [*Celery*](https://docs.celeryq.dev/)'s multi-process architecture leads unavoidably to race conditions that show up as interleaved logs.
-
-Celery ships standard library-based helpers in the form of [`celery.utils.log.get_task_logger()`](https://docs.celeryq.dev/en/stable/userguide/tasks.html#logging) that you should use inside of tasks.
+It ships standard library-based helpers in the form of [`celery.utils.log.get_task_logger()`](https://docs.celeryq.dev/en/stable/userguide/tasks.html#logging) that you should use inside of tasks to prevent that problem.
 
 The most straight-forward way to integrate that with *structlog* is using {doc}`standard-library` and wrapping that logger using {func}`structlog.wrap_logger`:
 
