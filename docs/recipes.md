@@ -28,7 +28,7 @@ With the {class}`structlog.processors.EventRenamer` processor you can for instan
 *structlog*'s native log levels as provided by {func}`structlog.make_filtering_bound_logger` only know **one** log level – the one that is passed to `make_filtering_bound_logger()`.
 Sometimes, that can be a bit too coarse, though.
 
-You can achieve finer control by adding the {class}`~structlog.processors.CallsiteParameterAdder` processor and writing a simple processor that acts on the data it adds.
+You can achieve finer control by adding the {class}`~structlog.processors.CallsiteParameterAdder` processor and writing a simple processor that acts on the call site data added.
 
 Let's assume you have the following code:
 
