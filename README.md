@@ -91,7 +91,7 @@ If you prefer videos over reading, check out [Markus Holtermann](https://twitter
 *structlog* is written and maintained by [Hynek Schlawack](https://hynek.me/).
 The idea of bound loggers is inspired by previous work by [Jean-Paul Calderone](https://github.com/exarkun) and [David Reid](https://github.com/dreid).
 
-The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com/subscription/pkg/pypi-structlog), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
+The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
 
 A full list of contributors can be found in GitHub’s [overview](https://github.com/hynek/structlog/graphs/contributors).
 
