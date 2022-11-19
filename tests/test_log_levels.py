@@ -15,6 +15,7 @@ from structlog.contextvars import (
     clear_contextvars,
     merge_contextvars,
 )
+from structlog.stdlib import BoundLogger
 from structlog.testing import CapturingLogger
 
 
@@ -173,6 +174,13 @@ class TestFilteringLogger:
         await bl.ainfo("hello %s -- %d!", "world", 42)
 
         assert [("info", (), {"event": "hello world -- 42!"})] == cl.calls
+
+    def test_provides_bound_logger(self, bl, cl):
+        """
+        FilteringBoundLoggers should inherit from BoundLogger
+        and provide that level of stdlib logger compatibility.
+        """
+        assert isinstance(bl, BoundLogger)
 
     @pytest.mark.parametrize(
         "meth,args",
