@@ -540,4 +540,4 @@ If you leave `foreign_pre_chain` as `None`, formatting will be left to `logging`
 Meaning: you can define a `format` for {class}`~structlog.stdlib.ProcessorFormatter` too!
 
 
-[*python-json-logger*]: https://github.com/madzak/python-json-logger>
+[*python-json-logger*]: https://github.com/madzak/python-json-logger
