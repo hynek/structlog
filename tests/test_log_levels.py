@@ -61,6 +61,26 @@ class TestFilteringLogger:
 
         assert [] == cl.calls
 
+    def test_no_args(self, bl, cl):
+        """
+        If no args are passed, don't attempt intepolation.
+
+        See also #473
+        """
+        bl.info(42)
+
+        assert 42 == cl.calls[0][2]["event"]
+
+    async def test_async_no_args(self, bl, cl):
+        """
+        If no args are passed, don't attempt intepolation.
+
+        See also #473
+        """
+        await bl.ainfo(42)
+
+        assert 42 == cl.calls[0][2]["event"]
+
     def test_log_exact_level(self, bl, cl):
         """
         if log level is exactly the min_level, log.
@@ -92,6 +112,32 @@ class TestFilteringLogger:
         await bl.alog(logging.DEBUG, "nope")
 
         assert [] == cl.calls
+
+    async def test_alog_no_args(self, bl, cl):
+        """
+        If no args are passed, interpolation is not attempted.
+
+        See also #473
+        """
+        await bl.alog(logging.INFO, 42)
+
+        assert 42 == cl.calls[0][2]["event"]
+
+    def test_log_interp(self, bl, cl):
+        """
+        Interpolation happens if args are passed.
+        """
+        bl.log(logging.INFO, "answer is %d.", 42)
+
+        assert "answer is 42." == cl.calls[0][2]["event"]
+
+    async def test_alog_interp(self, bl, cl):
+        """
+        Interpolation happens if args are passed.
+        """
+        await bl.alog(logging.INFO, "answer is %d.", 42)
+
+        assert "answer is 42." == cl.calls[0][2]["event"]
 
     def test_filter_bound_below_missing_event_string(self, bl):
         """
@@ -148,6 +194,20 @@ class TestFilteringLogger:
         await bl.aexception("boom", exc_info=42)
 
         assert [("error", (), {"event": "boom", "exc_info": 42})] == cl.calls
+
+    def test_exception_pass_exception(self, bl, cl):
+        """
+        If an Exception is passed for the event, don't explode.
+
+        Not a documented feature, but a regression for some people. See #473.
+        """
+        try:
+            raise Exception("foo")
+        except Exception as e:
+            bl.exception(e)
+            exc = e
+
+        assert exc is cl.calls[0][2]["event"]
 
     @pytest.mark.parametrize("level", tuple(_LEVEL_TO_NAME.keys()))
     def test_pickle(self, level):
