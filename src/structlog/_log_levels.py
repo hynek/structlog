@@ -153,14 +153,20 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         name = _LEVEL_TO_NAME[level]
 
         def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+            if not args:
+                return self._proxy_to_logger(name, event, **kw)
+
             return self._proxy_to_logger(name, event % args, **kw)
 
         async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+            if args:
+                event = event % args
+
             ctx = contextvars.copy_context()
             await asyncio.get_running_loop().run_in_executor(
                 None,
                 lambda: ctx.run(
-                    lambda: self._proxy_to_logger(name, event % args, **kw)
+                    lambda: self._proxy_to_logger(name, event, **kw)
                 ),
             )
 
@@ -174,6 +180,9 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             return None
         name = _LEVEL_TO_NAME[level]
 
+        if not args:
+            return self._proxy_to_logger(name, event, **kw)
+
         return self._proxy_to_logger(name, event % args, **kw)
 
     async def alog(
@@ -182,13 +191,13 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         if level < min_level:
             return None
         name = _LEVEL_TO_NAME[level]
+        if args:
+            event = event % args
 
         ctx = contextvars.copy_context()
         return await asyncio.get_running_loop().run_in_executor(
             None,
-            lambda: ctx.run(
-                lambda: self._proxy_to_logger(name, event % args, **kw)
-            ),
+            lambda: ctx.run(lambda: self._proxy_to_logger(name, event, **kw)),
         )
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
