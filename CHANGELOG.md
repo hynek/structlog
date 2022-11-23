@@ -22,6 +22,12 @@ This prevents crashes if something different than a string is passed for the *ev
   [#475](https://github.com/hynek/structlog/pull/475)
 
 
+### Fixed
+
+- String interpolation doesn't cause crashes in filtered log call anymore.
+  [#478](https://github.com/hynek/structlog/pull/478)
+
+
 ## [22.2.0](https://github.com/hynek/structlog/compare/22.1.0...22.2.0) - 2022-11-19
 
 ### Deprecated
