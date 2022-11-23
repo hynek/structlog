@@ -267,3 +267,11 @@ class TestFilteringLogger:
         await getattr(bl, meth)(*args)
         assert len(cl.calls) == 1
         assert "context_included" in cl.calls[0].kwargs
+
+    def test_log_percent(self, bl, cl):
+        """
+        As long as there's no positional args passed, logging % is possible.
+        """
+        bl.info("hey %! %%!")
+
+        assert [("info", (), {"event": "hey %! %%!"})] == cl.calls
