@@ -61,6 +61,22 @@ class TestFilteringLogger:
 
         assert [] == cl.calls
 
+    def test_filtered_interp(self, bl, cl):
+        """
+        Passing interpolation args works if the log entry is filtered out.
+        """
+        bl.debug("hello %s!", "world")
+
+        assert [] == cl.calls
+
+    async def test_async_filtered_interp(self, bl, cl):
+        """
+        Passing interpolation args works if the log entry is filtered out.
+        """
+        await bl.adebug("hello %s!", "world")
+
+        assert [] == cl.calls
+
     def test_no_args(self, bl, cl):
         """
         If no args are passed, don't attempt intepolation.

@@ -71,11 +71,11 @@ def add_log_level(
     return event_dict
 
 
-def _nop(self: Any, event: str, **kw: Any) -> Any:
+def _nop(self: Any, event: str, *args: Any, **kw: Any) -> Any:
     return None
 
 
-async def _anop(self: Any, event: str, **kw: Any) -> Any:
+async def _anop(self: Any, event: str, *args: Any, **kw: Any) -> Any:
     return None
 
 
