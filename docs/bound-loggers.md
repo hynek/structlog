@@ -82,7 +82,7 @@ Now `log` is a *bound logger* of type {class}`~structlog.typing.FilteringBoundLo
 
 Now if you call `log.info("Hello, %s!", "world", number=42)` the following happens:
 
-1. `"world"` gets interpolated into `"Hello, %s!"`, making the event "Hello, world!".
+1. `"world"` gets interpolated into `"Hello, %s!"`, making the event "Hello, world!"[^interpolation].
 2. The *bound logger*'s context gets copied and the key-value pairs from the `info` call are added to it.
    It becomes an *event dict* and is `{"foo": "bar", "number": 42}` now.
 3. The event from step 1 is added too.
@@ -99,6 +99,7 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
    By replacing the last processor, you decide on the **format** of your logs.
    For example, if you wanted JSON logs, you just have to replace the last processor with {class}`structlog.processors.JSONRenderer`.
 
+[^interpolation]: String interpolation only takes place if you pass positional arguments.
 
 (filtering)=
 

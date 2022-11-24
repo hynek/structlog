@@ -155,6 +155,9 @@ class FilteringBoundLogger(BindableLogger, Protocol):
        String interpolation using positional arguments.
     .. versionadded:: 22.2.0
        Async variants ``alog()``, ``adebug()``, ``ainfo()``, and so forth.
+    .. versionchanged:: 22.3.0
+       String interpolation is only attempted if positional arguments are
+       passed.
     """
 
     def bind(self, **new_values: Any) -> FilteringBoundLogger:
