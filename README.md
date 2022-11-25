@@ -19,6 +19,9 @@
    <a href="https://pypi.org/project/structlog/">
       <img src="https://img.shields.io/pypi/v/structlog" alt="PyPI release" />
    </a>
+   <a href="https://doi.org/10.5281/zenodo.7353739">
+      <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7353739.svg" alt="DOI">
+    </a>
    <a href="https://pepy.tech/project/structlog">
       <img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" />
    </a>
