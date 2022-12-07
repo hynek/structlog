@@ -283,6 +283,53 @@ class TestConsoleRenderer:
 
         assert (padded + "\n" + stack) == rv
 
+    def test_exc_info_tuple(self, cr, padded):
+        """
+        If exc_info is a tuple, it is used.
+        """
+
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            ei = sys.exc_info()
+
+        rv = cr(None, None, {"event": "test", "exc_info": ei})
+
+        exc = dev._format_exception(ei)
+
+        assert (padded + "\n" + exc) == rv
+
+    def test_exc_info_bool(self, cr, padded):
+        """
+        If exc_info is True, it is obtained using sys.exc_info().
+        """
+
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            ei = sys.exc_info()
+            rv = cr(None, None, {"event": "test", "exc_info": True})
+
+        exc = dev._format_exception(ei)
+
+        assert (padded + "\n" + exc) == rv
+
+    def test_exc_info_exception(self, cr, padded):
+        """
+        If exc_info is an exception, it is used by converting to a tuple.
+        """
+
+        try:
+            0 / 0
+        except ZeroDivisionError as e:
+            ei = e
+
+        rv = cr(None, None, {"event": "test", "exc_info": ei})
+
+        exc = dev._format_exception((ei.__class__, ei, ei.__traceback__))
+
+        assert (padded + "\n" + exc) == rv
+
     def test_pad_event_param(self, styles):
         """
         `pad_event` parameter works.
@@ -305,7 +352,7 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-    @pytest.mark.parametrize("explicit_ei", [True, False])
+    @pytest.mark.parametrize("explicit_ei", ["tuple", "exception", False])
     def test_everything(self, cr, styles, padded, explicit_ei):
         """
         Put all cases together.
@@ -313,8 +360,13 @@ class TestConsoleRenderer:
         if explicit_ei:
             try:
                 0 / 0
-            except ZeroDivisionError:
-                ei = sys.exc_info()
+            except ZeroDivisionError as e:
+                if explicit_ei == "tuple":
+                    ei = sys.exc_info()
+                elif explicit_ei == "exception":
+                    ei = e
+                else:
+                    raise ValueError()
         else:
             ei = True
 
@@ -338,6 +390,9 @@ class TestConsoleRenderer:
             except ZeroDivisionError:
                 rv = cr(None, None, ed)
                 ei = sys.exc_info()
+
+        if isinstance(ei, BaseException):
+            ei = (ei.__class__, ei, ei.__traceback__)
 
         exc = dev._format_exception(ei)
 

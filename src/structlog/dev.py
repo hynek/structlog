@@ -18,6 +18,7 @@ from io import StringIO
 from typing import Any, Iterable, TextIO, Type, Union
 
 from ._frames import _format_exception
+from .processors import _figure_out_exc_info
 from .typing import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
 
 
@@ -418,8 +419,7 @@ class ConsoleRenderer:
                 sio.write("\n\n" + "=" * 79 + "\n")
 
         if exc_info:
-            if not isinstance(exc_info, tuple):
-                exc_info = sys.exc_info()
+            exc_info = _figure_out_exc_info(exc_info)
 
             self._exception_formatter(sio, exc_info)
         elif exc is not None:
