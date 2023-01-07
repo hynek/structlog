@@ -192,7 +192,13 @@ class TestFilteringLogger:
         """
         bl.exception("BOOM! %s -- %d!", "error code", 42)
 
-        assert [("error", (), {"event": "BOOM! error code -- 42!", "exc_info": True})] == cl.calls
+        assert [
+            (
+                "error",
+                (),
+                {"event": "BOOM! error code -- 42!", "exc_info": True},
+            )
+        ] == cl.calls
 
     async def test_async_exception(self, bl, cl):
         """
@@ -210,7 +216,13 @@ class TestFilteringLogger:
         """
         await bl.aexception("BOOM! %s -- %d!", "error code", 42)
 
-        assert [("error", (), {"event": "BOOM! error code -- 42!", "exc_info": True})] == cl.calls
+        assert [
+            (
+                "error",
+                (),
+                {"event": "BOOM! error code -- 42!", "exc_info": True},
+            )
+        ] == cl.calls
 
     def test_exception_passed(self, bl, cl):
         """
