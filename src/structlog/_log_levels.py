@@ -79,19 +79,19 @@ async def _anop(self: Any, event: str, *args: Any, **kw: Any) -> Any:
     return None
 
 
-def exception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
+def exception(self: FilteringBoundLogger, event: str, *args: Any, **kw: Any) -> Any:
     kw.setdefault("exc_info", True)
 
-    return self.error(event, **kw)
+    return self.error(event, *args, **kw)
 
 
-async def aexception(self: FilteringBoundLogger, event: str, **kw: Any) -> Any:
+async def aexception(self: FilteringBoundLogger, event: str, *args: Any, **kw: Any) -> Any:
     kw.setdefault("exc_info", True)
 
     ctx = contextvars.copy_context()
     return await asyncio.get_running_loop().run_in_executor(
         None,
-        lambda: ctx.run(lambda: self.error(event, **kw)),
+        lambda: ctx.run(lambda: self.error(event, *args, **kw)),
     )
 
 

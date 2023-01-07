@@ -186,6 +186,14 @@ class TestFilteringLogger:
 
         assert [("error", (), {"event": "boom", "exc_info": True})] == cl.calls
 
+    def test_exception_with_positional_args(self, bl, cl):
+        """
+        Positional arguments are used for string interpolation.
+        """
+        bl.exception("BOOM! %s -- %d!", "error code", 42)
+
+        assert [("error", (), {"event": "BOOM! error code -- 42!", "exc_info": True})] == cl.calls
+
     async def test_async_exception(self, bl, cl):
         """
         exception ensures that exc_info is set to True, unless it's already
@@ -194,6 +202,15 @@ class TestFilteringLogger:
         await bl.aexception("boom")
 
         assert [("error", (), {"event": "boom", "exc_info": True})] == cl.calls
+
+    async def test_async_exception_with_positional_args(self, bl, cl):
+        """
+        exception ensures that exc_info is set to True, unless it's already
+        set.
+        """
+        await bl.aexception("BOOM! %s -- %d!", "error code", 42)
+
+        assert [("error", (), {"event": "BOOM! error code -- 42!", "exc_info": True})] == cl.calls
 
     def test_exception_passed(self, bl, cl):
         """
