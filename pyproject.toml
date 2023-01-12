@@ -170,6 +170,15 @@ start-after = "<!-- changelog follows -->"
 pattern = "\n(###.+?\n)## "
 
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+text = """
+---
+
+[Full changelog](https://www.structlog.org/en/stable/changelog.html)
+
+
+"""
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "README.md"
 start-at = "## Credits"
 end-before = "<!-- begin-meta -->"
