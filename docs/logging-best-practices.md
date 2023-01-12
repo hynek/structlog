@@ -36,30 +36,28 @@ This makes analyzing errors easier, since log aggregators can render JSON much b
 
 Here is a simple example of how you can have pretty logs during development and JSON output when your app is running in a production context:
 
-```{eval-rst}
-.. doctest::
-
-   >>> import sys
-   >>> import structlog
-   >>>
-   >>> shared_processors = [
-   ...     # Processors that have nothing to do with output,
-   ...     # e.g., add timestamps or log level names.
-   ... ]
-   >>> if sys.stderr.isatty():
-   ...     # Pretty printing when we run in a terminal session.
-   ...     # Automatically prints pretty tracebacks when "rich" is installed
-   ...     processors = shared_processors + [
-   ...         structlog.dev.ConsoleRenderer(),
-   ...     ]
-   ... else:
-   ...     # Print JSON when we run, e.g., in a Docker container.
-   ...     # Also print structured tracebacks.
-   ...     processors = shared_processors + [
-   ...         structlog.processors.dict_tracebacks,
-   ...         structlog.processors.JSONRenderer(),
-   ...     ]
-   >>> structlog.configure(processors)
+```{doctest}
+>>> import sys
+>>> import structlog
+>>>
+>>> shared_processors = [
+...     # Processors that have nothing to do with output,
+...     # e.g., add timestamps or log level names.
+... ]
+>>> if sys.stderr.isatty():
+...     # Pretty printing when we run in a terminal session.
+...     # Automatically prints pretty tracebacks when "rich" is installed
+...     processors = shared_processors + [
+...         structlog.dev.ConsoleRenderer(),
+...     ]
+... else:
+...     # Print JSON when we run, e.g., in a Docker container.
+...     # Also print structured tracebacks.
+...     processors = shared_processors + [
+...         structlog.processors.dict_tracebacks,
+...         structlog.processors.JSONRenderer(),
+...     ]
+>>> structlog.configure(processors)
 
 ```
 

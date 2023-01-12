@@ -21,13 +21,11 @@ On **Windows**, you also have to install [*Colorama*](https://pypi.org/project/c
 A lot of effort went into making *structlog* accessible without reading pages of documentation.
 As a result, the simplest possible usage looks like this:
 
-```{eval-rst}
-.. doctest::
-
-   >>> import structlog
-   >>> log = structlog.get_logger()
-   >>> log.info("hello, %s!", "world", key="value!", more_than_strings=[1, 2, 3])  # doctest: +SKIP
-   2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_than_strings=[1, 2, 3]
+```{doctest}
+>>> import structlog
+>>> log = structlog.get_logger()
+>>> log.info("hello, %s!", "world", key="value!", more_than_strings=[1, 2, 3])  # doctest: +SKIP
+2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_than_strings=[1, 2, 3]
 ```
 
 Here, *structlog* takes advantage of its default settings:
@@ -180,24 +178,20 @@ The next processor in the chain receives that returned dictionary instead of the
 Let's assume you wanted to add a timestamp to every event dict.
 The processor would look like this:
 
-```{eval-rst}
-.. doctest::
-
-  >>> import datetime
-  >>> def timestamper(_, __, event_dict):
-  ...     event_dict["time"] = datetime.datetime.now().isoformat()
-  ...     return event_dict
+```{doctest}
+>>> import datetime
+>>> def timestamper(_, __, event_dict):
+...     event_dict["time"] = datetime.datetime.now().isoformat()
+...     return event_dict
 ```
 
 Plain Python, plain dictionaries.
 Now you have to tell *structlog* about your processor by {doc}`configuring <configuration>` it:
 
-```{eval-rst}
-.. doctest::
-
-  >>> structlog.configure(processors=[timestamper, structlog.processors.KeyValueRenderer()])
-  >>> structlog.get_logger().info("hi")  # doctest: +SKIP
-  event='hi' time='2018-01-21T09:37:36.976816'
+```{doctest}
+>>> structlog.configure(processors=[timestamper, structlog.processors.KeyValueRenderer()])
+>>> structlog.get_logger().info("hi")  # doctest: +SKIP
+event='hi' time='2018-01-21T09:37:36.976816'
 ```
 
 
@@ -211,12 +205,10 @@ While usually it's a string or bytes, there's no rule saying it _has_ to be a st
 
 So assuming you want to follow [best practices](logging-best-practices.md) and render your event dictionary to JSON that is picked up by a log aggregation system like ELK or Graylog, *structlog* comes with batteries included -- you just have to tell it to use its {class}`~structlog.processors.JSONRenderer`:
 
-```{eval-rst}
-.. doctest::
-
-  >>> structlog.configure(processors=[structlog.processors.JSONRenderer()])
-  >>> structlog.get_logger().info("hi")
-  {"event": "hi"}
+```{doctest}
+>>> structlog.configure(processors=[structlog.processors.JSONRenderer()])
+>>> structlog.get_logger().info("hi")
+{"event": "hi"}
 ```
 
 

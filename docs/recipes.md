@@ -80,21 +80,16 @@ Pick the data you're interested in from the {class}`structlog.processors.Callsit
 
 ## Custom Wrappers
 
-```{eval-rst}
-.. testsetup:: *
-
-   import structlog
-   structlog.configure(
-       processors=[structlog.processors.KeyValueRenderer()],
-   )
+```{testsetup}
+import structlog
+structlog.configure(
+    processors=[structlog.processors.KeyValueRenderer()],
+)
 ```
 
-```{eval-rst}
-.. testcleanup:: *
-
-   import structlog
-   structlog.reset_defaults()
-
+```{testcleanup}
+import structlog
+structlog.reset_defaults()
 ```
 
 The type of the *bound loggers* that are returned by {func}`structlog.get_logger()` is called the *wrapper class*, because it wraps the original logger that takes care of the output.
@@ -118,23 +113,21 @@ To make it easy for you, *structlog* comes with the class {class}`structlog.Boun
 
 It’s easiest to demonstrate with an example:
 
-```{eval-rst}
-.. doctest::
-
-   >>> from structlog import BoundLoggerBase, PrintLogger, wrap_logger
-   >>> class SemanticLogger(BoundLoggerBase):
-   ...    def info(self, event, **kw):
-   ...        if not "status" in kw:
-   ...            return self._proxy_to_logger("info", event, status="ok", **kw)
-   ...        else:
-   ...            return self._proxy_to_logger("info", event, **kw)
-   ...
-   ...    def user_error(self, event, **kw):
-   ...        self.info(event, status="user_error", **kw)
-   >>> log = wrap_logger(PrintLogger(), wrapper_class=SemanticLogger)
-   >>> log = log.bind(user="fprefect")
-   >>> log.user_error("user.forgot_towel")
-   user='fprefect' status='user_error' event='user.forgot_towel'
+```{doctest}
+>>> from structlog import BoundLoggerBase, PrintLogger, wrap_logger
+>>> class SemanticLogger(BoundLoggerBase):
+...    def info(self, event, **kw):
+...        if not "status" in kw:
+...            return self._proxy_to_logger("info", event, status="ok", **kw)
+...        else:
+...            return self._proxy_to_logger("info", event, **kw)
+...
+...    def user_error(self, event, **kw):
+...        self.info(event, status="user_error", **kw)
+>>> log = wrap_logger(PrintLogger(), wrapper_class=SemanticLogger)
+>>> log = log.bind(user="fprefect")
+>>> log.user_error("user.forgot_towel")
+user='fprefect' status='user_error' event='user.forgot_towel'
 ```
 
 You can observe the following:

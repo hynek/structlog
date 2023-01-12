@@ -134,21 +134,20 @@ For instance, if you log JSON in production, configure `logging` to use [*python
 This is the simplest approach where *structlog* does all the heavy lifting and passes a fully-formatted string to `logging`.
 Chances are, this is all you need.
 
-```{eval-rst}
-.. mermaid::
-   :align: center
+```{mermaid}
+:align: center
 
-   flowchart TD
-      %%{ init: {'theme': 'neutral'} }%%
-      User
-      structlog
-      stdlib[Standard Library\ne.g. logging.StreamHandler]
+flowchart TD
+    %%{ init: {'theme': 'neutral'} }%%
+    User
+    structlog
+    stdlib[Standard Library\ne.g. logging.StreamHandler]
 
-      User --> |"structlog.get_logger().info('foo')"| structlog
-      User --> |"logging.getLogger().info('foo')"| stdlib
-      structlog --> |"logging.getLogger().info(#quot;{'event': 'foo'}#quot;)"| stdlib ==> Output
+    User --> |"structlog.get_logger().info('foo')"| structlog
+    User --> |"logging.getLogger().info('foo')"| stdlib
+    structlog --> |"logging.getLogger().info(#quot;{'event': 'foo'}#quot;)"| stdlib ==> Output
 
-      Output
+    Output
 ```
 
 A basic configuration to output structured logs in JSON format looks like this:
@@ -230,22 +229,20 @@ hello
 
 You can choose to use *structlog* only for building the event dictionary and leave all formatting -- additionally to the output -- to the standard library.
 
-```{eval-rst}
-.. mermaid::
-   :align: center
+```{mermaid}
+:align: center
 
-   flowchart TD
-      %%{ init: {'theme': 'neutral'} }%%
-      User
-      structlog
-      stdlib[Standard Library\ne.g. logging.StreamHandler]
+flowchart TD
+    %%{ init: {'theme': 'neutral'} }%%
+    User
+    structlog
+    stdlib[Standard Library\ne.g. logging.StreamHandler]
 
-      User --> |"structlog.get_logger().info('foo', bar=42)"| structlog
-      User --> |"logging.getLogger().info('foo')"| stdlib
-      structlog --> |"logging.getLogger().info('foo', extra={&quot;bar&quot;: 42})"| stdlib ==> Output
+    User --> |"structlog.get_logger().info('foo', bar=42)"| structlog
+    User --> |"logging.getLogger().info('foo')"| stdlib
+    structlog --> |"logging.getLogger().info('foo', extra={&quot;bar&quot;: 42})"| stdlib ==> Output
 
-      Output
-
+    Output
 ```
 
 ```python
@@ -314,26 +311,24 @@ Here, you use *structlog*'s {class}`~structlog.stdlib.ProcessorFormatter` as a {
 
 Consequently, the output is the duty of the standard library too.
 
-```{eval-rst}
-.. mermaid::
-   :align: center
+```{mermaid}
+:align: center
 
-   flowchart TD
-      %%{ init: {'theme': 'neutral'} }%%
-      User
-      structlog
-      structlog2[structlog]
-      stdlib["Standard Library"]
+flowchart TD
+    %%{ init: {'theme': 'neutral'} }%%
+    User
+    structlog
+    structlog2[structlog]
+    stdlib["Standard Library"]
 
-      User --> |"structlog.get_logger().info(#quot;foo#quot;, bar=42)"| structlog
-      User --> |"logging.getLogger().info(#quot;foo#quot;)"| stdlib
-      structlog --> |"logging.getLogger().info(event_dict, {#quot;extra#quot;: {#quot;_logger#quot;: logger, #quot;_name#quot;: name})"| stdlib
+    User --> |"structlog.get_logger().info(#quot;foo#quot;, bar=42)"| structlog
+    User --> |"logging.getLogger().info(#quot;foo#quot;)"| stdlib
+    structlog --> |"logging.getLogger().info(event_dict, {#quot;extra#quot;: {#quot;_logger#quot;: logger, #quot;_name#quot;: name})"| stdlib
 
-      stdlib --> |"structlog.stdlib.ProcessorFormatter.format(logging.Record)"| structlog2
-      structlog2 --> |"Returns a string that is passed into logging handlers.\nThis flow is controlled by the logging configuration."| stdlib2
+    stdlib --> |"structlog.stdlib.ProcessorFormatter.format(logging.Record)"| structlog2
+    structlog2 --> |"Returns a string that is passed into logging handlers.\nThis flow is controlled by the logging configuration."| stdlib2
 
-      stdlib2[Standard Library\ne.g. logging.StreamHandler] ==> Output
-
+    stdlib2[Standard Library\ne.g. logging.StreamHandler] ==> Output
 ```
 
 {class}`~structlog.stdlib.ProcessorFormatter` has two parts to its API:
