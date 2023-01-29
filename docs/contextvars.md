@@ -2,17 +2,13 @@
 
 # Context Variables
 
-```{eval-rst}
-.. testsetup:: *
-
-   import structlog
+```{testsetup}
+import structlog
 ```
 
-```{eval-rst}
-.. testcleanup:: *
-
-   import structlog
-   structlog.reset_defaults()
+```{testcleanup}
+import structlog
+structlog.reset_defaults()
 ```
 
 The {mod}`contextvars` module in the Python standard library allows having a global *structlog* context that is local to the current execution context.
@@ -35,51 +31,49 @@ The general flow is:
 
 We're sorry the word *context* means three different things in this itemization depending on ... context.
 
-```{eval-rst}
-.. doctest::
-
-   >>> from structlog.contextvars import (
-   ...     bind_contextvars,
-   ...     bound_contextvars,
-   ...     clear_contextvars,
-   ...     merge_contextvars,
-   ...     unbind_contextvars,
-   ... )
-   >>> from structlog import configure
-   >>> configure(
-   ...     processors=[
-   ...         merge_contextvars,
-   ...         structlog.processors.KeyValueRenderer(key_order=["event", "a"]),
-   ...     ]
-   ... )
-   >>> log = structlog.get_logger()
-   >>> # At the top of your request handler (or, ideally, some general
-   >>> # middleware), clear the contextvars-local context and bind some common
-   >>> # values:
-   >>> clear_contextvars()
-   >>> bind_contextvars(a=1, b=2)
-   {'a': <Token var=<ContextVar name='structlog_a' default=Ellipsis at ...> at ...>, 'b': <Token var=<ContextVar name='structlog_b' default=Ellipsis at ...> at ...>}
-   >>> # Then use loggers as per normal
-   >>> # (perhaps by using structlog.get_logger() to create them).
-   >>> log.info("hello")
-   event='hello' a=1 b=2
-   >>> # Use unbind_contextvars to remove a variable from the context.
-   >>> unbind_contextvars("b")
-   >>> log.info("world")
-   event='world' a=1
-   >>> # You can also bind key-value pairs temporarily.
-   >>> with bound_contextvars(b=2):
-   ...    log.info("hi")
-   event='hi' a=1 b=2
-   >>> # Now it's gone again.
-   >>> log.info("hi")
-   event='hi' a=1
-   >>> # And when we clear the contextvars state again, it goes away.
-   >>> # a=None is printed due to the key_order argument passed to
-   >>> # KeyValueRenderer, but it is NOT present anymore.
-   >>> clear_contextvars()
-   >>> log.info("hi there")
-   event='hi there' a=None
+```{doctest}
+>>> from structlog.contextvars import (
+...     bind_contextvars,
+...     bound_contextvars,
+...     clear_contextvars,
+...     merge_contextvars,
+...     unbind_contextvars,
+... )
+>>> from structlog import configure
+>>> configure(
+...     processors=[
+...         merge_contextvars,
+...         structlog.processors.KeyValueRenderer(key_order=["event", "a"]),
+...     ]
+... )
+>>> log = structlog.get_logger()
+>>> # At the top of your request handler (or, ideally, some general
+>>> # middleware), clear the contextvars-local context and bind some common
+>>> # values:
+>>> clear_contextvars()
+>>> bind_contextvars(a=1, b=2)
+{'a': <Token var=<ContextVar name='structlog_a' default=Ellipsis at ...> at ...>, 'b': <Token var=<ContextVar name='structlog_b' default=Ellipsis at ...> at ...>}
+>>> # Then use loggers as per normal
+>>> # (perhaps by using structlog.get_logger() to create them).
+>>> log.info("hello")
+event='hello' a=1 b=2
+>>> # Use unbind_contextvars to remove a variable from the context.
+>>> unbind_contextvars("b")
+>>> log.info("world")
+event='world' a=1
+>>> # You can also bind key-value pairs temporarily.
+>>> with bound_contextvars(b=2):
+...    log.info("hi")
+event='hi' a=1 b=2
+>>> # Now it's gone again.
+>>> log.info("hi")
+event='hi' a=1
+>>> # And when we clear the contextvars state again, it goes away.
+>>> # a=None is printed due to the key_order argument passed to
+>>> # KeyValueRenderer, but it is NOT present anymore.
+>>> clear_contextvars()
+>>> log.info("hi there")
+event='hi there' a=None
 ```
 
 
