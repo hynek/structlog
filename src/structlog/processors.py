@@ -142,7 +142,6 @@ class LogfmtRenderer:
     def __call__(
         self, _: WrappedLogger, __: str, event_dict: EventDict
     ) -> str:
-
         elements: list[str] = []
         for key, value in self._ordered_items(event_dict):
             if any(c <= " " for c in key):
