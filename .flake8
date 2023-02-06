@@ -1,0 +1,4 @@
+[flake8]
+ignore = E203,W503,W504,E741
+
+# vim: ft=dosini
