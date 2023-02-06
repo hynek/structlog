@@ -18,7 +18,7 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 ### Fixed
 
 - ConsoleRenderer now reuses the `_figure_out_exc_info` to process the `exc_info` argument like `ExceptionRenderer` does.
-This prevents crashes if the actual Exception is passed for the *exc_info* argument instead of a tuple or `True`.
+  This prevents crashes if the actual Exception is passed for the *exc_info* argument instead of a tuple or `True`.
   [#482](https://github.com/hynek/structlog/issues/482)
 
 
