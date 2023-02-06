@@ -27,7 +27,7 @@ This prevents crashes if the actual Exception is passed for the *exc_info* argum
 ### Changed
 
 - String interpolation in `FilteringBoundLogger` (used by default) is now only attempted if positional arguments are passed.
-This prevents crashes if something different than a string is passed for the *event* argument.
+  This prevents crashes if something different than a string is passed for the *event* argument.
   [#475](https://github.com/hynek/structlog/pull/475)
 
 
