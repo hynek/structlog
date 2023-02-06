@@ -345,7 +345,6 @@ class ConsoleRenderer:
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> str:
-
         sio = StringIO()
 
         ts = event_dict.pop("timestamp", None)
@@ -471,7 +470,6 @@ _SENTINEL = object()
 def set_exc_info(
     logger: WrappedLogger, method_name: str, event_dict: EventDict
 ) -> EventDict:
-
     """
     Set ``event_dict["exc_info"] = True`` if *method_name* is ``"exception"``.
 

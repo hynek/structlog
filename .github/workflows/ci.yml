@@ -49,9 +49,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install --upgrade wheel tox tox-gh-actions
+      - run: python -m pip install --upgrade wheel tox
 
-      - run: python -m tox
+      - run: python -m tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v3
