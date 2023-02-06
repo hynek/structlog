@@ -21,7 +21,7 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 ### Changed
 
 - String interpolation in `FilteringBoundLogger` (used by default) is now only attempted if positional arguments are passed.
-This prevents crashes if something different than a string is passed for the *event* argument.
+  This prevents crashes if something different than a string is passed for the *event* argument.
   [#475](https://github.com/hynek/structlog/pull/475)
 
 
