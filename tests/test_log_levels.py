@@ -188,12 +188,33 @@ class TestFilteringLogger:
 
     async def test_async_exception(self, bl, cl):
         """
-        exception ensures that exc_info is set to True, unless it's already
+        aexception sets exc_info to current exception info, if it's not already
         set.
         """
-        await bl.aexception("boom")
+        try:
+            raise Exception("boom")
+        except Exception as e:
+            await bl.aexception("foo")
+            exc = e
 
-        assert [("error", (), {"event": "boom", "exc_info": True})] == cl.calls
+        assert 1 == len(cl.calls)
+        assert isinstance(cl.calls[0][2]["exc_info"], tuple)
+        assert exc == cl.calls[0][2]["exc_info"][1]
+
+    async def test_async_exception_true(self, bl, cl):
+        """
+        aexception replaces exc_info with current exception info, if exc_info
+        is True.
+        """
+        try:
+            raise Exception("boom")
+        except Exception as e:
+            await bl.aexception("foo", exc_info=True)
+            exc = e
+
+        assert 1 == len(cl.calls)
+        assert isinstance(cl.calls[0][2]["exc_info"], tuple)
+        assert exc is cl.calls[0][2]["exc_info"][1]
 
     def test_exception_passed(self, bl, cl):
         """
@@ -205,7 +226,8 @@ class TestFilteringLogger:
 
     async def test_async_exception_passed(self, bl, cl):
         """
-        exception if exc_info has a value, exception doesn't tamper with it.
+        exception if exc_info has a value (other than True), exception doesn't
+        tamper with it.
         """
         await bl.aexception("boom", exc_info=42)
 
