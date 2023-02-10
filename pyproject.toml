@@ -72,7 +72,7 @@ dev = ["structlog[tests,typing,docs]"]
 
 [tool.hatch.version]
 source = "vcs"
-raw-options = { version_scheme = "no-guess-dev" }
+raw-options = { local_scheme = "no-local-version" }
 
 
 [tool.pytest.ini_options]
