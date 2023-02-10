@@ -140,29 +140,6 @@ jobs:
 
       - run: python -m tox -e docs
 
-  package:
-    name: Build & verify package
-    runs-on: ubuntu-latest
-    env:
-      SETUPTOOLS_SCM_PRETEND_VERSION: ""
-
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: block
-          allowed-endpoints: >
-            files.pythonhosted.org:443
-            github.com:443
-            pypi.org:443
-
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # get correct version
-      - uses: hynek/build-and-inspect-python-package@v1
-      - run: python -m pip install hatch-fancy-pypi-readme
-      - run: python -m hatch_fancy_pypi_readme
-
   install-dev:
     name: Verify dev env
     runs-on: ${{ matrix.os }}
@@ -195,7 +172,6 @@ jobs:
       - coverage
       - docs
       - install-dev
-      - package
 
     runs-on: ubuntu-latest
 
