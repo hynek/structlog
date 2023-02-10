@@ -21,9 +21,9 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
   This prevents crashes if the actual Exception is passed for the *exc_info* argument instead of a tuple or `True`.
   [#482](https://github.com/hynek/structlog/issues/482)
 
-- `aexception()` now extracts the exception info using `sys.exc_info()` before passing control to the asyncio
-  executor (where original exception info is no longer available).
+- `aexception()` now extracts the exception info using `sys.exc_info()` before passing control to the asyncio executor (where original exception info is no longer available).
   [#488](https://github.com/hynek/structlog/issues/488)
+
 
 ## [22.3.0](https://github.com/hynek/structlog/compare/22.2.0...22.3.0) - 2022-11-24
 
