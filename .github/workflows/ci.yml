@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   tests:
-    name: tox on ${{ matrix.python-version }}
+    name: Tests on ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -106,7 +106,7 @@ jobs:
         if: ${{ failure() }}
 
   mypy:
-    name: mypy on ${{ matrix.python-version }}
+    name: Mypy on ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
