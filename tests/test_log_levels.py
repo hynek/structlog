@@ -198,7 +198,7 @@ class TestFilteringLogger:
             exc = e
 
         assert 1 == len(cl.calls)
-        assert tuple == type(cl.calls[0][2]["exc_info"])
+        assert isinstance(cl.calls[0][2]["exc_info"], tuple)
         assert exc == cl.calls[0][2]["exc_info"][1]
 
     async def test_async_exception_true(self, bl, cl):
@@ -213,7 +213,7 @@ class TestFilteringLogger:
             exc = e
 
         assert 1 == len(cl.calls)
-        assert tuple == type(cl.calls[0][2]["exc_info"])
+        assert isinstance(cl.calls[0][2]["exc_info"], tuple)
         assert exc is cl.calls[0][2]["exc_info"][1]
 
     def test_exception_passed(self, bl, cl):
