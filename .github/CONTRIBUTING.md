@@ -43,10 +43,9 @@ You can (and should) run our test suite using [*tox*].
 However, you’ll probably want a more traditional environment as well.
 We highly recommend to develop using the latest Python release because we try to take advantage of modern features whenever possible.
 
-First create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation.
-It’s out of scope for this document to list all the ways to manage virtual environments in Python, but if you don’t already have a pet way, take some time to look at tools like [*direnv*](https://hynek.me/til/python-project-local-venvs/), [*virtualfish*](https://virtualfish.readthedocs.io/), and [*virtualenvwrapper*](https://virtualenvwrapper.readthedocs.io/).
+First create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation in your preferred way.
 
-Next, get an up to date checkout of the *structlog* repository:
+Get an up to date checkout of the *structlog* repository:
 
 ```console
 $ git clone git@github.com:hynek/structlog.git
@@ -58,11 +57,11 @@ or if you prefer to use *Git* via `https`:
 $ git clone https://github.com/hynek/structlog.git
 ```
 
-Change into the newly created directory and **after activating your virtual environment** install an editable version of *structlog* along with its tests and docs requirements:
+Change into the newly created directory and after activating a virtual environment install an editable version of *structlog* along with its tests and docs requirements:
 
 ```console
 $ cd structlog
-$ pip install --upgrade pip wheel setuptools  # PLEASE don't skip this step
+$ pip install --upgrade pip wheel  # PLEASE don't skip this step
 $ pip install -e '.[dev]'
 ```
 
