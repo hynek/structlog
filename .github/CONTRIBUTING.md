@@ -43,8 +43,6 @@ You can (and should) run our test suite using [*tox*].
 However, you’ll probably want a more traditional environment as well.
 We highly recommend to develop using the latest Python release because we try to take advantage of modern features whenever possible.
 
-First create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation in your preferred way.
-
 Get an up to date checkout of the *structlog* repository:
 
 ```console
