@@ -43,13 +43,13 @@ You can (and should) run our test suite using [*tox*].
 However, you’ll probably want a more traditional environment as well.
 We highly recommend to develop using the latest Python release because we try to take advantage of modern features whenever possible.
 
-Get an up to date checkout of the *structlog* repository:
+Clone the *structlog* repository:
 
 ```console
 $ git clone git@github.com:hynek/structlog.git
 ```
 
-or if you prefer to use *Git* via `https`:
+Or if you prefer to use Git via HTTPS:
 
 ```console
 $ git clone https://github.com/hynek/structlog.git
@@ -93,7 +93,7 @@ $ pre-commit run --all-files
 ```
 
 and our CI has integration with [pre-commit.ci](https://pre-commit.ci).
-But it's way more comfortable to run it locally and *git* catching avoidable errors.
+But it's way more comfortable to run it locally and catch avoidable errors before pushing them to GitHub.
 
 
 ## Code
