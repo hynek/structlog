@@ -30,7 +30,7 @@ class TestPad:
 @pytest.fixture(name="cr")
 def _cr():
     return dev.ConsoleRenderer(
-        colors=dev._use_colors, exception_formatter=dev.plain_traceback
+        colors=dev._has_colors, exception_formatter=dev.plain_traceback
     )
 
 
@@ -135,11 +135,11 @@ class TestConsoleRenderer:
         Stdlib levels are rendered aligned, in brackets, and color coded.
         """
         my_styles = dev.ConsoleRenderer.get_default_level_styles(
-            colors=dev._use_colors
+            colors=dev._has_colors
         )
         my_styles["MY_OH_MY"] = my_styles["critical"]
         cr = dev.ConsoleRenderer(
-            colors=dev._use_colors, level_styles=my_styles
+            colors=dev._has_colors, level_styles=my_styles
         )
 
         # this would blow up if the level_styles override failed
@@ -334,7 +334,7 @@ class TestConsoleRenderer:
         """
         `pad_event` parameter works.
         """
-        rv = dev.ConsoleRenderer(42, dev._use_colors)(
+        rv = dev.ConsoleRenderer(42, dev._has_colors)(
             None, None, {"event": "test", "foo": "bar"}
         )
 
@@ -455,7 +455,7 @@ class TestConsoleRenderer:
         If force_colors is True, use colors even if the destination is non-tty.
         """
         cr = dev.ConsoleRenderer(
-            colors=dev._use_colors, force_colors=dev._use_colors
+            colors=dev._has_colors, force_colors=dev._has_colors
         )
 
         rv = cr(
@@ -479,7 +479,7 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-        assert not dev._use_colors or dev._ColorfulStyles is cr._styles
+        assert not dev._has_colors or dev._ColorfulStyles is cr._styles
 
     @pytest.mark.parametrize("rns", [True, False])
     def test_repr_native_str(self, rns):

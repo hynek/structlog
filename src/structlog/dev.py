@@ -98,10 +98,13 @@ else:
 
 if _IS_WINDOWS:  # pragma: no cover
     # On Windows, use colors by default only if Colorama is installed.
-    _use_colors = colorama is not None
+    _has_colors = colorama is not None
 else:
     # On other OSes, use colors by default.
-    _use_colors = True
+    _has_colors = True
+
+# Prevent breakage of packages that used the old name of the variable.
+_use_colors = _has_colors
 
 
 class _Styles(Protocol):
@@ -278,7 +281,7 @@ class ConsoleRenderer:
     def __init__(
         self,
         pad_event: int = _EVENT_WIDTH,
-        colors: bool = _use_colors,
+        colors: bool = _has_colors,
         force_colors: bool = False,
         repr_native_str: bool = False,
         level_styles: Styles | None = None,

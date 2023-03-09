@@ -17,7 +17,7 @@ from typing import Any, Callable, Iterable, Sequence, Type, cast
 from ._log_levels import make_filtering_bound_logger
 from ._output import PrintLoggerFactory
 from .contextvars import merge_contextvars
-from .dev import ConsoleRenderer, _use_colors, set_exc_info
+from .dev import ConsoleRenderer, _has_colors, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, add_log_level
 from .typing import BindableLogger, Context, Processor, WrappedLogger
 
@@ -35,7 +35,7 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
-        colors=_use_colors
+        colors=_has_colors
         and sys.stdout is not None
         and hasattr(sys.stdout, "isatty")
         and sys.stdout.isatty()
