@@ -353,7 +353,7 @@ class BoundLoggerLazyProxy:
             self._cache_logger_on_first_use is None
             and _CONFIG.cache_logger_on_first_use is True
         ):
-            self.bind = finalized_bind  # type: ignore[assignment]
+            self.bind = finalized_bind  # type: ignore[method-assign]
 
         return finalized_bind(**new_values)
 
