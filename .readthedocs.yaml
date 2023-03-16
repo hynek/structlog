@@ -1,6 +1,6 @@
 ---
 version: 2
-formats: all
+formats: [htmlzip, epub]
 
 build:
   os: ubuntu-20.04
