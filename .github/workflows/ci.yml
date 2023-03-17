@@ -49,9 +49,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install --upgrade wheel tox
+      - run: python -Im pip install --upgrade wheel tox
 
-      - run: python -m tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
+      - run: python -Im tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v3
@@ -81,7 +81,7 @@ jobs:
           # Use latest Python, so it understands all syntax.
           python-version: ${{env.PYTHON_LATEST}}
 
-      - run: python -m pip install --upgrade coverage[toml]
+      - run: python -Im pip install --upgrade coverage[toml]
 
       - uses: actions/download-artifact@v3
         with:
@@ -89,14 +89,14 @@ jobs:
 
       - name: Combine coverage & fail if it's <100%.
         run: |
-          python -m coverage combine
-          python -m coverage html --skip-covered --skip-empty
+          python -Im coverage combine
+          python -Im coverage html --skip-covered --skip-empty
 
           # Report and write to summary.
-          python -m coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+          python -Im coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
 
           # Report again and fail if under 100%.
-          python -m coverage report --fail-under=100
+          python -Im coverage report --fail-under=100
 
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v3
@@ -123,9 +123,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install --upgrade wheel tox
+      - run: python -Im pip install --upgrade wheel tox
 
-      - run: python -m tox -e mypy
+      - run: python -Im tox -e mypy
 
   docs:
     name: Build docs & run doctests
@@ -135,10 +135,10 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           # Keep in sync with tox.ini/docs & readthedocs.yml
-          python-version: "3.10"
-      - run: python -m pip install --upgrade wheel tox
+          python-version: "3.11"
+      - run: python -Im pip install --upgrade wheel tox
 
-      - run: python -m tox -e docs
+      - run: python -Im tox -e docs
 
   install-dev:
     name: Verify dev env
@@ -161,8 +161,8 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{env.PYTHON_LATEST}}
-      - run: python -m pip install -e .[dev]
-      - run: python -c 'import structlog; print(structlog.__version__)'
+      - run: python -Im pip install -e .[dev]
+      - run: python -Ic 'import structlog; print(structlog.__version__)'
 
   # Ensure everything required is passing for branch protection.
   required-checks-pass:
