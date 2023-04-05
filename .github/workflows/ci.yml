@@ -13,15 +13,43 @@ env:
   TOX_TESTENV_PASSENV: FORCE_COLOR
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
   PIP_NO_PYTHON_VERSION_WARNING: "1"
-  SETUPTOOLS_SCM_PRETEND_VERSION: "1.0" # avoid warnings about shallow checkout
   PYTHON_LATEST: "3.11"
+
+  # For re-actors/checkout-python-sdist
+  SETUPTOOLS_SCM_PRETEND_VERSION: "1.0"  # hard-code version for predictable sdist names
+  sdist-artifact: python-package-distributions
+  sdist-name: structlog-1.0.tar.gz
 
 permissions:
   contents: read
 
 jobs:
+  build-sdist:
+    name: 📦 Build the source distribution
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_LATEST }}
+      - run: python -Im pip install build
+
+      - run: python -Im build --sdist
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.sdist-artifact }}
+          # NOTE: Exact expected file names are specified here
+          # NOTE: as a safety measure — if anything weird ends
+          # NOTE: up being in this dir or not all dists will be
+          # NOTE: produced, this will fail the workflow.
+          path: dist/${{ env.sdist-name }}
+          retention-days: 15
+
   tests:
     name: Tests on ${{ matrix.python-version }}
+    needs: build-sdist
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -34,7 +62,12 @@ jobs:
           - "3.11"
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Get source code from pre-built sdist
+        uses: re-actors/checkout-python-sdist@release/v1
+        with:
+          source-tarball-name: ${{ env.sdist-name }}
+          workflow-artifact-name: ${{ env.sdist-artifact }}
+
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -51,11 +84,16 @@ jobs:
 
   coverage:
     name: Combine & check coverage.
-    runs-on: ubuntu-latest
     needs: tests
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Get source code from pre-built sdist
+        uses: re-actors/checkout-python-sdist@release/v1
+        with:
+          source-tarball-name: ${{ env.sdist-name }}
+          workflow-artifact-name: ${{ env.sdist-artifact }}
+
       - uses: actions/setup-python@v4
         with:
           # Use latest Python, so it understands all syntax.
@@ -87,6 +125,7 @@ jobs:
 
   mypy:
     name: Mypy on ${{ matrix.python-version }}
+    needs: build-sdist
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -99,7 +138,11 @@ jobs:
           - "3.11"
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Get source code from pre-built sdist
+        uses: re-actors/checkout-python-sdist@release/v1
+        with:
+          source-tarball-name: ${{ env.sdist-name }}
+          workflow-artifact-name: ${{ env.sdist-artifact }}
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -109,9 +152,14 @@ jobs:
 
   docs:
     name: Build docs & run doctests
+    needs: build-sdist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Get source code from pre-built sdist
+        uses: re-actors/checkout-python-sdist@release/v1
+        with:
+          source-tarball-name: ${{ env.sdist-name }}
+          workflow-artifact-name: ${{ env.sdist-artifact }}
       - uses: actions/setup-python@v4
         with:
           # Keep in sync with tox.ini/docs & readthedocs.yaml
