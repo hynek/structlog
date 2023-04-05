@@ -44,7 +44,6 @@ Changelog = "https://www.structlog.org/en/stable/changelog.html"
 "Source Code" = "https://github.com/hynek/structlog"
 Funding = "https://github.com/sponsors/hynek"
 Tidelift = "https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=pypi"
-Ko-fi = "https://ko-fi.com/the_hynek"
 
 
 [project.optional-dependencies]
