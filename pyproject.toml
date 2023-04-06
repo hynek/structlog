@@ -11,7 +11,7 @@ name = "structlog"
 description = "Structured Logging for Python"
 authors = [{ name = "Hynek Schlawack", email = "hs@ox.cx" }]
 requires-python = ">=3.7"
-license = { file = "COPYRIGHT" }
+license = "MIT OR Apache-2.0"
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
