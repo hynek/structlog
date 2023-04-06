@@ -20,7 +20,9 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.stdlib.BoundLogger` now has, analogously to our native logger, a full set of async log methods prefixed with an `a`: `await log.ainfo("event!")`
   [#502](https://github.com/hynek/structlog/issues/502)
 
-- The default configuration now respects `FORCE_COLOR=1` and `FORCE_COLOR=true`, and doesn't check whether it makes sense to use colors if set.
+- The default configuration now respects the presence of `FORCE_COLOR` (regardless of its value except empty string).
+  This disables all heuristics whether it makes sense to use colors.
+  [#338](https://github.com/hynek/structlog/issues/338)
 
 
 ### Fixed
