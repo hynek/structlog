@@ -15,16 +15,10 @@ from structlog.contextvars import (
     clear_contextvars,
     merge_contextvars,
 )
-from structlog.testing import CapturingLogger
-
-
-@pytest.fixture(name="cl")
-def fixture_cl():
-    return CapturingLogger()
 
 
 @pytest.fixture(name="bl")
-def fixture_bl(cl):
+def _bl(cl):
     return make_filtering_bound_logger(logging.INFO)(cl, [], {})
 
 
@@ -79,7 +73,7 @@ class TestFilteringLogger:
 
     def test_no_args(self, bl, cl):
         """
-        If no args are passed, don't attempt intepolation.
+        If no args are passed, don't attempt interpolation.
 
         See also #473
         """
@@ -89,7 +83,7 @@ class TestFilteringLogger:
 
     async def test_async_no_args(self, bl, cl):
         """
-        If no args are passed, don't attempt intepolation.
+        If no args are passed, don't attempt interpolation.
 
         See also #473
         """

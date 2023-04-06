@@ -340,6 +340,66 @@ class TestBoundLogger:
 
         assert {} == get_context(bl)
 
+    @pytest.mark.parametrize(
+        "meth", ["debug", "info", "warning", "error", "critical"]
+    )
+    async def test_async_log_methods(self, meth, cl):
+        """
+        Async methods log async.
+        """
+        bl = build_bl(cl, processors=[])
+
+        await getattr(bl, f"a{meth}")("Async!")
+
+        assert [
+            CapturedCall(method_name=meth, args=(), kwargs={"event": "Async!"})
+        ] == cl.calls
+
+    async def test_alog(self, cl):
+        """
+        Alog logs async at the correct level.
+        """
+        bl = build_bl(cl, processors=[])
+
+        await bl.alog(logging.INFO, "foo %s", "bar")
+
+        assert [
+            CapturedCall(
+                method_name="info",
+                args=(),
+                kwargs={"positional_args": ("bar",), "event": "foo %s"},
+            )
+        ] == cl.calls
+
+    async def test_aexception_exc_info_true(self, cl):
+        """
+        aexception passes current exc_info into dispatch.
+        """
+        bl = build_bl(cl, processors=[])
+
+        try:
+            raise ValueError(42)
+        except ValueError as e:
+            await bl.aexception("oops")
+            exc = e
+
+        (cc,) = cl.calls
+
+        assert isinstance(cc[2]["exc_info"], tuple)
+        assert exc == cc[2]["exc_info"][1]
+
+    async def test_aexception_exc_info_explicit(self, cl):
+        """
+        In aexception, if exc_info isn't missing or True, leave it be.
+        """
+        bl = build_bl(cl, processors=[])
+
+        obj = object()
+
+        await bl.aexception("ooops", exc_info=obj)
+
+        assert obj is cl.calls[0].kwargs["exc_info"]
+
 
 class TestPositionalArgumentsFormatter:
     def test_formats_tuple(self):

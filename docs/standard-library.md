@@ -48,12 +48,28 @@ See also {doc}`typing`.
 
 ### `asyncio`
 
-For `asyncio` applications, you may not want your whole application to block while your processor chain is formatting your log entries.
-For that use case *structlog* comes with {class}`structlog.stdlib.AsyncBoundLogger` that will do all processing in a thread pool executor.
+For `asyncio` applications, you may not want your whole application to block while the processor chain is formatting your log entries.
 
-This means an increased computational cost per log entry but your application will never block because of logging.
+For that use case *structlog* comes with a set of non-standard methods that will do all processing in a thread pool executor.
+They have the same names as the regular methods, except they are prefixed by an `a`.
+So instead of `logger.info("event!")` you write `await logger.ainfo("event!)`.
+No extra configuration is necessary and you can mix-and-match both types of methods within the same application.
+
+This means an increased computational cost per log entry, but your application will not block because of logging.
+
+```{versionadded} 23.1.0
+```
+
+---
+
+
+*structlog* also comes with {class}`structlog.stdlib.AsyncBoundLogger` that blankly makes all logging methods asynchronous (i.e. `await log.info()`).
 
 To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger` as `wrapper_class`.
+
+```{versionadded} 20.2.0
+```
+
 
 
 ## Processors

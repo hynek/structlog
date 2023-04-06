@@ -137,6 +137,9 @@ class BoundLogger(BoundLoggerBase):
 
     It also contains a bunch of properties that pass-through to the wrapped
     `logging.Logger` which should make it work as a drop-in replacement.
+
+    .. versionadded:: 23.1.0
+       Async variants `alog()`, `adebug()`, `ainfo()`, and so forth.
     """
 
     _logger: logging.Logger
@@ -374,6 +377,89 @@ class BoundLogger(BoundLoggerBase):
         Calls :meth:`logging.Logger.getChild` with unmodified arguments.
         """
         return self._logger.getChild(suffix)
+
+    # Non-Standard Async
+    async def _dispatch_to_sync(
+        self,
+        meth: Callable[..., Any],
+        event: str,
+        args: tuple[Any, ...],
+        kw: dict[str, Any],
+    ) -> None:
+        """
+        Merge contextvars and log using the sync logger in a thread pool.
+        """
+        ctx = contextvars.copy_context()
+
+        await asyncio.get_running_loop().run_in_executor(
+            None,
+            lambda: ctx.run(lambda: meth(event, *args, **kw)),
+        )
+
+    async def adebug(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `debug()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(self.debug, event, args, kw)
+
+    async def ainfo(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `info()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(self.info, event, args, kw)
+
+    async def awarning(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `warning()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(self.warning, event, args, kw)
+
+    async def aerror(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `error()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(self.error, event, args, kw)
+
+    async def acritical(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `critical()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(self.critical, event, args, kw)
+
+    afatal = acritical
+
+    async def aexception(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `exception()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        # To make `log.exception("foo") work, we have to check if the user
+        # passed an explicit exc_info and if not, supply our own.
+        if kw.get("exc_info", True) is True and kw.get("exception") is None:
+            kw["exc_info"] = sys.exc_info()
+
+        await self._dispatch_to_sync(self.exception, event, args, kw)
+
+    async def alog(
+        self, level: Any, event: str, *args: Any, **kw: Any
+    ) -> None:
+        """
+        Log using `log()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(partial(self.log, level), event, args, kw)
 
 
 def get_logger(*args: Any, **initial_values: Any) -> BoundLogger:
