@@ -201,7 +201,8 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
 
-  check-force-colors:
+  colors:
+    name: Visual check for color settings using env variables
     needs: build-sdist
     runs-on: ubuntu-latest
 
@@ -211,18 +212,9 @@ jobs:
         with:
           source-tarball-name: ${{ env.sdist-name }}
           workflow-artifact-name: ${{ env.sdist-artifact }}
-
       - uses: actions/setup-python@v4
         with:
           python-version: ${{env.PYTHON_LATEST}}
+      - run: python -Im pip install tox wheel
 
-      - run: python -m pip install .
-      - name: check colors
-        shell: python
-        run: |
-          import structlog
-
-          logger = structlog.get_logger()
-          logger.info("hello", name="me", age=123)
-          logger.warning("bye", name="me", age=123)
-          logger.error("ohno", name="me", age=123)
+      - run: tox -f color
