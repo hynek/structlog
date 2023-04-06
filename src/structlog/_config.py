@@ -36,7 +36,7 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
-        colors=os.environ.get("FORCE_COLOR", "0").lower() in ("1", "true")
+        colors=os.environ.get("FORCE_COLOR") is not None
         or (
             _has_colors
             and sys.stdout is not None
