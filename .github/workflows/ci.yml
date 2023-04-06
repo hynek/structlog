@@ -216,6 +216,7 @@ jobs:
         with:
           python-version: ${{env.PYTHON_LATEST}}
 
+      - run: python -m pip install .
       - name: check colors
         shell: python
         run: |
