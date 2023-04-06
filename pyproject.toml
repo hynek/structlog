@@ -64,7 +64,6 @@ docs = [
     "sphinx",
     "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
-    "sphinxcontrib.asyncio",
     "twisted",
 ]
 dev = ["structlog[tests,typing,docs]"]
