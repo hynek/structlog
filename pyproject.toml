@@ -181,25 +181,3 @@ text = """
 path = "README.md"
 start-at = "## Credits"
 end-before = "<!-- begin-meta -->"
-
-
-[tool.hatch.envs.tests]
-features = ["tests"]
-dev-mode = false
-
-[tool.hatch.envs.tests.scripts]
-run = "coverage run -m pytest"
-
-[[tool.hatch.envs.tests.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
-
-
-[tool.hatch.envs.coverage]
-detached = true
-dependencies = [
-  "coverage[toml]>=6.2",
-  "lxml",
-]
-[tool.hatch.envs.coverage.scripts]
-combine = "coverage combine {args}"
-report = "coverage report --skip-covered --skip-empty"
