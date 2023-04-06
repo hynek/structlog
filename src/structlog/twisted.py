@@ -324,5 +324,5 @@ class EventAdapter:
                     "_why": self._dictRenderer(logger, name, eventDict),
                 },
             )
-        else:
-            return self._dictRenderer(logger, name, eventDict)
+
+        return self._dictRenderer(logger, name, eventDict)

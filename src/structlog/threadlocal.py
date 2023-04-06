@@ -216,9 +216,7 @@ class _ThreadLocalDictWrapper:
         return self._dict.__len__()
 
     def __getattr__(self, name: str) -> Any:
-        method = getattr(self._dict, name)
-
-        return method
+        return getattr(self._dict, name)
 
 
 _CONTEXT = threading.local()

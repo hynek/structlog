@@ -12,6 +12,7 @@ from __future__ import annotations
 import errno
 import sys
 
+from contextlib import suppress
 from typing import Any, Callable
 
 
@@ -41,8 +42,7 @@ def get_processname() -> str:
         # Errors may occur if multiprocessing has not finished loading
         # yet - e.g. if a custom import hook causes third-party code
         # to run when multiprocessing calls import.
-        try:
+        with suppress(Exception):
             processname = mp.current_process().name
-        except Exception:
-            pass
+
     return processname

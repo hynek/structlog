@@ -255,7 +255,9 @@ def configure_once(
             cache_logger_on_first_use=cache_logger_on_first_use,
         )
     else:
-        warnings.warn("Repeated configuration attempted.", RuntimeWarning)
+        warnings.warn(
+            "Repeated configuration attempted.", RuntimeWarning, stacklevel=2
+        )
 
 
 def reset_defaults() -> None:
@@ -346,8 +348,8 @@ class BoundLoggerLazyProxy:
             """
             if new_values:
                 return logger.bind(**new_values)
-            else:
-                return logger
+
+            return logger
 
         if self._cache_logger_on_first_use is True or (
             self._cache_logger_on_first_use is None
@@ -377,9 +379,7 @@ class BoundLoggerLazyProxy:
         else:
             _CONFIG.default_context_class().clear()
 
-        bl = self.bind(**new_values)
-
-        return bl
+        return self.bind(**new_values)
 
     def __getattr__(self, name: str) -> Any:
         """

@@ -95,8 +95,8 @@ class KeyValueRenderer:
             def _repr(inst: Any) -> str:
                 if isinstance(inst, str):
                     return inst
-                else:
-                    return repr(inst)
+
+                return repr(inst)
 
             self._repr = _repr
 
@@ -336,11 +336,11 @@ def _json_fallback_handler(obj: Any) -> Any:
 
     if isinstance(obj, _ThreadLocalDictWrapper):
         return obj._dict
-    else:
-        try:
-            return obj.__structlog__()
-        except AttributeError:
-            return repr(obj)
+
+    try:
+        return obj.__structlog__()
+    except AttributeError:
+        return repr(obj)
 
 
 class ExceptionRenderer:
@@ -492,7 +492,8 @@ def _make_stamper(
             return event_dict
 
         return stamper_unix
-    elif fmt.upper() == "ISO":
+
+    if fmt.upper() == "ISO":
 
         def stamper_iso_local(event_dict: EventDict) -> EventDict:
             event_dict[key] = now().isoformat()
@@ -522,9 +523,11 @@ def _figure_out_exc_info(v: Any) -> ExcInfo:
     """
     if isinstance(v, BaseException):
         return (v.__class__, v, v.__traceback__)
-    elif isinstance(v, tuple):
+
+    if isinstance(v, tuple):
         return v  # type: ignore[return-value]
-    elif v:
+
+    if v:
         return sys.exc_info()  # type: ignore[return-value]
 
     return v

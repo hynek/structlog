@@ -321,7 +321,7 @@ class ConsoleRenderer:
         else:
             self._level_to_color = level_styles
 
-        for key in self._level_to_color.keys():
+        for key in self._level_to_color:
             self._level_to_color[key] += styles.bright
         self._longest_level = len(
             max(self._level_to_color.keys(), key=lambda e: len(e))
@@ -342,8 +342,8 @@ class ConsoleRenderer:
 
         if isinstance(val, str):
             return val
-        else:
-            return repr(val)
+
+        return repr(val)
 
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
@@ -428,7 +428,8 @@ class ConsoleRenderer:
             if self._exception_formatter is not plain_traceback:
                 warnings.warn(
                     "Remove `format_exc_info` from your processor chain "
-                    "if you want pretty exceptions."
+                    "if you want pretty exceptions.",
+                    stacklevel=2,
                 )
             sio.write("\n" + exc)
 
@@ -451,10 +452,7 @@ class ConsoleRenderer:
             *colors* parameter to `ConsoleRenderer`. Default: `True`.
         """
         styles: Styles
-        if colors:
-            styles = _ColorfulStyles
-        else:
-            styles = _PlainStyles
+        styles = _ColorfulStyles if colors else _PlainStyles
         return {
             "critical": styles.level_critical,
             "exception": styles.level_exception,

@@ -67,7 +67,7 @@ class PrintLogger:
         if self._file is stdout:
             return "stdout"
 
-        elif self._file is stderr:
+        if self._file is stderr:
             return "stderr"
 
         raise PicklingError(
@@ -171,7 +171,7 @@ class WriteLogger:
         if self._file is stdout:
             return "stdout"
 
-        elif self._file is stderr:
+        if self._file is stderr:
             return "stderr"
 
         raise PicklingError(
@@ -271,7 +271,7 @@ class BytesLogger:
         if self._file is sys.stdout.buffer:
             return "stdout"
 
-        elif self._file is sys.stderr.buffer:
+        if self._file is sys.stderr.buffer:
             return "stderr"
 
         raise PicklingError(

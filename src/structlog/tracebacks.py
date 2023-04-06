@@ -202,8 +202,7 @@ def extract(
         # No cover, code is reached but coverage doesn't recognize it.
         break  # pragma: no cover
 
-    trace = Trace(stacks=stacks)
-    return trace
+    return Trace(stacks=stacks)
 
 
 class ExceptionDictTransformer:
@@ -266,5 +265,4 @@ class ExceptionDictTransformer:
                 *stack.frames[-half:],
             ]
 
-        stack_dicts = [asdict(stack) for stack in trace.stacks]
-        return stack_dicts
+        return [asdict(stack) for stack in trace.stacks]

@@ -57,10 +57,7 @@ class BoundLoggerBase:
 
     def __eq__(self, other: Any) -> bool:
         try:
-            if self._context == other._context:
-                return True
-            else:
-                return False
+            return self._context == other._context
         except AttributeError:
             return False
 
@@ -163,18 +160,20 @@ class BoundLoggerBase:
 
         if isinstance(event_dict, (str, bytes, bytearray)):
             return (event_dict,), {}
-        elif isinstance(event_dict, tuple):
+
+        if isinstance(event_dict, tuple):
             # In this case we assume that the last processor returned a tuple
             # of ``(args, kwargs)`` and pass it right through.
             return event_dict  # type: ignore[return-value]
-        elif isinstance(event_dict, dict):
+
+        if isinstance(event_dict, dict):
             return (), event_dict
-        else:
-            raise ValueError(
-                "Last processor didn't return an appropriate value.  Valid "
-                "return values are a dict, a tuple of (args, kwargs), bytes, "
-                "or a str."
-            )
+
+        raise ValueError(
+            "Last processor didn't return an appropriate value.  Valid "
+            "return values are a dict, a tuple of (args, kwargs), bytes, "
+            "or a str."
+        )
 
     def _proxy_to_logger(
         self, method_name: str, event: str | None = None, **event_kw: Any
@@ -205,7 +204,7 @@ class BoundLoggerBase:
             args, kw = self._process_event(method_name, event, event_kw)
             return getattr(self._logger, method_name)(*args, **kw)
         except DropEvent:
-            return
+            return None
 
 
 def get_context(bound_logger: BindableLogger) -> Context:

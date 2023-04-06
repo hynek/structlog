@@ -108,8 +108,8 @@ class ReturnLogger:
         # Slightly convoluted for backwards compatibility.
         if len(args) == 1 and not kw:
             return args[0]
-        else:
-            return args, kw
+
+        return args, kw
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg

@@ -114,10 +114,7 @@ class _FixedFindCallerLogger(logging.Logger):
         """
         sinfo: str | None
         f, name = _find_first_app_frame_and_name(["logging"])
-        if stack_info:
-            sinfo = _format_stack(f)
-        else:
-            sinfo = None
+        sinfo = _format_stack(f) if stack_info else None
 
         return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
 
@@ -788,7 +785,7 @@ def add_logger_name(
 
 
 _LOG_RECORD_KEYS = logging.LogRecord(
-    "name", 0, "pathname", 0, "msg", tuple(), None
+    "name", 0, "pathname", 0, "msg", (), None
 ).__dict__.keys()
 
 
