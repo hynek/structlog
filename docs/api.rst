@@ -277,7 +277,7 @@ API Reference
 .. autofunction:: get_logger
 
 .. autoclass:: BoundLogger
-   :members: bind, unbind, try_unbind, new, debug, info, warning, warn, error, critical, exception, log
+   :members: bind, unbind, try_unbind, new, debug, info, warning, warn, error, critical, exception, log, adebug, ainfo, awarning, aerror, acritical, aexception, alog
 
 .. autoclass:: AsyncBoundLogger
 

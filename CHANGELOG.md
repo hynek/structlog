@@ -15,6 +15,11 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/22.3.0...HEAD)
 
+### Added
+
+- `structlog.stdlib.BoundLogger` now has, analogously to our native logger, a full set of async log methods prefixed with an `a`: `await log.ainfo("event!")`
+
+
 ### Fixed
 
 - ConsoleRenderer now reuses the `_figure_out_exc_info` to process the `exc_info` argument like `ExceptionRenderer` does.
