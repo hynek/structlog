@@ -9,6 +9,7 @@ Global state department.  Don't reload this module or everything breaks.
 
 from __future__ import annotations
 
+import os
 import sys
 import warnings
 
@@ -35,10 +36,13 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
-        colors=_has_colors
-        and sys.stdout is not None
-        and hasattr(sys.stdout, "isatty")
-        and sys.stdout.isatty()
+        colors=os.environ.get("FORCE_COLOR", "0").lower() in ("1", "true")
+        or (
+            _has_colors
+            and sys.stdout is not None
+            and hasattr(sys.stdout, "isatty")
+            and sys.stdout.isatty()
+        )
     ),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)

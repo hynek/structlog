@@ -199,3 +199,29 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+
+
+  check-force-colors:
+    needs: build-sdist
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get source code from pre-built sdist
+        uses: re-actors/checkout-python-sdist@release/v1
+        with:
+          source-tarball-name: ${{ env.sdist-name }}
+          workflow-artifact-name: ${{ env.sdist-artifact }}
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.PYTHON_LATEST}}
+
+      - name: check colors
+        shell: python
+        run: |
+          import structlog
+
+          logger = structlog.get_logger()
+          logger.info("hello", name="me", age=123)
+          logger.warning("bye", name="me", age=123)
+          logger.error("ohno", name="me", age=123)
