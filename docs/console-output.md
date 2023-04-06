@@ -47,6 +47,17 @@ structlog.configure(
 ```
 
 
+## Standard Environment Variables
+
+*structlog*'s default configuration uses colors if standard out is a TTY (i.e. an interactive session).
+
+It's possible to override this behavior by setting two standard environment variables to any value except an empty string:
+
+- `FORCE_COLOR` *activates* colors, regardless of where output is going.
+- [`NO_COLOR`](https://no-color.org) *disables* colors, regardless of where the output is going and regardless the value of `FORCE_COLOR`.
+  Please note that `NO_COLOR` disables _all_ styling, including bold and italics.
+
+
 ## Disabling Exception Pretty-Printing
 
 If you prefer the default terse Exception rendering, but still want *Rich* installed, you can disable the pretty-printing by instantiating {class}`structlog.dev.ConsoleRenderer()` yourself and passing `exception_formatter=structlog.dev.plain_traceback`.
