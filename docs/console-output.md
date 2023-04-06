@@ -51,7 +51,7 @@ structlog.configure(
 
 *structlog*'s default configuration uses colors if standard out is a TTY (i.e. an interactive session).
 
-It is possible to override this behavior by setting two standard environment variables to any value except an empty string:
+It's possible to override this behavior by setting two standard environment variables to any value except an empty string:
 
 - `FORCE_COLOR` *activates* colors, regardless of where output is going.
 - [`NO_COLOR`](https://no-color.org) *disables* colors, regardless of where the output is going and regardless the value of `FORCE_COLOR`.
