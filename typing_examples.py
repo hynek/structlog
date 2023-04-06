@@ -309,6 +309,18 @@ async def typecheck_filtering_return_async() -> None:
     await fblogger.alog(logging.CRITICAL, "async log")
 
 
+async def typecheck_stdlib_async() -> None:
+    logger: structlog.stdlib.BoundLogger = structlog.get_logger(__name__)
+    await logger.adebug("async debug")
+    await logger.ainfo("async info")
+    await logger.awarning("async warning")
+    await logger.aerror("async error")
+    await logger.afatal("fatal error")
+    await logger.aexception("async exception")
+    await logger.acritical("async critical")
+    await logger.alog(logging.CRITICAL, "async log")
+
+
 # Structured tracebacks and ExceptionRenderer with ExceptionDictTransformer
 struct_tb: structlog.tracebacks.Trace = structlog.tracebacks.extract(
     ValueError, ValueError("onoes"), None
