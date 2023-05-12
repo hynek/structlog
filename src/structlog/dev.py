@@ -169,7 +169,7 @@ def plain_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    Used by default if neither *Rich* not *better-exceptions* are present.
+    Used by default if neither *Rich* nor *better-exceptions* are present.
 
     .. versionadded:: 21.2
     """
