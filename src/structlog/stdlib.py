@@ -1006,7 +1006,7 @@ class ProcessorFormatter(logging.Formatter):
             # We need to copy because it's possible that the same record gets
             # processed by multiple logging formatters.  LogRecord.getMessage
             # would transform our dict into a str.
-            ed = record.msg.copy()  # type: ignore[attr-defined]
+            ed = record.msg.copy()  # type: ignore[union-attr]
             ed["_record"] = record
             ed["_from_structlog"] = True
         else:
