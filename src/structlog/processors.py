@@ -167,8 +167,8 @@ class LogfmtRenderer:
         return " ".join(elements)
 
     def _escape_double_quotes(self, text: str) -> str:
-        value = f"{text}".replace(r"\"", r"\\\"")
-        return self._double_quotes_without_backslash_prefix.sub(r"\"", value)
+        value = f"{text}".replace(r'\"', r'\\\"')
+        return self._double_quotes_without_backslash_prefix.sub(r'\"', value)
 
 
 def _items_sorter(
