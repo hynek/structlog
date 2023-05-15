@@ -276,6 +276,16 @@ class TestLogfmtRenderer:
             == rv
         )
 
+    def test_double_quotes_escaping(self):
+        """
+        Text containing double quotes and escaped double quotes
+        should be rendered correctly
+        """
+        string_with_quotes = r'"example": "this \"should\" work!"'
+        event_dict = {"exception": string_with_quotes}
+        rv = LogfmtRenderer()(None, None, event_dict)
+        assert r'exception="\"example\": \"this \\\"should\\\" work!\""' == rv
+
     def test_invalid_key(self):
         """
         Keys cannot contain space characters.
