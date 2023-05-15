@@ -16,10 +16,10 @@ import json
 import logging
 import operator
 import os
+import re
 import sys
 import threading
 import time
-import re
 
 from typing import (
     Any,
@@ -169,8 +169,8 @@ class LogfmtRenderer:
         return " ".join(elements)
 
     def _escape_double_quotes(self, text: str) -> str:
-        value = f"{text}".replace(r'\"', r'\\\"')
-        return self._double_quotes_without_backslash_prefix.sub(r'\"', value)
+        value = f"{text}".replace(r"\"", r"\\\"")
+        return self._double_quotes_without_backslash_prefix.sub(r"\"", value)
 
 
 def _items_sorter(
