@@ -15,6 +15,9 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/23.1.0...HEAD)
 
+### Fixed
+- `structlog.processors.LogfmtRenderer` now correctly renders escaped double quotes.
+  [#511](https://github.com/hynek/structlog/issues/511)
 
 ## [23.1.0](https://github.com/hynek/structlog/compare/22.3.0...23.1.0) - 2023-04-06
 
