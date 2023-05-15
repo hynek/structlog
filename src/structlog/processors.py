@@ -141,7 +141,9 @@ class LogfmtRenderer:
         self.bool_as_flag = bool_as_flag
         self._double_quotes_without_backslash_prefix = re.compile(r'(?<!\\)"')
 
-    def __call__(self, _: WrappedLogger, __: str, event_dict: EventDict) -> str:
+    def __call__(
+        self, _: WrappedLogger, __: str, event_dict: EventDict
+    ) -> str:
         elements: list[str] = []
         for key, value in self._ordered_items(event_dict):
             if any(c <= " " for c in key):
@@ -217,6 +219,7 @@ def _items_sorter(
         ordered_items = operator.methodcaller(  # type: ignore[assignment]
             "items"
         )
+
     return ordered_items
 
 
