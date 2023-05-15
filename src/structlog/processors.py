@@ -19,6 +19,7 @@ import os
 import sys
 import threading
 import time
+import re
 
 from typing import (
     Any,
@@ -138,10 +139,9 @@ class LogfmtRenderer:
     ):
         self._ordered_items = _items_sorter(sort_keys, key_order, drop_missing)
         self.bool_as_flag = bool_as_flag
+        self._double_quotes_without_backslash_prefix = re.compile(r'(?<!\\)"')
 
-    def __call__(
-        self, _: WrappedLogger, __: str, event_dict: EventDict
-    ) -> str:
+    def __call__(self, _: WrappedLogger, __: str, event_dict: EventDict) -> str:
         elements: list[str] = []
         for key, value in self._ordered_items(event_dict):
             if any(c <= " " for c in key):
@@ -157,7 +157,7 @@ class LogfmtRenderer:
                     continue
                 value = "true" if value else "false"
 
-            value = f"{value}".replace('"', '\\"')
+            value = self._escape_double_quotes(value)
 
             if " " in value or "=" in value:
                 value = f'"{value}"'
@@ -165,6 +165,10 @@ class LogfmtRenderer:
             elements.append(f"{key}={value}")
 
         return " ".join(elements)
+
+    def _escape_double_quotes(self, text: str) -> str:
+        value = f"{text}".replace(r"\"", r"\\\"")
+        return self._double_quotes_without_backslash_prefix.sub(r"\"", value)
 
 
 def _items_sorter(
@@ -210,9 +214,7 @@ def _items_sorter(
             return sorted(event_dict.items())
 
     else:
-        ordered_items = operator.methodcaller(  # type: ignore[assignment]
-            "items"
-        )
+        ordered_items = operator.methodcaller("items")
 
     return ordered_items
 
