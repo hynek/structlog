@@ -214,8 +214,9 @@ def _items_sorter(
             return sorted(event_dict.items())
 
     else:
-        ordered_items = operator.methodcaller("items")
-
+        ordered_items = operator.methodcaller(  # type: ignore[assignment]
+            "items"
+        )
     return ordered_items
 
 
