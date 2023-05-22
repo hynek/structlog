@@ -15,6 +15,11 @@ You can find out backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/23.1.0...HEAD)
 
+### Added
+
+- Official support for Python 3.12.
+  [#515](https://github.com/hynek/structlog/issues/515)
+
 
 ## [23.1.0](https://github.com/hynek/structlog/compare/22.3.0...23.1.0) - 2023-04-06
 
