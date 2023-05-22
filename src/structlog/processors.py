@@ -477,7 +477,7 @@ def _make_stamper(
     if utc:
 
         def now() -> datetime.datetime:
-            return datetime.datetime.utcnow()
+            return datetime.datetime.now(tz=datetime.timezone.utc)
 
     else:
 
@@ -500,7 +500,7 @@ def _make_stamper(
             return event_dict
 
         def stamper_iso_utc(event_dict: EventDict) -> EventDict:
-            event_dict[key] = now().isoformat() + "Z"
+            event_dict[key] = now().isoformat().replace("+00:00", "Z")
             return event_dict
 
         if utc:

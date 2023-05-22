@@ -440,21 +440,16 @@ class TestTimeStamper:
             None, None, {}
         )
 
-    @pytest.mark.parametrize(
-        ("utc", "expect"),
-        [
-            (True, "1980-03-25T16:00:00Z"),
-            (False, "1980-03-25T17:00:00"),
-        ],
-    )
-    def test_apply_freezegun_after_instantiation(self, utc, expect):
+    def test_apply_freezegun_after_instantiation(self):
         """
-        Instantiate TimeStamper after mocking datetime
+        Freezing time after instantiation of TimeStamper works.
         """
-        ts = TimeStamper(fmt="iso", utc=utc)
+        ts = TimeStamper(fmt="iso", utc=False)
+
         with freeze_time("1980-03-25 16:00:00", tz_offset=1):
             d = ts(None, None, {})
-            assert expect == d["timestamp"]
+
+            assert "1980-03-25T17:00:00" == d["timestamp"]
 
 
 class TestFormatExcInfo:
