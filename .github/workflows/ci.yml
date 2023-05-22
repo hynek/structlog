@@ -60,6 +60,7 @@ jobs:
           - "3.9"
           - "3.10"
           - "3.11"
+          - "3.12"
 
     steps:
       - name: Get source code from pre-built sdist
@@ -71,6 +72,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
       - run: python -Im pip install --upgrade wheel tox
 
       - run: python -Im tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
