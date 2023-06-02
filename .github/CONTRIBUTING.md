@@ -41,7 +41,15 @@ The official tag is `structlog` and helping out in support frees us up to improv
 
 You can (and should) run our test suite using [*tox*].
 However, you’ll probably want a more traditional environment as well.
-We highly recommend to develop using the latest Python release because we try to take advantage of modern features whenever possible.
+
+First, create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation.
+We recommend using the Python version from the `.python-version` file in project's root directory.
+
+If you're using [*direnv*](https://direnv.net), you can automate the creation of a virtual environment with the correct Python version by adding the following `.envrc` to the project root:
+
+```bash
+layout python python$(cat .python-version)
+```
 
 Clone the *structlog* repository:
 

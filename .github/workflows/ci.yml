@@ -13,12 +13,14 @@ env:
   TOX_TESTENV_PASSENV: FORCE_COLOR
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
   PIP_NO_PYTHON_VERSION_WARNING: "1"
-  PYTHON_LATEST: "3.11"
 
   # For re-actors/checkout-python-sdist
   SETUPTOOLS_SCM_PRETEND_VERSION: "1.0"  # hard-code version for predictable sdist names
   sdist-artifact: python-package-distributions
   sdist-name: structlog-1.0.tar.gz
+
+  # N.B. default Python version for setup-python comes from the .python-version
+  # file at the root of the project.
 
 permissions:
   contents: read
@@ -31,8 +33,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_LATEST }}
       - run: python -Im pip install build
 
       - run: python -Im build --sdist
@@ -97,9 +97,6 @@ jobs:
           workflow-artifact-name: ${{ env.sdist-artifact }}
 
       - uses: actions/setup-python@v4
-        with:
-          # Use latest Python, so it understands all syntax.
-          python-version: ${{env.PYTHON_LATEST}}
 
       - run: python -Im pip install --upgrade coverage[toml]
 
@@ -182,8 +179,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with:
-          python-version: ${{env.PYTHON_LATEST}}
+
       - run: python -Im pip install -e .[dev]
       - run: python -Ic 'import structlog; print(structlog.__version__)'
 
@@ -217,8 +213,6 @@ jobs:
           source-tarball-name: ${{ env.sdist-name }}
           workflow-artifact-name: ${{ env.sdist-artifact }}
       - uses: actions/setup-python@v4
-        with:
-          python-version: ${{env.PYTHON_LATEST}}
       - run: python -Im pip install tox wheel
 
       - run: tox -f color
