@@ -147,9 +147,9 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
 
 ## Documentation
 
-- We use [*Markdown*] everywhere except in `docs/api.rst` and docstrings.
+- We use [Markdown] everywhere except in `docs/api.rst` and docstrings.
 
-- Use [semantic newlines] in [*reStructuredText*] and [*Markdown*] files (files ending in `.rst` and `.md`):
+- Use [semantic newlines] in [*reStructuredText*] and [Markdown] files (files ending in `.rst` and `.md`):
 
   ```markdown
   This is a sentence.
@@ -216,4 +216,4 @@ or:
 [*tox*]: https://tox.wiki/
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
 [*reStructuredText*]: https://www.sphinx-doc.org/en/stable/usage/restructuredtext/basics.html
-[*Markdown*]: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+[Markdown]: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
