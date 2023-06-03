@@ -85,7 +85,7 @@ class PrintLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: dict[Any, Any] = {}) -> PrintLogger:
+    def __deepcopy__(self, memodict: dict[str, object]) -> PrintLogger:
         """
         Create a new PrintLogger with the same attributes. Similar to pickling.
         """
@@ -189,7 +189,7 @@ class WriteLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: dict[Any, Any] = {}) -> WriteLogger:
+    def __deepcopy__(self, memodict: dict[str, object]) -> WriteLogger:
         """
         Create a new WriteLogger with the same attributes. Similar to pickling.
         """
@@ -291,7 +291,7 @@ class BytesLogger:
         self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
-    def __deepcopy__(self, memodict: dict[Any, Any] = {}) -> BytesLogger:
+    def __deepcopy__(self, memodict: dict[str, object]) -> BytesLogger:
         """
         Create a new BytesLogger with the same attributes. Similar to pickling.
         """

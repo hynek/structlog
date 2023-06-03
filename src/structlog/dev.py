@@ -95,13 +95,8 @@ else:
     GREEN = "\033[32m"
     RED_BACK = "\033[41m"
 
-
-if _IS_WINDOWS:  # pragma: no cover
-    # On Windows, use colors by default only if Colorama is installed.
-    _has_colors = colorama is not None
-else:
-    # On other OSes, use colors by default.
-    _has_colors = True
+# On Windows, colors are only available if Colorama is installed.
+_has_colors = not _IS_WINDOWS or colorama is not None
 
 # Prevent breakage of packages that used the old name of the variable.
 _use_colors = _has_colors

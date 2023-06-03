@@ -563,7 +563,7 @@ class TestExtraAdder:
         [
             (None, None),
             ({}, None),
-            *[({key}, None) for key in extra_dict().keys()],
+            *[({key}, None) for key in extra_dict()],
             ({"missing"}, {"missing"}),
             ({"missing", "keys"}, {"missing"}),
             ({"this", "x_int"}, None),
@@ -605,7 +605,7 @@ class TestExtraAdder:
         [
             (None, None),
             ({}, None),
-            *[({key}, None) for key in extra_dict().keys()],
+            *[({key}, None) for key in extra_dict()],
             ({"missing"}, {"missing"}),
             ({"missing", "keys"}, {"missing"}),
             ({"this", "x_int"}, None),
@@ -657,15 +657,13 @@ class TestExtraAdder:
     ) -> EventDict:
         if allow is None:
             return {**event_dict, **extra_dict}
-        else:
-            return {
-                **event_dict,
-                **{
-                    key: value
-                    for key, value in extra_dict.items()
-                    if key in allow
-                },
-            }
+
+        return {
+            **event_dict,
+            **{
+                key: value for key, value in extra_dict.items() if key in allow
+            },
+        }
 
 
 class TestRenderToLogKW:
@@ -738,7 +736,7 @@ def configure_logging(
     pre_chain,
     logger=None,
     pass_foreign_args=False,
-    renderer=ConsoleRenderer(colors=False),
+    renderer=ConsoleRenderer(colors=False),  # noqa: B008
 ):
     """
     Configure logging to use ProcessorFormatter.
@@ -831,7 +829,7 @@ class TestProcessorFormatter:
         If `pass_foreign_args` is `True` we set the `positional_args` key in
         the `event_dict` before clearing args.
         """
-        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        test_processor = call_recorder(lambda _, __, event_dict: event_dict)
         configure_logging((test_processor,), pass_foreign_args=True)
 
         positional_args = {"foo": "bar"}
@@ -910,7 +908,7 @@ class TestProcessorFormatter:
         If non-structlog record contains exc_info, foreign_pre_chain functions
         have access to it.
         """
-        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        test_processor = call_recorder(lambda _, __, event_dict: event_dict)
         configure_logging((test_processor,), renderer=KeyValueRenderer())
 
         try:
@@ -929,26 +927,26 @@ class TestProcessorFormatter:
         ProcessorFormatter should not have changed it.
         """
 
-        class MyException(Exception):
+        class MyError(Exception):
             pass
 
         def add_excinfo(logger, log_method, event_dict):
             event_dict["exc_info"] = sys.exc_info()
             return event_dict
 
-        test_processor = call_recorder(lambda l, m, event_dict: event_dict)
+        test_processor = call_recorder(lambda _, __, event_dict: event_dict)
         configure_logging(
             (add_excinfo, test_processor), renderer=KeyValueRenderer()
         )
 
         try:
-            raise MyException("oh no")
+            raise MyError("oh no")
         except Exception:
             logging.getLogger().error("okay")
 
         event_dict = test_processor.calls[0].args[2]
 
-        assert MyException is event_dict["exc_info"][0]
+        assert MyError is event_dict["exc_info"][0]
 
     def test_other_handlers_get_original_record(self):
         """
@@ -1154,10 +1152,7 @@ class TestAsyncBoundLogger:
         aliases = {"exception": "error", "warn": "warning"}
 
         alias = aliases.get(stdlib_log_method)
-        if alias:
-            expect = alias
-        else:
-            expect = stdlib_log_method
+        expect = alias if alias else stdlib_log_method
 
         assert expect == cl.calls[0].method_name
 

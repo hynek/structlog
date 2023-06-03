@@ -201,7 +201,7 @@ def test_raise_nested():
         try:
             1 / 0
         except ArithmeticError:
-            raise ValueError("onoes")
+            raise ValueError("onoes")  # noqa: B904
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -274,7 +274,7 @@ def test_syntax_error():
     """
     try:
         # raises SyntaxError: invalid syntax
-        eval("2 +* 2")
+        eval("2 +* 2")  # noqa: PGH001
     except SyntaxError as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -308,7 +308,7 @@ def test_filename_with_bracket():
     Filenames with brackets (e.g., "<string>") are handled properly.
     """
     try:
-        exec(compile("1/0", filename="<string>", mode="exec"))
+        exec(compile("1/0", filename="<string>", mode="exec"))  # noqa: S102
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -343,7 +343,7 @@ def test_filename_not_a_file():
     "Invalid" filenames are appended to CWD as if they were actual files.
     """
     try:
-        exec(compile("1/0", filename="string", mode="exec"))
+        exec(compile("1/0", filename="string", mode="exec"))  # noqa: S102
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
@@ -478,7 +478,7 @@ def test_json_traceback():
 
 def test_json_traceback_locals_max_string():
     try:
-        _var = "spamspamspam"  # noqa
+        _var = "spamspamspam"
         1 / 0
     except Exception as e:
         result = tracebacks.ExceptionDictTransformer(locals_max_string=4)(

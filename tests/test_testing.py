@@ -64,9 +64,8 @@ class TestCaptureLogs:
         """
         orig_procs = self.get_active_procs()
 
-        with pytest.raises(NotImplementedError):
-            with testing.capture_logs():
-                raise NotImplementedError("from test")
+        with pytest.raises(NotImplementedError), testing.capture_logs():
+            raise NotImplementedError("from test")
 
         assert orig_procs is self.get_active_procs()
 

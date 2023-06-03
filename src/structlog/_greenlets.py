@@ -30,7 +30,7 @@ class GreenThreadLocal:
         try:
             return self._weakdict[key][name]
         except KeyError:
-            raise AttributeError(name)
+            raise AttributeError(name) from None
 
     def __setattr__(self, name: str, val: Any) -> None:
         key = getcurrent()
@@ -41,4 +41,4 @@ class GreenThreadLocal:
         try:
             del self._weakdict[key][name]
         except KeyError:
-            raise AttributeError(name)
+            raise AttributeError(name) from None

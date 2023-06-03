@@ -56,7 +56,7 @@ class Frame:
 
 
 @dataclass
-class SyntaxError_:
+class SyntaxError_:  # noqa: N801
     """
     Contains detailed information about :exc:`SyntaxError` exceptions.
     """

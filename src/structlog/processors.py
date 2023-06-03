@@ -171,7 +171,7 @@ def _items_sorter(
     sort_keys: bool,
     key_order: Sequence[str] | None,
     drop_missing: bool,
-) -> Callable[[EventDict], list[tuple[str, Any]]]:
+) -> Callable[[EventDict], list[tuple[str, object]]]:
     """
     Return a function to sort items from an ``event_dict``.
 
@@ -214,7 +214,7 @@ def _items_sorter(
             "items"
         )
 
-    return ordered_items
+    return ordered_items  # noqa: RET504
 
 
 class UnicodeEncoder:
@@ -482,7 +482,8 @@ def _make_stamper(
     else:
 
         def now() -> datetime.datetime:
-            return datetime.datetime.now()
+            # A naive local datetime is fine here, because we only format it.
+            return datetime.datetime.now()  # noqa: DTZ005
 
     if fmt is None:
 

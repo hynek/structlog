@@ -1026,12 +1026,12 @@ class TestCallsiteParameterAdder:
             return CallsiteParameterAdder(
                 additional_ignores=additional_ignores
             )
-        else:
-            parameters = cls.filter_parameters(parameter_strings)
-            return CallsiteParameterAdder(
-                parameters=parameters,
-                additional_ignores=additional_ignores,
-            )
+
+        parameters = cls.filter_parameters(parameter_strings)
+        return CallsiteParameterAdder(
+            parameters=parameters,
+            additional_ignores=additional_ignores,
+        )
 
     @classmethod
     def filter_parameters(

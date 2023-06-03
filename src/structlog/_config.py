@@ -36,9 +36,9 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
-        colors=os.environ.get("NO_COLOR", "") == ""
+        colors=os.environ.get("NO_COLOR", "") == ""  # noqa: PLC1901
         and (
-            os.environ.get("FORCE_COLOR", "") != ""
+            os.environ.get("FORCE_COLOR", "") != ""  # noqa: PLC1901
             or (
                 _has_colors
                 and sys.stdout is not None
@@ -134,7 +134,7 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
     return wrap_logger(None, logger_factory_args=args, **initial_values)
 
 
-getLogger = get_logger
+getLogger = get_logger  # noqa: N816
 """
 CamelCase alias for `structlog.get_logger`.
 

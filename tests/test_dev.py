@@ -366,7 +366,7 @@ class TestConsoleRenderer:
                 elif explicit_ei == "exception":
                     ei = e
                 else:
-                    raise ValueError()
+                    raise ValueError() from None
         else:
             ei = True
 

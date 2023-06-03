@@ -89,14 +89,15 @@ class TestTmpBind:
         tmp_bind cleans up properly on exceptions.
         """
         log = log.bind(y=23)
-        with pytest.raises(ValueError), pytest.deprecated_call():
-            with tmp_bind(log, x=42, y="foo") as tmp_log:
-                assert (
-                    {"y": "foo", "x": 42}
-                    == tmp_log._context._dict
-                    == log._context._dict
-                )
-                raise ValueError
+        with pytest.raises(ValueError), pytest.deprecated_call(), tmp_bind(
+            log, x=42, y="foo"
+        ) as tmp_log:
+            assert (
+                {"y": "foo", "x": 42}
+                == tmp_log._context._dict
+                == log._context._dict
+            )
+            raise ValueError
 
         assert {"y": 23} == log._context._dict
 
@@ -408,9 +409,8 @@ class TestBoundThreadlocal:
         """
         Bindings are cleaned up
         """
-        with pytest.deprecated_call():
-            with bound_threadlocal(x=42, y="foo"):
-                assert {"x": 42, "y": "foo"} == get_threadlocal()
+        with pytest.deprecated_call(), bound_threadlocal(x=42, y="foo"):
+            assert {"x": 42, "y": "foo"} == get_threadlocal()
 
         with pytest.deprecated_call():
             assert {} == get_threadlocal()
@@ -435,10 +435,9 @@ class TestBoundThreadlocal:
         """
         New bindings inside bound_threadlocal are preserved after the clean up
         """
-        with pytest.deprecated_call():
-            with bound_threadlocal(x=42):
-                bind_threadlocal(y="foo")
-                assert {"x": 42, "y": "foo"} == get_threadlocal()
+        with pytest.deprecated_call(), bound_threadlocal(x=42):
+            bind_threadlocal(y="foo")
+            assert {"x": 42, "y": "foo"} == get_threadlocal()
 
         with pytest.deprecated_call():
             assert {"y": "foo"} == get_threadlocal()

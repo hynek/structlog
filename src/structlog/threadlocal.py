@@ -51,13 +51,12 @@ def _deprecated() -> None:
     Raise a warning with best-effort stacklevel adjustment.
     """
     callsite = ""
-    try:
+
+    with contextlib.suppress(Exception):
         f = sys._getframe()
         callsite = f.f_back.f_back.f_globals[  # type: ignore[union-attr]
             "__name__"
         ]
-    except Exception:  # pragma: no cover
-        pass
 
     # Avoid double warnings if TL functions call themselves.
     if callsite == "structlog.threadlocal":

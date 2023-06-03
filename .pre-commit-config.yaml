@@ -12,28 +12,11 @@ repos:
     hooks:
       - id: black
 
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.4.0
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.270
     hooks:
-      - id: pyupgrade
-        args: [--py37-plus]
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        additional_dependencies: [toml]
-
-  - repo: https://github.com/asottile/yesqa
-    rev: v1.4.0
-    hooks:
-      - id: yesqa
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-    - id: flake8
-      exclude: docs/code_examples
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.4
@@ -46,6 +29,5 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: debug-statements
       - id: check-toml
       - id: check-yaml
