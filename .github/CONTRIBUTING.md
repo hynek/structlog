@@ -63,12 +63,18 @@ Or if you prefer to use Git via HTTPS:
 $ git clone https://github.com/YOU/structlog.git
 ```
 
-Change into the newly created directory and after activating a virtual environment install an editable version of *structlog* along with its tests and docs requirements:
+> **Warning**
+> - **Before** you start working on a new pull request, use the "*Sync fork*" button in GitHub's web UI to ensure your fork is up to date.
+> - **Always create a new branch off `main` for each new pull request.**
+>   Yes, you can work on `main` in your fork and submit pull requests.
+>   But this will *inevitably* lead to you not being able to synchronize your fork with upstream and having to start over.
+
+Change into the newly created directory and after activating a virtual environment, install an editable version of *structlog* along with its tests and docs requirements:
 
 ```console
 $ cd structlog
-$ pip install --upgrade pip wheel  # PLEASE don't skip this step
-$ pip install -e '.[dev]'
+$ python -Im pip install --upgrade pip wheel  # PLEASE don't skip this step
+$ python -Im pip install -e '.[dev]'
 ```
 
 At this point,
@@ -102,12 +108,6 @@ $ pre-commit run --all-files
 
 and our CI has integration with [pre-commit.ci](https://pre-commit.ci).
 But it's way more comfortable to run it locally and catch avoidable errors before pushing them to GitHub.
-
-> **Warning**
-> - **Before** you start working on a new pull request, use the "*Sync fork*" button in GitHub's web UI to ensure your fork is up to date.
-> - **Always create a new branch off `main` for each new pull request.**
->   Yes, you can work on `main` in your fork and submit pull requests.
->   But this will *inevitably* lead to you not being able to synchronize your fork with upstream and having to start over.
 
 
 ## Code
