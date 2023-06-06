@@ -77,9 +77,6 @@ formatter = structlog.stdlib.ProcessorFormatter(
             set(CallsiteParameter), ["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
-            set(CallsiteParameter), additional_ignores=["threading"]
-        ),
-        structlog.processors.CallsiteParameterAdder(
             parameters=set(CallsiteParameter), additional_ignores=["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
