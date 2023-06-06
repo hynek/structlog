@@ -96,13 +96,6 @@ formatter = structlog.stdlib.ProcessorFormatter(
                 CallsiteParameter.LINENO,
             ]
         ),
-        structlog.processors.CallsiteParameterAdder(
-            parameters=[
-                CallsiteParameter.FILENAME,
-                CallsiteParameter.FUNC_NAME,
-                CallsiteParameter.LINENO,
-            ]
-        ),
     ],
 )
 
