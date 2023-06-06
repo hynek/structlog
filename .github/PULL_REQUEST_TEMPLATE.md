@@ -15,7 +15,7 @@ If an item doesn't apply to your pull request, **check it anyway** to make it ap
 
 - [ ] Added **tests** for changed code.
     - The CI fails with less than 100% coverage.
-- [ ] **New APIs** are added to [`typing_examples.py`](https://github.com/hynek/structlog/blob/main/tests/typing_examples.py).
+- [ ] **New APIs** are added to [`api.py`](https://github.com/hynek/structlog/blob/main/tests/typing/api.py).
 - [ ] Updated **documentation** for changed code.
     - [ ] New functions/classes have to be added to `docs/api.rst` by hand.
     - [ ] Changed/added classes/methods/functions have appropriate `versionadded`, `versionchanged`, or `deprecated` [directives](http://www.sphinx-doc.org/en/stable/markup/para.html#directive-versionadded).
