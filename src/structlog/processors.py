@@ -214,7 +214,7 @@ def _items_sorter(
             "items"
         )
 
-    return ordered_items  # noqa: RET504
+    return ordered_items
 
 
 class UnicodeEncoder:
