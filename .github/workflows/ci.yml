@@ -33,6 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
+        with:
+          cache: pip
       - run: python -Im pip install build
 
       - run: python -Im build --sdist
@@ -73,6 +75,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
+          cache: pip
       - run: python -Im pip install --upgrade wheel tox
 
       - run: python -Im tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
@@ -97,6 +100,8 @@ jobs:
           workflow-artifact-name: ${{ env.sdist-artifact }}
 
       - uses: actions/setup-python@v4
+        with:
+          cache: pip
 
       - run: python -Im pip install --upgrade coverage[toml]
 
@@ -147,6 +152,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
+          cache: pip
       - run: python -Im pip install --upgrade wheel tox
 
       - run: python -Im tox -e mypy
@@ -165,6 +171,7 @@ jobs:
         with:
           # Keep in sync with tox.ini/docs & readthedocs.yaml
           python-version: "3.11"
+          cache: pip
       - run: python -Im pip install --upgrade wheel tox
 
       - run: python -Im tox -e docs
@@ -179,6 +186,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
+        with:
+          cache: pip
 
       - run: python -Im pip install -e .[dev]
       - run: python -Ic 'import structlog; print(structlog.__version__)'
@@ -213,6 +222,8 @@ jobs:
           source-tarball-name: ${{ env.sdist-name }}
           workflow-artifact-name: ${{ env.sdist-artifact }}
       - uses: actions/setup-python@v4
+        with:
+          cache: pip
       - run: python -Im pip install tox wheel
 
       - run: tox -f color
