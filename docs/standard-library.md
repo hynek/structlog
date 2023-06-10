@@ -154,7 +154,6 @@ Chances are, this is all you need.
 :align: center
 
 flowchart TD
-    %%{ init: {'theme': 'neutral'} }%%
     User
     structlog
     stdlib[Standard Library\ne.g. logging.StreamHandler]
@@ -249,7 +248,6 @@ You can choose to use *structlog* only for building the event dictionary and lea
 :align: center
 
 flowchart TD
-    %%{ init: {'theme': 'neutral'} }%%
     User
     structlog
     stdlib[Standard Library\ne.g. logging.StreamHandler]
@@ -331,7 +329,6 @@ Consequently, the output is the duty of the standard library too.
 :align: center
 
 flowchart TD
-    %%{ init: {'theme': 'neutral'} }%%
     User
     structlog
     structlog2[structlog]
