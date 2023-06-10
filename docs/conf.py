@@ -28,6 +28,7 @@ myst_enable_extensions = [
     "smartquotes",
     "deflist",
 ]
+mermaid_init_js = "mermaid.initialize({startOnLoad:true,theme:'neutral'});"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
