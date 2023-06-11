@@ -154,7 +154,7 @@ jobs:
           cache: pip
       - run: python -Im pip install --upgrade wheel tox
 
-      - run: python -Im tox -e mypy
+      - run: python -Im tox run -e mypy
 
   docs:
     name: Build docs & run doctests
@@ -173,7 +173,7 @@ jobs:
           cache: pip
       - run: python -Im pip install --upgrade wheel tox
 
-      - run: python -Im tox -e docs
+      - run: python -Im tox run -e docs
 
   install-dev:
     name: Verify dev env
@@ -225,4 +225,4 @@ jobs:
           cache: pip
       - run: python -Im pip install tox wheel
 
-      - run: tox -f color
+      - run: tox run -f color
