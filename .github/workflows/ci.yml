@@ -75,7 +75,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
           cache: pip
-      - run: python -Im pip install --upgrade wheel tox
+      - run: python -Im pip install tox
 
       - run: python -Im tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
@@ -152,7 +152,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
           cache: pip
-      - run: python -Im pip install --upgrade wheel tox
+      - run: python -Im pip install tox
 
       - run: python -Im tox run -e mypy
 
@@ -171,7 +171,7 @@ jobs:
           # Keep in sync with tox.ini/docs & readthedocs.yaml
           python-version: "3.11"
           cache: pip
-      - run: python -Im pip install --upgrade wheel tox
+      - run: python -Im pip install tox
 
       - run: python -Im tox run -e docs
 
@@ -223,6 +223,6 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           cache: pip
-      - run: python -Im pip install tox wheel
+      - run: python -Im pip install tox
 
-      - run: tox run -f color
+      - run: python -Im tox run -f color
