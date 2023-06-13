@@ -96,8 +96,6 @@ The idea of bound loggers is inspired by previous work by [Jean-Paul Calderone](
 
 The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=referral&utm_campaign=readme), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
 
-A full list of contributors can be found in GitHub’s [overview](https://github.com/hynek/structlog/graphs/contributors).
-
 The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Magee](https://github.com/freakboy3742).
 
 
