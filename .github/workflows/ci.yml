@@ -62,6 +62,7 @@ jobs:
           - "3.10"
           - "3.11"
           - "3.12"
+          - "pypy-3.9"
 
     steps:
       - name: Get source code from pre-built sdist
@@ -78,9 +79,17 @@ jobs:
 
       - name: Prepare & run tox
         run: |
+          V=${{ matrix.python-version }}
+
+          if [[ "$V" = pypy-* ]]; then
+            V=pypy3
+          else
+            V=py$(echo $V | tr -d .)
+          fi
+
           python -Im pip install tox
 
-          python -Im tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
+          python -Im tox run -f $V
           python -Im tox run -e mypy-api
 
       - name: Upload coverage data
