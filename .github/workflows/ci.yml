@@ -89,6 +89,7 @@ jobs:
 
           python -Im pip install tox
 
+          echo $V
           python -Im tox run -f $V
           python -Im tox run -e mypy-api
 
