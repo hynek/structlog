@@ -12,12 +12,18 @@ structlog.reset_defaults()
 ```
 
 The {mod}`contextvars` module in the Python standard library allows having a global *structlog* context that is local to the current execution context.
-The execution context can be thread-local if using threads, or using primitives based on {mod}`asyncio`, or [*greenlet*](https://greenlet.readthedocs.io/) respectively.
+The execution context can be thread-local if using threads, stored in the {mod}`asyncio` event loop, or [*greenlet*](https://greenlet.readthedocs.io/) respectively.
 
 For example, you may want to bind certain values like a request ID or the peer's IP address at the beginning of a web request and have them logged out along with the local contexts you build within our views.
 
 For that *structlog* provides the {mod}`structlog.contextvars` module with a set of functions to bind variables to a context-local context.
 This context is safe to be used both in threaded as well as asynchronous code.
+
+:::{warning}
+Since the storage mechanics of your context variables is different for each concurrency method, they are _isolated_ from each other.
+
+This can be a problem in hybrid applications like those based on [*starlette*](https://www.starlette.io) (this [includes FastAPI](https://github.com/tiangolo/fastapi/discussions/5999)) where context variables set in a synchronous context don't appear in logs from an async context and vice versa.
+:::
 
 The general flow is:
 
