@@ -16,12 +16,12 @@
    <a href="https://bestpractices.coreinfrastructure.org/projects/6560">
     <img src="https://bestpractices.coreinfrastructure.org/projects/6560/badge">
     </a>
-   <a href="https://pypi.org/project/structlog/">
-      <img src="https://img.shields.io/pypi/v/structlog" alt="PyPI release" />
-   </a>
    <a href="https://doi.org/10.5281/zenodo.7353739">
       <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7353739.svg" alt="DOI">
     </a>
+   <a href="https://pypi.org/project/structlog/">
+      <img src="https://img.shields.io/pypi/pyversions/structlog.svg" alt="Supported Python versions of the current PyPI release." />
+   </a>
    <a href="https://pepy.tech/project/structlog">
       <img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" />
    </a>
@@ -105,7 +105,6 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 
 - **License**: *dual* [Apache License, version 2 **and** MIT](https://www.structlog.org/en/latest/license.html)
 - **Get Help**: please use the *structlog* tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
-- **Supported Python Versions**: 3.7 and later
 - [**PyPI**](https://pypi.org/project/structlog/)
 - [**Source Code**](https://github.com/hynek/structlog)
 - [**Documentation**](https://www.structlog.org/)
