@@ -100,7 +100,7 @@ That class still ships with *structlog* and can wrap *any* logger class by inter
 
 Nowadays, the default is a {class}`structlog.typing.FilteringBoundLogger` that imitates standard library’s log levels with the possibility of efficiently filtering at a certain level (inactive log methods are a plain `return None` each).
 
-If you’re integrating with {mod}`logging` or Twisted, you may was to use one of their specific *bound loggers* ({class}`structlog.stdlib.BoundLogger` and {class}`structlog.twisted.BoundLogger`, respectively).
+If you’re integrating with {mod}`logging` or Twisted, you may want to use one of their specific *bound loggers* ({class}`structlog.stdlib.BoundLogger` and {class}`structlog.twisted.BoundLogger`, respectively).
 
 —
 
