@@ -163,7 +163,7 @@ jobs:
           workflow-artifact-name: ${{ env.sdist-artifact }}
       - uses: actions/setup-python@v4
         with:
-          # Keep in sync with tox.ini/docs & readthedocs.yaml
+          # Keep in sync with tox.ini/docs & .readthedocs.yaml
           python-version: "3.11"
           cache: pip
       - run: python -Im pip install tox
