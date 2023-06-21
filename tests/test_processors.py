@@ -3,6 +3,8 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+from __future__ import annotations
+
 import datetime
 import functools
 import inspect
@@ -15,7 +17,6 @@ import sys
 import threading
 
 from io import StringIO
-from typing import Any, Dict, List, Optional, Set
 
 import pytest
 
@@ -46,6 +47,7 @@ from structlog.stdlib import ProcessorFormatter
 from structlog.threadlocal import wrap_dict
 from structlog.typing import EventDict
 from tests.additional_frame import additional_frame
+from tests.utils import CustomError
 
 
 try:
@@ -284,10 +286,8 @@ class TestLogfmtRenderer:
             "invalid key": "somevalue",
         }
 
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(ValueError, match='Invalid key: "invalid key"'):
             LogfmtRenderer()(None, None, event_dict)
-
-        assert 'Invalid key: "invalid key"' == e.value.args[0]
 
 
 class TestJSONRenderer:
@@ -365,10 +365,10 @@ class TestTimeStamper:
         A asking for a UNIX timestamp with a timezone that's not UTC raises a
         ValueError.
         """
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(
+            ValueError, match="UNIX timestamps are always UTC."
+        ):
             TimeStamper(utc=False)
-
-        assert "UNIX timestamps are always UTC." == e.value.args[0]
 
     def test_inserts_utc_unix_timestamp_by_default(self):
         """
@@ -457,13 +457,16 @@ class TestFormatExcInfo:
         """
         The exception formatter can be changed.
         """
+        formatter = ExceptionRenderer(lambda _: "There is no exception!")
+
         try:
-            raise ValueError("test")
-        except ValueError as e:
-            formatter = ExceptionRenderer(lambda _: "There is no exception!")
-            assert formatter(None, None, {"exc_info": e}) == {
-                "exception": "There is no exception!"
-            }
+            raise CustomError("test")
+        except CustomError as e:
+            exc = e
+
+        assert formatter(None, None, {"exc_info": exc}) == {
+            "exception": "There is no exception!"
+        }
 
     @pytest.mark.parametrize("ei", [False, None, ""])
     def test_nop(self, ei):
@@ -504,17 +507,20 @@ class TestFormatExcInfo:
 
     def test_exception(self):
         """
-        Passing exceptions as exc_info is valid on Python 3.
+        Passing exceptions as exc_info is valid.
         """
+        formatter = ExceptionRenderer(lambda exc_info: exc_info)
+
         try:
             raise ValueError("test")
         except ValueError as e:
-            formatter = ExceptionRenderer(lambda exc_info: exc_info)
-            d = formatter(None, None, {"exc_info": e})
-
-            assert {"exception": (ValueError, e, e.__traceback__)} == d
+            exc = e
         else:
             pytest.fail("Exception not raised.")
+
+        assert {
+            "exception": (ValueError, exc, exc.__traceback__)
+        } == formatter(None, None, {"exc_info": exc})
 
     def test_exception_without_traceback(self):
         """
@@ -695,7 +701,7 @@ class TestExceptionPrettyPrinter:
         assert "XXX" in sio.getvalue()
 
 
-@pytest.fixture
+@pytest.fixture()
 def sir():
     return StackInfoRenderer()
 
@@ -791,7 +797,7 @@ class TestCallsiteParameterAdder:
             "determine the callsite for async calls."
         )
     )
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_async(self) -> None:
         """
         Callsite information for async invocations are correct.
@@ -854,7 +860,7 @@ class TestCallsiteParameterAdder:
         assert expected == actual
 
     @pytest.mark.parametrize(
-        "origin, parameter_strings",
+        ("origin", "parameter_strings"),
         itertools.product(
             ["logging", "structlog"],
             [
@@ -870,7 +876,7 @@ class TestCallsiteParameterAdder:
     def test_processor(
         self,
         origin: str,
-        parameter_strings: Optional[Set[str]],
+        parameter_strings: set[str] | None,
     ):
         """
         The correct callsite parameters are added to event dictionaries.
@@ -917,7 +923,7 @@ class TestCallsiteParameterAdder:
         assert expected == actual
 
     @pytest.mark.parametrize(
-        "setup, origin, parameter_strings",
+        ("setup", "origin", "parameter_strings"),
         itertools.product(
             ["common-without-pre", "common-with-pre", "shared", "everywhere"],
             ["logging", "structlog"],
@@ -935,7 +941,7 @@ class TestCallsiteParameterAdder:
         self,
         setup: str,
         origin: str,
-        parameter_strings: Optional[Set[str]],
+        parameter_strings: set[str] | None,
     ) -> None:
         """
         Logging output contains the correct callsite parameters.
@@ -978,7 +984,7 @@ class TestCallsiteParameterAdder:
             callsite_params = self.get_callsite_parameters()
             logger.info(test_message)
         elif origin == "structlog":
-            ctx: Dict[str, Any] = {}
+            ctx = {}
             bound_logger = BoundLogger(
                 logger,
                 [*common_processors, ProcessorFormatter.wrap_for_formatter],
@@ -1007,8 +1013,8 @@ class TestCallsiteParameterAdder:
     @classmethod
     def make_processor(
         cls,
-        parameter_strings: Optional[Set[str]],
-        additional_ignores: Optional[List[str]] = None,
+        parameter_strings: set[str] | None,
+        additional_ignores: list[str] | None = None,
     ) -> CallsiteParameterAdder:
         """
         Creates a ``CallsiteParameterAdder`` with parameters matching the
@@ -1035,8 +1041,8 @@ class TestCallsiteParameterAdder:
 
     @classmethod
     def filter_parameters(
-        cls, parameter_strings: Optional[Set[str]]
-    ) -> Set[CallsiteParameter]:
+        cls, parameter_strings: set[str] | None
+    ) -> set[CallsiteParameter]:
         """
         Returns a set containing all ``CallsiteParameter`` members with values
         that are in ``parameter_strings``.
@@ -1057,8 +1063,8 @@ class TestCallsiteParameterAdder:
 
     @classmethod
     def filter_parameter_dict(
-        cls, input: Dict[str, Any], parameter_strings: Optional[Set[str]]
-    ) -> Dict[str, Any]:
+        cls, input: dict[str, object], parameter_strings: set[str] | None
+    ) -> dict[str, object]:
         """
         Returns a dictionary that is equivalent to ``input`` but with all keys
         not in ``parameter_strings`` removed.
@@ -1076,7 +1082,7 @@ class TestCallsiteParameterAdder:
         }
 
     @classmethod
-    def get_callsite_parameters(cls, offset: int = 1) -> Dict[str, Any]:
+    def get_callsite_parameters(cls, offset: int = 1) -> dict[str, object]:
         """
         This function creates dictionary of callsite parameters for the line
         that is ``offset`` lines after the invocation of this function.

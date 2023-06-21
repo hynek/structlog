@@ -17,3 +17,4 @@ htmlcov
 tmp
 structlog.docset
 structlog.tgz
+Justfile

@@ -85,7 +85,7 @@ class TestFindFirstAppFrameAndName:
         assert (f1, "?") == (f, n)
 
 
-@pytest.fixture
+@pytest.fixture()
 def exc_info():
     """
     Fake a valid exc_info.

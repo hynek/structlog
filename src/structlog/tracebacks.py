@@ -94,7 +94,7 @@ def safe_str(_object: Any) -> str:
     """Don't allow exceptions from __str__ to propegate."""
     try:
         return str(_object)
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001
         return f"<str-error {str(error)!r}>"
 
 
@@ -105,7 +105,7 @@ def to_repr(obj: Any, max_string: int | None = None) -> str:
     else:
         try:
             obj_repr = repr(obj)
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001
             obj_repr = f"<repr-error {str(error)!r}>"
 
     if max_string is not None and len(obj_repr) > max_string:
@@ -231,11 +231,11 @@ class ExceptionDictTransformer:
         max_frames: int = MAX_FRAMES,
     ) -> None:
         if locals_max_string < 0:
-            raise ValueError(
-                f'"locals_max_string" must be >= 0: {locals_max_string}'
-            )
+            msg = f'"locals_max_string" must be >= 0: {locals_max_string}'
+            raise ValueError(msg)
         if max_frames < 2:
-            raise ValueError(f'"max_frames" must be >= 2: {max_frames}')
+            msg = f'"max_frames" must be >= 2: {max_frames}'
+            raise ValueError(msg)
         self.show_locals = show_locals
         self.locals_max_string = locals_max_string
         self.max_frames = max_frames

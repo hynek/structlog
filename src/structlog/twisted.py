@@ -311,9 +311,9 @@ class EventAdapter:
     ) -> Any:
         if name == "err":
             # This aspires to handle the following cases correctly:
-            #   - log.err(failure, _why='event', **kw)
-            #   - log.err('event', **kw)
-            #   - log.err(_stuff=failure, _why='event', **kw)
+            #   1. log.err(failure, _why='event', **kw)
+            #   2. log.err('event', **kw)
+            #   3. log.err(_stuff=failure, _why='event', **kw)
             _stuff, _why, eventDict = _extractStuffAndWhy(eventDict)
             eventDict["event"] = _why
 

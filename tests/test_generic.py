@@ -39,20 +39,6 @@ class TestGenericBoundLogger:
 
         assert "msg" in b.__dict__
 
-    def test_proxies_anything(self):
-        """
-        Anything that isn't part of BoundLoggerBase gets proxied to the correct
-        wrapped logger methods.
-        """
-        b = BoundLogger(
-            ReturnLogger(),
-            _CONFIG.default_processors,
-            _CONFIG.default_context_class(),
-        )
-
-        assert "log", "foo" == b.log("foo")
-        assert "gol", "bar" == b.gol("bar")
-
     @pytest.mark.parametrize("proto", range(3, pickle.HIGHEST_PROTOCOL + 1))
     @freeze_time("2023-05-22 17:00")
     def test_pickle(self, proto):

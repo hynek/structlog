@@ -1,14 +1,14 @@
 import sys
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pytest
 
 from structlog import tracebacks
 
 
-@pytest.mark.parametrize("data, expected", [(3, "3"), ("spam", "spam")])
+@pytest.mark.parametrize(("data", "expected"), [(3, "3"), ("spam", "spam")])
 def test_save_str(data: Any, expected: str):
     """
     "safe_str()" returns the str repr of an object.
@@ -25,12 +25,14 @@ def test_safe_str_error():
         def __str__(self) -> str:
             raise ValueError("BAAM!")
 
-    pytest.raises(ValueError, str, Baam())
+    with pytest.raises(ValueError, match="BAAM!"):
+        str(Baam())
+
     assert tracebacks.safe_str(Baam()) == "<str-error 'BAAM!'>"
 
 
 @pytest.mark.parametrize(
-    "data, max_len, expected",
+    ("data", "max_len", "expected"),
     [
         (3, None, "3"),
         ("spam", None, "spam"),
@@ -53,7 +55,9 @@ def test_to_repr_error():
         def __repr__(self) -> str:
             raise ValueError("BAAM!")
 
-    pytest.raises(ValueError, repr, Baam())
+    with pytest.raises(ValueError, match="BAAM!"):
+        repr(Baam())
+
     assert tracebacks.to_repr(Baam()) == "<repr-error 'BAAM!'>"
 
 
@@ -75,7 +79,7 @@ def test_simple_exception():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=65,
+                    lineno=69,
                     name="test_simple_exception",
                     line="",
                     locals=None,
@@ -107,7 +111,7 @@ def test_raise_hide_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=97,
+                    lineno=101,
                     name="test_raise_hide_cause",
                     line="",
                     locals=None,
@@ -139,7 +143,7 @@ def test_raise_with_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=129,
+                    lineno=133,
                     name="test_raise_with_cause",
                     line="",
                     locals=None,
@@ -154,7 +158,7 @@ def test_raise_with_cause():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=127,
+                    lineno=131,
                     name="test_raise_with_cause",
                     line="",
                     locals=None,
@@ -182,7 +186,7 @@ def test_raise_with_cause_no_tb():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=172,
+                    lineno=176,
                     name="test_raise_with_cause_no_tb",
                     line="",
                     locals=None,
@@ -214,7 +218,7 @@ def test_raise_nested():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=204,
+                    lineno=208,
                     name="test_raise_nested",
                     line="",
                     locals=None,
@@ -229,7 +233,7 @@ def test_raise_nested():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=202,
+                    lineno=206,
                     name="test_raise_nested",
                     line="",
                     locals=None,
@@ -258,7 +262,7 @@ def test_raise_no_msg():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=248,
+                    lineno=252,
                     name="test_raise_no_msg",
                     line="",
                     locals=None,
@@ -293,7 +297,7 @@ def test_syntax_error():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=277,
+                    lineno=281,
                     name="test_syntax_error",
                     line="",
                     locals=None,
@@ -321,7 +325,7 @@ def test_filename_with_bracket():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=311,
+                    lineno=315,
                     name="test_filename_with_bracket",
                     line="",
                     locals=None,
@@ -356,7 +360,7 @@ def test_filename_not_a_file():
             frames=[
                 tracebacks.Frame(
                     filename=__file__,
-                    lineno=346,
+                    lineno=350,
                     name="test_filename_not_a_file",
                     line="",
                     locals=None,
@@ -432,7 +436,7 @@ def test_recursive():
     )  # Buffer for frames from pytest
     assert frames[0] == tracebacks.Frame(
         filename=__file__,
-        lineno=414,
+        lineno=418,
         name="test_recursive",
     )
     # Depending on whether we invoke pytest directly or run tox, either "foo()"
@@ -440,12 +444,12 @@ def test_recursive():
     assert frames[-1] in [
         tracebacks.Frame(
             filename=__file__,
-            lineno=408,
+            lineno=412,
             name="foo",
         ),
         tracebacks.Frame(
             filename=__file__,
-            lineno=411,
+            lineno=415,
             name="bar",
         ),
     ]
@@ -457,23 +461,24 @@ def test_json_traceback():
     except Exception as e:
         format_json = tracebacks.ExceptionDictTransformer(show_locals=False)
         result = format_json((type(e), e, e.__traceback__))
-        assert result == [
-            {
-                "exc_type": "ZeroDivisionError",
-                "exc_value": "division by zero",
-                "frames": [
-                    {
-                        "filename": __file__,
-                        "line": "",
-                        "lineno": 456,
-                        "locals": None,
-                        "name": "test_json_traceback",
-                    }
-                ],
-                "is_cause": False,
-                "syntax_error": None,
-            },
-        ]
+
+    assert result == [
+        {
+            "exc_type": "ZeroDivisionError",
+            "exc_value": "division by zero",
+            "frames": [
+                {
+                    "filename": __file__,
+                    "line": "",
+                    "lineno": 460,
+                    "locals": None,
+                    "name": "test_json_traceback",
+                }
+            ],
+            "is_cause": False,
+            "syntax_error": None,
+        },
+    ]
 
 
 def test_json_traceback_locals_max_string():
@@ -492,7 +497,7 @@ def test_json_traceback_locals_max_string():
                     {
                         "filename": __file__,
                         "line": "",
-                        "lineno": 482,
+                        "lineno": 487,
                         "locals": {
                             "_var": "'spam'+8",
                             "e": "'Zero'+33",
@@ -507,10 +512,8 @@ def test_json_traceback_locals_max_string():
 
 
 @pytest.mark.parametrize(
-    "max_frames, expected_frames, skipped_idx, skipped_count",
+    ("max_frames", "expected_frames", "skipped_idx", "skipped_count"),
     [
-        # (0, 1, 0, 3),
-        # (1, 1, 0, 3),
         (2, 3, 1, 2),
         (3, 3, 1, 2),
         (4, 4, -1, 0),
@@ -559,5 +562,10 @@ def test_json_traceback_max_frames(
         {"max_frames": 1},
     ],
 )
-def test_json_traceback_value_error(kwargs: Dict[str, Any]):
-    pytest.raises(ValueError, tracebacks.ExceptionDictTransformer, **kwargs)
+def test_json_traceback_value_error(kwargs):
+    """
+    Wrong arguments to ExceptionDictTransformer raise a ValueError that
+    contains the name of the argument..
+    """
+    with pytest.raises(ValueError, match=tuple(kwargs.keys())[0]):
+        tracebacks.ExceptionDictTransformer(**kwargs)

@@ -237,7 +237,7 @@ class TestBoundLogger:
         assert bound_logger_attribute == stdlib_logger_attribute
 
     @pytest.mark.parametrize(
-        "method_name,method_args",
+        ("method_name", "method_args"),
         [
             ("addHandler", [None]),
             ("removeHandler", [None]),
@@ -467,7 +467,7 @@ class TestPositionalArgumentsFormatter:
 
 
 class TestAddLogLevelNumber:
-    @pytest.mark.parametrize("level, number", _NAME_TO_LEVEL.items())
+    @pytest.mark.parametrize(("level", "number"), _NAME_TO_LEVEL.items())
     def test_log_level_number_added(self, level, number):
         """
         The log level number is added to the event dict.
@@ -559,7 +559,7 @@ def extra_dict_fixture():
 
 class TestExtraAdder:
     @pytest.mark.parametrize(
-        "allow, misses",
+        ("allow", "misses"),
         [
             (None, None),
             ({}, None),
@@ -601,7 +601,7 @@ class TestExtraAdder:
         assert {} == actual
 
     @pytest.mark.parametrize(
-        "allow, misses",
+        ("allow", "misses"),
         [
             (None, None),
             ({}, None),
@@ -1135,14 +1135,14 @@ class TestAsyncBoundLogger:
             CapturedCall(method_name="info", args=(), kwargs={"event": "test"})
         ] == cl.calls
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_protocol(self, abl):
         """
         AsyncBoundLogger is a proper BindableLogger.
         """
         assert isinstance(abl, BindableLogger)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_correct_levels(self, abl, cl, stdlib_log_method):
         """
         The proxy methods call the correct upstream methods.
@@ -1156,7 +1156,7 @@ class TestAsyncBoundLogger:
 
         assert expect == cl.calls[0].method_name
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_log_method(self, abl, cl):
         """
         The `log` method is proxied too.
@@ -1165,7 +1165,7 @@ class TestAsyncBoundLogger:
 
         assert "error" == cl.calls[0].method_name
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_exception(self, abl, cl):
         """
         `exception` makes sure 'exc_info" is set, if it's not set already.
@@ -1180,7 +1180,7 @@ class TestAsyncBoundLogger:
         assert ValueError is ei[0]
         assert ("omg",) == ei[1].args
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_exception_do_not_overwrite(self, abl, cl):
         """
         `exception` leaves exc_info be, if it's set.
@@ -1197,7 +1197,7 @@ class TestAsyncBoundLogger:
         ei = cl.calls[0].kwargs["exc_info"]
         assert (o1, o2, o3) == ei
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_bind_unbind(self, cl):
         """
         new/bind/unbind/try_unbind are correctly propagated.
@@ -1228,7 +1228,7 @@ class TestAsyncBoundLogger:
         assert {} == l5._context
         assert l4 is not l5
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_integration(self, capsys):
         """
         Configure and log an actual entry.

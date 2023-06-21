@@ -100,7 +100,10 @@ class TestExtractStuffAndWhy:
         """
         Raise ValueError if both _stuff and event contain exceptions.
         """
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(
+            ValueError,
+            match="Both _stuff and event contain an Exception/Failure.",
+        ):
             _extractStuffAndWhy(
                 {
                     "_stuff": Failure(ValueError()),
@@ -108,19 +111,14 @@ class TestExtractStuffAndWhy:
                 }
             )
 
-        assert (
-            "Both _stuff and event contain an Exception/Failure."
-            == e.value.args[0]
-        )
-
     def test_failsOnConflictingEventAnd_why(self):
         """
         Raise ValueError if both _why and event are in the event_dict.
         """
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(
+            ValueError, match="Both `_why` and `event` supplied."
+        ):
             _extractStuffAndWhy({"_why": "foo", "event": "bar"})
-
-        assert "Both `_why` and `event` supplied." == e.value.args[0]
 
     def test_handlesFailures(self):
         """
@@ -212,15 +210,18 @@ class TestEventAdapter:
         )
 
     def test_catchesConflictingEventAnd_why(self):
+        """
+        Passing both _why and event raises a ValueError.
+        """
         la = EventAdapter(_render_repr)
 
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(
+            ValueError, match="Both `_why` and `event` supplied."
+        ):
             la(None, "err", {"event": "someEvent", "_why": "someReason"})
 
-        assert "Both `_why` and `event` supplied." == e.value.args[0]
 
-
-@pytest.fixture
+@pytest.fixture()
 def jr():
     """
     A plain Twisted JSONRenderer.

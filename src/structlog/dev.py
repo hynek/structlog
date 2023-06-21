@@ -340,7 +340,7 @@ class ConsoleRenderer:
 
         return repr(val)
 
-    def __call__(
+    def __call__(  # noqa: PLR0912
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> str:
         sio = StringIO()

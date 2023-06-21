@@ -24,8 +24,6 @@ WRITE_LOCKS: dict[IO[Any], threading.Lock] = {}
 
 
 def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
-    global WRITE_LOCKS
-
     lock = WRITE_LOCKS.get(file)
     if lock is None:
         lock = threading.Lock()

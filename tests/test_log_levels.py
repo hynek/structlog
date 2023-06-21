@@ -267,7 +267,7 @@ class TestFilteringLogger:
         assert [("info", (), {"event": "hello world -- 42!"})] == cl.calls
 
     @pytest.mark.parametrize(
-        "meth,args",
+        ("meth", "args"),
         [
             ("aexception", ("ev",)),
             ("ainfo", ("ev",)),

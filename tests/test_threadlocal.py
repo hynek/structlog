@@ -26,6 +26,7 @@ from structlog.threadlocal import (
     unbind_threadlocal,
     wrap_dict,
 )
+from tests.utils import CustomError
 
 
 try:
@@ -89,15 +90,16 @@ class TestTmpBind:
         tmp_bind cleans up properly on exceptions.
         """
         log = log.bind(y=23)
-        with pytest.raises(ValueError), pytest.deprecated_call(), tmp_bind(
-            log, x=42, y="foo"
-        ) as tmp_log:
+
+        with pytest.raises(  # noqa: PT012
+            CustomError
+        ), pytest.deprecated_call(), tmp_bind(log, x=42, y="foo") as tmp_log:
             assert (
                 {"y": "foo", "x": 42}
                 == tmp_log._context._dict
                 == log._context._dict
             )
-            raise ValueError
+            raise CustomError
 
         assert {"y": 23} == log._context._dict
 

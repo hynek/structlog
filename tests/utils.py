@@ -11,3 +11,9 @@ from structlog._log_levels import _NAME_TO_LEVEL
 
 
 stdlib_log_methods = [m for m in _NAME_TO_LEVEL if m != "notset"]
+
+
+class CustomError(Exception):
+    """
+    Custom exception for testing purposes.
+    """

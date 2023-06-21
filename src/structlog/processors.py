@@ -145,7 +145,8 @@ class LogfmtRenderer:
         elements: list[str] = []
         for key, value in self._ordered_items(event_dict):
             if any(c <= " " for c in key):
-                raise ValueError(f'Invalid key: "{key}"')
+                msg = f'Invalid key: "{key}"'
+                raise ValueError(msg)
 
             if value is None:
                 elements.append(f"{key}=")
@@ -182,7 +183,7 @@ def _items_sorter(
 
         def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
-            for key in key_order:  # type: ignore[union-attr]
+            for key in key_order:
                 value = event_dict.pop(key, None)
                 if value is not None or not drop_missing:
                     items.append((key, value))
@@ -195,7 +196,7 @@ def _items_sorter(
 
         def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
-            for key in key_order:  # type: ignore[union-attr]
+            for key in key_order:
                 value = event_dict.pop(key, None)
                 if value is not None or not drop_missing:
                     items.append((key, value))
@@ -470,7 +471,8 @@ def _make_stamper(
     Create a stamper function.
     """
     if fmt is None and not utc:
-        raise ValueError("UNIX timestamps are always UTC.")
+        msg = "UNIX timestamps are always UTC."
+        raise ValueError(msg)
 
     now: Callable[[], datetime.datetime]
 
@@ -510,7 +512,7 @@ def _make_stamper(
         return stamper_iso_local
 
     def stamper_fmt(event_dict: EventDict) -> EventDict:
-        event_dict[key] = now().strftime(fmt)  # type: ignore[arg-type]
+        event_dict[key] = now().strftime(fmt)
 
         return event_dict
 
@@ -601,7 +603,7 @@ class StackInfoRenderer:
     .. versionadded:: 22.1.0  *additional_ignores*
     """
 
-    __slots__ = ["_additional_ignores"]
+    __slots__ = ("_additional_ignores",)
 
     def __init__(self, additional_ignores: list[str] | None = None) -> None:
         self._additional_ignores = additional_ignores
@@ -742,11 +744,7 @@ class CallsiteParameterAdder:
         event_dict_key: str
         record_attribute: str
 
-    __slots__ = [
-        "_active_handlers",
-        "_additional_ignores",
-        "_record_mappings",
-    ]
+    __slots__ = ("_active_handlers", "_additional_ignores", "_record_mappings")
 
     def __init__(
         self,

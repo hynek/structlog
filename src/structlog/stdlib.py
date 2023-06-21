@@ -495,7 +495,7 @@ class AsyncBoundLogger:
     .. versionchanged:: 20.2.0 fix _dispatch_to_sync contextvars usage
     """
 
-    __slots__ = ["sync_bl", "_loop"]
+    __slots__ = ("sync_bl", "_loop")
 
     sync_bl: BoundLogger
 
@@ -807,7 +807,7 @@ class ExtraAdder:
     .. versionadded:: 21.5.0
     """
 
-    __slots__ = ["_copier"]
+    __slots__ = ("_copier",)
 
     def __init__(self, allow: Collection[str] | None = None) -> None:
         self._copier: Callable[[EventDict, logging.LogRecord], None]
@@ -962,10 +962,8 @@ class ProcessorFormatter(logging.Formatter):
         super().__init__(*args, fmt=fmt, **kwargs)  # type: ignore[misc]
 
         if processor and processors:
-            raise TypeError(
-                "The `processor` and `processors` arguments are mutually "
-                "exclusive."
-            )
+            msg = "The `processor` and `processors` arguments are mutually exclusive."
+            raise TypeError(msg)
 
         self.processors: Sequence[Processor]
         if processor is not None:
@@ -973,9 +971,8 @@ class ProcessorFormatter(logging.Formatter):
         elif processors:
             self.processors = processors
         else:
-            raise TypeError(
-                "Either `processor` or `processors` must be passed."
-            )
+            msg = "Either `processor` or `processors` must be passed."
+            raise TypeError(msg)
 
         self.foreign_pre_chain = foreign_pre_chain
         self.keep_exc_info = keep_exc_info

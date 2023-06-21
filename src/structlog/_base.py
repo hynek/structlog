@@ -169,11 +169,8 @@ class BoundLoggerBase:
         if isinstance(event_dict, dict):
             return (), event_dict
 
-        raise ValueError(
-            "Last processor didn't return an appropriate value.  Valid "
-            "return values are a dict, a tuple of (args, kwargs), bytes, "
-            "or a str."
-        )
+        msg = "Last processor didn't return an appropriate value.  Valid return values are a dict, a tuple of (args, kwargs), bytes, or a str."
+        raise ValueError(msg)
 
     def _proxy_to_logger(
         self, method_name: str, event: str | None = None, **event_kw: Any

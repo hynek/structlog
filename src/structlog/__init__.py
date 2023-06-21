@@ -99,7 +99,8 @@ def __getattr__(name: str) -> str:
         "__email__": "",
     }
     if name not in dunder_to_metadata.keys():
-        raise AttributeError(f"module {__name__} has no attribute {name}")
+        msg = f"module {__name__} has no attribute {name}"
+        raise AttributeError(msg)
 
     import sys
     import warnings
