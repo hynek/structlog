@@ -24,10 +24,10 @@ from .typing import BindableLogger, Context, Processor, WrappedLogger
 
 
 """
-   Any changes to these defaults must be reflected in:
+Any changes to these defaults must be reflected in:
 
-   - `getting-started`.
-   - structlog.stdlib.recreate_defaults()'s docstring.
+- `getting-started`.
+- structlog.stdlib.recreate_defaults()'s docstring.
 """
 _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     merge_contextvars,
