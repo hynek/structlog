@@ -8,7 +8,7 @@ The **first number** of the version is the year.
 The **second number** is incremented with each release, starting at 1 for each year.
 The **third number** is for emergencies when we need to start branches for older releases.
 
-You can find out backwards-compatibility policy [here](https://github.com/hynek/structlog/blob/main/.github/SECURITY.md).
+You can find our backwards-compatibility policy [here](https://github.com/hynek/structlog/blob/main/.github/SECURITY.md).
 
 <!-- changelog follows -->
 
