@@ -144,7 +144,7 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 
 
 def wrap_logger(
-    logger: WrappedLogger,
+    logger: WrappedLogger | None,
     processors: Iterable[Processor] | None = None,
     wrapper_class: type[BindableLogger] | None = None,
     context_class: type[Context] | None = None,
@@ -299,7 +299,7 @@ class BoundLoggerLazyProxy:
 
     def __init__(
         self,
-        logger: WrappedLogger,
+        logger: WrappedLogger | None,
         wrapper_class: type[BindableLogger] | None = None,
         processors: Iterable[Processor] | None = None,
         context_class: type[Context] | None = None,

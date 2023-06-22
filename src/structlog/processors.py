@@ -183,7 +183,7 @@ def _items_sorter(
 
         def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
-            for key in key_order:
+            for key in key_order:  # type: ignore[union-attr]
                 value = event_dict.pop(key, None)
                 if value is not None or not drop_missing:
                     items.append((key, value))
@@ -196,7 +196,7 @@ def _items_sorter(
 
         def ordered_items(event_dict: EventDict) -> list[tuple[str, Any]]:
             items = []
-            for key in key_order:
+            for key in key_order:  # type: ignore[union-attr]
                 value = event_dict.pop(key, None)
                 if value is not None or not drop_missing:
                     items.append((key, value))
@@ -512,7 +512,7 @@ def _make_stamper(
         return stamper_iso_local
 
     def stamper_fmt(event_dict: EventDict) -> EventDict:
-        event_dict[key] = now().strftime(fmt)
+        event_dict[key] = now().strftime(fmt)  # type: ignore[arg-type]
 
         return event_dict
 
