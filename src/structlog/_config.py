@@ -283,14 +283,14 @@ def reset_defaults() -> None:
 
 class BoundLoggerLazyProxy:
     """
-    Instantiates a ``BoundLogger`` on first usage.
+    Instantiates a bound logger on first usage.
 
     Takes both configuration and instantiation parameters into account.
 
-    The only points where a BoundLogger changes state are ``bind()``,
+    The only points where a bound logger changes state are ``bind()``,
     ``unbind()``, and ``new()`` and that return the actual ``BoundLogger``.
 
-    If and only if configuration says so, that actual ``BoundLogger`` is
+    If and only if configuration says so, that actual bound logger is
     cached on first usage.
 
     .. versionchanged:: 0.4.0
