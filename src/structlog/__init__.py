@@ -92,6 +92,10 @@ __all__ = [
 
 
 def __getattr__(name: str) -> str:
+    import warnings
+
+    from importlib.metadata import metadata
+
     dunder_to_metadata = {
         "__version__": "version",
         "__description__": "summary",
@@ -102,21 +106,14 @@ def __getattr__(name: str) -> str:
         msg = f"module {__name__} has no attribute {name}"
         raise AttributeError(msg)
 
-    import sys
-    import warnings
-
-    if sys.version_info < (3, 8):
-        from importlib_metadata import metadata
-    else:
-        from importlib.metadata import metadata
-
-    warnings.warn(
-        f"Accessing structlog.{name} is deprecated and will be "
-        "removed in a future release. Use importlib.metadata directly "
-        "to query for structlog's packaging metadata.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
+    if name != "__version__":
+        warnings.warn(
+            f"Accessing structlog.{name} is deprecated and will be "
+            "removed in a future release. Use importlib.metadata directly "
+            "to query for structlog's packaging metadata.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     meta = metadata("structlog")
 

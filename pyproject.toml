@@ -10,7 +10,7 @@ dynamic = ["readme", "version"]
 name = "structlog"
 description = "Structured Logging for Python"
 authors = [{ name = "Hynek Schlawack", email = "hs@ox.cx" }]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = "MIT OR Apache-2.0"
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [
@@ -18,7 +18,6 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -29,10 +28,7 @@ classifiers = [
     "Topic :: System :: Logging",
     "Typing :: Typed",
 ]
-dependencies = [
-    "typing-extensions; python_version<'3.8'",
-    "importlib_metadata; python_version<'3.8'",
-]
+dependencies = []
 
 [project.urls]
 Documentation = "https://www.structlog.org/"
@@ -41,7 +37,6 @@ Changelog = "https://www.structlog.org/en/stable/changelog.html"
 "Source Code" = "https://github.com/hynek/structlog"
 Funding = "https://github.com/sponsors/hynek"
 Tidelift = "https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=pypi"
-
 
 [project.optional-dependencies]
 tests = [
