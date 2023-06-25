@@ -1274,11 +1274,6 @@ def test_recreate_defaults(log_level):
     assert dict is _CONFIG.default_context_class
     assert isinstance(_CONFIG.logger_factory, LoggerFactory)
 
-    # 3.7 doesn't have the force keyword and we don't care enough to
-    # re-implement it.
-    if sys.version_info < (3, 8):
-        return
-
     log = get_logger().bind()
     if log_level is not None:
         assert log_level == log.getEffectiveLevel()

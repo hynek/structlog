@@ -3,26 +3,20 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-import sys
+from importlib import metadata
 
 import pytest
 
 import structlog
 
 
-if sys.version_info < (3, 8):
-    import importlib_metadata as metadata
-else:
-    from importlib import metadata
-
-
 class TestLegacyMetadataHack:
-    def test_version(self):
+    def test_version(self, recwarn):
         """
-        structlog.__version__ returns the correct version.
+        structlog.__version__ returns the correct version and doesn't warn.
         """
-        with pytest.deprecated_call():
-            assert metadata.version("structlog") == structlog.__version__
+        assert metadata.version("structlog") == structlog.__version__
+        assert [] == recwarn.list
 
     def test_description(self):
         """
