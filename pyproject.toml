@@ -63,7 +63,7 @@ docs = [
     "sphinxcontrib-mermaid",
     "twisted",
 ]
-dev = ["structlog[tests,typing,docs]"]
+dev = ["structlog[tests,typing]"]
 
 
 [tool.hatch.version]

@@ -83,12 +83,20 @@ At this point,
 $ python -m pytest
 ```
 
-should work and pass, as should:
+When working on the documentation, use:
 
-```console
-$ cd docs
-$ make html
+```bash
+$ tox -e docs-serve
 ```
+
+... to watch your files and repeatedly build.
+And use:
+
+```bash
+$ tox -e docs
+```
+
+... to build it once and run our doctests.
 
 The built documentation can then be found in `docs/_build/html/`.
 
