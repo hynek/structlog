@@ -36,9 +36,9 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
-        colors=os.environ.get("NO_COLOR", "") == ""  # noqa: PLC1901
+        colors=os.environ.get("NO_COLOR", "") == ""
         and (
-            os.environ.get("FORCE_COLOR", "") != ""  # noqa: PLC1901
+            os.environ.get("FORCE_COLOR", "") != ""
             or (
                 _has_colors
                 and sys.stdout is not None
