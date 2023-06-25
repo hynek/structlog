@@ -15,17 +15,11 @@ import sys
 import warnings
 
 from io import StringIO
-from typing import Any, Iterable, TextIO, Type, Union
+from typing import Any, Iterable, Protocol, TextIO, Type, Union
 
 from ._frames import _format_exception
 from .processors import _figure_out_exc_info
 from .typing import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
-
-
-if sys.version_info >= (3, 8):
-    from typing import Protocol
-else:
-    from typing_extensions import Protocol
 
 
 try:

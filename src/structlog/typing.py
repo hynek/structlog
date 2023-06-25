@@ -14,8 +14,6 @@ probably change to something more elegant.
 
 from __future__ import annotations
 
-import sys
-
 from types import TracebackType
 from typing import (
     Any,
@@ -24,17 +22,13 @@ from typing import (
     Mapping,
     MutableMapping,
     Optional,
+    Protocol,
     TextIO,
     Tuple,
     Type,
     Union,
+    runtime_checkable,
 )
-
-
-if sys.version_info >= (3, 8):
-    from typing import Protocol, runtime_checkable
-else:
-    from typing_extensions import Protocol, runtime_checkable
 
 
 WrappedLogger = Any
