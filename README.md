@@ -103,7 +103,6 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 
 ## Project Information
 
-- **License**: *dual* [Apache License, version 2 **and** MIT](https://www.structlog.org/en/latest/license.html)
 - **Get Help**: please use the *structlog* tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
 - [**PyPI**](https://pypi.org/project/structlog/)
 - [**Source Code**](https://github.com/hynek/structlog)
