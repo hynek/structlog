@@ -102,7 +102,7 @@ Nowadays, the default is a {class}`structlog.typing.FilteringBoundLogger` that i
 
 If you’re integrating with {mod}`logging` or Twisted, you may want to use one of their specific *bound loggers* ({class}`structlog.stdlib.BoundLogger` and {class}`structlog.twisted.BoundLogger`, respectively).
 
-—
+---
 
 On top of that all, you can also write your own wrapper classes.
 To make it easy for you, *structlog* comes with the class {class}`structlog.BoundLoggerBase` which takes care of all data binding duties so you just add your log methods if you choose to sub-class it.
