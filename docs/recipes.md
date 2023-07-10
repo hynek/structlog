@@ -1,7 +1,7 @@
 # Recipes
 
-Thanks to the fact that *structlog* is entirely based on dictionaries and callables, the sky is the limit with what you an achieve.
-In the beginning that can be daunting, so here are a few examples of tasks that have come up repeatedly.
+Because *structlog* is entirely based on dictionaries and callables, the sky is the limit with what you can achieve.
+That can be daunting in the beginning, so here are a few examples of tasks that have come up repeatedly.
 
 Please note that recipes related to integration with frameworks have an [own chapter](frameworks.md).
 
