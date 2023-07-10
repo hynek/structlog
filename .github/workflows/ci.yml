@@ -21,8 +21,7 @@ env:
   # N.B. default Python version for setup-python comes from the .python-version
   # file at the root of the project.
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   build-sdist:
