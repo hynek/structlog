@@ -32,6 +32,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `FilteringBoundLogger.exception()` and  `FilteringBoundLogger.aexception()` now support positional argument formatting like the rest of the methods.
   [#531](https://github.com/hynek/structlog/issues/531)
+- `structlog.processors.format_exc_info()` and `structlog.dev.ConsoleRenderer` do not crash anymore when told to format a non-existent exception.
 
 
 
