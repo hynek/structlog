@@ -519,6 +519,37 @@ def _make_stamper(
     return stamper_fmt
 
 
+class MaybeTimeStamper:
+    """
+    A timestamper that only adds a timestamp if there is none.
+
+    This allows you to overwrite the ``timestamp`` key in the event dict for
+    example when the event is coming from another system.
+
+    It takes the same arguments as `TimeStamper`.
+
+    .. versionadded:: 23.2.0
+    """
+
+    __slots__ = ("stamper",)
+
+    def __init__(
+        self,
+        fmt: str | None = None,
+        utc: bool = True,
+        key: str = "timestamp",
+    ):
+        self.stamper = TimeStamper(fmt=fmt, utc=utc, key=key)
+
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        if "timestamp" not in event_dict:
+            return self.stamper(logger, name, event_dict)
+
+        return event_dict
+
+
 def _figure_out_exc_info(v: Any) -> ExcInfo:
     """
     Depending on the Python version will try to do the smartest thing possible

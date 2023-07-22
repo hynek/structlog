@@ -35,6 +35,7 @@ from structlog.processors import (
     JSONRenderer,
     KeyValueRenderer,
     LogfmtRenderer,
+    MaybeTimeStamper,
     StackInfoRenderer,
     TimeStamper,
     UnicodeDecoder,
@@ -450,6 +451,24 @@ class TestTimeStamper:
             d = ts(None, None, {})
 
             assert "1980-03-25T17:00:00" == d["timestamp"]
+
+
+class TestMaybeTimeStamper:
+    def test_overwrite(self):
+        """
+        If there is a timestamp, leave it.
+        """
+        mts = MaybeTimeStamper()
+
+        assert {"timestamp": 42} == mts(None, None, {"timestamp": 42})
+
+    def test_none(self):
+        """
+        If there is no timestamp, add one.
+        """
+        mts = MaybeTimeStamper()
+
+        assert "timestamp" in mts(None, None, {})
 
 
 class TestFormatExcInfo:

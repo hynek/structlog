@@ -24,6 +24,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - Official support for Python 3.12.
   [#515](https://github.com/hynek/structlog/issues/515)
+- `structlog.processors.MaybeTimeStamper` that only adds a timestamp if there isn't one already.
+  [#81](https://github.com/hynek/structlog/issues/81)
 
 
 ### Fixed

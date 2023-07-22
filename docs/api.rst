@@ -261,6 +261,16 @@ API Reference
       >>> TimeStamper(fmt="%Y", key="year")(None, None, {})  # doctest: +SKIP
       {'year': '2013'}
 
+.. autoclass:: MaybeTimeStamper
+
+   .. doctest::
+
+      >>> from structlog.processors import MaybeTimeStamper
+      >>> MaybeTimeStamper()(None, None, {})  # doctest: +SKIP
+      {'timestamp': 1690036074.494428}
+      >>> MaybeTimeStamper()(None, None, {"timestamp": 42})
+      {'timestamp': 42}
+
 .. autoclass:: CallsiteParameter
    :members:
 
