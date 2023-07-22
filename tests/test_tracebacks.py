@@ -530,7 +530,7 @@ def test_json_traceback_locals_max_string():
                     "locals": {
                         "_var": "'spam'+8",
                         "e": "'Zero'+33",
-                        "ln": str(lineno),
+                        "lineno": str(lineno),
                     },
                     "name": "test_json_traceback_locals_max_string",
                 }
