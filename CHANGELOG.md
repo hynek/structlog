@@ -26,6 +26,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#515](https://github.com/hynek/structlog/issues/515)
 
 
+### Fixed
+
+- `FilteringBoundLogger.exception()` and  `FilteringBoundLogger.aexception()` now support positional argument formatting like the rest of the methods.
+  [#531](https://github.com/hynek/structlog/issues/531)
+
+
+
 ## [23.1.0](https://github.com/hynek/structlog/compare/22.3.0...23.1.0) - 2023-04-06
 
 ### Added
