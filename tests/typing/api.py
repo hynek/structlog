@@ -7,10 +7,12 @@
 Make sure our configuration examples actually pass the type checker.
 """
 
+from __future__ import annotations
+
 import logging
 import logging.config
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable
 
 import structlog
 
@@ -27,8 +29,8 @@ bls.info("hello", whom="world", x=42, y={})
 
 def bytes_dumps(
     __obj: Any,
-    default: Optional[Callable[[Any], Any]] = None,
-    option: Optional[int] = None,
+    default: Callable[[Any], Any] | None = None,
+    option: int | None = None,
 ) -> bytes:
     """
     Test with orjson's signature taken from
@@ -114,7 +116,7 @@ root_logger.setLevel(logging.INFO)
 
 
 timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
-shared_processors: List[structlog.typing.Processor] = [
+shared_processors: list[structlog.typing.Processor] = [
     structlog.stdlib.add_log_level,
     timestamper,
 ]

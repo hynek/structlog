@@ -149,8 +149,7 @@ ignore = [
     "PLC1901", # empty strings are falsey, but are less specific in tests
     "PT005",   # we always add underscores and explicit name
     "RUF012",  # no type hints in tests
-    "S101",    # assert
-    "S301",    # I know pickle is bad, but people like it.
+    "S",       # it's test; chill out security
     "SIM300",  # Yoda rocks in tests
     "TRY",     # tests have different rules around exceptions
 ]

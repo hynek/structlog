@@ -3,6 +3,8 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+from __future__ import annotations
+
 import json
 import logging
 import logging.config
@@ -10,7 +12,7 @@ import os
 import sys
 
 from io import StringIO
-from typing import Any, Callable, Collection, Dict, Optional, Set
+from typing import Any, Callable, Collection
 
 import pytest
 import pytest_asyncio
@@ -539,7 +541,7 @@ class TestAddLoggerName:
         assert name == event_dict["logger"]
 
 
-def extra_dict() -> Dict[str, Any]:
+def extra_dict() -> dict[str, Any]:
     """
     A dict to be passed in the `extra` parameter of the `logging` module's log
     methods.
@@ -572,9 +574,9 @@ class TestExtraAdder:
     def test_add_extra(
         self,
         make_log_record: Callable[[], logging.LogRecord],
-        extra_dict: Dict[str, Any],
-        allow: Optional[Collection[str]],
-        misses: Optional[Set[str]],
+        extra_dict: dict[str, Any],
+        allow: Collection[str] | None,
+        misses: set[str] | None,
     ):
         """
         Extra attributes of a LogRecord object are added to the event dict.
@@ -613,9 +615,9 @@ class TestExtraAdder:
     )
     def test_add_extra_e2e(
         self,
-        extra_dict: Dict[str, Any],
-        allow: Optional[Collection[str]],
-        misses: Optional[Set[str]],
+        extra_dict: dict[str, Any],
+        allow: Collection[str] | None,
+        misses: set[str] | None,
     ):
         """
         Values passed in the `extra` parameter of the `logging` module's log
@@ -652,8 +654,8 @@ class TestExtraAdder:
     def _copy_allowed(
         cls,
         event_dict: EventDict,
-        extra_dict: Dict[str, Any],
-        allow: Optional[Collection[str]],
+        extra_dict: dict[str, Any],
+        allow: Collection[str] | None,
     ) -> EventDict:
         if allow is None:
             return {**event_dict, **extra_dict}
