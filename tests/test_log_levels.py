@@ -195,6 +195,24 @@ class TestFilteringLogger:
         assert isinstance(cl.calls[0][2]["exc_info"], tuple)
         assert exc == cl.calls[0][2]["exc_info"][1]
 
+    def test_exception_positional_args(self, bl, cl):
+        """
+        exception allows for positional args
+        """
+        bl.exception("%s %s", "boom", "bastic")
+
+        assert [
+            ("error", (), {"event": "boom bastic", "exc_info": True})
+        ] == cl.calls
+
+    async def test_aexception_positional_args(self, bl, cl):
+        """
+        aexception allows for positional args
+        """
+        await bl.aexception("%s %s", "boom", "bastic")
+        assert 1 == len(cl.calls)
+        assert "boom bastic" == cl.calls[0][2]["event"]
+
     async def test_async_exception_true(self, bl, cl):
         """
         aexception replaces exc_info with current exception info, if exc_info
