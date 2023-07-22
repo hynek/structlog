@@ -5,8 +5,6 @@ on:
   push:
     branches: [main]
     tags: ["*"]
-  pull_request:
-    branches: [main]
   release:
     types:
       - published
@@ -17,7 +15,6 @@ permissions:
   id-token: write
 
 jobs:
-  # Always build & lint package.
   build-package:
     name: Build & verify package
     runs-on: ubuntu-latest
