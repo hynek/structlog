@@ -94,13 +94,13 @@ __all__ = [
 def __getattr__(name: str) -> str:
     import warnings
 
-    from importlib.metadata import metadata
+    from importlib.metadata import metadata, version
 
     dunder_to_metadata = {
-        "__version__": "version",
         "__description__": "summary",
         "__uri__": "",
         "__email__": "",
+        "__version__": "",
     }
     if name not in dunder_to_metadata.keys():
         msg = f"module {__name__} has no attribute {name}"
@@ -114,6 +114,8 @@ def __getattr__(name: str) -> str:
             DeprecationWarning,
             stacklevel=2,
         )
+    else:
+        return version("structlog")
 
     meta = metadata("structlog")
 
