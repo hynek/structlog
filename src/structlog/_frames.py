@@ -20,6 +20,9 @@ def _format_exception(exc_info: ExcInfo) -> str:
 
     Shamelessly stolen from stdlib's logging module.
     """
+    if exc_info == (None, None, None):  # type: ignore[comparison-overlap]
+        return "MISSING"
+
     sio = StringIO()
 
     traceback.print_exception(exc_info[0], exc_info[1], exc_info[2], None, sio)
