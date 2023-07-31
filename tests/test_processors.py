@@ -560,7 +560,17 @@ class TestFormatExcInfo:
         except ValueError as e:
             a = format_exc_info(None, None, {"exc_info": e})
             b = ExceptionRenderer()(None, None, {"exc_info": e})
-            assert a == b
+
+        assert a == b
+
+    @pytest.mark.parametrize("ei", [True, (None, None, None)])
+    def test_no_exception(self, ei):
+        """
+        A missing exception does not blow up.
+        """
+        assert {"exception": "MISSING"} == format_exc_info(
+            None, None, {"exc_info": ei}
+        )
 
 
 class TestUnicodeEncoder:

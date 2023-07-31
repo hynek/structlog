@@ -510,6 +510,19 @@ class TestConsoleRenderer:
             pickle.dumps(r, proto)
         )(None, None, {"event": "foo"})
 
+    def test_no_exception(self):
+        """
+        If there is no exception, don't blow up.
+        """
+        r = dev.ConsoleRenderer(colors=False)
+
+        assert (
+            "hi"
+            == r(
+                None, None, {"event": "hi", "exc_info": (None, None, None)}
+            ).rstrip()
+        )
+
 
 class TestSetExcInfo:
     def test_wrong_name(self):
