@@ -168,8 +168,8 @@ API Reference
    Please note that additionally to strings, you can also return any type the standard library JSON module knows about -- like in this example a list.
 
    If you choose to pass a *default* parameter as part of *dumps_kw*, support for ``__structlog__`` is disabled.
-   This can be useful when used together with more elegant serialization methods like :func:`functools.singledispatch`: `Better Python Object Serialization <https://hynek.me/articles/serialization/>`_.
-   Using a `default` to disable the ``__structlog__`` serialization is also useful if you are using ``orjson`` and want to rely on it to serialize ``datetime`` and other objects natively.
+   That can be useful with more elegant serialization methods like `functools.singledispatch`: `Better Python Object Serialization <https://hynek.me/articles/serialization/>`_.
+   It can also be helpful if you are using *orjson* and want to rely on it to serialize `datetime.datetime` and other objects natively.
 
    .. tip::
 
