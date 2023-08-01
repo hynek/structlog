@@ -86,10 +86,10 @@ $ python -m pytest
 When working on the documentation, use:
 
 ```bash
-$ tox -e docs-serve
+$ tox -e docs-watch
 ```
 
-... to watch your files and repeatedly build.
+... to watch your files and automatically rebuild when a file changes.
 And use:
 
 ```bash
