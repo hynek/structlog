@@ -30,7 +30,7 @@ As a result, the simplest possible usage looks like this:
 
 Here, *structlog* takes advantage of its default settings:
 
-- Output is sent to **[standard out](https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29)** instead doing nothing.
+- Output is sent to **[standard out](https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29)** instead of doing nothing.
 - It **imitates** standard library {mod}`logging`'s **log level names** for familiarity.
   By default, no level-based filtering is done, but it comes with a **very fast [filtering machinery](filtering)**.
 - Like in `logging`, positional arguments are [**interpolated into the message string using %**](https://docs.python.org/3/library/stdtypes.html#old-string-formatting).

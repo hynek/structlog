@@ -152,7 +152,7 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
 
 - To run the test suite, all you need is a recent [*tox*].
   It will ensure the test suite runs with all dependencies against all Python versions just as it will in our [CI].
-  If you lack some Python versions, you can can always limit the environments like `tox -e py38,py39`, or make it a non-failure using `tox --skip-missing-interpreters`.
+  If you lack some Python versions, you can always limit the environments like `tox -e py38,py39`, or make it a non-failure using `tox --skip-missing-interpreters`.
 
   In that case you should look into [*asdf*](https://asdf-vm.com) or [*pyenv*](https://github.com/pyenv/pyenv), which make it very easy to install many different Python versions in parallel.
 - Write [good test docstrings](https://jml.io/pages/test-docstrings.html).

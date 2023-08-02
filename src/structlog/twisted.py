@@ -199,7 +199,7 @@ class JSONRenderer(GenericJSONRenderer):
 @implementer(ILogObserver)
 class PlainFileLogObserver:
     """
-    Write only the the plain message without timestamps or anything else.
+    Write only the plain message without timestamps or anything else.
 
     Great to just print JSON to stdout where you catch it with something like
     runit.
