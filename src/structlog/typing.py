@@ -30,7 +30,6 @@ from typing import (
     runtime_checkable,
 )
 
-
 WrappedLogger = Any
 """
 A logger that is wrapped by a bound logger and is ultimately responsible for
@@ -72,7 +71,7 @@ See :doc:`processors`.
 .. versionadded:: 20.2
 """
 
-LogMsg = str
+LogMsg = Union[str, bytes, bytearray, Tuple[Any, ...]]
 
 Finalizer = Callable[
     [WrappedLogger, str, EventDict],
@@ -83,8 +82,8 @@ A callable bridging the gap between pre- and post-processors.
 """
 
 PostProcessor = Callable[
-    [WrappedLogger, str, Union[str, bytes, bytearray, Tuple[Any, ...]]],
-    Union[str, bytes, bytearray, Tuple[Any, ...]],
+    [WrappedLogger, str, LogMsg],
+    LogMsg,
 ]
 """
 A callable that is part of the post-processor chain.
