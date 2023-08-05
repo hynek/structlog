@@ -94,6 +94,10 @@ See :doc:`processors`.
 .. versionadded:: 20.2
 """
 
+# This should probably be gone if doing it correctly; it undoes the advantages gained
+# from separating the three
+Processor = Union[PreProcessor, Finalizer, PostProcessor]
+
 ExcInfo = Tuple[Type[BaseException], BaseException, Optional[TracebackType]]
 """
 An exception info tuple as returned by `sys.exc_info`.

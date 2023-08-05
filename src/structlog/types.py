@@ -20,7 +20,7 @@ from .typing import (
     ExceptionTransformer,
     ExcInfo,
     FilteringBoundLogger,
-    PreProcessor,
+    Processor,
     WrappedLogger,
 )
 
@@ -29,7 +29,7 @@ __all__ = (
     "WrappedLogger",
     "Context",
     "EventDict",
-    "PreProcessor",
+    "Processor",
     "ExcInfo",
     "ExceptionRenderer",
     "ExceptionTransformer",

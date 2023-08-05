@@ -13,7 +13,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from structlog.exceptions import DropEvent
 
-from .typing import BindableLogger, Context, PreProcessor, WrappedLogger
+from .typing import BindableLogger, Context, Processor, WrappedLogger
 
 
 class BoundLoggerBase:
@@ -43,7 +43,7 @@ class BoundLoggerBase:
     def __init__(
         self,
         logger: WrappedLogger,
-        processors: Iterable[PreProcessor],
+        processors: Iterable[Processor],
         context: Context,
     ):
         self._logger = logger

@@ -27,7 +27,7 @@ from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .contextvars import merge_contextvars
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
-from .typing import Context, EventDict, ExcInfo, PreProcessor, WrappedLogger
+from .typing import Context, EventDict, ExcInfo, Processor, WrappedLogger
 
 
 __all__ = [
@@ -505,7 +505,7 @@ class AsyncBoundLogger:
     def __init__(
         self,
         logger: logging.Logger,
-        processors: Iterable[PreProcessor],
+        processors: Iterable[Processor],
         context: Context,
         *,
         # Only as an optimization for binding!
@@ -944,9 +944,9 @@ class ProcessorFormatter(logging.Formatter):
 
     def __init__(
         self,
-        processor: PreProcessor | None = None,
-        processors: Sequence[PreProcessor] | None = (),
-        foreign_pre_chain: Sequence[PreProcessor] | None = None,
+        processor: Processor | None = None,
+        processors: Sequence[Processor] | None = (),
+        foreign_pre_chain: Sequence[Processor] | None = None,
         keep_exc_info: bool = False,
         keep_stack_info: bool = False,
         logger: logging.Logger | None = None,
@@ -961,7 +961,7 @@ class ProcessorFormatter(logging.Formatter):
             msg = "The `processor` and `processors` arguments are mutually exclusive."
             raise TypeError(msg)
 
-        self.processors: Sequence[PreProcessor]
+        self.processors: Sequence[Processor]
         if processor is not None:
             self.processors = (self.remove_processors_meta, processor)
         elif processors:

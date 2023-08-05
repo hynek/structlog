@@ -26,6 +26,7 @@ from .typing import (
     Finalizer,
     PostProcessor,
     PreProcessor,
+    Processor,
     WrappedLogger,
 )
 
@@ -36,7 +37,7 @@ Any changes to these defaults must be reflected in:
 - `getting-started`.
 - structlog.stdlib.recreate_defaults()'s docstring.
 """
-_BUILTIN_DEFAULT_PROCESSORS: Sequence[PreProcessor] = [
+_BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     merge_contextvars,
     add_log_level,
     StackInfoRenderer(),
@@ -67,9 +68,7 @@ class _Configuration:
     """
 
     is_configured: bool = False
-    default_processors: Iterable[
-        PreProcessor | Finalizer | PostProcessor
-    ] = _BUILTIN_DEFAULT_PROCESSORS[:]
+    default_processors: Iterable[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class: type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
     logger_factory: Callable[
@@ -259,7 +258,7 @@ def configure(
 
 
 def configure_once(
-    processors: Iterable[PreProcessor] | None = None,
+    processors: Iterable[Processor] | None = None,
     wrapper_class: type[BindableLogger] | None = None,
     context_class: type[Context] | None = None,
     logger_factory: Callable[..., WrappedLogger] | None = None,
@@ -321,7 +320,7 @@ class BoundLoggerLazyProxy:
         self,
         logger: WrappedLogger | None,
         wrapper_class: type[BindableLogger] | None = None,
-        processors: Iterable[PreProcessor] | None = None,
+        processors: Iterable[Processor] | None = None,
         context_class: type[Context] | None = None,
         cache_logger_on_first_use: bool | None = None,
         initial_values: dict[str, Any] | None = None,
