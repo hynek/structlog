@@ -20,7 +20,7 @@ from ._output import PrintLoggerFactory
 from .contextvars import merge_contextvars
 from .dev import ConsoleRenderer, _has_colors, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, add_log_level
-from .typing import BindableLogger, Context, Processor, WrappedLogger
+from .typing import BindableLogger, Context, Finalizer, PostProcessor, PreProcessor, WrappedLogger
 
 
 """
@@ -29,7 +29,7 @@ Any changes to these defaults must be reflected in:
 - `getting-started`.
 - structlog.stdlib.recreate_defaults()'s docstring.
 """
-_BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
+_BUILTIN_DEFAULT_PROCESSORS: Sequence[PreProcessor] = [
     merge_contextvars,
     add_log_level,
     StackInfoRenderer(),
@@ -60,7 +60,7 @@ class _Configuration:
     """
 
     is_configured: bool = False
-    default_processors: Iterable[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
+    default_processors: Iterable[PreProcessor | Finalizer | PostProcessor] = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class: type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
     logger_factory: Callable[
@@ -145,7 +145,7 @@ stick out like a sore thumb in frameworks like Twisted or Zope.
 
 def wrap_logger(
     logger: WrappedLogger | None,
-    processors: Iterable[Processor] | None = None,
+    processors: Iterable[PreProcessor] | None = None,
     wrapper_class: type[BindableLogger] | None = None,
     context_class: type[Context] | None = None,
     cache_logger_on_first_use: bool | None = None,
@@ -188,7 +188,9 @@ def wrap_logger(
 
 
 def configure(
-    processors: Iterable[Processor] | None = None,
+    pre_processors: Iterable[PreProcessor] | None = None,
+    finalizer: Finalizer | None = None,
+    post_processors: Iterable[PostProcessor] | None = None,
     wrapper_class: type[BindableLogger] | None = None,
     context_class: type[Context] | None = None,
     logger_factory: Callable[..., WrappedLogger] | None = None,
@@ -226,8 +228,15 @@ def configure(
     """
     _CONFIG.is_configured = True
 
-    if processors is not None:
-        _CONFIG.default_processors = processors
+    if pre_processors is not None:
+        _CONFIG.default_processors = pre_processors
+    if finalizer is not None:
+        _CONFIG.default_processors = _CONFIG.default_processors.append(finalizer)
+    if post_processors is not None:
+        _CONFIG.default_processors = (
+            _CONFIG.default_processors.extend(post_processors)
+        )
+
     if wrapper_class is not None:
         _CONFIG.default_wrapper_class = wrapper_class
     if context_class is not None:
@@ -239,7 +248,7 @@ def configure(
 
 
 def configure_once(
-    processors: Iterable[Processor] | None = None,
+    processors: Iterable[PreProcessor] | None = None,
     wrapper_class: type[BindableLogger] | None = None,
     context_class: type[Context] | None = None,
     logger_factory: Callable[..., WrappedLogger] | None = None,
@@ -301,7 +310,7 @@ class BoundLoggerLazyProxy:
         self,
         logger: WrappedLogger | None,
         wrapper_class: type[BindableLogger] | None = None,
-        processors: Iterable[Processor] | None = None,
+        processors: Iterable[PreProcessor] | None = None,
         context_class: type[Context] | None = None,
         cache_logger_on_first_use: bool | None = None,
         initial_values: dict[str, Any] | None = None,

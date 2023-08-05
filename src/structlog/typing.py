@@ -60,12 +60,34 @@ copy itself.
 .. versionadded:: 20.2
 """
 
-Processor = Callable[
+PreProcessor = Callable[
     [WrappedLogger, str, EventDict],
-    Union[Mapping[str, Any], str, bytes, bytearray, Tuple[Any, ...]],
+    Mapping[str, Any],
 ]
 """
-A callable that is part of the processor chain.
+A callable that is part of the pre-processor chain.
+
+See :doc:`processors`.
+
+.. versionadded:: 20.2
+"""
+
+LogMsg = str
+
+Finalizer = Callable[
+    [WrappedLogger, str, EventDict],
+    LogMsg,
+]
+"""
+A callable bridging the gap between pre- and post-processors.
+"""
+
+PostProcessor = Callable[
+    [WrappedLogger, str, Union[str, bytes, bytearray, Tuple[Any, ...]]],
+    Union[str, bytes, bytearray, Tuple[Any, ...]],
+]
+"""
+A callable that is part of the post-processor chain.
 
 See :doc:`processors`.
 
