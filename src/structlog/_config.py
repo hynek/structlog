@@ -20,7 +20,14 @@ from ._output import PrintLoggerFactory
 from .contextvars import merge_contextvars
 from .dev import ConsoleRenderer, _has_colors, set_exc_info
 from .processors import StackInfoRenderer, TimeStamper, add_log_level
-from .typing import BindableLogger, Context, Finalizer, PostProcessor, PreProcessor, WrappedLogger
+from .typing import (
+    BindableLogger,
+    Context,
+    Finalizer,
+    PostProcessor,
+    PreProcessor,
+    WrappedLogger,
+)
 
 
 """
@@ -60,7 +67,9 @@ class _Configuration:
     """
 
     is_configured: bool = False
-    default_processors: Iterable[PreProcessor | Finalizer | PostProcessor] = _BUILTIN_DEFAULT_PROCESSORS[:]
+    default_processors: Iterable[
+        PreProcessor | Finalizer | PostProcessor
+    ] = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class: type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
     logger_factory: Callable[
@@ -231,10 +240,12 @@ def configure(
     if pre_processors is not None:
         _CONFIG.default_processors = pre_processors
     if finalizer is not None:
-        _CONFIG.default_processors = _CONFIG.default_processors.append(finalizer)
+        _CONFIG.default_processors = _CONFIG.default_processors.append(
+            finalizer
+        )
     if post_processors is not None:
-        _CONFIG.default_processors = (
-            _CONFIG.default_processors.extend(post_processors)
+        _CONFIG.default_processors = _CONFIG.default_processors.extend(
+            post_processors
         )
 
     if wrapper_class is not None:
