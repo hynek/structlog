@@ -30,6 +30,7 @@ from typing import (
     runtime_checkable,
 )
 
+
 WrappedLogger = Any
 """
 A logger that is wrapped by a bound logger and is ultimately responsible for
