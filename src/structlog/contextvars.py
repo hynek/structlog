@@ -122,7 +122,7 @@ def bind_contextvars(**kw: Any) -> Mapping[str, contextvars.Token[Any]]:
         structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
         try:
             var = _CONTEXT_VARS[structlog_k]
-        except KeyError:  # noqa[PERF203]
+        except KeyError:
             var = contextvars.ContextVar(structlog_k, default=Ellipsis)
             _CONTEXT_VARS[structlog_k] = var
 

@@ -27,7 +27,7 @@ def until_not_interrupted(f: Callable[..., Any], *args: Any, **kw: Any) -> Any:
     while True:
         try:
             return f(*args, **kw)
-        except OSError as e:  # noqa[PERF203]
+        except OSError as e:  # noqa: PERF203
             if e.args[0] == errno.EINTR:
                 continue
             raise
