@@ -317,11 +317,11 @@ class BoundLoggerLazyProxy:
 
     def __repr__(self) -> str:
         return (
-            "<BoundLoggerLazyProxy(logger={0._logger!r}, wrapper_class="
-            "{0._wrapper_class!r}, processors={0._processors!r}, "
-            "context_class={0._context_class!r}, "
-            "initial_values={0._initial_values!r}, "
-            "logger_factory_args={0._logger_factory_args!r})>".format(self)
+            f"<BoundLoggerLazyProxy(logger={self._logger!r}, wrapper_class="
+            f"{self._wrapper_class!r}, processors={self._processors!r}, "
+            f"context_class={self._context_class!r}, "
+            f"initial_values={self._initial_values!r}, "
+            f"logger_factory_args={self._logger_factory_args!r})>"
         )
 
     def bind(self, **new_values: Any) -> BindableLogger:

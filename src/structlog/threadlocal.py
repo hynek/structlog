@@ -193,11 +193,11 @@ class _ThreadLocalDictWrapper:
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__}({self._dict!r})>"
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         # Same class == same dictionary
         return self.__class__ == other.__class__
 
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     # Proxy methods necessary for structlog.

@@ -136,7 +136,7 @@ class ReprWrapper:
     def __init__(self, string: str) -> None:
         self.string = string
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Check for equality, just for tests.
         """

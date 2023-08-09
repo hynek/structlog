@@ -55,13 +55,13 @@ class BoundLoggerBase:
             self.__class__.__name__, self._context, self._processors
         )
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         try:
-            return self._context == other._context
+            return self._context == other._context  # type: ignore[attr-defined]
         except AttributeError:
             return False
 
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     def bind(self, **new_values: Any) -> BoundLoggerBase:
