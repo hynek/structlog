@@ -160,7 +160,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
 
         name = _LEVEL_TO_NAME[level]
 
-        def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+        def meth(self: Any, _event: str, *args: Any, **kw: Any) -> Any:
             if not args:
                 return self._proxy_to_logger(name, event, **kw)
 
