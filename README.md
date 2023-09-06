@@ -88,6 +88,8 @@ Once you feel inspired to try it out, check out our friendly [Getting Started tu
 
 If you prefer videos over reading, check out [Markus Holtermann](https://twitter.com/m_holtermann)'s DjangoCon Europe 2019 talk: [*Logging Rethought 2: The Actions of Frank Taylor Jr.*](https://www.youtube.com/watch?v=Y5eyEgyHLLo)
 
+For a fully-fledged zero-to-hero tutorial, check out [*A Comprehensive Guide to Python Logging with structlog*](https://betterstack.com/community/guides/logging/structlog/).
+
 
 ## Credits
 
