@@ -26,6 +26,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#515](https://github.com/hynek/structlog/issues/515)
 - `structlog.processors.MaybeTimeStamper` that only adds a timestamp if there isn't one already.
   [#81](https://github.com/hynek/structlog/issues/81)
+- `structlog.dev.ConsoleRenderer` now supports renamed timestamp keys using the *timestamp_key* parameter.
+  [#541](https://github.com/hynek/structlog/issues/541)
 
 
 ### Fixed

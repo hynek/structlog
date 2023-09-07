@@ -97,12 +97,24 @@ class TestConsoleRenderer:
 
     def test_event_renamed(self):
         """
-        Uses respects if the event key has been renamed.
+        The main event key can be renamed.
         """
         cr = dev.ConsoleRenderer(colors=False, event_key="msg")
 
         assert "new event name                 event=something custom" == cr(
             None, None, {"msg": "new event name", "event": "something custom"}
+        )
+
+    def test_timestamp_renamed(self):
+        """
+        The timestamp key can be renamed.
+        """
+        cr = dev.ConsoleRenderer(colors=False, timestamp_key="ts")
+
+        assert "2023-09-07 le event" == cr(
+            None,
+            None,
+            {"ts": "2023-09-07", "event": "le event"},
         )
 
     def test_level(self, cr, styles, padded):
