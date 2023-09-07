@@ -74,6 +74,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
+          python-version-file: .python-version-default
           cache: pip
 
       - run: python -Im pip install --upgrade coverage[toml]
@@ -115,6 +116,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
+          python-version-file: .python-version-default
           allow-prereleases: true
           cache: pip
 
@@ -155,6 +157,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
+          python-version-file: .python-version-default
           cache: pip
 
       - run: python -Im pip install -e .[dev]
@@ -188,6 +191,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
+          python-version-file: .python-version-default
           cache: pip
       - run: python -Im pip install tox
 

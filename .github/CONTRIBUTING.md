@@ -43,12 +43,12 @@ You can (and should) run our test suite using [*tox*].
 However, you’ll probably want a more traditional environment as well.
 
 First, create a [virtual environment](https://virtualenv.pypa.io/) so you don't break your system-wide Python installation.
-We recommend using the Python version from the `.python-version` file in project's root directory.
+We recommend using the Python version from the `.python-version-default` file in project's root directory.
 
 If you're using [*direnv*](https://direnv.net), you can automate the creation of a virtual environment with the correct Python version by adding the following `.envrc` to the project root:
 
 ```bash
-layout python python$(cat .python-version)
+layout python python$(cat .python-version-default)
 ```
 
 [Create a fork](https://github.com/hynek/structlog/fork) of the *structlog* repository and clone it:
@@ -86,14 +86,14 @@ $ python -m pytest
 When working on the documentation, use:
 
 ```bash
-$ tox -e docs-watch
+$ tox run -e docs-watch
 ```
 
 ... to watch your files and automatically rebuild when a file changes.
 And use:
 
 ```bash
-$ tox -e docs
+$ tox run -e docs
 ```
 
 ... to build it once and run our doctests.
@@ -163,7 +163,7 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
 
 - We use [Markdown] everywhere except in `docs/api.rst` and docstrings.
 
-- Use [semantic newlines] in [*reStructuredText*] and [Markdown] files (files ending in `.rst` and `.md`):
+- Use [semantic newlines] in [reStructuredText] and [Markdown] files (files ending in `.rst` and `.md`):
 
   ```markdown
   This is a sentence.
@@ -229,5 +229,5 @@ or:
 [*pre-commit*]: https://pre-commit.com/
 [*tox*]: https://tox.wiki/
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
-[*reStructuredText*]: https://www.sphinx-doc.org/en/stable/usage/restructuredtext/basics.html
+[reStructuredText]: https://www.sphinx-doc.org/en/stable/usage/restructuredtext/basics.html
 [Markdown]: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
