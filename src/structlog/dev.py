@@ -11,11 +11,23 @@ See also the narrative documentation in `development`.
 
 from __future__ import annotations
 
+import shutil
 import sys
 import warnings
 
+from dataclasses import dataclass
 from io import StringIO
-from typing import Any, Iterable, Protocol, TextIO, Type, Union
+from types import ModuleType
+from typing import (
+    Any,
+    Iterable,
+    Literal,
+    Protocol,
+    Sequence,
+    TextIO,
+    Type,
+    Union,
+)
 
 from ._frames import _format_exception
 from .processors import _figure_out_exc_info
@@ -160,25 +172,78 @@ def plain_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
     Used by default if neither Rich nor *better-exceptions* are present.
 
-    .. versionadded:: 21.2
+    .. versionadded:: 21.2.0
     """
     sio.write("\n" + _format_exception(exc_info))
 
 
-def rich_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
+@dataclass
+class RichTracebackFormatter:
     """
-    Pretty-print *exc_info* to *sio* using the Rich package.
+    A Rich traceback renderer with the given options.
 
-    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+    Pass an instance as `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    Used by default if Rich is installed.
+    See :class:`rich.traceback.Traceback` for details on the arguments.
 
-    .. versionadded:: 21.2
+    If a *width* of -1 is passed, the terminal width is used. If the width
+    can't be determined, fall back to 80.
+
+    .. versionadded:: 23.2.0
     """
-    sio.write("\n")
-    Console(file=sio, color_system="truecolor").print(
-        Traceback.from_exception(*exc_info, show_locals=True)
-    )
+
+    color_system: Literal[
+        "auto", "standard", "256", "truecolor", "windows"
+    ] = "truecolor"
+    show_locals: bool = True
+    max_frames: int = 100
+    theme: str | None = None
+    word_wrap: bool = False
+    extra_lines: int = 3
+    width: int = 100
+    indent_guides: bool = True
+    locals_max_length: int = 10
+    locals_max_string: int = 80
+    locals_hide_dunder: bool = True
+    locals_hide_sunder: bool = False
+    suppress: Sequence[str | ModuleType] = ()
+
+    def __call__(self, sio: TextIO, exc_info: ExcInfo) -> None:
+        if self.width == -1:
+            self.width, _ = shutil.get_terminal_size((80, 0))
+
+        sio.write("\n")
+
+        Console(file=sio, color_system=self.color_system).print(
+            Traceback.from_exception(
+                *exc_info,
+                show_locals=self.show_locals,
+                max_frames=self.max_frames,
+                theme=self.theme,
+                word_wrap=self.word_wrap,
+                extra_lines=self.extra_lines,
+                width=self.width,
+                indent_guides=self.indent_guides,
+                locals_max_length=self.locals_max_length,
+                locals_max_string=self.locals_max_string,
+                locals_hide_dunder=self.locals_hide_dunder,
+                locals_hide_sunder=self.locals_hide_sunder,
+                suppress=self.suppress,
+            )
+        )
+
+
+rich_traceback = RichTracebackFormatter()
+"""
+Pretty-print *exc_info* to *sio* using the Rich package.
+
+To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+This is a `RichTracebackFormatter` with default arguments and used by default
+if Rich is installed.
+
+.. versionadded:: 21.2.0
+"""
 
 
 def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:

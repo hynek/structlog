@@ -7,6 +7,7 @@ import pickle
 import sys
 
 from io import StringIO
+from unittest import mock
 
 import pytest
 
@@ -560,26 +561,39 @@ class TestSetExcInfo:
         assert {"exc_info": True} == dev.set_exc_info(None, "exception", {})
 
 
-@pytest.mark.skipif(dev.rich is None, reason="Needs rich.")
-class TestRichTraceback:
+@pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+class TestRichTracebackFormatter:
     def test_default(self):
         """
         If Rich is present, it's the default.
         """
         assert dev.default_exception_formatter is dev.rich_traceback
 
-    def test_does_not_blow_up(self):
+    def test_does_not_blow_up(self, sio):
         """
         We trust Rich to do the right thing, so we just exercise the function
         and check the first new line that we add manually is present.
         """
-        sio = StringIO()
         try:
             0 / 0
         except ZeroDivisionError:
             dev.rich_traceback(sio, sys.exc_info())
 
         assert sio.getvalue().startswith("\n")
+
+    def test_width_minus_one(self, sio):
+        """
+        If width is -1, it's replaced by the terminal width on first use.
+        """
+        rtf = dev.RichTracebackFormatter(width=-1)
+
+        with mock.patch("shutil.get_terminal_size", return_value=(42, 0)):
+            try:
+                0 / 0
+            except ZeroDivisionError:
+                rtf(sio, sys.exc_info())
+
+        assert 42 == rtf.width
 
 
 @pytest.mark.skipif(

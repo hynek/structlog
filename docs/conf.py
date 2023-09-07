@@ -160,4 +160,7 @@ linkcheck_ignore = [
 # Twisted's trac tends to be slow
 linkcheck_timeout = 300
 
-intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "rich": ("https://rich.readthedocs.io/en/stable/", None),
+}
