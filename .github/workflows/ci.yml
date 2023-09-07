@@ -13,9 +13,6 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
   PIP_NO_PYTHON_VERSION_WARNING: "1"
 
-  # N.B. default Python version for setup-python comes from the .python-version
-  # file at the root of the project.
-
 permissions: {}
 
 jobs:
@@ -60,7 +57,6 @@ jobs:
 
       - run: python -Im pip install tox
       - run: python -Im tox run --installpkg dist/*.whl -f py$(echo ${{ matrix.python-version }} | tr -d .)
-      - run: python -Im tox run --installpkg dist/*.whl -e mypy-api
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v3

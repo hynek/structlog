@@ -40,7 +40,6 @@ Tidelift = "https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi
 
 [project.optional-dependencies]
 tests = [
-    "coverage[toml]",
     "freezegun>=0.2.8",
     "pretend",
     "pytest-asyncio>=0.17",
