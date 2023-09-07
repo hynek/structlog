@@ -4,12 +4,12 @@ To make development a more pleasurable experience, *structlog* comes with the {m
 
 The highlight is {class}`structlog.dev.ConsoleRenderer` that offers nicely aligned and colorful[^win] console output.
 
-[^win]: Requires the [*Colorama* package](https://pypi.org/project/colorama/) on Windows.
+[^win]: Requires the [Colorama package](https://pypi.org/project/colorama/) on Windows.
 
-If either of the [*Rich*](https://rich.readthedocs.io/) or [*better-exceptions*](https://github.com/Qix-/better-exceptions) packages is installed, it will also pretty-print exceptions with helpful contextual data.
-*Rich* takes precedence over *better-exceptions*, but you can configure it by passing {func}`structlog.dev.plain_traceback` or {func}`structlog.dev.better_traceback` for the `exception_formatter` parameter of {class}`~structlog.dev.ConsoleRenderer`.
+If either of the [Rich](https://rich.readthedocs.io/) or [*better-exceptions*](https://github.com/Qix-/better-exceptions) packages is installed, it will also pretty-print exceptions with helpful contextual data.
+Rich takes precedence over *better-exceptions*, but you can configure it by passing {func}`structlog.dev.plain_traceback` or {func}`structlog.dev.better_traceback` for the `exception_formatter` parameter of {class}`~structlog.dev.ConsoleRenderer`.
 
-The following output is rendered using *Rich*:
+The following output is rendered using Rich:
 
 ```{figure} _static/console_renderer.png
 Colorful console output by ConsoleRenderer.
@@ -24,7 +24,7 @@ It will recognize logger names, log levels, time stamps, stack infos, and `exc_i
 For pretty exceptions to work, {func}`~structlog.processors.format_exc_info` must be **absent** from the processors chain.
 :::
 
-*structlog*'s default configuration already uses {class}`~structlog.dev.ConsoleRenderer`, therefore if you want nice colorful output on the console, you don't have to do anything except installing *Rich* or *better-exceptions* (and *Colorama* on Windows).
+*structlog*'s default configuration already uses {class}`~structlog.dev.ConsoleRenderer`, therefore if you want nice colorful output on the console, you don't have to do anything except installing Rich or *better-exceptions* (and Colorama on Windows).
 If you want to use it along with standard library logging, we suggest the following configuration:
 
 ```python
@@ -60,4 +60,4 @@ It's possible to override this behavior by setting two standard environment vari
 
 ## Disabling Exception Pretty-Printing
 
-If you prefer the default terse Exception rendering, but still want *Rich* installed, you can disable the pretty-printing by instantiating {class}`structlog.dev.ConsoleRenderer()` yourself and passing `exception_formatter=structlog.dev.plain_traceback`.
+If you prefer the default terse Exception rendering, but still want Rich installed, you can disable the pretty-printing by instantiating {class}`structlog.dev.ConsoleRenderer()` yourself and passing `exception_formatter=structlog.dev.plain_traceback`.

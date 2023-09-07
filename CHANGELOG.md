@@ -263,8 +263,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.contextvars.bind_contextvars()` now returns a mapping of keys to `contextvars.Token`s, allowing you to reset values using the new `structlog.contextvars.reset_contextvars()`.
   [#339](https://github.com/hynek/structlog/pull/339)
 - Exception rendering in `structlog.dev.ConsoleLogger` is now configurable using the `exception_formatter` setting.
-  If either the [*Rich*](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, *structlog* will use them for pretty-printing tracebacks.
-  *Rich* takes precedence over *better-exceptions* if both are present.
+  If either the [Rich](https://github.com/Textualize/rich) or the [*better-exceptions*](https://github.com/qix-/better-exceptions) package is present, *structlog* will use them for pretty-printing tracebacks.
+  Rich takes precedence over *better-exceptions* if both are present.
 
   This only works if `format_exc_info` is **absent** in the processor chain.
   [#330](https://github.com/hynek/structlog/pull/330),
@@ -280,9 +280,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   Make sure to remove `format_exc_info` from your processor chain if you configure *structlog* manually.
   This change is not really breaking, because the old use-case will keep working as before.
   However if you pass `pretty_exceptions=True` (which is the default if either `rich` or `better-exceptions` is installed), a warning will be raised and the exception will be rendered without prettification.
-- All use of [*Colorama*](https://github.com/tartley/colorama) on non-Windows systems has been excised.
+- All use of [Colorama](https://github.com/tartley/colorama) on non-Windows systems has been excised.
   Thus, colors are now enabled by default in `structlog.dev.ConsoleRenderer` on non-Windows systems.
-  You can keep using *Colorama* to customize colors, of course.
+  You can keep using Colorama to customize colors, of course.
   [#345](https://github.com/hynek/structlog/pull/345)
 
 
@@ -391,7 +391,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - The logger created by `structlog.get_logger()` is not detected as an abstract method anymore, when attached to an abstract base class.
   [#229](https://github.com/hynek/structlog/issues/229)
-- *Colorama* isn't initialized lazily on Windows anymore because it breaks rendering.
+- Colorama isn't initialized lazily on Windows anymore because it breaks rendering.
   [#232](https://github.com/hynek/structlog/issues/232),
   [#242](https://github.com/hynek/structlog/pull/242)
 
@@ -436,9 +436,9 @@ It has been unsupported by the Python core team for a while now and its PyPI dow
 
 ### Fixed
 
-- `structlog.dev.ConsoleRenderer` now uses no colors by default, if *Colorama* is not available.
+- `structlog.dev.ConsoleRenderer` now uses no colors by default, if Colorama is not available.
   [#215](https://github.com/hynek/structlog/issues/215)
-- `structlog.dev.ConsoleRenderer` now initializes *Colorama* lazily, to prevent accidental side-effects just by importing *structlog*.
+- `structlog.dev.ConsoleRenderer` now initializes Colorama lazily, to prevent accidental side-effects just by importing *structlog*.
   [#210](https://github.com/hynek/structlog/issues/210)
 - A best effort has been made to make as much of *structlog* pickleable as possible to make it friendlier with `multiprocessing` and similar libraries.
   Some classes can only be pickled on Python 3 or using the [dill](https://pypi.org/project/dill/) library though and that is very unlikely to change.
