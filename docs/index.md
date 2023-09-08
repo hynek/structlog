@@ -2,7 +2,7 @@
 
 *Simple. Powerful. Fast. Pick three.*
 
-Release **{sub-ref}`release`**  ([What's new?](changelog))
+Release **{sub-ref}`release`**  ([What's new?](https://github.com/hynek/structlog/blob/main/CHANGELOG.md))
 
 ---
 
@@ -112,7 +112,6 @@ api
 :hidden: true
 
 license
-changelog
 ```
 
 
