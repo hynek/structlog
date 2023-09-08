@@ -24,7 +24,6 @@ from structlog import (
     ReturnLogger,
     configure,
     get_context,
-    reset_defaults,
 )
 from structlog._config import _CONFIG
 from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
@@ -110,7 +109,11 @@ class TestLoggerFactory:
         )
 
     def test_deduces_correct_caller(self):
+        """
+        It will find the correct caller.
+        """
         logger = _FixedFindCallerLogger("test")
+
         file_name, line_number, func_name = logger.findCaller()[:3]
 
         assert file_name == os.path.realpath(__file__)
@@ -126,16 +129,24 @@ class TestLoggerFactory:
         assert "testing, is_, fun" in stack_info
 
     def test_no_stack_info_by_default(self):
+        """
+        If we don't ask for stack_info, it won't be returned.
+        """
         logger = _FixedFindCallerLogger("test")
         testing, is_, fun, stack_info = logger.findCaller()
 
         assert None is stack_info
 
     def test_find_caller(self, monkeypatch):
+        """
+        The caller is found.
+        """
         logger = LoggerFactory()()
         log_handle = call_recorder(lambda x: None)
         monkeypatch.setattr(logger, "handle", log_handle)
+
         logger.error("Test")
+
         log_record = log_handle.calls[0].args[0]
 
         assert log_record.funcName == "test_find_caller"
@@ -720,7 +731,8 @@ def _configure_for_processor_formatter():
     """
     Configure structlog to use ProcessorFormatter.
 
-    Reset both structlog and logging setting after the test.
+    Reset logging setting after the test (structlog is reset automatically
+    before all tests).
     """
     configure(
         processors=[add_log_level, ProcessorFormatter.wrap_for_formatter],
@@ -731,7 +743,6 @@ def _configure_for_processor_formatter():
     yield
 
     logging.basicConfig()
-    reset_defaults()
 
 
 def configure_logging(
@@ -1254,16 +1265,12 @@ class TestAsyncBoundLogger:
             "level": "info",
         } == json.loads(capsys.readouterr().out)
 
-        reset_defaults()
-
 
 @pytest.mark.parametrize("log_level", [None, 45])
 def test_recreate_defaults(log_level):
     """
     Recreate defaults configures structlog and -- if asked -- logging.
     """
-    reset_defaults()
-
     logging.basicConfig(
         stream=sys.stderr,
         level=1,

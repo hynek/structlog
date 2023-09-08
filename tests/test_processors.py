@@ -753,6 +753,9 @@ class TestStackInfoRenderer:
         assert "stack" in ed
 
     def test_renders_correct_stack(self, sir):
+        """
+        The rendered stack is correct.
+        """
         ed = sir(None, None, {"stack_info": True})
 
         assert 'ed = sir(None, None, {"stack_info": True})' in ed["stack"]
@@ -831,32 +834,28 @@ class TestCallsiteParameterAdder:
         """
         Callsite information for async invocations are correct.
         """
-        try:
-            string_io = StringIO()
+        string_io = StringIO()
 
-            class StingIOLogger(structlog.PrintLogger):
-                def __init__(self):
-                    super().__init__(file=string_io)
+        class StingIOLogger(structlog.PrintLogger):
+            def __init__(self):
+                super().__init__(file=string_io)
 
-            processor = self.make_processor(None, ["concurrent", "threading"])
-            structlog.configure(
-                processors=[processor, JSONRenderer()],
-                logger_factory=StingIOLogger,
-                wrapper_class=structlog.stdlib.AsyncBoundLogger,
-                cache_logger_on_first_use=True,
-            )
+        processor = self.make_processor(None, ["concurrent", "threading"])
+        structlog.configure(
+            processors=[processor, JSONRenderer()],
+            logger_factory=StingIOLogger,
+            wrapper_class=structlog.stdlib.AsyncBoundLogger,
+            cache_logger_on_first_use=True,
+        )
 
-            logger = structlog.stdlib.get_logger()
+        logger = structlog.stdlib.get_logger()
 
-            callsite_params = self.get_callsite_parameters()
-            await logger.info("baz")
+        callsite_params = self.get_callsite_parameters()
+        await logger.info("baz")
 
-            assert {"event": "baz", **callsite_params} == json.loads(
-                string_io.getvalue()
-            )
-
-        finally:
-            structlog.reset_defaults()
+        assert {"event": "baz", **callsite_params} == json.loads(
+            string_io.getvalue()
+        )
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """

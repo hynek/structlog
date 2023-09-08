@@ -293,12 +293,17 @@ class TestFilteringLogger:
         ],
     )
     async def test_async_contextvars_merged(self, meth, args, cl):
+        """
+        Contextvars are merged into the event dict.
+        """
         clear_contextvars()
         bl = make_filtering_bound_logger(logging.INFO)(
             cl, [merge_contextvars], {}
         )
         bind_contextvars(context_included="yep")
+
         await getattr(bl, meth)(*args)
+
         assert len(cl.calls) == 1
         assert "context_included" in cl.calls[0].kwargs
 

@@ -64,9 +64,6 @@ def test_default_context_class():
 
 
 class TestConfigure:
-    def teardown_method(self, method):
-        structlog.reset_defaults()
-
     def test_get_config_is_configured(self):
         """
         Return value of structlog.get_config() works as input for
@@ -84,6 +81,9 @@ class TestConfigure:
         assert False is structlog.is_configured()
 
     def test_configure_all(self, proxy):
+        """
+        All configurations are applied and land on the bound logger.
+        """
         x = stub()
         configure(processors=[x], context_class=dict)
         b = proxy.bind()
@@ -92,8 +92,12 @@ class TestConfigure:
         assert dict is b._context.__class__
 
     def test_reset(self, proxy):
+        """
+        Reset resets all settings to their default values.
+        """
         x = stub()
         configure(processors=[x], context_class=dict, wrapper_class=Wrapper)
+
         structlog.reset_defaults()
         b = proxy.bind()
 
@@ -104,6 +108,9 @@ class TestConfigure:
         assert _BUILTIN_DEFAULT_LOGGER_FACTORY is _CONFIG.logger_factory
 
     def test_just_processors(self, proxy):
+        """
+        It's possible to only configure processors.
+        """
         x = stub()
         configure(processors=[x])
         b = proxy.bind()
@@ -113,6 +120,9 @@ class TestConfigure:
         assert _BUILTIN_DEFAULT_CONTEXT_CLASS == b._context.__class__
 
     def test_just_context_class(self, proxy):
+        """
+        It's possible to only configure the context class.
+        """
         configure(context_class=dict)
         b = proxy.bind()
 
@@ -120,6 +130,9 @@ class TestConfigure:
         assert _BUILTIN_DEFAULT_PROCESSORS == b._processors
 
     def test_configure_sets_is_configured(self):
+        """
+        After configure() is_configured() returns True.
+        """
         assert False is _CONFIG.is_configured
 
         configure()
@@ -127,6 +140,10 @@ class TestConfigure:
         assert True is _CONFIG.is_configured
 
     def test_configures_logger_factory(self):
+        """
+        It's possible to configure the logger factory.
+        """
+
         def f():
             pass
 
@@ -136,9 +153,6 @@ class TestConfigure:
 
 
 class TestBoundLoggerLazyProxy:
-    def teardown_method(self, method):
-        structlog.reset_defaults()
-
     def test_repr(self):
         """
         repr reflects all attributes.
@@ -362,9 +376,6 @@ class TestBoundLoggerLazyProxy:
 
 
 class TestFunctions:
-    def teardown_method(self, method):
-        structlog.reset_defaults()
-
     def test_wrap_passes_args(self):
         """
         wrap_logger propagates all arguments to the wrapped bound logger.

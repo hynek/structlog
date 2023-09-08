@@ -55,6 +55,9 @@ def test_safe_str_error():
     ],
 )
 def test_to_repr(data: Any, max_len: int | None, expected: str):
+    """
+    "to_repr()" returns the repr of an object, trimmed to max_len.
+    """
     assert expected == tracebacks.to_repr(data, max_string=max_len)
 
 
@@ -483,6 +486,9 @@ def test_recursive():
 
 
 def test_json_traceback():
+    """
+    Tracebacks are formatted to JSON with all information.
+    """
     try:
         lineno = get_next_lineno()
         1 / 0
@@ -510,6 +516,9 @@ def test_json_traceback():
 
 
 def test_json_traceback_locals_max_string():
+    """
+    Local variables in each frame are trimmed to locals_max_string.
+    """
     try:
         _var = "spamspamspam"
         lineno = get_next_lineno()
@@ -553,6 +562,11 @@ def test_json_traceback_locals_max_string():
 def test_json_traceback_max_frames(
     max_frames: int, expected_frames: int, skipped_idx: int, skipped_count: int
 ):
+    """
+    Only max_frames frames are included in the traceback and the skipped frames
+    are reported.
+    """
+
     def spam():
         return 1 / 0
 

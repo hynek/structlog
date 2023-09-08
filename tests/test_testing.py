@@ -5,7 +5,7 @@
 
 import pytest
 
-from structlog import get_config, get_logger, reset_defaults, testing
+from structlog import get_config, get_logger, testing
 from structlog.testing import (
     CapturedCall,
     CapturingLogger,
@@ -17,10 +17,6 @@ from structlog.testing import (
 
 
 class TestCaptureLogs:
-    @classmethod
-    def teardown_class(cls):
-        reset_defaults()
-
     def test_captures_logs(self):
         """
         Log entries are captured and retain their structure.

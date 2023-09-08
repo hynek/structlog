@@ -9,6 +9,8 @@ from io import StringIO
 
 import pytest
 
+import structlog
+
 from structlog._log_levels import _NAME_TO_LEVEL
 from structlog.testing import CapturingLogger
 
@@ -65,3 +67,8 @@ def _stdlib_log_methods(request):
 @pytest.fixture(name="cl")
 def _cl():
     return CapturingLogger()
+
+
+@pytest.fixture(autouse=True)
+def _reset_config():
+    structlog.reset_defaults()
