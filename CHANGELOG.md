@@ -44,6 +44,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.dev.RichTracebackFormatter` that allows to configure the traceback formatting.
   [#542](https://github.com/hynek/structlog/issues/542)
 
+- stdlib: `ProcessorFormatter` can now be told to now render the log record message using `getMessage` and just `str(record.msg)` instead.
+  [#550](https://github.com/hynek/structlog/issues/550)
+
 
 ### Fixed
 
