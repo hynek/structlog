@@ -91,7 +91,7 @@ For a fully-fledged zero-to-hero tutorial, check out [*A Comprehensive Guide to 
 If you prefer videos over reading, check out [Markus Holtermann](https://chaos.social/@markush)'s DjangoCon Europe 2019 talk *Logging Rethought 2: The Actions of Frank Taylor Jr.*:
 
 <p align="center">
-   <a href="https://www.youtube-nocookie.com/embed/Y5eyEgyHLLo">
+   <a href="https://www.youtube.com/watch?v=Y5eyEgyHLLo">
       <img src="https://img.youtube.com/vi/Y5eyEgyHLLo/maxresdefault.jpg">
    </a>
 </p>
