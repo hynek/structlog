@@ -33,8 +33,8 @@
 
 *structlog* is *the* production-ready logging solution for Python:
 
-- **Simple**: At its core, everything is about **functions** that take and return **dictionaries** – all hidden behind **familiar APIs**.
-- **Powerful**: Functions and dictionaries aren’t just simple, they’re also powerful.
+- **Simple**: Everything is about **functions** that take and return **dictionaries** – all hidden behind **familiar APIs**.
+- **Powerful**: Functions and dictionaries aren’t just simple but also powerful.
   *structlog* leaves *you* in control.
 - **Fast**: *structlog* is not hamstrung by designs of yore.
   Its flexibility comes not at the price of performance.
@@ -86,9 +86,13 @@ A short explanation on *why* structured logging is good for you, and why *struct
 
 Once you feel inspired to try it out, check out our friendly [Getting Started tutorial](https://www.structlog.org/en/stable/getting-started.html).
 
-If you prefer videos over reading, check out [Markus Holtermann](https://twitter.com/m_holtermann)'s DjangoCon Europe 2019 talk: [*Logging Rethought 2: The Actions of Frank Taylor Jr.*](https://www.youtube.com/watch?v=Y5eyEgyHLLo)
-
 For a fully-fledged zero-to-hero tutorial, check out [*A Comprehensive Guide to Python Logging with structlog*](https://betterstack.com/community/guides/logging/structlog/).
+
+If you prefer videos over reading, check out [Markus Holtermann](https://chaos.social/@markush)'s DjangoCon Europe 2019 talk *Logging Rethought 2: The Actions of Frank Taylor Jr.*:
+
+<p align="center">
+   <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Y5eyEgyHLLo?si=l0kNyyP9E4rmzKE5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</p>
 
 
 ## Credits
