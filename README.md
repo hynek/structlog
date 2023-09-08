@@ -92,7 +92,7 @@ If you prefer videos over reading, check out [Markus Holtermann](https://chaos.s
 
 <p align="center">
    <a href="https://www.youtube.com/watch?v=Y5eyEgyHLLo">
-      <img src="https://img.youtube.com/vi/Y5eyEgyHLLo/maxresdefault.jpg">
+      <img width="50%" src="https://img.youtube.com/vi/Y5eyEgyHLLo/maxresdefault.jpg">
    </a>
 </p>
 
