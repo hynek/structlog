@@ -1,7 +1,5 @@
 ---
 version: 2
-# PDF builds are broken.
-formats: [htmlzip, epub]
 
 build:
   os: ubuntu-22.04
