@@ -221,7 +221,7 @@ pattern = "\n(###.+?\n)## "
 text = """
 ---
 
-[→ Full Changelog](https://www.structlog.org/en/stable/changelog.html)
+[Full Changelog →](https://www.structlog.org/en/stable/changelog.html)
 
 
 """
