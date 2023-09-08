@@ -6,8 +6,8 @@
 """
 Deprecated name for :mod:`structlog.typing`.
 
-.. versionadded:: 20.2
-.. deprecated:: 22.2
+.. versionadded:: 20.2.0
+.. deprecated:: 22.2.0
 """
 
 from __future__ import annotations

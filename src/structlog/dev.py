@@ -254,7 +254,7 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
     Used by default if *better-exceptions* is installed and Rich is absent.
 
-    .. versionadded:: 21.2
+    .. versionadded:: 21.2.0
     """
     sio.write("\n" + "".join(better_exceptions.format_exception(*exc_info)))
 
@@ -279,37 +279,43 @@ class ConsoleRenderer:
 
         pad_event: Pad the event to this many characters.
 
-        colors: Use colors for a nicer output. `True` by default. On
-            Windows only if Colorama_ is installed.
+        colors:
+            Use colors for a nicer output. `True` by default. On Windows only
+            if Colorama_ is installed.
 
-        force_colors: Force colors even for non-tty destinations.
-            Use this option if your logs are stored in a file that is meant to
-            be streamed to the console. Only meaningful on Windows.
+        force_colors:
+            Force colors even for non-tty destinations. Use this option if your
+            logs are stored in a file that is meant to be streamed to the
+            console. Only meaningful on Windows.
 
-        repr_native_str: When `True`, `repr` is also applied
-            to native strings (i.e. unicode on Python 3 and bytes on Python 2).
-            Setting this to `False` is useful if you want to have
-            human-readable non-ASCII output on Python 2.  The ``event`` key is
-            *never* `repr` -ed.
+        repr_native_str:
+            When `True`, `repr` is also applied to native strings (i.e. unicode
+            on Python 3 and bytes on Python 2). Setting this to `False` is
+            useful if you want to have human-readable non-ASCII output on
+            Python 2.  The ``event`` key is *never* `repr` -ed.
 
-        level_styles: When present, use these styles for colors. This
-            must be a dict from level names (strings) to Colorama styles. The
-            default can be obtained by calling
-            `ConsoleRenderer.get_default_level_styles`
+        level_styles:
+            When present, use these styles for colors. This must be a dict from
+            level names (strings) to Colorama styles. The default can be
+            obtained by calling `ConsoleRenderer.get_default_level_styles`
 
-        exception_formatter: A callable to render ``exc_infos``. If rich_
-            or better-exceptions_ are installed, they are used for
-            pretty-printing by default (rich_ taking precedence). You can also
-            manually set it to `plain_traceback`, `better_traceback`,
-            `rich_traceback`, or implement your own.
+        exception_formatter:
+            A callable to render ``exc_infos``. If Rich_ or better-exceptions_
+            are installed, they are used for pretty-printing by default (rich_
+            taking precedence). You can also manually set it to
+            `plain_traceback`, `better_traceback`, an instance of
+            `RichTracebackFormatter` like `rich_traceback`, or implement your
+            own.
 
         sort_keys: Whether to sort keys when formatting. `True` by default.
 
-        event_key: The key to look for the main log message. Needed when
-            you rename it e.g. using `structlog.processors.EventRenamer`.
+        event_key:
+            The key to look for the main log message. Needed when you rename it
+            e.g. using `structlog.processors.EventRenamer`.
 
-        timestamp_key: The key to look for timestamp of the log message. Needed
-            when you rename it e.g. using `structlog.processors.EventRenamer`.
+        timestamp_key:
+            The key to look for timestamp of the log message. Needed when you
+            rename it e.g. using `structlog.processors.EventRenamer`.
 
     Requires the Colorama_ package if *colors* is `True` **on Windows**.
 
@@ -317,29 +323,32 @@ class ConsoleRenderer:
     .. _better-exceptions: https://pypi.org/project/better-exceptions/
     .. _Rich: https://pypi.org/project/rich/
 
-    .. versionadded:: 16.0
-    .. versionadded:: 16.1 *colors*
-    .. versionadded:: 17.1 *repr_native_str*
-    .. versionadded:: 18.1 *force_colors*
-    .. versionadded:: 18.1 *level_styles*
-    .. versionchanged:: 19.2
+    .. versionadded:: 16.0.0
+    .. versionadded:: 16.1.0 *colors*
+    .. versionadded:: 17.1.0 *repr_native_str*
+    .. versionadded:: 18.1.0 *force_colors*
+    .. versionadded:: 18.1.0 *level_styles*
+    .. versionchanged:: 19.2.0
        Colorama now initializes lazily to avoid unwanted initializations as
        ``ConsoleRenderer`` is used by default.
-    .. versionchanged:: 19.2 Can be pickled now.
-    .. versionchanged:: 20.1 Colorama does not initialize lazily on Windows
-       anymore because it breaks rendering.
-    .. versionchanged:: 21.1 It is additionally possible to set the logger name
-       using the ``logger_name`` key in the ``event_dict``.
-    .. versionadded:: 21.2 *exception_formatter*
-    .. versionchanged:: 21.2 `ConsoleRenderer` now handles the ``exc_info``
-       event dict key itself. Do **not** use the
-       `structlog.processors.format_exc_info` processor together with
-       `ConsoleRenderer` anymore! It will keep working, but you can't have
-       customize exception formatting and a warning will be raised if you ask
-       for it.
-    .. versionchanged:: 21.2 The colors keyword now defaults to True on
-       non-Windows systems, and either True or False in Windows depending on
-       whether Colorama is installed.
+    .. versionchanged:: 19.2.0 Can be pickled now.
+    .. versionchanged:: 20.1.0
+       Colorama does not initialize lazily on Windows anymore because it breaks
+       rendering.
+    .. versionchanged:: 21.1.0
+       It is additionally possible to set the logger name using the
+       ``logger_name`` key in the ``event_dict``.
+    .. versionadded:: 21.2.0 *exception_formatter*
+    .. versionchanged:: 21.2.0
+       `ConsoleRenderer` now handles the ``exc_info`` event dict key itself. Do
+       **not** use the `structlog.processors.format_exc_info` processor
+       together with `ConsoleRenderer` anymore! It will keep working, but you
+       can't have customize exception formatting and a warning will be raised
+       if you ask for it.
+    .. versionchanged:: 21.2.0
+       The colors keyword now defaults to True on non-Windows systems, and
+       either True or False in Windows depending on whether Colorama is
+       installed.
     .. versionadded:: 21.3.0 *sort_keys*
     .. versionadded:: 22.1.0 *event_key*
     .. versionadded:: 23.2.0 *timestamp_key*
