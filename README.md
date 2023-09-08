@@ -109,11 +109,11 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 
 <!-- begin-meta -->
 
-## Project Information
+## Project Links
 
-- **Get Help**: please use the *structlog* tag on [*Stack Overflow*](https://stackoverflow.com/questions/tagged/structlog)
+- [**Get Help**](https://stackoverflow.com/questions/tagged/structlog) (use the *structlog* tag on Stack Overflow)
 - [**PyPI**](https://pypi.org/project/structlog/)
-- [**Source Code**](https://github.com/hynek/structlog)
+- [**GitHub**](https://github.com/hynek/structlog)
 - [**Documentation**](https://www.structlog.org/)
 - [**Changelog**](https://www.structlog.org/en/stable/changelog.html)
 - [**Third-party Extensions**](https://github.com/hynek/structlog/wiki/Third-party-Extensions)

@@ -33,10 +33,11 @@ dependencies = []
 [project.urls]
 Documentation = "https://www.structlog.org/"
 Changelog = "https://www.structlog.org/en/stable/changelog.html"
-"Bug Tracker" = "https://github.com/hynek/structlog/issues"
-"Source Code" = "https://github.com/hynek/structlog"
+GitHub = "https://github.com/hynek/structlog"
 Funding = "https://github.com/sponsors/hynek"
 Tidelift = "https://tidelift.com/subscription/pkg/pypi-structlog?utm_source=pypi-structlog&utm_medium=pypi"
+Mastodon = "https://mastodon.social/@hynek"
+Twitter = "https://twitter.com/hynek"
 
 [project.optional-dependencies]
 tests = [

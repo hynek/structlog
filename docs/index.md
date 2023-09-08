@@ -100,10 +100,10 @@ api
 ```
 
 
-## Project Information
+## Project Links
 
 ```{include} ../README.md
-:start-after: "## Project Information"
+:start-after: "## Project Links"
 ```
 
 % stop Sphinx from complaining about orphaned docs, we link them elsewhere
