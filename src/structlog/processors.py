@@ -63,16 +63,21 @@ class KeyValueRenderer:
     """
     Render ``event_dict`` as a list of ``Key=repr(Value)`` pairs.
 
-    :param sort_keys: Whether to sort keys when formatting.
-    :param key_order: List of keys that should be rendered in this exact
-        order.  Missing keys will be rendered as ``None``, extra keys depending
-        on *sort_keys* and the dict class.
-    :param drop_missing: When ``True``, extra keys in *key_order* will be
-        dropped rather than rendered as ``None``.
-    :param repr_native_str: When ``True``, :func:`repr()` is also applied
-        to native strings.
-        Setting this to ``False`` is useful if you want to have human-readable
-        non-ASCII output on Python 2.
+    Arguments:
+
+        sort_keys: Whether to sort keys when formatting.
+
+        key_order:
+            List of keys that should be rendered in this exact order.  Missing
+            keys will be rendered as ``None``, extra keys depending on
+            *sort_keys* and the dict class.
+
+        drop_missing:
+            When ``True``, extra keys in *key_order* will be dropped rather
+            than rendered as ``None``.
+
+        repr_native_str:
+            When ``True``, :func:`repr()` is also applied to native strings.
 
     .. versionadded:: 0.2.0 *key_order*
     .. versionadded:: 16.1.0 *drop_missing*
@@ -114,17 +119,27 @@ class LogfmtRenderer:
 
     .. _logfmt: https://brandur.org/logfmt
 
-    :param sort_keys: Whether to sort keys when formatting.
-    :param key_order: List of keys that should be rendered in this exact
-        order. Missing keys are rendered with empty values, extra keys
-        depending on *sort_keys* and the dict class.
-    :param drop_missing: When ``True``, extra keys in *key_order* will be
-        dropped rather than rendered with empty values.
-    :param bool_as_flag: When ``True``, render ``{"flag": True}`` as
-        ``flag``, instead of ``flag=true``. ``{"flag": False}`` is
-        always rendered as ``flag=false``.
+    Arguments:
 
-    :raises ValueError: If a key contains non printable or space characters.
+        sort_keys: Whether to sort keys when formatting.
+
+        key_order:
+            List of keys that should be rendered in this exact order. Missing
+            keys are rendered with empty values, extra keys depending on
+            *sort_keys* and the dict class.
+
+        drop_missing:
+            When ``True``, extra keys in *key_order* will be dropped rather
+            than rendered with empty values.
+
+        bool_as_flag:
+            When ``True``, render ``{"flag": True}`` as ``flag``, instead of
+            ``flag=true``. ``{"flag": False}`` is always rendered as
+            ``flag=false``.
+
+    Raises:
+
+        ValueError: If a key contains non printable or space characters.
 
     .. versionadded:: 21.5.0
     """
@@ -222,14 +237,16 @@ class UnicodeEncoder:
     """
     Encode unicode values in ``event_dict``.
 
-    :param encoding: Encoding to encode to (default: ``"utf-8"``).
-    :param errors: How to cope with encoding errors (default
-        ``"backslashreplace"``).
+    Arguments:
 
-    Useful if you're running Python 2 as otherwise ``u"abc"`` will be rendered
-    as ``'u"abc"'``.
+        encoding: Encoding to encode to (default: ``"utf-8"``).
+
+        errors:
+            How to cope with encoding errors (default ``"backslashreplace"``).
 
     Just put it in the processor chain before the renderer.
+
+    .. note:: Not very useful in a Python 3-only world.
     """
 
     _encoding: str
@@ -255,12 +272,13 @@ class UnicodeDecoder:
     """
     Decode byte string values in ``event_dict``.
 
-    :param encoding: Encoding to decode from (default: ``"utf-8"``).
-    :param errors: How to cope with encoding errors (default:
-        ``"replace"``).
+    Arguments:
 
-    Useful if you're running Python 3 as otherwise ``b"abc"`` will be rendered
-    as ``'b"abc"'``.
+        encoding: Encoding to decode from (default: ``"utf-8"``).
+
+        errors: How to cope with encoding errors (default: ``"replace"``).
+
+    Useful to prevent ``b"abc"`` being rendered as as ``'b"abc"'``.
 
     Just put it in the processor chain before the renderer.
 
@@ -290,24 +308,23 @@ class JSONRenderer:
     """
     Render the ``event_dict`` using ``serializer(event_dict, **dumps_kw)``.
 
-    :param dumps_kw: Are passed unmodified to *serializer*.  If *default*
-        is passed, it will disable support for ``__structlog__``-based
-        serialization.
-    :param serializer: A :func:`json.dumps`-compatible callable that
-        will be used to format the string.  This can be used to use alternative
-        JSON encoders like `orjson <https://pypi.org/project/orjson/>`__ or
-        `RapidJSON <https://pypi.org/project/python-rapidjson/>`_  (default:
-        :func:`json.dumps`).
+    Arguments:
 
-    .. versionadded:: 0.2.0
-        Support for ``__structlog__`` serialization method.
+        dumps_kw:
+            Are passed unmodified to *serializer*.  If *default* is passed, it
+            will disable support for ``__structlog__``-based serialization.
 
-    .. versionadded:: 15.4.0
-        *serializer* parameter.
+        serializer:
+            A :func:`json.dumps`-compatible callable that will be used to
+            format the string.  This can be used to use alternative JSON
+            encoders like `orjson <https://pypi.org/project/orjson/>`__ or
+            `RapidJSON <https://pypi.org/project/python-rapidjson/>`_
+            (default: :func:`json.dumps`).
 
+    .. versionadded:: 0.2.0 Support for ``__structlog__`` serialization method.
+    .. versionadded:: 15.4.0 *serializer* parameter.
     .. versionadded:: 18.2.0
        Serializer's *default* parameter can be overwritten now.
-
     """
 
     def __init__(
@@ -365,13 +382,16 @@ class ExceptionRenderer:
     3. If the value true but no tuple, obtain exc_info ourselves and render
        that.
 
-    If there is no ``exc_info`` key, the *event_dict* is not touched.
-    This behavior is analogue to the one of the stdlib's logging.
+    If there is no ``exc_info`` key, the *event_dict* is not touched. This
+    behavior is analogue to the one of the stdlib's logging.
 
-    :param exception_formatter: A callable that is used to format the exception
-        from the ``exc_info`` field.
+    Arguments:
 
-    .. versionadded:: 22.1
+        exception_formatter:
+            A callable that is used to format the exception from the
+            ``exc_info`` field.
+
+    .. versionadded:: 22.1.0
     """
 
     def __init__(
@@ -419,7 +439,7 @@ It is a shortcut for :class:`ExceptionRenderer` with a
 
 The treatment of the ``exc_info`` key is identical to `format_exc_info`.
 
-.. versionadded:: 22.1
+.. versionadded:: 22.1.0
 """
 
 
@@ -427,13 +447,18 @@ class TimeStamper:
     """
     Add a timestamp to ``event_dict``.
 
-    :param fmt: strftime format string, or ``"iso"`` for `ISO 8601
-        <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
-        timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
-    :param utc: Whether timestamp should be in UTC or local time.
-    :param key: Target key in *event_dict* for added timestamps.
+    Arguments:
 
-    .. versionchanged:: 19.2 Can be pickled now.
+        fmt:
+            strftime format string, or ``"iso"`` for `ISO 8601
+            <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
+            timestamp <https://en.wikipedia.org/wiki/Unix_time>`_.
+
+        utc: Whether timestamp should be in UTC or local time.
+
+        key: Target key in *event_dict* for added timestamps.
+
+    .. versionchanged:: 19.2.0 Can be pickled now.
     """
 
     __slots__ = ("_stamper", "fmt", "utc", "key")
@@ -571,13 +596,15 @@ class ExceptionPrettyPrinter:
     """
     Pretty print exceptions and remove them from the ``event_dict``.
 
-    :param file: Target file for output (default: ``sys.stdout``).
+    Arguments:
+
+        file: Target file for output (default: ``sys.stdout``).
 
     This processor is mostly for development and testing so you can read
     exceptions properly formatted.
 
-    It behaves like `format_exc_info` except it removes the exception
-    data from the event dictionary after printing it.
+    It behaves like `format_exc_info` except it removes the exception data from
+    the event dictionary after printing it.
 
     It's tolerant to having `format_exc_info` in front of itself in the
     processor chain but doesn't require it.  In other words, it handles both
@@ -622,13 +649,17 @@ class StackInfoRenderer:
     involving an exception and works analogously to the *stack_info* argument
     of the Python standard library logging.
 
-    :param additional_ignores: By default, stack frames coming from
-        *structlog* are ignored. With this argument you can add additional
-        names that are ignored, before the stack starts being rendered. They
-        are matched using ``startswith()``, so they don't have to match
-        exactly. The names are used to find the first relevant name, therefore
-        once a frame is found that doesn't start with *structlog* or one of
-        *additional_ignores*, **no filtering** is applied to subsequent frames.
+    Arguments:
+
+        additional_ignores:
+            By default, stack frames coming from *structlog* are ignored. With
+            this argument you can add additional names that are ignored, before
+            the stack starts being rendered. They are matched using
+            ``startswith()``, so they don't have to match exactly. The names
+            are used to find the first relevant name, therefore once a frame is
+            found that doesn't start with *structlog* or one of
+            *additional_ignores*, **no filtering** is applied to subsequent
+            frames.
 
     .. versionadded:: 0.4.0
     .. versionadded:: 22.1.0  *additional_ignores*
@@ -706,15 +737,18 @@ class CallsiteParameterAdder:
     The keys used for callsite parameters in the event dictionary are the
     string values of `CallsiteParameter` enum members.
 
-    :param parameters:
-        A collection of `CallsiteParameter` values that should be added to the
-        event dictionary.
+    Arguments:
 
-    :param additional_ignores:
-        Additional names with which a stack frame's module name must not
-        start for it to be considered when determening the callsite.
+        parameters:
+            A collection of `CallsiteParameter` values that should be added to
+            the event dictionary.
+
+        additional_ignores:
+            Additional names with which a stack frame's module name must not
+            start for it to be considered when determening the callsite.
 
     .. note::
+
         When used with `structlog.stdlib.ProcessorFormatter` the most efficient
         configuration is to either use this processor in ``foreign_pre_chain``
         of `structlog.stdlib.ProcessorFormatter` and in ``processors`` of
@@ -838,12 +872,15 @@ class EventRenamer:
        some processors may rely on the presence and meaning of the ``event``
        key.
 
-    :param to: Rename ``event_dict["event"]`` to ``event_dict[to]``
-    :param replace_by: Rename ``event_dict[replace_by]`` to
-        ``event_dict["event"]``. *replace_by* missing from ``event_dict`` is
-        handled gracefully.
+    Arguments:
 
-    .. versionadded:: 22.1
+        to: Rename ``event_dict["event"]`` to ``event_dict[to]``
+
+        replace_by:
+            Rename ``event_dict[replace_by]`` to ``event_dict["event"]``.
+            *replace_by* missing from ``event_dict`` is handled gracefully.
+
+    .. versionadded:: 22.1.0
 
     See also the :ref:`rename-event` recipe.
     """

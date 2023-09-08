@@ -40,10 +40,14 @@ def _find_first_app_frame_and_name(
     """
     Remove all intra-structlog calls and return the relevant app frame.
 
-    :param additional_ignores: Additional names with which the first frame must
-        not start.
+    Arguments:
 
-    :returns: tuple of (frame, name)
+        additional_ignores:
+            Additional names with which the first frame must not start.
+
+    Returns:
+
+        tuple of (frame, name)
     """
     ignores = ["structlog"] + (additional_ignores or [])
     f = sys._getframe()

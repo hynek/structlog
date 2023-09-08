@@ -9,7 +9,7 @@ Type information used throughout *structlog*.
 For now, they are considered provisional. Especially `BindableLogger` will
 probably change to something more elegant.
 
-.. versionadded:: 22.2
+.. versionadded:: 22.2.0
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ the output of the log entries.
 
 *structlog* makes *no* assumptions about it.
 
-.. versionadded:: 20.2
+.. versionadded:: 20.2.0
 """
 
 
@@ -46,7 +46,7 @@ Context = Union[Dict[str, Any], Dict[Any, Any]]
 """
 A dict-like context carrier.
 
-.. versionadded:: 20.2
+.. versionadded:: 20.2.0
 """
 
 
@@ -57,7 +57,7 @@ An event dictionary as it is passed into processors.
 It's created by copying the configured `Context` but doesn't need to support
 copy itself.
 
-.. versionadded:: 20.2
+.. versionadded:: 20.2.0
 """
 
 Processor = Callable[
@@ -69,14 +69,14 @@ A callable that is part of the processor chain.
 
 See :doc:`processors`.
 
-.. versionadded:: 20.2
+.. versionadded:: 20.2.0
 """
 
 ExcInfo = Tuple[Type[BaseException], BaseException, Optional[TracebackType]]
 """
 An exception info tuple as returned by `sys.exc_info`.
 
-.. versionadded:: 20.2
+.. versionadded:: 20.2.0
 """
 
 
@@ -86,7 +86,7 @@ A callable that pretty-prints an `ExcInfo` into a file-like object.
 
 Used by `structlog.dev.ConsoleRenderer`.
 
-.. versionadded:: 21.2
+.. versionadded:: 21.2.0
 """
 
 
@@ -102,12 +102,16 @@ class ExceptionTransformer(Protocol):
     Used by `structlog.processors.format_exc_info()` and
     `structlog.processors.ExceptionPrettyPrinter`.
 
-    :param exc_info: Is the exception tuple to format
+    Arguments:
 
-    :returns: Anything that can be rendered by the last processor in your
-        chain, e.g., a string or a JSON-serializable structure.
+        exc_info: Is the exception tuple to format
 
-    .. versionadded:: 22.1
+    Returns:
+
+        Anything that can be rendered by the last processor in your chain,
+        for example, a string or a JSON-serializable structure.
+
+    .. versionadded:: 22.1.0
     """
 
     def __call__(self, exc_info: ExcInfo) -> Any:
@@ -120,7 +124,7 @@ class BindableLogger(Protocol):
     **Protocol**: Methods shared among all bound loggers and that are relied on
     by *structlog*.
 
-    .. versionadded:: 20.2
+    .. versionadded:: 20.2.0
     """
 
     _context: Context
@@ -145,8 +149,7 @@ class FilteringBoundLogger(BindableLogger, Protocol):
     The only way to instantiate one is using `make_filtering_bound_logger`.
 
     .. versionadded:: 20.2.0
-    .. versionadded:: 22.2.0
-       String interpolation using positional arguments.
+    .. versionadded:: 22.2.0 String interpolation using positional arguments.
     .. versionadded:: 22.2.0
        Async variants ``alog()``, ``adebug()``, ``ainfo()``, and so forth.
     .. versionchanged:: 22.3.0

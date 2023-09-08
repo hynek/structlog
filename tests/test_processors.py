@@ -1049,12 +1049,16 @@ class TestCallsiteParameterAdder:
         supplied ``parameter_strings`` values and with the supplied
         ``additional_ignores`` values.
 
-        :param parameter_strings:
-            Strings for which corresponding ``CallsiteParameters`` should be
-            included in the resulting ``CallsiteParameterAdded``.
-        :param additional_ignores:
-            Used as ``additional_ignores`` for the resulting
-            ``CallsiteParameterAdded``.
+        Arguments:
+
+            parameter_strings:
+                Strings for which corresponding ``CallsiteParameters`` should
+                be included in the resulting ``CallsiteParameterAdded``.
+
+            additional_ignores:
+
+                Used as ``additional_ignores`` for the resulting
+                ``CallsiteParameterAdded``.
         """
         if parameter_strings is None:
             return CallsiteParameterAdder(
@@ -1075,11 +1079,12 @@ class TestCallsiteParameterAdder:
         Returns a set containing all ``CallsiteParameter`` members with values
         that are in ``parameter_strings``.
 
-        :param parameter_strings:
-            The parameters strings for which corresponding
-            ``CallsiteParameter`` members should be
-            returned. If this value is `None` then all
-            ``CallsiteParameter`` will be returned.
+        Arguments:
+
+            parameter_strings:
+                The parameters strings for which corresponding
+                ``CallsiteParameter`` members should be returned. If this value
+                is `None` then all ``CallsiteParameter`` will be returned.
         """
         if parameter_strings is None:
             return cls._all_parameters
@@ -1097,9 +1102,11 @@ class TestCallsiteParameterAdder:
         Returns a dictionary that is equivalent to ``input`` but with all keys
         not in ``parameter_strings`` removed.
 
-        :param parameter_strings:
-            The keys to keep in the dictionary, if this value is ``None`` then
-            all keys matching ``cls.parameter_strings`` are kept.
+        Arguments:
+
+            parameter_strings:
+                The keys to keep in the dictionary, if this value is ``None``
+                then all keys matching ``cls.parameter_strings`` are kept.
         """
         if parameter_strings is None:
             parameter_strings = cls.parameter_strings
@@ -1115,9 +1122,11 @@ class TestCallsiteParameterAdder:
         This function creates dictionary of callsite parameters for the line
         that is ``offset`` lines after the invocation of this function.
 
-        :param offset:
-            The amount of lines after the invocation of this function that
-            callsite parameters should be generated for.
+        Arguments:
+
+            offset:
+                The amount of lines after the invocation of this function that
+                callsite parameters should be generated for.
         """
         frame_info = inspect.stack()[1]
         frame_traceback = inspect.getframeinfo(frame_info[0])

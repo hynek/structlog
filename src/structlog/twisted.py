@@ -204,7 +204,9 @@ class PlainFileLogObserver:
     Great to just print JSON to stdout where you catch it with something like
     runit.
 
-    :param file: File to print to.
+    Arguments:
+
+        file: File to print to.
 
     .. versionadded:: 0.2.0
     """
@@ -227,10 +229,13 @@ class JSONLogObserverWrapper:
     """
     Wrap a log *observer* and render non-`JSONRenderer` entries to JSON.
 
-    :param ILogObserver observer: Twisted log observer to wrap.  For example
-        :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
-        <https://docs.twisted.org/en/stable/api/
-        twisted.python.log.FileLogObserver.html>`_
+    Arguments:
+
+        observer (ILogObserver):
+            Twisted log observer to wrap.  For example
+            :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
+            <https://docs.twisted.org/en/stable/api/
+            twisted.python.log.FileLogObserver.html>`_
 
     .. versionadded:: 0.2.0
     """
@@ -288,8 +293,11 @@ class EventAdapter:
     <https://docs.twisted.org/en/stable/api/twisted.python.log.html#err>`_
     behave as expected.
 
-    :param dictRenderer: Renderer that is used for the actual log message.
-        Please note that structlog comes with a dedicated `JSONRenderer`.
+    Arguments:
+
+        dictRenderer:
+            Renderer that is used for the actual log message. Please note that
+            structlog comes with a dedicated `JSONRenderer`.
 
     **Must** be the last processor in the chain and requires a *dictRenderer*
     for the actual formatting as an constructor argument in order to be able to
@@ -301,9 +309,6 @@ class EventAdapter:
         dictRenderer: Callable[[WrappedLogger, str, EventDict], str]
         | None = None,
     ) -> None:
-        """
-        :param dictRenderer: A processor used to format the log message.
-        """
         self._dictRenderer = dictRenderer or _BUILTIN_DEFAULT_PROCESSORS[-1]
 
     def __call__(

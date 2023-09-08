@@ -81,7 +81,7 @@ def is_configured() -> bool:
 
     If `False`, *structlog* is running with builtin defaults.
 
-    .. versionadded: 18.1
+    .. versionadded: 18.1.0
     """
     return _CONFIG.is_configured
 
@@ -94,7 +94,7 @@ def get_config() -> dict[str, Any]:
 
        Changes to the returned dictionary do *not* affect *structlog*.
 
-    .. versionadded: 18.1
+    .. versionadded: 18.1.0
     """
     return {
         "processors": _CONFIG.default_processors,
@@ -114,12 +114,18 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
     >>> log.info("hello", x=42)
     y=23 x=42 event='hello'
 
-    :param args: *Optional* positional arguments that are passed unmodified to
-        the logger factory.  Therefore it depends on the factory what they
-        mean.
-    :param initial_values: Values that are used to pre-populate your contexts.
+    Arguments:
 
-    :returns: A proxy that creates a correctly configured bound logger when
+        args:
+            *Optional* positional arguments that are passed unmodified to the
+            logger factory.  Therefore it depends on the factory what they
+            mean.
+
+        initial_values: Values that are used to pre-populate your contexts.
+
+    Returns:
+
+        A proxy that creates a correctly configured bound logger when
         necessary. The type of that bound logger depends on your configuration
         and is `structlog.BoundLogger` by default.
 
@@ -128,8 +134,7 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
     If you prefer CamelCase, there's an alias for your reading pleasure:
     `structlog.getLogger`.
 
-    .. versionadded:: 0.4.0
-        *args*
+    .. versionadded:: 0.4.0 *args*
     """
     return wrap_logger(None, logger_factory_args=args, **initial_values)
 
@@ -158,23 +163,28 @@ def wrap_logger(
     Default values for *processors*, *wrapper_class*, and *context_class* can
     be set using `configure`.
 
-    If you set an attribute here, `configure` calls have *no* effect for
-    the *respective* attribute.
+    If you set an attribute here, `configure` calls have *no* effect for the
+    *respective* attribute.
 
     In other words: selective overwriting of the defaults while keeping some
     *is* possible.
 
-    :param initial_values: Values that are used to pre-populate your contexts.
-    :param logger_factory_args: Values that are passed unmodified as
-        ``*logger_factory_args`` to the logger factory if not `None`.
+    Arguments:
 
-    :returns: A proxy that creates a correctly configured bound logger when
+        initial_values: Values that are used to pre-populate your contexts.
+
+        logger_factory_args:
+            Values that are passed unmodified as ``*logger_factory_args`` to
+            the logger factory if not `None`.
+
+    Returns:
+
+        A proxy that creates a correctly configured bound logger when
         necessary.
 
     See `configure` for the meaning of the rest of the arguments.
 
-    .. versionadded:: 0.4.0
-        *logger_factory_args*
+    .. versionadded:: 0.4.0 *logger_factory_args*
     """
     return BoundLoggerLazyProxy(
         logger,
@@ -207,22 +217,29 @@ def configure(
 
     Use `reset_defaults` to undo your changes.
 
-    :param processors: The processor chain. See :doc:`processors` for details.
-    :param wrapper_class: Class to use for wrapping loggers instead of
-        `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`, and
-        `custom-wrappers`.
-    :param context_class: Class to be used for internal context keeping. The
-        default is a `dict` and since dictionaries are ordered as of Python
-        3.6, there's few reasons to change this option.
-    :param logger_factory: Factory to be called to create a new logger that
-        shall be wrapped.
-    :param cache_logger_on_first_use: `wrap_logger` doesn't return an actual
-        wrapped logger but a proxy that assembles one when it's first used.  If
-        this option is set to `True`, this assembled logger is cached.  See
-        `performance`.
+    Arguments:
 
-    .. versionadded:: 0.3.0
-        *cache_logger_on_first_use*
+        processors: The processor chain. See :doc:`processors` for details.
+
+        wrapper_class:
+            Class to use for wrapping loggers instead of
+            `structlog.BoundLogger`.  See `standard-library`, :doc:`twisted`,
+            and `custom-wrappers`.
+
+        context_class:
+            Class to be used for internal context keeping. The default is a
+            `dict` and since dictionaries are ordered as of Python 3.6, there's
+            few reasons to change this option.
+
+        logger_factory:
+            Factory to be called to create a new logger that shall be wrapped.
+
+        cache_logger_on_first_use:
+            `wrap_logger` doesn't return an actual wrapped logger but a proxy
+            that assembles one when it's first used. If this option is set to
+            `True`, this assembled logger is cached. See `performance`.
+
+    .. versionadded:: 0.3.0 *cache_logger_on_first_use*
     """
     _CONFIG.is_configured = True
 
@@ -251,7 +268,9 @@ def configure_once(
     It does *not* matter whether it was configured using `configure` or
     `configure_once` before.
 
-    Raises a `RuntimeWarning` if repeated configuration is attempted.
+    Raises:
+
+        RuntimeWarning: if repeated configuration is attempted.
     """
     if not _CONFIG.is_configured:
         configure(
@@ -290,11 +309,10 @@ class BoundLoggerLazyProxy:
     The only points where a bound logger changes state are ``bind()``,
     ``unbind()``, and ``new()`` and that return the actual ``BoundLogger``.
 
-    If and only if configuration says so, that actual bound logger is
-    cached on first usage.
+    If and only if configuration says so, that actual bound logger is cached on
+    first usage.
 
-    .. versionchanged:: 0.4.0
-        Added support for *logger_factory_args*.
+    .. versionchanged:: 0.4.0 Added support for *logger_factory_args*.
     """
 
     def __init__(

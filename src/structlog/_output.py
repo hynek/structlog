@@ -36,19 +36,21 @@ class PrintLogger:
     """
     Print events into a file.
 
-    :param file: File to print to. (default: `sys.stdout`)
+    Arguments:
+
+        file: File to print to. (default: `sys.stdout`)
 
     >>> from structlog import PrintLogger
     >>> PrintLogger().info("hello")
     hello
 
-    Useful if you follow
-    `current logging best practices <logging-best-practices>`.
+    Useful if you follow `current logging best practices
+    <logging-best-practices>`.
 
     Also very useful for testing and examples since `logging` is finicky in
     doctests.
 
-    .. versionchanged:: 22.1
+    .. versionchanged:: 22.1.0
        The implementation has been switched to use `print` for better
        monkeypatchability.
     """
@@ -120,7 +122,9 @@ class PrintLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    :param file: File to print to. (default: `sys.stdout`)
+    Arguments:
+
+        file: File to print to. (default: `sys.stdout`)
 
     Positional arguments are silently ignored.
 
@@ -138,7 +142,9 @@ class WriteLogger:
     """
     Write events into a file.
 
-    :param file: File to print to. (default: `sys.stdout`)
+    Arguments:
+
+        file: File to print to. (default: `sys.stdout`)
 
     >>> from structlog import WriteLogger
     >>> WriteLogger().info("hello")
@@ -152,7 +158,7 @@ class WriteLogger:
 
     A little faster and a little less versatile than `structlog.PrintLogger`.
 
-    .. versionadded:: 22.1
+    .. versionadded:: 22.1.0
     """
 
     def __init__(self, file: TextIO | None = None):
@@ -226,11 +232,13 @@ class WriteLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    :param file: File to print to. (default: `sys.stdout`)
+    Arguments:
+
+        file: File to print to. (default: `sys.stdout`)
 
     Positional arguments are silently ignored.
 
-    .. versionadded:: 22.1
+    .. versionadded:: 22.1.0
     """
 
     def __init__(self, file: TextIO | None = None):
@@ -244,12 +252,12 @@ class BytesLogger:
     r"""
     Writes bytes into a file.
 
-    :param file: File to print to. (default: `sys.stdout`\ ``.buffer``)
+    Arguments:
+        file: File to print to. (default: `sys.stdout`\ ``.buffer``)
 
-    Useful if you follow
-    `current logging best practices <logging-best-practices>` together with
-    a formatter that returns bytes (e.g. `orjson
-    <https://github.com/ijl/orjson>`_).
+    Useful if you follow `current logging best practices
+    <logging-best-practices>` together with a formatter that returns bytes
+    (e.g. `orjson <https://github.com/ijl/orjson>`_).
 
     .. versionadded:: 20.2.0
     """
@@ -328,7 +336,9 @@ class BytesLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    :param file: File to print to. (default: `sys.stdout`\ ``.buffer``)
+    Arguments:
+
+        file: File to print to. (default: `sys.stdout`\ ``.buffer``)
 
     Positional arguments are silently ignored.
 

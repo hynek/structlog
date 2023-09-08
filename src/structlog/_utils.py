@@ -20,9 +20,13 @@ def until_not_interrupted(f: Callable[..., Any], *args: Any, **kw: Any) -> Any:
     """
     Retry until *f* succeeds or an exception that isn't caused by EINTR occurs.
 
-    :param f: A callable like a function.
-    :param *args: Positional arguments for *f*.
-    :param **kw: Keyword arguments for *f*.
+    Arguments:
+
+        f: A callable like a function.
+
+        *args: Positional arguments for *f*.
+
+        **kw: Keyword arguments for *f*.
     """
     while True:
         try:

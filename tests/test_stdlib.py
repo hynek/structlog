@@ -1133,10 +1133,6 @@ async def _abl(cl):
     return AsyncBoundLogger(cl, context={}, processors=[])
 
 
-@pytest.mark.skipif(
-    sys.version_info[:2] < (3, 7),
-    reason="AsyncBoundLogger is only for Python 3.7 and later.",
-)
 class TestAsyncBoundLogger:
     def test_sync_bl(self, abl, cl):
         """

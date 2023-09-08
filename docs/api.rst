@@ -292,6 +292,7 @@ API Reference
    :members: bind, unbind, try_unbind, new, debug, info, warning, warn, error, critical, exception, log, adebug, ainfo, awarning, aerror, acritical, aexception, alog
 
 .. autoclass:: AsyncBoundLogger
+   :members: sync_bl
 
 .. autoclass:: LoggerFactory
    :members: __call__

@@ -139,9 +139,13 @@ class CapturedCall(NamedTuple):
 
     Can also be unpacked like a tuple.
 
-    :param method_name: The method name that got called.
-    :param args: A tuple of the positional arguments.
-    :param kwargs: A dict of the keyword arguments.
+    Arguments:
+
+        method_name: The method name that got called.
+
+        args: A tuple of the positional arguments.
+
+        kwargs: A dict of the keyword arguments.
 
     .. versionadded:: 20.2.0
     """

@@ -83,7 +83,9 @@ def wrap_dict(dict_class: type[Context]) -> type[Context]:
 
     The wrapped class and used to keep global in the current thread.
 
-    :param dict_class: Class used for keeping context.
+    Arguments:
+
+        dict_class: Class used for keeping context.
 
     .. deprecated:: 22.1.0
     """
@@ -104,10 +106,14 @@ def as_immutable(logger: TLLogger) -> TLLogger:
     """
     Extract the context from a thread local logger into an immutable logger.
 
-    :param structlog.typing.BindableLogger logger: A logger with *possibly*
-      thread local state.
+    Arguments:
 
-    :returns: :class:`~structlog.BoundLogger` with an immutable context.
+        logger (structlog.typing.BindableLogger):
+            A logger with *possibly* thread local state.
+
+    Returns:
+
+        :class:`~structlog.BoundLogger` with an immutable context.
 
     .. deprecated:: 22.1.0
     """

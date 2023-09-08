@@ -78,7 +78,9 @@ class BoundLoggerBase:
         """
         Return a new logger with *keys* removed from the context.
 
-        :raises KeyError: If the key is not part of the context.
+        Raises:
+
+            KeyError: If the key is not part of the context.
         """
         bl = self.bind()
         for key in keys:
@@ -121,19 +123,29 @@ class BoundLoggerBase:
         Call it to combine your *event* and *context* into an event_dict and
         process using the processor chain.
 
-        :param method_name: The name of the logger method.  Is passed into
-            the processors.
-        :param event: The event -- usually the first positional argument to a
-            logger.
-        :param event_kw: Additional event keywords.  For example if someone
-            calls ``log.info("foo", bar=42)``, *event* would to be ``"foo"``
-            and *event_kw* ``{"bar": 42}``.
+        Arguments:
 
-        :raises: `structlog.DropEvent` if log entry should be dropped.
-        :raises: `ValueError` if the final processor doesn't return a
-            str, bytes, bytearray, tuple, or a dict.
+            method_name:
+                The name of the logger method.  Is passed into the processors.
 
-        :returns: `tuple` of ``(*args, **kw)``
+            event:
+                The event -- usually the first positional argument to a logger.
+
+            event_kw:
+                Additional event keywords.  For example if someone calls
+                ``log.info("foo", bar=42)``, *event* would to be ``"foo"`` and
+                *event_kw* ``{"bar": 42}``.
+
+        Raises:
+
+            structlog.DropEvent: if log entry should be dropped.
+
+            ValueError:
+                if the final processor doesn't return a str, bytes, bytearray,
+                tuple, or a dict.
+
+        Returns:
+             `tuple` of ``(*args, **kw)``
 
         .. note::
 
@@ -169,7 +181,10 @@ class BoundLoggerBase:
         if isinstance(event_dict, dict):
             return (), event_dict
 
-        msg = "Last processor didn't return an appropriate value.  Valid return values are a dict, a tuple of (args, kwargs), bytes, or a str."
+        msg = (
+            "Last processor didn't return an appropriate value.  "
+            "Valid return values are a dict, a tuple of (args, kwargs), bytes, or a str."
+        )
         raise ValueError(msg)
 
     def _proxy_to_logger(
@@ -182,14 +197,20 @@ class BoundLoggerBase:
         handling :exc:`structlog.DropEvent`, and finally calls *method_name* on
         :attr:`_logger` with the result.
 
-        :param method_name: The name of the method that's going to get
-            called.  Technically it should be identical to the method the
-            user called because it also get passed into processors.
-        :param event: The event -- usually the first positional argument to a
-            logger.
-        :param event_kw: Additional event keywords.  For example if someone
-            calls ``log.info("foo", bar=42)``, *event* would to be ``"foo"``
-            and *event_kw* ``{"bar": 42}``.
+        Arguments:
+
+            method_name:
+                The name of the method that's going to get called.  Technically
+                it should be identical to the method the user called because it
+                also get passed into processors.
+
+            event:
+                The event -- usually the first positional argument to a logger.
+
+            event_kw:
+                Additional event keywords.  For example if someone calls
+                ``log.info("foo", bar=42)``, *event* would to be ``"foo"`` and
+                *event_kw* ``{"bar": 42}``.
 
         .. note::
 
@@ -211,12 +232,15 @@ def get_context(bound_logger: BindableLogger) -> Context:
     The type of *bound_logger* and the type returned depend on your
     configuration.
 
-    :param bound_logger: The bound logger whose context you want.
+    Arguments:
 
-    :returns: The *actual* context from *bound_logger*. It is *not* copied
-        first.
+        bound_logger: The bound logger whose context you want.
 
-    .. versionadded:: 20.2
+    Returns:
+
+        The *actual* context from *bound_logger*. It is *not* copied first.
+
+    .. versionadded:: 20.2.0
     """
     # This probably will get more complicated in the future.
     return bound_logger._context
