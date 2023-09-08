@@ -79,6 +79,7 @@ API Reference
    :members: get_default_level_styles
 
 .. autofunction:: plain_traceback
+.. autoclass:: RichTracebackFormatter
 .. autofunction:: rich_traceback
 .. autofunction:: better_traceback
 
