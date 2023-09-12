@@ -421,10 +421,10 @@ formatter = structlog.stdlib.ProcessorFormatter(
     foreign_pre_chain=shared_processors,
     # These run on ALL entries after the pre_chain is done.
     processors=[
-       # Remove _record & _from_structlog.
-       structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-       structlog.dev.ConsoleRenderer(),
-     ],
+        # Remove _record & _from_structlog.
+        structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+        structlog.dev.ConsoleRenderer(),
+    ],
 )
 ```
 
@@ -456,6 +456,7 @@ pre_chain = [
     timestamper,
 ]
 
+
 def extract_from_record(_, __, event_dict):
     """
     Extract thread and process names and add them to the event dict.
@@ -463,27 +464,28 @@ def extract_from_record(_, __, event_dict):
     record = event_dict["_record"]
     event_dict["thread_name"] = record.threadName
     event_dict["process_name"] = record.processName
-
     return event_dict
 
-logging.config.dictConfig({
+
+logging.config.dictConfig(
+    {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
             "plain": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processors": [
-                   structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-                   structlog.dev.ConsoleRenderer(colors=False),
+                    structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                    structlog.dev.ConsoleRenderer(colors=False),
                 ],
                 "foreign_pre_chain": pre_chain,
             },
             "colored": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processors": [
-                   extract_from_record,
-                   structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-                   structlog.dev.ConsoleRenderer(colors=True),
+                    extract_from_record,
+                    structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                    structlog.dev.ConsoleRenderer(colors=True),
                 ],
                 "foreign_pre_chain": pre_chain,
             },
@@ -507,8 +509,9 @@ logging.config.dictConfig({
                 "level": "DEBUG",
                 "propagate": True,
             },
-        }
-})
+        },
+    }
+)
 structlog.configure(
     processors=[
         structlog.stdlib.add_log_level,
