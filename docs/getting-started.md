@@ -246,8 +246,10 @@ You can use the sync and async logging methods interchangeably within the same a
 
 Now you're all set for the rest of the user's guide and can start reading about [bound loggers](bound-loggers.md) -- the heart of *structlog*.
 
-Or, if you prefer another, more in-depth tutorial, check out [*A Comprehensive Guide to Python Logging with structlog*](https://betterstack.com/community/guides/logging/structlog/).
-
+```{include} ../README.md
+:start-after: <!-- begin tutorials -->
+:end-before: <!-- end tutorials -->
+```
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions
 [recipe]: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging

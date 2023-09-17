@@ -86,6 +86,7 @@ A short explanation on *why* structured logging is good for you, and why *struct
 
 Once you feel inspired to try it out, check out our friendly [Getting Started tutorial](https://www.structlog.org/en/stable/getting-started.html).
 
+<!-- begin tutorials -->
 For a fully-fledged zero-to-hero tutorial, check out [*A Comprehensive Guide to Python Logging with structlog*](https://betterstack.com/community/guides/logging/structlog/).
 
 If you prefer videos over reading, check out [Markus Holtermann](https://chaos.social/@markush)'s talk *Logging Rethought 2: The Actions of Frank Taylor Jr.*:
@@ -95,7 +96,7 @@ If you prefer videos over reading, check out [Markus Holtermann](https://chaos.s
       <img width="50%" src="https://img.youtube.com/vi/Y5eyEgyHLLo/maxresdefault.jpg">
    </a>
 </p>
-
+<!-- end tutorials -->
 
 ## Credits
 
