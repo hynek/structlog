@@ -56,7 +56,7 @@ Especially those generously supporting us at the *The Organization* tier and hig
       <img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/Variomedia.svg" width="200" height="60"></img>
    </a>
 
-   <a href="https://tidelift.com?utm_source=lifter&utm_medium=referral&utm_campaign=hynek">
+   <a href="https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek">
       <img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/Tidelift.svg" width="200" height="60"></img>
    </a>
 
@@ -102,7 +102,7 @@ If you prefer videos over reading, check out [Markus Holtermann](https://chaos.s
 *structlog* is written and maintained by [Hynek Schlawack](https://hynek.me/).
 The idea of bound loggers is inspired by previous work by [Jean-Paul Calderone](https://github.com/exarkun) and [David Reid](https://github.com/dreid).
 
-The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com?utm_source=lifter&utm_medium=referral&utm_campaign=hynek), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
+The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
 
 The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Magee](https://github.com/freakboy3742).
 
@@ -123,4 +123,4 @@ The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Ma
 
 Available as part of the Tidelift Subscription.
 
-The maintainers of *structlog* and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. [Learn more.](https://tidelift.com?utm_source=lifter&utm_medium=referral&utm_campaign=hynek)
+The maintainers of *structlog* and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. [Learn more.](https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek)
