@@ -46,6 +46,11 @@ structlog.configure(
 )
 ```
 
+:::{seealso}
+{doc}`exceptions` for more information on how to configure exception rendering.
+For the console and beyond.
+:::
+
 
 ## Standard Environment Variables
 

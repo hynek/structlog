@@ -367,12 +367,12 @@ class ExceptionRenderer:
     by *exception_formatter*.
 
     The contents of the ``exception`` field depends on the return value of the
-    :class:`.ExceptionTransformer` that is used:
+    *exception_formatter* that is passed:
 
     - The default produces a formatted string via Python's built-in traceback
-      formatting.
-    - The :class:`~structlog.tracebacks.ExceptionDictTransformer` a list of
-      stack dicts that can be serialized to JSON.
+      formatting (this is :obj:`.format_exc_info`).
+    - If you pass a :class:`~structlog.tracebacks.ExceptionDictTransformer`, it
+      becomes a list of stack dicts that can be serialized to JSON.
 
     If *event_dict* contains the key ``exc_info``, there are three possible
     behaviors:
@@ -383,13 +383,17 @@ class ExceptionRenderer:
        that.
 
     If there is no ``exc_info`` key, the *event_dict* is not touched. This
-    behavior is analogue to the one of the stdlib's logging.
+    behavior is analog to the one of the stdlib's logging.
 
     Arguments:
 
         exception_formatter:
             A callable that is used to format the exception from the
-            ``exc_info`` field.
+            ``exc_info`` field into the ``exception`` field.
+
+    .. seealso::
+        :doc:`exceptions` for a broader explanation of *structlog*'s exception
+        features.
 
     .. versionadded:: 22.1.0
     """
@@ -414,8 +418,8 @@ class ExceptionRenderer:
 
 format_exc_info = ExceptionRenderer()
 """
-Replace an ``exc_info`` field with an ``exception`` string field using
-Python's built-in traceback formatting.
+Replace an ``exc_info`` field with an ``exception`` string field using Python's
+built-in traceback formatting.
 
 If *event_dict* contains the key ``exc_info``, there are three possible
 behaviors:
@@ -425,8 +429,12 @@ behaviors:
 3. If the value is true but no tuple, obtain exc_info ourselves and render
    that.
 
-If there is no ``exc_info`` key, the *event_dict* is not touched.
-This behavior is analogue to the one of the stdlib's logging.
+If there is no ``exc_info`` key, the *event_dict* is not touched. This behavior
+is analog to the one of the stdlib's logging.
+
+.. seealso::
+    :doc:`exceptions` for a broader explanation of *structlog*'s exception
+    features.
 """
 
 dict_tracebacks = ExceptionRenderer(ExceptionDictTransformer())
@@ -440,6 +448,10 @@ It is a shortcut for :class:`ExceptionRenderer` with a
 The treatment of the ``exc_info`` key is identical to `format_exc_info`.
 
 .. versionadded:: 22.1.0
+
+.. seealso::
+    :doc:`exceptions` for a broader explanation of *structlog*'s exception
+    features.
 """
 
 

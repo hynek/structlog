@@ -37,6 +37,7 @@ bound-loggers
 configuration
 processors
 contextvars
+exceptions
 ```
 
 

@@ -236,6 +236,10 @@ class ExceptionDictTransformer:
             code responsible for the exception and last frames the code where
             the exception actually happened.  With larger web frameworks, this
             does not always work, so you should stick with the default.
+
+    .. seealso::
+        :doc:`exceptions` for a broader explanation of *structlog*'s exception
+        features.
     """
 
     def __init__(
