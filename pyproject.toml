@@ -29,7 +29,7 @@ dependencies = []
 
 [project.urls]
 Documentation = "https://www.structlog.org/"
-Changelog = "https://www.structlog.org/en/stable/changelog.html"
+Changelog = "https://github.com/hynek/structlog/blob/main/CHANGELOG.md"
 GitHub = "https://github.com/hynek/structlog"
 Funding = "https://github.com/sponsors/hynek"
 Tidelift = "https://tidelift.com?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"
