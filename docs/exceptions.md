@@ -15,7 +15,7 @@ This behavior is analog to the one of the stdlib's logging.
 
 ## Transformations
 
-*structlog* comes with {class}`structlog.processors.ExceptionRenderer` that allows you to remove the `exc_info` key and transform it into an `exception` key of a different format.
+*structlog* comes with {class}`structlog.processors.ExceptionRenderer` that deduces and removes the `exc_info` key as outlined above, calls a user-supplied function with the synthesized `exc_info`, and stores its return value in the `exception` key.
 The most common use-cases are already covered by the following processors:
 
 {func}`structlog.processors.format_exc_info`
