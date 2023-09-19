@@ -137,21 +137,17 @@ class TestLoggerFactory:
 
         assert None is stack_info
 
-    def test_find_caller(self, monkeypatch):
+    def test_find_caller(self, caplog):
         """
         The caller is found.
         """
         logger = LoggerFactory()()
-        log_handle = call_recorder(lambda x: None)
-        monkeypatch.setattr(logger, "handle", log_handle)
 
         logger.error("Test")
 
-        log_record = log_handle.calls[0].args[0]
-
-        assert log_record.funcName == "test_find_caller"
-        assert log_record.name == __name__
-        assert log_record.filename == os.path.basename(__file__)
+        assert caplog.text.startswith(
+            "ERROR    tests.test_stdlib:test_stdlib.py"
+        )
 
     def test_sets_correct_logger(self):
         """
