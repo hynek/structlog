@@ -67,7 +67,7 @@ Whenever you bind or unbind data to a *bound logger*, this class is instantiated
 
 ### Logger Factories
 
-We've already talked about wrapped loggers responsible for the output, but until now we haven't explained where they come from until now.
+We've already talked about wrapped loggers responsible for the output, but we haven't explained where they come from until now.
 Unlike with *bound loggers*, you often need more flexibility when instantiating them.
 Therefore you don't configure a class; you configure a *factory* using the `logger_factory` keyword.
 
