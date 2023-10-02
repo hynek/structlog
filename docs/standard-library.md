@@ -189,7 +189,7 @@ structlog.configure(
         # sys.exc_info() tuple, remove "exc_info" and render the exception
         # with traceback into the "exception" key.
         structlog.processors.format_exc_info,
-        # If some value is in bytes, decode it to a unicode str.
+        # If some value is in bytes, decode it to a Unicode str.
         structlog.processors.UnicodeDecoder(),
         # Add callsite parameters.
         structlog.processors.CallsiteParameterAdder(
