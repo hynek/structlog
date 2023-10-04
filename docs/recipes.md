@@ -12,7 +12,7 @@ Please note that recipes related to integration with frameworks have an [own cha
 The name of the event is hard-coded in *structlog* to `event`.
 But that doesn't mean it has to be called that in your logs.
 
-With the {class}`structlog.processors.EventRenamer` processor you can for instance rename  the log message to `msg` and use `event` for something custom, that you bind to `_event` in your code:
+With the {class}`structlog.processors.EventRenamer` processor, you can, for instance, rename  the log message to `msg` and use `event` for something custom, that you bind to `_event` in your code:
 
 ```pycon
 >>> from structlog.processors import EventRenamer
