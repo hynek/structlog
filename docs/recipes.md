@@ -186,3 +186,12 @@ def manager(request_id: str):
 ```
 
 See the [issue 425](https://github.com/hynek/structlog/issues/425) for a more complete example.
+
+
+## Switching Console Output to Standard Error
+
+When using structlog without standard library integration and want the log output to go to standard error (*stderr*) instead of standard out (*stdout*), you can switch with a single line of configuration:
+
+```python
+structlog.configure(logger_factory=structlog.PrintLoggerFactory(sys.stderr))
+```
