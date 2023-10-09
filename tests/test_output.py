@@ -155,7 +155,7 @@ class TestLoggers:
 class TestPrintLoggerFactory:
     def test_does_not_cache(self):
         """
-        Due to doctest weirdness, we must not re-use PrintLoggers.
+        Due to doctest weirdness, we must not reuse PrintLoggers.
         """
         f = PrintLoggerFactory()
 
@@ -180,7 +180,7 @@ class TestPrintLoggerFactory:
 class TestWriteLoggerFactory:
     def test_does_not_cache(self):
         """
-        Due to doctest weirdness, we must not re-use WriteLoggers.
+        Due to doctest weirdness, we must not reuse WriteLoggers.
         """
         f = WriteLoggerFactory()
 
@@ -314,7 +314,7 @@ class TestBytesLogger:
 class TestBytesLoggerFactory:
     def test_does_not_cache(self):
         """
-        Due to doctest weirdness, we must not re-use BytesLoggers.
+        Due to doctest weirdness, we must not reuse BytesLoggers.
         """
         f = BytesLoggerFactory()
 
