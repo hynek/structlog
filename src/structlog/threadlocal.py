@@ -150,6 +150,9 @@ def tmp_bind(
     .. deprecated:: 22.1.0
     """
     _deprecated()
+    if isinstance(logger, BoundLoggerLazyProxy):
+        logger = logger.bind()
+
     saved = as_immutable(logger)._context
     try:
         yield logger.bind(**tmp_values)  # type: ignore[misc]

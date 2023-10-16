@@ -2,6 +2,7 @@
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
+
 import inspect
 import threading
 
@@ -9,8 +10,9 @@ import pytest
 
 import structlog
 
+from structlog import get_logger, wrap_logger
 from structlog._base import BoundLoggerBase
-from structlog._config import wrap_logger
+from structlog._config import BoundLoggerLazyProxy
 from structlog.testing import ReturnLogger
 from structlog.threadlocal import (
     _CONTEXT,
@@ -102,6 +104,23 @@ class TestTmpBind:
             raise CustomError
 
         assert {"y": 23} == log._context._dict
+
+    def test_tmp_bind_lazy(self):
+        """
+        tmp_bind works with a BoundLoggerLazyProxy -- i.e. before the first
+        bind.
+        """
+        with pytest.deprecated_call():
+            structlog.configure(context_class=wrap_dict(dict))
+
+        log = get_logger()
+
+        assert isinstance(log, BoundLoggerLazyProxy)
+
+        with pytest.deprecated_call(), tmp_bind(log, x=42) as tmp_log:
+            assert {"x": 42} == tmp_log._context._dict
+
+        assert {} == log._context
 
 
 class TestAsImmutable:

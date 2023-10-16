@@ -152,7 +152,7 @@ In practice, you won't be instantiating bound loggers yourself.
 You will configure *structlog* as explained in the {doc}`next chapter <configuration>` and then just call {func}`structlog.get_logger`.
 
 However, in some rare cases you may not want to do that.
-For example because you don't control how you get the logger that you would like to wrap (famous example: *Celery*).
+For example because you don't control how you get the logger that you would like to wrap (famous example: Celery).
 For that times there is the {func}`structlog.wrap_logger` function that can be used to wrap a logger -- optionally without any global state (i.e. configuration):
 
 (proc)=
