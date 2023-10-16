@@ -119,7 +119,7 @@ def as_immutable(logger: TLLogger) -> TLLogger:
     """
     _deprecated()
     if isinstance(logger, BoundLoggerLazyProxy):
-        logger = logger.bind()  # type: ignore[assignment]
+        logger = logger.bind()
 
     try:
         ctx = logger._context._tl.dict_.__class__(  # type: ignore[union-attr]

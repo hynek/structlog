@@ -315,6 +315,11 @@ class BoundLoggerLazyProxy:
     .. versionchanged:: 0.4.0 Added support for *logger_factory_args*.
     """
 
+    # fulfill BindableLogger protocol without carrying accidental state
+    @property
+    def _context(self) -> dict[str, str]:
+        return {}
+
     def __init__(
         self,
         logger: WrappedLogger | None,

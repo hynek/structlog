@@ -26,6 +26,7 @@ from structlog._config import (
     get_logger,
     wrap_logger,
 )
+from structlog.typing import BindableLogger
 
 
 @pytest.fixture(name="proxy")
@@ -54,6 +55,16 @@ def test_lazy_logger_is_not_detected_as_abstract_method():
         log = structlog.get_logger()
 
     Foo()
+
+
+def test_lazy_logger_is_an_instance_of_bindable_logger():
+    """
+    The BoundLoggerLazyProxy returned by get_logger fulfills the BindableLogger
+    protocol.
+
+    See https://github.com/hynek/structlog/issues/560
+    """
+    assert isinstance(get_logger(), BindableLogger)
 
 
 def test_default_context_class():

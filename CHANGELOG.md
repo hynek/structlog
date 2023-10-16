@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/23.2.0...HEAD)
 
+### Fixed
+
+- The return value from `get_logger()` (a `BoundLoggerLazyProxy`) now passes `isinstance`-checks against `structlog.typing.BindableLogger` on Python 3.12.
+
+
 
 ## [23.2.0](https://github.com/hynek/structlog/compare/23.1.0...23.2.0) - 2023-10-09
 
