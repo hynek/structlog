@@ -7,8 +7,9 @@ Therefore let's rely on proven tools as much as possible and do only the absolut
 
 A simple but powerful approach is to log to unbuffered [standard out](https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 ) and let other tools take care of the rest.
-That can be your terminal window while developing, it can be [*systemd*](https://en.wikipedia.org/wiki/Systemd) redirecting your log entries to [*syslogd*](https://en.wikipedia.org/wiki/Syslogd) and rotate them using [*logrotate*](https://github.com/logrotate/logrotate), or your [cluster manager](https://kubernetes.io/docs/concepts/cluster-administration/logging/).
-It doesn't matter where or how your application is running, it just works.
+
+That can be your terminal window while developing; it can be [*systemd*](https://en.wikipedia.org/wiki/Systemd) redirecting your log entries to [*syslogd*](https://en.wikipedia.org/wiki/Syslogd) and rotating them using [*logrotate*](https://github.com/logrotate/logrotate); or it can be your [cluster manager](https://kubernetes.io/docs/concepts/cluster-administration/logging/) forwarding them to an obscenely expensive log aggregator service.
+It doesn't matter where or how your application is running -- it just works.
 
 This is why the popular [*Twelve-Factor App* methodology](https://12factor.net/logs) suggests just that.
 
