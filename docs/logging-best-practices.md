@@ -1,17 +1,15 @@
 # Logging Best Practices
 
-Logging is not a new concept and in no way special to Python.
-Logfiles have existed for decades and there's little reason to reinvent the wheel in our little world.
-
-Therefore let's rely on proven tools as much as possible and do only the absolutely necessary inside of Python[^unix].
+Logging is not a new concept and is in no way unique to Python.
+Logfiles have existed for decades, and there's little reason to reinvent the wheel in our little world.
+Therefore, let's rely on proven tools as much as possible and do only the bare minimum inside Python applications[^unix].
 
 A simple but powerful approach is to log to unbuffered [standard out](https://en.wikipedia.org/wiki/Standard_out#Standard_output_.28stdout.29
 ) and let other tools take care of the rest.
 
 That can be your terminal window while developing; it can be [*systemd*](https://en.wikipedia.org/wiki/Systemd) redirecting your log entries to [*syslogd*](https://en.wikipedia.org/wiki/Syslogd) and rotating them using [*logrotate*](https://github.com/logrotate/logrotate); or it can be your [cluster manager](https://kubernetes.io/docs/concepts/cluster-administration/logging/) forwarding them to an obscenely expensive log aggregator service.
-It doesn't matter where or how your application is running -- it just works.
 
-This is why the popular [*Twelve-Factor App* methodology](https://12factor.net/logs) suggests just that.
+It doesn't matter where or how your application runs -- it just works, and the reason why the popular [*Twelve-Factor App* methodology](https://12factor.net/logs) suggests just that.
 
 [^unix]: This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
 
