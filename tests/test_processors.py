@@ -845,7 +845,7 @@ class TestCallsiteParameterAdder:
         logger = structlog.stdlib.get_logger()
 
         # These are different when running under async
-        exclude_keys = ['thread', 'thread_name']
+        exclude_keys = ["thread", "thread_name"]
 
         callsite_params = self.get_callsite_parameters()
         await logger.info("baz")
