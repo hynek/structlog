@@ -52,21 +52,20 @@ def _find_first_app_frame_and_name(
         tuple of (frame, name)
     """
     ctx = contextvars.copy_context()
-    ctx = contextvars.copy_context()
     ignores = ["structlog"] + (additional_ignores or [])
     f = (
         ctx.get(async_calling_stack)
         if async_calling_stack in ctx
         else sys._getframe()
     )
-    name = f.f_globals.get("__name__") or "?"
+    name = f.f_globals.get("__name__") or "?" # type: ignore[union-attr]
     while any(tuple(name.startswith(i) for i in ignores)):
-        if f.f_back is None:
+        if f.f_back is None: # type: ignore[union-attr]
             name = "?"
             break
-        f = f.f_back
+        f = f.f_back # type: ignore[union-attr]
         name = f.f_globals.get("__name__") or "?"
-    return f, name
+    return f, name  # type: ignore[return-value]
 
 
 def _format_stack(frame: FrameType) -> str:
