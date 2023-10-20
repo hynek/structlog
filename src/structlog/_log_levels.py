@@ -17,8 +17,8 @@ import sys
 from typing import Any, Callable
 
 from ._base import BoundLoggerBase
-from .typing import EventDict, FilteringBoundLogger
 from .contextvars import async_calling_stack
+from .typing import EventDict, FilteringBoundLogger
 
 
 # Adapted from the stdlib
