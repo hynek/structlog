@@ -94,7 +94,7 @@ async def aexception(
 ) -> Any:
     """
     .. versionchanged:: 23.3.0
-       Implimented `ContextVar` for holding and resetting async calling stack
+       Implemented `contextvars.ContextVar` for holding and resetting async calling stack
     """
     # Exception info has to be extracted this early, because it is no longer
     # available once control is passed to the executor.
@@ -181,7 +181,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
             """
             .. versionchanged:: 23.3.0
-                Implimented `ContextVar` for holding and resetting async calling stack
+                Implemented `contextvars.ContextVar` for holding and resetting async calling stack
             """
             if args:
                 event = event % args
@@ -216,7 +216,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     ) -> Any:
         """
         .. versionchanged:: 23.3.0
-           Implimented `ContextVar` for holding and resetting async calling stack
+           Implemented `contextvars.ContextVar` for holding and resetting async calling stack
         """
         if level < min_level:
             return None
