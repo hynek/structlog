@@ -18,6 +18,7 @@ from typing import Any, Callable
 
 from ._base import BoundLoggerBase
 from .typing import EventDict, FilteringBoundLogger
+from .contextvars import async_calling_stack
 
 
 # Adapted from the stdlib
@@ -96,11 +97,15 @@ async def aexception(
     if kw.get("exc_info", True) is True:
         kw["exc_info"] = sys.exc_info()
 
+    _scs_token = async_calling_stack.set(sys._getframe().f_back)
     ctx = contextvars.copy_context()
-    return await asyncio.get_running_loop().run_in_executor(
+    _run = await asyncio.get_running_loop().run_in_executor(
         None,
         lambda: ctx.run(lambda: self.error(event, *args, **kw)),
     )
+    async_calling_stack.reset(_scs_token)
+
+    return _run
 
 
 def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
@@ -173,6 +178,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             if args:
                 event = event % args
 
+            _scs_token = async_calling_stack.set(sys._getframe().f_back)
             ctx = contextvars.copy_context()
             await asyncio.get_running_loop().run_in_executor(
                 None,
@@ -180,6 +186,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
                     lambda: self._proxy_to_logger(name, event, **kw)
                 ),
             )
+            async_calling_stack.reset(_scs_token)
 
         meth.__name__ = name
         ameth.__name__ = f"a{name}"
@@ -205,11 +212,14 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         if args:
             event = event % args
 
+        _scs_token = async_calling_stack.set(sys._getframe().f_back)
         ctx = contextvars.copy_context()
-        return await asyncio.get_running_loop().run_in_executor(
+        _run = await asyncio.get_running_loop().run_in_executor(
             None,
             lambda: ctx.run(lambda: self._proxy_to_logger(name, event, **kw)),
         )
+        async_calling_stack.reset(_scs_token)
+        return _run
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
     for lvl, name in _LEVEL_TO_NAME.items():

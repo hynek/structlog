@@ -24,7 +24,7 @@ from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
-from .contextvars import merge_contextvars
+from .contextvars import merge_contextvars, async_calling_stack
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
 from .typing import Context, EventDict, ExcInfo, Processor, WrappedLogger
@@ -588,12 +588,15 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
+        _scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)
         ctx = contextvars.copy_context()
 
         await asyncio.get_running_loop().run_in_executor(
             self._executor,
             lambda: ctx.run(lambda: meth(event, *args, **kw)),
         )
+
+        async_calling_stack.reset(_scs_token)
 
     async def debug(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.debug, event, args, kw)

@@ -30,6 +30,8 @@ from .typing import BindableLogger, EventDict, WrappedLogger
 STRUCTLOG_KEY_PREFIX = "structlog_"
 STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
 
+async_calling_stack = contextvars.ContextVar("async_calling_stack")
+
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
 # See https://github.com/hynek/structlog/pull/302 for details.

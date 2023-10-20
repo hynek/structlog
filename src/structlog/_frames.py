@@ -8,10 +8,13 @@ from __future__ import annotations
 import sys
 import traceback
 
+import contextvars
+
 from io import StringIO
 from types import FrameType
 
 from .typing import ExcInfo
+from .contextvars import async_calling_stack
 
 
 def _format_exception(exc_info: ExcInfo) -> str:
@@ -49,8 +52,9 @@ def _find_first_app_frame_and_name(
 
         tuple of (frame, name)
     """
+    ctx = contextvars.copy_context()
     ignores = ["structlog"] + (additional_ignores or [])
-    f = sys._getframe()
+    f = ctx.get(async_calling_stack) if async_calling_stack in ctx else sys._getframe()
     name = f.f_globals.get("__name__") or "?"
     while any(tuple(name.startswith(i) for i in ignores)):
         if f.f_back is None:
