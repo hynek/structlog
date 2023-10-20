@@ -11,6 +11,8 @@ Python 3.7 as :mod:`contextvars`.
 .. versionchanged:: 21.1.0
    Reimplemented without using a single dict as context carrier for improved
    isolation. Every key-value pair is a separate `contextvars.ContextVar` now.
+.. versionchanged:: 23.3.0
+   Implimented `ContextVar` for holding and resetting async calling stack
 
 See :doc:`contextvars`.
 """

@@ -92,6 +92,10 @@ def exception(
 async def aexception(
     self: FilteringBoundLogger, event: str, *args: Any, **kw: Any
 ) -> Any:
+    """ 
+    .. versionchanged:: 23.3.0
+       Implimented `ContextVar` for holding and resetting async calling stack
+    """
     # Exception info has to be extracted this early, because it is no longer
     # available once control is passed to the executor.
     if kw.get("exc_info", True) is True:
@@ -175,6 +179,10 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             return self._proxy_to_logger(name, event % args, **kw)
 
         async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+            """ 
+            .. versionchanged:: 23.3.0
+                Implimented `ContextVar` for holding and resetting async calling stack
+            """
             if args:
                 event = event % args
 
@@ -206,6 +214,10 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     async def alog(
         self: Any, level: int, event: str, *args: Any, **kw: Any
     ) -> Any:
+        """ 
+        .. versionchanged:: 23.3.0
+           Implimented `ContextVar` for holding and resetting async calling stack
+        """
         if level < min_level:
             return None
         name = _LEVEL_TO_NAME[level]

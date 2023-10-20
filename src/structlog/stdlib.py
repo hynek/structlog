@@ -587,8 +587,9 @@ class AsyncBoundLogger:
     ) -> None:
         """
         Merge contextvars and log using the sync logger in a thread pool.
+        .. versionchanged:: 23.3.0
+           Implimented `ContextVar` for holding and resetting async calling stack
         """
-        _scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)
         _scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)
         ctx = contextvars.copy_context()
 
