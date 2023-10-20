@@ -58,12 +58,12 @@ def _find_first_app_frame_and_name(
         if async_calling_stack in ctx
         else sys._getframe()
     )
-    name = f.f_globals.get("__name__") or "?" # type: ignore[union-attr]
+    name = f.f_globals.get("__name__") or "?"  # type: ignore[union-attr]
     while any(tuple(name.startswith(i) for i in ignores)):
-        if f.f_back is None: # type: ignore[union-attr]
+        if f.f_back is None:  # type: ignore[union-attr]
             name = "?"
             break
-        f = f.f_back # type: ignore[union-attr]
+        f = f.f_back  # type: ignore[union-attr]
         name = f.f_globals.get("__name__") or "?"
     return f, name  # type: ignore[return-value]
 

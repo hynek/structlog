@@ -590,7 +590,7 @@ class AsyncBoundLogger:
         .. versionchanged:: 23.3.0
            Implimented `ContextVar` for holding and resetting async calling stack
         """
-        _scs_token = async_calling_stack.set(sys._getframe().f_back.f_back) # type: ignore[union-attr]
+        _scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr]
         ctx = contextvars.copy_context()
 
         await asyncio.get_running_loop().run_in_executor(

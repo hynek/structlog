@@ -32,7 +32,9 @@ from .typing import BindableLogger, EventDict, WrappedLogger
 STRUCTLOG_KEY_PREFIX = "structlog_"
 STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
 
-async_calling_stack: contextvars.ContextVar[Any] = contextvars.ContextVar("async_calling_stack")
+async_calling_stack: contextvars.ContextVar[Any] = contextvars.ContextVar(
+    "async_calling_stack"
+)
 
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
