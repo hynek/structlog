@@ -12,7 +12,7 @@ Python 3.7 as :mod:`contextvars`.
    Reimplemented without using a single dict as context carrier for improved
    isolation. Every key-value pair is a separate `contextvars.ContextVar` now.
 .. versionchanged:: 23.3.0
-   Implemented `contextvars.ContextVar` for holding and resetting async calling stack
+   Callsite parameters are now also collected under asyncio.
 
 See :doc:`contextvars`.
 """
@@ -22,6 +22,7 @@ from __future__ import annotations
 import contextlib
 import contextvars
 
+from types import FrameType
 from typing import Any, Generator, Mapping
 
 import structlog
@@ -32,9 +33,9 @@ from .typing import BindableLogger, EventDict, WrappedLogger
 STRUCTLOG_KEY_PREFIX = "structlog_"
 STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
 
-async_calling_stack: contextvars.ContextVar[Any] = contextvars.ContextVar(
-    "async_calling_stack"
-)
+async_calling_stack: contextvars.ContextVar[
+    FrameType
+] = contextvars.ContextVar("async_calling_stack")
 
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
