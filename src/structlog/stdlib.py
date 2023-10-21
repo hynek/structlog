@@ -588,17 +588,18 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         .. versionchanged:: 23.3.0
-           Implemented `contextvars.ContextVar` for holding and resetting async calling stack
+           Callsite parameters are now also collected under asyncio.
         """
-        _scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr]
+        scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
-        await asyncio.get_running_loop().run_in_executor(
-            self._executor,
-            lambda: ctx.run(lambda: meth(event, *args, **kw)),
-        )
-
-        async_calling_stack.reset(_scs_token)
+        try:
+            await asyncio.get_running_loop().run_in_executor(
+                self._executor,
+                lambda: ctx.run(lambda: meth(event, *args, **kw)),
+            )
+        finally:
+            async_calling_stack.reset(scs_token)
 
     async def debug(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.debug, event, args, kw)
