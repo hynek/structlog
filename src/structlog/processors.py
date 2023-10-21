@@ -317,9 +317,9 @@ class JSONRenderer:
         serializer:
             A :func:`json.dumps`-compatible callable that will be used to
             format the string.  This can be used to use alternative JSON
-            encoders like `orjson <https://pypi.org/project/orjson/>`__ or
-            `RapidJSON <https://pypi.org/project/python-rapidjson/>`_
-            (default: :func:`json.dumps`).
+            encoders (default: :func:`json.dumps`).
+
+            .. seealso:: :doc:`performance` for examples.
 
     .. versionadded:: 0.2.0 Support for ``__structlog__`` serialization method.
     .. versionadded:: 15.4.0 *serializer* parameter.
@@ -332,7 +332,8 @@ class JSONRenderer:
         serializer: Callable[..., str | bytes] = json.dumps,
         **dumps_kw: Any,
     ) -> None:
-        dumps_kw.setdefault("default", _json_fallback_handler)
+        if dumps_kw != {}:
+            dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw
         self._dumps = serializer
 
@@ -342,7 +343,9 @@ class JSONRenderer:
         """
         The return type of this depends on the return type of self._dumps.
         """
-        return self._dumps(event_dict, **self._dumps_kw)
+        if self._dumps_kw:
+            return self._dumps(event_dict, **self._dumps_kw)
+        return self._dumps(event_dict)
 
 
 def _json_fallback_handler(obj: Any) -> Any:
@@ -733,10 +736,6 @@ class CallsiteParameterAdder:
     the event dictionary. This processor can be used to enrich events
     dictionaries with information such as the function name, line number and
     filename that an event dictionary originated from.
-
-    .. warning::
-        This processor cannot detect the correct callsite for invocation of
-        async functions.
 
     If the event dictionary has an embedded `logging.LogRecord` object and did
     not originate from *structlog* then the callsite information will be

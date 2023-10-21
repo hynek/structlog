@@ -823,12 +823,6 @@ class TestCallsiteParameterAdder:
         }
         assert self.parameter_strings == self.get_callsite_parameters().keys()
 
-    @pytest.mark.xfail(
-        reason=(
-            "CallsiteParameterAdder cannot "
-            "determine the callsite for async calls."
-        )
-    )
     @pytest.mark.asyncio()
     async def test_async(self) -> None:
         """
@@ -852,10 +846,14 @@ class TestCallsiteParameterAdder:
 
         callsite_params = self.get_callsite_parameters()
         await logger.info("baz")
+        logger_params = json.loads(string_io.getvalue())
 
-        assert {"event": "baz", **callsite_params} == json.loads(
-            string_io.getvalue()
-        )
+        # These are different when running under async
+        for key in ["thread", "thread_name"]:
+            callsite_params.pop(key)
+            logger_params.pop(key)
+
+        assert {"event": "baz", **callsite_params} == logger_params
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """

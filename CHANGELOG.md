@@ -15,12 +15,18 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/23.2.0...HEAD)
 
+### Added
+
+- Async log methods (those starting with an `a`) now also support the collection of callsite information using `structlog.processors.CallsiteParameterAdder`.
+  [#565](https://github.com/hynek/structlog/issues/565)
+
+
 ### Fixed
 
 - The return value from `get_logger()` (a `BoundLoggerLazyProxy`) now passes `isinstance`-checks against `structlog.typing.BindableLogger` on Python 3.12.
   [#561](https://github.com/hynek/structlog/issues/561)
 
-- `structlog.threadlocal.tmp_bind()` now also works `BoundLoggerLazyProxy` (in other words: before anything is bound to a bound logger).
+- `structlog.threadlocal.tmp_bind()` now also works with `BoundLoggerLazyProxy` (in other words: before anything is bound to a bound logger).
 
 
 ## [23.2.0](https://github.com/hynek/structlog/compare/23.1.0...23.2.0) - 2023-10-09
