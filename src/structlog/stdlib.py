@@ -24,7 +24,7 @@ from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
-from .contextvars import async_calling_stack, merge_contextvars
+from .contextvars import _ASYNC_CALLING_STACK, merge_contextvars
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
 from .typing import Context, EventDict, ExcInfo, Processor, WrappedLogger
@@ -590,7 +590,7 @@ class AsyncBoundLogger:
         .. versionchanged:: 23.3.0
            Callsite parameters are now also collected under asyncio.
         """
-        scs_token = async_calling_stack.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
         try:
@@ -599,7 +599,7 @@ class AsyncBoundLogger:
                 lambda: ctx.run(lambda: meth(event, *args, **kw)),
             )
         finally:
-            async_calling_stack.reset(scs_token)
+            _ASYNC_CALLING_STACK.reset(scs_token)
 
     async def debug(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.debug, event, args, kw)

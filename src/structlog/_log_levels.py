@@ -17,7 +17,7 @@ import sys
 from typing import Any, Callable
 
 from ._base import BoundLoggerBase
-from .contextvars import async_calling_stack
+from .contextvars import _ASYNC_CALLING_STACK
 from .typing import EventDict, FilteringBoundLogger
 
 
@@ -101,7 +101,7 @@ async def aexception(
     if kw.get("exc_info", True) is True:
         kw["exc_info"] = sys.exc_info()
 
-    scs_token = async_calling_stack.set(sys._getframe().f_back)  # type: ignore[arg-type]
+    scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
     ctx = contextvars.copy_context()
     try:
         runner = await asyncio.get_running_loop().run_in_executor(
@@ -109,7 +109,7 @@ async def aexception(
             lambda: ctx.run(lambda: self.error(event, *args, **kw)),
         )
     finally:
-        async_calling_stack.reset(scs_token)
+        _ASYNC_CALLING_STACK.reset(scs_token)
 
     return runner
 
@@ -188,7 +188,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             if args:
                 event = event % args
 
-            scs_token = async_calling_stack.set(sys._getframe().f_back)  # type: ignore[arg-type]
+            scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
             ctx = contextvars.copy_context()
             try:
                 await asyncio.get_running_loop().run_in_executor(
@@ -198,7 +198,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
                     ),
                 )
             finally:
-                async_calling_stack.reset(scs_token)
+                _ASYNC_CALLING_STACK.reset(scs_token)
 
         meth.__name__ = name
         ameth.__name__ = f"a{name}"
@@ -228,7 +228,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         if args:
             event = event % args
 
-        scs_token = async_calling_stack.set(sys._getframe().f_back)  # type: ignore[arg-type]
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
         ctx = contextvars.copy_context()
         try:
             runner = await asyncio.get_running_loop().run_in_executor(
@@ -238,7 +238,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
                 ),
             )
         finally:
-            async_calling_stack.reset(scs_token)
+            _ASYNC_CALLING_STACK.reset(scs_token)
         return runner
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
