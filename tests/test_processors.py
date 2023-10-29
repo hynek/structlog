@@ -844,15 +844,14 @@ class TestCallsiteParameterAdder:
 
         logger = structlog.stdlib.get_logger()
 
-        # These are different when running under async
-        exclude_keys = ["thread", "thread_name"]
-
         callsite_params = self.get_callsite_parameters()
         await logger.info("baz")
         logger_params = json.loads(string_io.getvalue())
 
-        [callsite_params.pop(key) for key in exclude_keys]
-        [logger_params.pop(key) for key in exclude_keys]
+        # These are different when running under async
+        for key in ["thread", "thread_name"]:
+            callsite_params.pop(key)
+            logger_params.pop(key)
 
         assert {"event": "baz", **callsite_params} == logger_params
 
