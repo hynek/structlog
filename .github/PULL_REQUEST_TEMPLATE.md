@@ -13,6 +13,9 @@ But please read our [contribution guide](https://github.com/hynek/structlog/blob
 If an item doesn't apply to your pull request, **check it anyway** to make it apparent that there's nothing left to do.
 -->
 
+- [ ] Do **not** open pull requests from your main branch, but **use a branch instead**. There's a ton of footguns waiting if you don't heed this warning. You can still go back to your project, create a branch from your main branch, push that, and open the PR from that.
+
+  This is not a pre-requisite for your your pull request to be accepted, but **you have been warned**.
 - [ ] Added **tests** for changed code.
     - The CI fails with less than 100% coverage.
 - [ ] **New APIs** are added to [`api.py`](https://github.com/hynek/structlog/blob/main/tests/typing/api.py).

@@ -63,7 +63,7 @@ Or if you prefer to use Git via HTTPS:
 $ git clone https://github.com/YOU/structlog.git
 ```
 
-> **Warning**
+> [!WARNING]
 > - **Before** you start working on a new pull request, use the "*Sync fork*" button in GitHub's web UI to ensure your fork is up to date.
 > - **Always create a new branch off `main` for each new pull request.**
 >   Yes, you can work on `main` in your fork and submit pull requests.
