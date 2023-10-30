@@ -961,13 +961,17 @@ class AddCallingClassPath:
         """
         identified_path: str = frame.f_code.co_name
 
-        for cls in (
+        # pull out classes from the frames `f_globals` for testing against
+        for cls in {
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
-        ):
+        }:
             member = getattr(cls, frame.f_code.co_name, None)
+            # store the current path as a fall back (probably the path)
             identified_path = f"{cls.__module__}.{frame.f_code.co_name}"
             if inspect.isfunction(member) and member.__code__ == frame.f_code:
                 identified_path = f"{member.__module__}.{member.__qualname__}"
+                # we found our code match, can stop looking
                 break
 
+        # return our identified class path
         return identified_path
