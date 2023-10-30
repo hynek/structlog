@@ -959,13 +959,14 @@ class AddCallingClassPath:
 
         .. versionadded:: 23.3.0
         """
-        default_path = '__main__'
+        identified_path = None
         for cls in (
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
         ):
             member = getattr(cls, frame.f_code.co_name, None)
-            default_path = cls.__module__
+            identified_path = f"{cls.__module__}.{frame.f_code.co_name}"
             if inspect.isfunction(member) and member.__code__ == frame.f_code:
-                return f"{member.__module__}.{member.__qualname__}"
+                identified_path = f"{member.__module__}.{member.__qualname__}"
+                break
 
-        return f"{default_path}.{frame.f_code.co_name}"
+        return identified_path
