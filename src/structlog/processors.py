@@ -20,6 +20,7 @@ import sys
 import threading
 import time
 
+from types import FrameType
 from typing import (
     Any,
     Callable,
@@ -28,6 +29,7 @@ from typing import (
     NamedTuple,
     Sequence,
     TextIO,
+    Union,
 )
 
 from ._frames import (
@@ -909,3 +911,60 @@ class EventRenamer:
                 event_dict["event"] = replace_by
 
         return event_dict
+
+
+class AddCallingClassPath:
+    """
+    Attempt to identify and add the caller class path to the event dict
+    under the ``class_path`` key.
+
+    Arguments:
+
+        levels:
+            A set of log levels to add the ``class_path`` key and
+            information to. An empty set == *
+
+    .. versionadded:: 23.4.0
+    """
+
+    def __init__(self, levels: Union[set[str], dict[str]] | None = None):
+        self.levels = levels
+
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        if self.levels and name not in self.levels:
+            return event_dict
+
+        f, _ = _find_first_app_frame_and_name()
+        event_dict["class_path"] = self.get_qual_name(f)
+
+        return event_dict
+
+    def get_qual_name(self, frame: FrameType) -> str:
+        """
+        For a given app frame, attempt to deduce the class path
+        by crawling through the frame's ``f_globals`` to find matching object code.
+
+        This O(n) procedure should return as O(1) in most situations,
+        but buyer beware.
+
+        Arguments:
+
+            frame:
+                Frame to process.
+
+        Returns:
+
+            string of the deduced class path
+
+    .. versionadded:: 23.4.0
+        """
+        for cls in (
+            obj for obj in frame.f_globals.values() if inspect.isclass(obj)
+        ):
+            member = getattr(cls, frame.f_code.co_name, None)
+            if inspect.isfunction(member) and member.__code__ == frame.f_code:
+                return f"{member.__module__}.{member.__qualname__}"
+
+        return f"__main__.{frame.f_code.co_name}"

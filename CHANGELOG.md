@@ -15,6 +15,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/23.2.0...HEAD)
 
+### Added
+
+- `structlog.processors.AddCallingClassPath()` added, which will attempt to determine the calling class path and add it as `class_path` to the event dict. Takes an optional `levels` `dict`|`set` to limit which `logging.LEVEL` to include the addition in.
+
 ### Fixed
 
 - `AsyncBoundLogger` now properly supports callsite parameters.
@@ -23,7 +27,6 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#561](https://github.com/hynek/structlog/issues/561)
 
 - `structlog.threadlocal.tmp_bind()` now also works `BoundLoggerLazyProxy` (in other words: before anything is bound to a bound logger).
-
 
 ## [23.2.0](https://github.com/hynek/structlog/compare/23.1.0...23.2.0) - 2023-10-09
 
