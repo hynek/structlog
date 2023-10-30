@@ -17,6 +17,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Fixed
 
+- `AsyncBoundLogger` now properly supports callsite parameters.
+
 - The return value from `get_logger()` (a `BoundLoggerLazyProxy`) now passes `isinstance`-checks against `structlog.typing.BindableLogger` on Python 3.12.
   [#561](https://github.com/hynek/structlog/issues/561)
 

@@ -17,6 +17,7 @@ import sys
 from typing import Any, Callable
 
 from ._base import BoundLoggerBase
+from .contextvars import _ASYNC_CALLING_STACK
 from .typing import EventDict, FilteringBoundLogger
 
 
@@ -91,16 +92,26 @@ def exception(
 async def aexception(
     self: FilteringBoundLogger, event: str, *args: Any, **kw: Any
 ) -> Any:
+    """
+    .. versionchanged:: 23.3.0
+       Callsite parameters are now also collected under asyncio.
+    """
     # Exception info has to be extracted this early, because it is no longer
     # available once control is passed to the executor.
     if kw.get("exc_info", True) is True:
         kw["exc_info"] = sys.exc_info()
 
+    scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
     ctx = contextvars.copy_context()
-    return await asyncio.get_running_loop().run_in_executor(
-        None,
-        lambda: ctx.run(lambda: self.error(event, *args, **kw)),
-    )
+    try:
+        runner = await asyncio.get_running_loop().run_in_executor(
+            None,
+            lambda: ctx.run(lambda: self.error(event, *args, **kw)),
+        )
+    finally:
+        _ASYNC_CALLING_STACK.reset(scs_token)
+
+    return runner
 
 
 def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
@@ -170,16 +181,24 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             return self._proxy_to_logger(name, event % args, **kw)
 
         async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+            """
+            .. versionchanged:: 23.3.0
+               Callsite parameters are now also collected under asyncio.
+            """
             if args:
                 event = event % args
 
+            scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
             ctx = contextvars.copy_context()
-            await asyncio.get_running_loop().run_in_executor(
-                None,
-                lambda: ctx.run(
-                    lambda: self._proxy_to_logger(name, event, **kw)
-                ),
-            )
+            try:
+                await asyncio.get_running_loop().run_in_executor(
+                    None,
+                    lambda: ctx.run(
+                        lambda: self._proxy_to_logger(name, event, **kw)
+                    ),
+                )
+            finally:
+                _ASYNC_CALLING_STACK.reset(scs_token)
 
         meth.__name__ = name
         ameth.__name__ = f"a{name}"
@@ -199,17 +218,28 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     async def alog(
         self: Any, level: int, event: str, *args: Any, **kw: Any
     ) -> Any:
+        """
+        .. versionchanged:: 23.3.0
+           Callsite parameters are now also collected under asyncio.
+        """
         if level < min_level:
             return None
         name = _LEVEL_TO_NAME[level]
         if args:
             event = event % args
 
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
         ctx = contextvars.copy_context()
-        return await asyncio.get_running_loop().run_in_executor(
-            None,
-            lambda: ctx.run(lambda: self._proxy_to_logger(name, event, **kw)),
-        )
+        try:
+            runner = await asyncio.get_running_loop().run_in_executor(
+                None,
+                lambda: ctx.run(
+                    lambda: self._proxy_to_logger(name, event, **kw)
+                ),
+            )
+        finally:
+            _ASYNC_CALLING_STACK.reset(scs_token)
+        return runner
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
     for lvl, name in _LEVEL_TO_NAME.items():

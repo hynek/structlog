@@ -11,6 +11,7 @@ import traceback
 from io import StringIO
 from types import FrameType
 
+from .contextvars import _ASYNC_CALLING_STACK
 from .typing import ExcInfo
 
 
@@ -50,7 +51,7 @@ def _find_first_app_frame_and_name(
         tuple of (frame, name)
     """
     ignores = ["structlog"] + (additional_ignores or [])
-    f = sys._getframe()
+    f = _ASYNC_CALLING_STACK.get(sys._getframe())
     name = f.f_globals.get("__name__") or "?"
     while any(tuple(name.startswith(i) for i in ignores)):
         if f.f_back is None:

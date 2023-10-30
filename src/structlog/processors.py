@@ -734,10 +734,6 @@ class CallsiteParameterAdder:
     dictionaries with information such as the function name, line number and
     filename that an event dictionary originated from.
 
-    .. warning::
-        This processor cannot detect the correct callsite for invocation of
-        async functions.
-
     If the event dictionary has an embedded `logging.LogRecord` object and did
     not originate from *structlog* then the callsite information will be
     determined from the `logging.LogRecord` object. For event dictionaries
