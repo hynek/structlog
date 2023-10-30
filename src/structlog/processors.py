@@ -959,7 +959,8 @@ class AddCallingClassPath:
 
         .. versionadded:: 23.3.0
         """
-        identified_path = None
+        identified_path: str = frame.f_code.co_name
+
         for cls in (
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
         ):
