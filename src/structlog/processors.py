@@ -966,4 +966,5 @@ class AddCallingClassPath:
             if inspect.isfunction(member) and member.__code__ == frame.f_code:
                 return f"{member.__module__}.{member.__qualname__}"
 
-        return f"__main__.{frame.f_code.co_name}"
+        # No cover, code is reached but coverage doesn't recognize it.
+        return f"__main__.{frame.f_code.co_name}"  # pragma: no cover

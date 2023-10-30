@@ -1219,6 +1219,23 @@ class TestAddCallingClassPath:
             == json.loads(cf.logger.calls.pop().args[0])["class_path"]
         )
 
+    def test_level_limitor(self):
+        """
+        Ensure `AddCallingClassPath` Processor limits which levels
+        that the ``class_path`` details are added to
+        """
+        cf = structlog.testing.CapturingLoggerFactory()
+        structlog.configure(
+            logger_factory=cf,
+            processors=[
+                structlog.processors.AddCallingClassPath(levels={"debug"}),
+                structlog.processors.JSONRenderer(),
+            ],
+        )
+        structlog.get_logger().info("test!")
+        # limiter is set to 'debug', so 'info' should not get the param added
+        assert "class_path" not in json.loads(cf.logger.calls.pop().args[0])
+
     async def test_async_processor(self):
         """
         Ensure `AddCallingClassPath` Processor can be enabled, and
