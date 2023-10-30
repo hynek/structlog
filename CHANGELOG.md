@@ -17,7 +17,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
-- `structlog.processors.AddCallingClassPath()` added, which will attempt to determine the calling class path and add it as `class_path` to the event dict. Takes an optional `levels` `dict`|`set` to limit which `logging.LEVEL` to include the addition in.
+- `structlog.processors.AddCallingClassPath()` added, which will attempt to determine the calling class path and add it as `class_path` to the event dict. Takes an optional `levels` `list`|`set` to limit which `logging.LEVEL` to include the addition in.
 
 ### Fixed
 

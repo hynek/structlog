@@ -29,7 +29,6 @@ from typing import (
     NamedTuple,
     Sequence,
     TextIO,
-    Union,
 )
 
 from ._frames import (
@@ -927,7 +926,7 @@ class AddCallingClassPath:
     .. versionadded:: 23.4.0
     """
 
-    def __init__(self, levels: Union[set[str], dict[str]] | None = None):
+    def __init__(self, levels: set[str] | list[str] | None = None):
         self.levels = levels
 
     def __call__(
@@ -943,22 +942,22 @@ class AddCallingClassPath:
 
     def get_qual_name(self, frame: FrameType) -> str:
         """
-        For a given app frame, attempt to deduce the class path
-        by crawling through the frame's ``f_globals`` to find matching object code.
+            For a given app frame, attempt to deduce the class path
+            by crawling through the frame's ``f_globals`` to find matching object code.
 
-        This O(n) procedure should return as O(1) in most situations,
-        but buyer beware.
+            This O(n) procedure should return as O(1) in most situations,
+            but buyer beware.
 
-        Arguments:
+            Arguments:
 
-            frame:
-                Frame to process.
+                frame:
+                    Frame to process.
 
-        Returns:
+            Returns:
 
-            string of the deduced class path
+                string of the deduced class path
 
-    .. versionadded:: 23.4.0
+        .. versionadded:: 23.4.0
         """
         for cls in (
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
