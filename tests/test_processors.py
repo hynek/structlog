@@ -27,6 +27,7 @@ import structlog
 from structlog import BoundLogger
 from structlog._utils import get_processname
 from structlog.processors import (
+    AddCallingClassPath,
     CallsiteParameter,
     CallsiteParameterAdder,
     EventRenamer,
@@ -1170,4 +1171,74 @@ class TestRenameKey:
         """
         assert {"msg": "hi", "foo": "bar"} == EventRenamer("msg", "missing")(
             None, None, {"event": "hi", "foo": "bar"}
+        )
+
+
+class TestAddCallingClassPath:
+    def test_simple_lookup(self):
+        """
+        Simple verification of path interogation
+        """
+        assert "{}.{}.{}".format(
+            self.__module__,
+            self.__class__.__qualname__,
+            sys._getframe().f_code.co_name,
+        ) == AddCallingClassPath().get_qual_name(sys._getframe())
+
+    async def test_async_lookup(self):
+        """
+        Simple verification of path interogation against async function
+        """
+        assert "{}.{}.{}".format(
+            self.__module__,
+            self.__class__.__qualname__,
+            sys._getframe().f_code.co_name,
+        ) == AddCallingClassPath().get_qual_name(sys._getframe())
+
+    def test_processor(self):
+        """
+        Ensure `AddCallingClassPath` Processor can be enabled, and
+        that the ``class_path`` details are present and correct in a
+        log entry
+        """
+        cf = structlog.testing.CapturingLoggerFactory()
+        structlog.configure(
+            logger_factory=cf,
+            processors=[
+                structlog.processors.AddCallingClassPath(),
+                structlog.processors.JSONRenderer(),
+            ],
+        )
+        structlog.get_logger().info("test!")
+        assert (
+            "{}.{}.{}".format(
+                self.__module__,
+                self.__class__.__qualname__,
+                sys._getframe().f_code.co_name,
+            )
+            == json.loads(cf.logger.calls.pop().args[0])["class_path"]
+        )
+
+    async def test_async_processor(self):
+        """
+        Ensure `AddCallingClassPath` Processor can be enabled, and
+        that the ``class_path`` details are present and correct
+        in an async log entry
+        """
+        cf = structlog.testing.CapturingLoggerFactory()
+        structlog.configure(
+            logger_factory=cf,
+            processors=[
+                structlog.processors.AddCallingClassPath(),
+                structlog.processors.JSONRenderer(),
+            ],
+        )
+        await structlog.get_logger().ainfo("test!")
+        assert (
+            "{}.{}.{}".format(
+                self.__module__,
+                self.__class__.__qualname__,
+                sys._getframe().f_code.co_name,
+            )
+            == json.loads(cf.logger.calls.pop().args[0])["class_path"]
         )
