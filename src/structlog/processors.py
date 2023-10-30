@@ -959,7 +959,7 @@ class AddCallingClassPath:
 
         .. versionadded:: 23.3.0
         """
-        default_path = '__main__'
+        default_path = "__main__"
         for cls in (
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
         ):
