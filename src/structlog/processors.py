@@ -20,6 +20,7 @@ import sys
 import threading
 import time
 
+from collections import deque
 from types import FrameType
 from typing import (
     Any,
@@ -959,19 +960,23 @@ class AddCallingClassPath:
 
         .. versionadded:: 23.3.0
         """
-        identified_path: str = frame.f_code.co_name
+        identified_path = frame.f_code.co_name
 
         # pull out classes from the frames `f_globals` for testing against
-        for cls in {
+        cls_queue = deque(
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
-        }:
+        )
+        path_found = False
+
+        while cls_queue and not path_found:
+            cls = cls_queue.popleft()
             member = getattr(cls, frame.f_code.co_name, None)
             # store the current path as a fall back (probably the path)
             identified_path = f"{cls.__module__}.{frame.f_code.co_name}"
             if inspect.isfunction(member) and member.__code__ == frame.f_code:
                 identified_path = f"{member.__module__}.{member.__qualname__}"
                 # we found our code match, can stop looking
-                break
+                path_found = True
 
         # return our identified class path
         return identified_path
