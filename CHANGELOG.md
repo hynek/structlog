@@ -28,9 +28,6 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.threadlocal.tmp_bind()` now also works with `BoundLoggerLazyProxy` (in other words: before anything is bound to a bound logger).
 
-- Migrated tests away from depreciated `event_loop` usage to per recommendations from `pytest-asyncio`.
-  [pytest-dev/pytest-asyncio#638](https://github.com/pytest-dev/pytest-asyncio/issues/638)
-
 
 ## [23.2.0](https://github.com/hynek/structlog/compare/23.1.0...23.2.0) - 2023-10-09
 
