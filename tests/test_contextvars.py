@@ -33,11 +33,12 @@ def _clear_contextvars():
 
 
 class TestContextvars:
-    async def test_bind(self, event_loop):
+    async def test_bind(self):
         """
         Binding a variable causes it to be included in the result of
         merge_contextvars.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1)
@@ -45,11 +46,12 @@ class TestContextvars:
 
         assert {"a": 1, "b": 2} == await event_loop.create_task(coro())
 
-    async def test_multiple_binds(self, event_loop):
+    async def test_multiple_binds(self):
         """
         Multiple calls to bind_contextvars accumulate values instead of
         replacing them. But they override redefined ones.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1, c=3)
@@ -63,11 +65,12 @@ class TestContextvars:
             "d": 4,
         } == await event_loop.create_task(coro())
 
-    async def test_reset(self, event_loop):
+    async def test_reset(self):
         """
         reset_contextvars allows resetting contexvars to
         previously-set values.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1)
@@ -87,10 +90,11 @@ class TestContextvars:
 
         await event_loop.create_task(coro())
 
-    async def test_nested_async_bind(self, event_loop):
+    async def test_nested_async_bind(self):
         """
         Context is passed correctly between "nested" concurrent operations.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1)
@@ -102,22 +106,24 @@ class TestContextvars:
 
         assert {"a": 1, "b": 2, "c": 3} == await event_loop.create_task(coro())
 
-    async def test_merge_works_without_bind(self, event_loop):
+    async def test_merge_works_without_bind(self):
         """
         merge_contextvars returns values as normal even when there has
         been no previous calls to bind_contextvars.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             return merge_contextvars(None, None, {"b": 2})
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
-    async def test_merge_overrides_bind(self, event_loop):
+    async def test_merge_overrides_bind(self):
         """
         Variables included in merge_contextvars override previously
         bound variables.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1)
@@ -125,11 +131,12 @@ class TestContextvars:
 
         assert {"a": 111, "b": 2} == await event_loop.create_task(coro())
 
-    async def test_clear(self, event_loop):
+    async def test_clear(self):
         """
         The context-local context can be cleared, causing any previously bound
         variables to not be included in merge_contextvars's result.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1)
@@ -138,11 +145,12 @@ class TestContextvars:
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
-    async def test_clear_without_bind(self, event_loop):
+    async def test_clear_without_bind(self):
         """
         The context-local context can be cleared, causing any previously bound
         variables to not be included in merge_contextvars's result.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             clear_contextvars()
@@ -150,11 +158,12 @@ class TestContextvars:
 
         assert {} == await event_loop.create_task(coro())
 
-    async def test_unbind(self, event_loop):
+    async def test_unbind(self):
         """
         Unbinding a previously bound variable causes it to be removed from the
         result of merge_contextvars.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             bind_contextvars(a=1)
@@ -163,10 +172,11 @@ class TestContextvars:
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
-    async def test_unbind_not_bound(self, event_loop):
+    async def test_unbind_not_bound(self):
         """
         Unbinding a not bound variable causes doesn't raise an exception.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
 
         async def coro():
             # Since unbinding means "setting to Ellipsis", we have to make
@@ -177,11 +187,12 @@ class TestContextvars:
 
         assert {"b": 2} == await event_loop.create_task(coro())
 
-    async def test_parallel_binds(self, event_loop):
+    async def test_parallel_binds(self):
         """
         Binding a variable causes it to be included in the result of
         merge_contextvars.
         """
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
         coro1_bind = asyncio.Event()
         coro2_bind = asyncio.Event()
 
