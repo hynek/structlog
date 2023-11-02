@@ -913,15 +913,15 @@ class EventRenamer:
         return event_dict
 
 
-class AddCallingClassPath:
+class AddCallingNamespace:
     """
-    Attempt to identify and add the caller class path to the event dict
-    under the ``class_path`` key.
+    Attempt to identify and add the caller namespace to the event dict
+    under the ``namespace`` key.
 
     Arguments:
 
         levels:
-            A set of log levels to add the ``class_path`` key and
+            A set of log levels to add the ``namespace`` key and
             information to. An empty set == *
 
     .. versionadded:: 23.3.0
@@ -937,14 +937,15 @@ class AddCallingClassPath:
             return event_dict
 
         f, _ = _find_first_app_frame_and_name()
-        event_dict["class_path"] = self.get_qual_name(f)
+        event_dict["namespace"] = self.get_qual_name(f)
 
         return event_dict
 
     def get_qual_name(self, frame: FrameType) -> str:
         """
-            For a given app frame, attempt to deduce the class path
-            by crawling through the frame's ``f_globals`` to find matching object code.
+            For a given app frame, attempt to deduce the namespace
+            by crawling through the frame's ``f_globals`` to find
+            matching object code.
 
             This O(n) procedure should return as O(1) in most situations,
             but buyer beware.
@@ -956,27 +957,29 @@ class AddCallingClassPath:
 
             Returns:
 
-                string of the deduced class path
+                string of the deduced namespace
 
         .. versionadded:: 23.3.0
         """
-        identified_path = frame.f_code.co_name
+        identified_namespace = frame.f_code.co_name
 
         # pull out classes from the frames `f_globals` for testing against
         cls_queue = deque(
             obj for obj in frame.f_globals.values() if inspect.isclass(obj)
         )
-        path_found = False
+        namespace_found = False
 
-        while cls_queue and not path_found:
+        while cls_queue and not namespace_found:
             cls = cls_queue.popleft()
             member = getattr(cls, frame.f_code.co_name, None)
-            # store the current path as a fall back (probably the path)
-            identified_path = f"{cls.__module__}.{frame.f_code.co_name}"
+            # store the current namespace as a fall back (probably the namespace)
+            identified_namespace = f"{cls.__module__}.{frame.f_code.co_name}"
             if inspect.isfunction(member) and member.__code__ == frame.f_code:
-                identified_path = f"{member.__module__}.{member.__qualname__}"
+                identified_namespace = (
+                    f"{member.__module__}.{member.__qualname__}"
+                )
                 # we found our code match, can stop looking
-                path_found = True
+                namespace_found = True
 
-        # return our identified class path
-        return identified_path
+        # return our identified namespace
+        return identified_namespace

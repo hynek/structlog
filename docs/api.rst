@@ -278,7 +278,7 @@ API Reference
 
 .. autoclass:: CallsiteParameterAdder
 
-.. autoclass:: AddCallingClassPath
+.. autoclass:: AddCallingNamespace
 
 
 `structlog.stdlib` Module
