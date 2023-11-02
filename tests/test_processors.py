@@ -27,7 +27,7 @@ import structlog
 from structlog import BoundLogger
 from structlog._utils import get_processname
 from structlog.processors import (
-    AddCallingNamespace,
+    CallsiteNamespaceAddr,
     CallsiteParameter,
     CallsiteParameterAdder,
     EventRenamer,
@@ -1174,7 +1174,7 @@ class TestRenameKey:
         )
 
 
-class TestAddCallingNamespace:
+class TestCallsiteNamespaceAddr:
     def test_simple_lookup(self):
         """
         Simple verification of path interogation
@@ -1183,7 +1183,7 @@ class TestAddCallingNamespace:
             self.__module__,
             self.__class__.__qualname__,
             sys._getframe().f_code.co_name,
-        ) == AddCallingNamespace().get_qual_name(sys._getframe())
+        ) == CallsiteNamespaceAddr().get_qual_name(sys._getframe())
 
     async def test_async_lookup(self):
         """
@@ -1193,11 +1193,11 @@ class TestAddCallingNamespace:
             self.__module__,
             self.__class__.__qualname__,
             sys._getframe().f_code.co_name,
-        ) == AddCallingNamespace().get_qual_name(sys._getframe())
+        ) == CallsiteNamespaceAddr().get_qual_name(sys._getframe())
 
     def test_processor(self):
         """
-        Ensure `AddCallingNamespace` Processor can be enabled, and
+        Ensure `CallsiteNamespaceAddr` Processor can be enabled, and
         that the ``namespace`` details are present and correct in a
         log entry
         """
@@ -1205,7 +1205,7 @@ class TestAddCallingNamespace:
         structlog.configure(
             logger_factory=cf,
             processors=[
-                structlog.processors.AddCallingNamespace(),
+                structlog.processors.CallsiteNamespaceAddr(),
                 structlog.processors.JSONRenderer(),
             ],
         )
@@ -1221,14 +1221,14 @@ class TestAddCallingNamespace:
 
     def test_level_limitor(self):
         """
-        Ensure `AddCallingNamespace` Processor limits which levels
+        Ensure `CallsiteNamespaceAddr` Processor limits which levels
         that the ``namespace`` details are added to
         """
         cf = structlog.testing.CapturingLoggerFactory()
         structlog.configure(
             logger_factory=cf,
             processors=[
-                structlog.processors.AddCallingNamespace(levels={"debug"}),
+                structlog.processors.CallsiteNamespaceAddr(levels={"debug"}),
                 structlog.processors.JSONRenderer(),
             ],
         )
@@ -1238,7 +1238,7 @@ class TestAddCallingNamespace:
 
     async def test_async_processor(self):
         """
-        Ensure `AddCallingNamespace` Processor can be enabled, and
+        Ensure `CallsiteNamespaceAddr` Processor can be enabled, and
         that the ``namespace`` details are present and correct
         in an async log entry
         """
@@ -1246,7 +1246,7 @@ class TestAddCallingNamespace:
         structlog.configure(
             logger_factory=cf,
             processors=[
-                structlog.processors.AddCallingNamespace(),
+                structlog.processors.CallsiteNamespaceAddr(),
                 structlog.processors.JSONRenderer(),
             ],
         )

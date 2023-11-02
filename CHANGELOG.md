@@ -17,7 +17,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
-- `structlog.processors.AddCallingNamespace()` added, which will attempt to determine the calling namespace and add it as `namespace` to the event dict. Takes an optional `levels` `list`|`set` to limit which `logging.LEVEL` to include the addition in.
+- `structlog.processors.CallsiteNamespaceAddr()` added, which will attempt to determine the calling namespace and add it as `namespace` to the event dict. Takes an optional `levels` `list`|`set` to limit which `logging.LEVEL` to include the addition in.
 
 - Async log methods (those starting with an `a`) now also support the collection of callsite information using `structlog.processors.CallsiteParameterAdder`.
   [#565](https://github.com/hynek/structlog/issues/565)
