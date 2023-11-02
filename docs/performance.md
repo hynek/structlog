@@ -30,15 +30,15 @@ Here are a few hints how to get the best performance out of *structlog* in produ
 
   1. Later calls of {func}`~structlog.configure` don't have any effect on already cached loggers -- that shouldn't matter outside of {doc}`testing <testing>` though.
   2. The resulting bound logger is not pickleable.
-      Therefore, you can't set this option if you e.g. plan on passing loggers around using `multiprocessing`.
+      Therefore, you can't set this option if you, for example, plan on passing loggers around using {mod}`multiprocessing`.
 
 - Avoid sending your log entries through the standard library if you can: its dynamic nature and flexibility make it a major bottleneck.
-  Instead use {class}`structlog.WriteLoggerFactory` or -- if your serializer returns bytes (e.g. [*orjson*]) -- {class}`structlog.BytesLoggerFactory`.
+  Instead use {class}`structlog.WriteLoggerFactory` or -- if your serializer returns bytes (for example, [*orjson*] or [*msgspec*]) -- {class}`structlog.BytesLoggerFactory`.
 
   You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
 
-- Use a faster JSON serializer than the standard library.
-  Possible alternatives are among others are [*orjson*] or [*RapidJSON*].
+- Configure {class}`~structlog.processors.JSONRenderer` to use a faster JSON serializer than the standard library.
+  Possible alternatives are among others are [*orjson*], [*msgspec*], or [RapidJSON](https://pypi.org/project/python-rapidjson/).
 
 - Be conscious about whether and how you use *structlog*'s *asyncio* support.
   While it's true that moving log processing into separate threads prevents your application from hanging, it also comes with a performance cost.
@@ -49,10 +49,11 @@ Here are a few hints how to get the best performance out of *structlog* in produ
 
 ## Example
 
-Here's an example for a production-ready non-*asyncio* *structlog* configuration that's as fast as it gets:
+Here's an example for a production-ready *structlog* configuration that's as fast as it gets:
 
 ```python
 import logging
+import orjson
 import structlog
 
 structlog.configure(
@@ -74,18 +75,18 @@ It has the following properties:
 - Caches all loggers on first use.
 - Filters all log entries below the `info` log level **very** efficiently.
   The `debug` method literally consists of `return None`.
-- Supports {doc}`contextvars` (thread-local contexts).
+- Supports {doc}`contextvars` (thread-local contexts outside of *asyncio*).
 - Adds the log level name.
-- Renders exceptions.
+- Renders exceptions into the `exception` key.
 - Adds an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) timestamp under the `timestamp` key in the UTC timezone.
-- Renders the log entries as JSON using [*orjson*] which is faster than plain logging in `logging`.
+- Renders the log entries as JSON using [*orjson*] which is faster than *plain* logging in {mod}`logging`.
 - Uses {class}`structlog.BytesLoggerFactory` because *orjson* returns bytes.
   That saves encoding ping-pong.
 
 Therefore a log entry might look like this:
 
 ```json
-{"event":"hello","timestamp":"2020-11-17T09:54:11.900066Z"}
+{"event":"hello","level":"info","timestamp":"2023-11-02T08:03:38.298565Z"}
 ```
 
 ---
@@ -93,5 +94,4 @@ Therefore a log entry might look like this:
 If you need standard library support for external projects, you can either just use a JSON formatter like [*python-json-logger*](https://pypi.org/project/python-json-logger/), or pipe them through *structlog* as documented in {doc}`standard-library`.
 
 [*orjson*]: https://github.com/ijl/orjson
-[*rapidjson*]: https://pypi.org/project/python-rapidjson/
-[*simplejson*]: https://simplejson.readthedocs.io/
+[*msgspec*]: https://jcristharif.com/msgspec/
