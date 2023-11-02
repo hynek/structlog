@@ -37,7 +37,7 @@ Here are a few hints how to get the best performance out of *structlog* in produ
 
   You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
 
-- Use a faster JSON serializer than the standard library.
+- Configure {class}`~structlog.processors.JSONRenderer` to use a faster JSON serializer than the standard library.
   Possible alternatives are among others are [*orjson*], [*msgspec*], or [RapidJSON](https://pypi.org/project/python-rapidjson/).
 
 - Be conscious about whether and how you use *structlog*'s *asyncio* support.
@@ -49,10 +49,11 @@ Here are a few hints how to get the best performance out of *structlog* in produ
 
 ## Example
 
-Here's an example for a production-ready non-*asyncio* *structlog* configuration that's as fast as it gets:
+Here's an example for a production-ready *structlog* configuration that's as fast as it gets:
 
 ```python
 import logging
+import orjson
 import structlog
 
 structlog.configure(
@@ -76,16 +77,16 @@ It has the following properties:
   The `debug` method literally consists of `return None`.
 - Supports {doc}`contextvars` (thread-local contexts).
 - Adds the log level name.
-- Renders exceptions.
+- Renders exceptions into the `exception` key.
 - Adds an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) timestamp under the `timestamp` key in the UTC timezone.
-- Renders the log entries as JSON using [*orjson*] which is faster than plain logging in `logging`.
+- Renders the log entries as JSON using [*orjson*] which is faster than *plain* logging in {mod}`logging`.
 - Uses {class}`structlog.BytesLoggerFactory` because *orjson* returns bytes.
   That saves encoding ping-pong.
 
 Therefore a log entry might look like this:
 
 ```json
-{"event":"hello","timestamp":"2020-11-17T09:54:11.900066Z"}
+{"event":"hello","level":"info","timestamp":"2023-11-02T08:03:38.298565Z"}
 ```
 
 ---
