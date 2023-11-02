@@ -38,7 +38,7 @@ Here are a few hints how to get the best performance out of *structlog* in produ
   You can still configure `logging` for packages that you don't control, but avoid it for your *own* log entries.
 
 - Use a faster JSON serializer than the standard library.
-  Possible alternatives are among others are [*orjson*] or [*RapidJSON*].
+  Possible alternatives are among others are [*orjson*] or [RapidJSON](https://pypi.org/project/python-rapidjson/).
 
 - Be conscious about whether and how you use *structlog*'s *asyncio* support.
   While it's true that moving log processing into separate threads prevents your application from hanging, it also comes with a performance cost.
@@ -93,5 +93,3 @@ Therefore a log entry might look like this:
 If you need standard library support for external projects, you can either just use a JSON formatter like [*python-json-logger*](https://pypi.org/project/python-json-logger/), or pipe them through *structlog* as documented in {doc}`standard-library`.
 
 [*orjson*]: https://github.com/ijl/orjson
-[*rapidjson*]: https://pypi.org/project/python-rapidjson/
-[*simplejson*]: https://simplejson.readthedocs.io/
