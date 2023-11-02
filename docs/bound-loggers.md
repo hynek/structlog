@@ -77,10 +77,10 @@ logger = structlog.get_logger()
 log = logger.bind(foo="bar")
 ```
 
-Now `log` is a *bound logger* of type {class}`~structlog.typing.FilteringBoundLogger` (but in the default config there's no filtering).
+Now, `log` is a *bound logger* of type {class}`~structlog.typing.FilteringBoundLogger` (but in the default config there's no filtering).
 `log`'s context is `{"foo": "bar"}` and its wrapped logger is a {class}`structlog.PrintLogger`.
 
-Now if you call `log.info("Hello, %s!", "world", number=42)` the following happens:
+If you call `log.info("Hello, %s!", "world", number=42)` now, the following happens:
 
 1. `"world"` gets interpolated into `"Hello, %s!"`, making the event "Hello, world!"[^interpolation].
 2. The *bound logger*'s context gets copied and the key-value pairs from the `info` call are added to it.
@@ -90,7 +90,7 @@ Now if you call `log.info("Hello, %s!", "world", number=42)` the following happe
 4. The *event dict* is fed into the [processor chain](processors.md).
    In this case the processors add a timestamp and the log level name to the *event dict*.
 
-   Before it hits the last processor, the *event dict* looks something like `{"foo": "bar", "number": 42, "event": "Hello, world!", "level": "info", "timestamp": "2022-10-13 16:29:27"}` now.
+   Before it hits the last processor, the *event dict* looks something like `{"foo": "bar", "number": 42, "event": "Hello, world!", "level": "info", "timestamp": "2022-10-13 16:29:27"}`.
 
    The last processor is {class}`structlog.dev.ConsoleRenderer` and renders the *event dict* into a colorful string[^json].
 5. Finally, the *wrapped logger*'s (a {class}`~structlog.PrintLogger`) `info()` method is called with that string.
