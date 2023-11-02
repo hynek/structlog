@@ -75,7 +75,7 @@ It has the following properties:
 - Caches all loggers on first use.
 - Filters all log entries below the `info` log level **very** efficiently.
   The `debug` method literally consists of `return None`.
-- Supports {doc}`contextvars` (thread-local contexts).
+- Supports {doc}`contextvars` (thread-local contexts outside of *asyncio*).
 - Adds the log level name.
 - Renders exceptions into the `exception` key.
 - Adds an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) timestamp under the `timestamp` key in the UTC timezone.
