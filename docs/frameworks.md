@@ -7,7 +7,7 @@ If you use standard library's logging, it makes sense to configure them next to 
 
 ## OpenTelemetry
 
-The [Python *OpenTelemetry* SDK](https://opentelemetry.io/docs/instrumentation/python/) offers an easy API to get the current span, so you can enrich your logs with a straight-forward processor:
+The [Python OpenTelemetry SDK](https://opentelemetry.io/docs/instrumentation/python/) offers an easy API to get the current span, so you can enrich your logs with a straight-forward processor:
 
 ```python
 from opentelemetry import trace
@@ -71,7 +71,7 @@ request_started.connect(bind_request_details, app)
 
 Configure it in the [application constructor](https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/startup.html#the-startup-process).
 
-Here's an example for a *Pyramid* [*Tween*](https://kapeli.com/dash_share?docset_file=pyramid&docset_name=pyramid&path=narr/hooks.html%23registering-tweens&platform=pyramid) that stores various request-specific data into [*context variables*](contextvars.md):
+Here's an example for a Pyramid [*tween*](https://docs.pylonsproject.org/projects/pyramid/en/latest/glossary.html#term-tween) that stores various request-specific data into [*context variables*](contextvars.md):
 
 ```python
 @dataclass
@@ -94,7 +94,7 @@ class StructLogTween:
 
 ## Celery
 
-[*Celery*](https://docs.celeryq.dev/)'s multi-process architecture leads unavoidably to race conditions that show up as interleaved logs.
+[Celery](https://docs.celeryq.dev/)'s multi-process architecture leads unavoidably to race conditions that show up as interleaved logs.
 It ships standard library-based helpers in the form of [`celery.utils.log.get_task_logger()`](https://docs.celeryq.dev/en/stable/userguide/tasks.html#logging) that you should use inside of tasks to prevent that problem.
 
 The most straight-forward way to integrate that with *structlog* is using {doc}`standard-library` and wrapping that logger using {func}`structlog.wrap_logger`:
@@ -105,7 +105,7 @@ from celery.utils.log import get_task_logger
 logger = structlog.wrap_logger(get_task_logger(__name__))
 ```
 
-If you want to automatically bind task metadata to your {doc}`contextvars`, you can use [*Celery*'s signals](https://docs.celeryq.dev/en/stable/userguide/signals.html):
+If you want to automatically bind task metadata to your {doc}`contextvars`, you can use [Celery's signals](https://docs.celeryq.dev/en/stable/userguide/signals.html):
 
 ```python
 from celery import signals
