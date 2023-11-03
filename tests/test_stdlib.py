@@ -1116,6 +1116,25 @@ class TestProcessorFormatter:
             {"foo": "bar", "_record": "foo", "_from_structlog": True},
         )
 
+    def test_non_string_message_warning(self):
+        """
+        A warning is raised if the last processor in
+        ProcessorFormatter.processors doesn't return a string.
+        """
+        configure_logging(None)
+        logger = logging.getLogger()
+
+        formatter = ProcessorFormatter(
+            processors=[lambda *args, **kwargs: {"foo": "bar"}],
+        )
+        logger.handlers[0].setFormatter(formatter)
+
+        with pytest.warns(
+            RuntimeWarning,
+            match="The last processor in ProcessorFormatter.processors must return a string",
+        ):
+            logger.info("baz")
+
 
 @pytest_asyncio.fixture(name="abl")
 async def _abl(cl):

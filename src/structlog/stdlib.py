@@ -19,7 +19,7 @@ import sys
 import warnings
 
 from functools import partial
-from typing import Any, Callable, Collection, Iterable, Sequence, cast
+from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
 
 from . import _config
 from ._base import BoundLoggerBase
@@ -1036,7 +1036,7 @@ class ProcessorFormatter(logging.Formatter):
             # We need to copy because it's possible that the same record gets
             # processed by multiple logging formatters. LogRecord.getMessage
             # would transform our dict into a str.
-            ed = cast(dict[str, Any], record.msg).copy()
+            ed = cast(Dict[str, Any], record.msg).copy()
             ed["_record"] = record
             ed["_from_structlog"] = True
         else:
@@ -1078,7 +1078,7 @@ class ProcessorFormatter(logging.Formatter):
 
         if not isinstance(ed, str):
             warnings.warn(
-                "The last processor in ProcessorFormatter.formatters must "
+                "The last processor in ProcessorFormatter.processors must "
                 f"return a string, but {self.processors[-1]} returned a "
                 f"{type(ed)} instead.",
                 category=RuntimeWarning,
