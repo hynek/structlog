@@ -193,7 +193,8 @@ class TestFilterByLevel:
 
 class TestBoundLogger:
     @pytest.mark.parametrize(
-        ("method_name"), ["debug", "info", "warning", "error", "critical"]
+        ("method_name"),
+        ["debug", "info", "warning", "error", "exception", "critical"],
     )
     def test_proxies_to_correct_method(self, method_name):
         """
@@ -202,14 +203,6 @@ class TestBoundLogger:
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
 
         assert method_name == getattr(bl, method_name)("event")
-
-    def test_proxies_exception(self):
-        """
-        BoundLogger.exception is proxied to Logger.error.
-        """
-        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
-
-        assert "error" == bl.exception("event")
 
     def test_proxies_log(self):
         """
@@ -1154,7 +1147,7 @@ class TestAsyncBoundLogger:
         """
         await getattr(abl.bind(foo="bar"), stdlib_log_method)("42")
 
-        aliases = {"exception": "error", "warn": "warning"}
+        aliases = {"warn": "warning"}
 
         alias = aliases.get(stdlib_log_method)
         expect = alias if alias else stdlib_log_method
