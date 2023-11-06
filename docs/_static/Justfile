@@ -1,0 +1,11 @@
+rebuild-logos: && compress-logos
+    magick structlog_logo.svg structlog_logo.png
+    magick structlog_logo.svg -resize 220 structlog_logo_small.png
+    magick structlog_logo.svg -resize 16x16 docset-icon.png
+    magick structlog_logo.svg -resize 32x32 docset-icon@2x.png
+
+
+compress-logos:
+    svgo *.svg
+    oxipng --opt max --strip safe --zopfli *.png
+

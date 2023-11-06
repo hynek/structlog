@@ -88,15 +88,12 @@ autodoc_typehints_description_target = "documented"
 # a list of builtin themes.
 html_theme = "furo"
 html_theme_options = {}
-html_logo = "_static/structlog_logo_small_transparent.png"
+html_logo = "_static/structlog_logo.svg"
 html_static_path = ["_static"]
 
 htmlhelp_basename = "structlogdoc"
 
-_logo = (
-    "https://www.structlog.org/en/latest/_static/"
-    "structlog_logo_small_transparent.png"
-)
+_logo = "https://www.structlog.org/en/latest/_static/structlog_logo.svg"
 _descr = (
     "structlog makes logging in Python faster, less painful, and more "
     "powerful by adding structure to your log entries."
