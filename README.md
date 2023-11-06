@@ -1,8 +1,6 @@
-# structlog: Structured Logging for Python
-
 <p align="center">
    <a href="https://www.structlog.org/">
-      <img src="docs/_static/structlog_logo_transparent.png" width="35%" alt="structlog" />
+      <img src="docs/_static/structlog_logo.svg" width="35%" alt="structlog: Structured Logging for Python" />
    </a>
 </p>
 
@@ -105,7 +103,7 @@ The idea of bound loggers is inspired by previous work by [Jean-Paul Calderone](
 
 The development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *structlog*’s [Tidelift subscribers](https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek), and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).
 
-The logs-loving futuristic beaver logo has been contributed by [Russell Keith-Magee](https://github.com/freakboy3742).
+The logs-loving beaver logo has been contributed by [Lynn Root](https://www.roguelynn.com).
 
 
 <!-- begin-meta -->
