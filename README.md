@@ -1,10 +1,10 @@
-# structlog: Structured Logging for Python
-
 <p align="center">
    <a href="https://www.structlog.org/">
       <img src="docs/_static/structlog_logo.svg" width="35%" alt="structlog" />
    </a>
 </p>
+
+<p align="center"><em>structlog</em>: Structured Logging for Python</p>
 
 <p align="center">
    <a href="https://www.structlog.org/en/stable/?badge=stable">
