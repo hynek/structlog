@@ -176,7 +176,7 @@ class BoundLoggerBase:
         if isinstance(event_dict, tuple):
             # In this case we assume that the last processor returned a tuple
             # of ``(args, kwargs)`` and pass it right through.
-            return event_dict  # type: ignore[return-value]
+            return event_dict
 
         if isinstance(event_dict, dict):
             return (), event_dict
