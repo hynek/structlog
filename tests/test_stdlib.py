@@ -12,7 +12,7 @@ import os
 import sys
 
 from io import StringIO
-from typing import Any, Callable, Collection
+from typing import Any, Callable, Collection, Dict
 
 import pytest
 import pytest_asyncio
@@ -1134,6 +1134,58 @@ class TestProcessorFormatter:
             match="The last processor in ProcessorFormatter.processors must return a string",
         ):
             logger.info("baz")
+
+    def test_logrecord_exc_info(self):
+        """
+        LogRecord.exc_info is set consistently for structlog and non-structlog
+        log records.
+        """
+        configure_logging(None)
+
+        # This doesn't test ProcessorFormatter itself directly, but it's
+        # relevant to setups where ProcessorFormatter is used, i.e. where
+        # handlers will receive LogRecord objects that come from both strutlog
+        # and non-structlog loggers.
+
+        records: Dict[  # noqa: UP006 - dict isn't generic until Python 3.9
+            str, logging.LogRecord
+        ] = {}
+
+        class DummyHandler(logging.Handler):
+            def emit(self, record):
+                # Don't do anything, just store the record in the records dict
+                # by its message so we can assert things about it
+                if isinstance(record.msg, dict):
+                    records[record.msg["event"]] = record
+                else:
+                    records[record.msg] = record
+
+        stdlib_logger = logging.getLogger()
+        structlog_logger = get_logger()
+
+        # It doesn't matter which logger we add the handler to here
+        stdlib_logger.addHandler(DummyHandler())
+
+        try:
+            raise Exception("foo")
+        except Exception:
+            stdlib_logger.exception("bar")
+            structlog_logger.exception("baz")
+
+        stdlib_record = records.pop("bar")
+        assert stdlib_record.msg == "bar"
+        assert stdlib_record.exc_info is not None
+        assert stdlib_record.exc_info[0] is Exception
+        assert stdlib_record.exc_info[1].args == ("foo",)
+
+        structlog_record = records.pop("baz")
+        assert structlog_record.msg["event"] == "baz"
+        assert structlog_record.msg["exc_info"] is True
+        assert structlog_record.exc_info is not None
+        assert structlog_record.exc_info[0] is Exception
+        assert structlog_record.exc_info[1].args == ("foo",)
+
+        assert not records
 
 
 @pytest_asyncio.fixture(name="abl")
