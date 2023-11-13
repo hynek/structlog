@@ -332,8 +332,7 @@ class JSONRenderer:
         serializer: Callable[..., str | bytes] = json.dumps,
         **dumps_kw: Any,
     ) -> None:
-        if dumps_kw != {}:
-            dumps_kw.setdefault("default", _json_fallback_handler)
+        dumps_kw.setdefault("default", _json_fallback_handler)
         self._dumps_kw = dumps_kw
         self._dumps = serializer
 
@@ -343,9 +342,7 @@ class JSONRenderer:
         """
         The return type of this depends on the return type of self._dumps.
         """
-        if self._dumps_kw:
-            return self._dumps(event_dict, **self._dumps_kw)
-        return self._dumps(event_dict)
+        return self._dumps(event_dict, **self._dumps_kw)
 
 
 def _json_fallback_handler(obj: Any) -> Any:
@@ -599,7 +596,7 @@ def _figure_out_exc_info(v: Any) -> ExcInfo:
         return (v.__class__, v, v.__traceback__)
 
     if isinstance(v, tuple):
-        return v  # type: ignore[return-value]
+        return v
 
     if v:
         return sys.exc_info()  # type: ignore[return-value]

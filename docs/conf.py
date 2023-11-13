@@ -87,16 +87,13 @@ autodoc_typehints_description_target = "documented"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "furo"
-html_theme_options = {}
-html_logo = "_static/structlog_logo_small_transparent.png"
+html_theme_options = {"top_of_page_button": None}
+html_logo = "_static/structlog_logo.svg"
 html_static_path = ["_static"]
 
 htmlhelp_basename = "structlogdoc"
 
-_logo = (
-    "https://www.structlog.org/en/latest/_static/"
-    "structlog_logo_small_transparent.png"
-)
+_logo = "https://www.structlog.org/en/latest/_static/structlog_logo.svg"
 _descr = (
     "structlog makes logging in Python faster, less painful, and more "
     "powerful by adding structure to your log entries."
