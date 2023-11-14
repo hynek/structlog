@@ -47,6 +47,7 @@ __all__ = [
     "add_log_level",
     "CallsiteParameter",
     "CallsiteParameterAdder",
+    "CallsiteNamespaceAdder",
     "dict_tracebacks",
     "EventRenamer",
     "ExceptionPrettyPrinter",
@@ -926,19 +927,23 @@ class CallsiteNamespaceAdder:
     Arguments:
 
         levels:
-            A set of log levels to add the ``namespace`` key and
-            information to. An empty set == *
+            A optional set of log levels to add the ``namespace`` key and
+            information to. The log levels should be supplied as an integer.
+            You can use the constants from `logging` like ``logging.INFO``
+            or pass the values directly. See `this table from the logging
+            docs <https://docs.python.org/3/library/logging.html#levels>`_ for
+            possible values. Providing `None` or an empty set == *
 
     .. versionadded:: 23.3.0
     """
 
-    def __init__(self, levels: set[str] | list[str] | None = None):
+    def __init__(self, levels: set[int] | list[int] | None = None):
         self.levels = levels
 
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> EventDict:
-        if self.levels and name not in self.levels:
+        if self.levels and _NAME_TO_LEVEL[name] not in self.levels:
             return event_dict
 
         f, _ = _find_first_app_frame_and_name()
