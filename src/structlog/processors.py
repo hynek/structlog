@@ -319,9 +319,9 @@ class JSONRenderer:
         serializer:
             A :func:`json.dumps`-compatible callable that will be used to
             format the string.  This can be used to use alternative JSON
-            encoders like `orjson <https://pypi.org/project/orjson/>`__ or
-            `RapidJSON <https://pypi.org/project/python-rapidjson/>`_
-            (default: :func:`json.dumps`).
+            encoders (default: :func:`json.dumps`).
+
+            .. seealso:: :doc:`performance` for examples.
 
     .. versionadded:: 0.2.0 Support for ``__structlog__`` serialization method.
     .. versionadded:: 15.4.0 *serializer* parameter.
