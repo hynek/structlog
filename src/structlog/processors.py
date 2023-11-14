@@ -913,7 +913,7 @@ class EventRenamer:
         return event_dict
 
 
-class CallsiteNamespaceAddr:
+class CallsiteNamespaceAdder:
     """
     Attempt to identify and add the caller namespace to the event dict
     under the ``namespace`` key.
