@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import inspect
 import sys
 import traceback
 
@@ -76,3 +77,39 @@ def _format_stack(frame: FrameType) -> str:
     sio.close()
 
     return sinfo
+
+
+def _get_qual_name(frame: FrameType) -> str:
+    """
+    For a given app frame, attempt to deduce the namespace
+    by crawling through the frame's ``f_globals`` to find
+    matching object code.
+
+    This O(n) procedure should return as O(1) in most situations,
+    but buyer beware.
+
+    Arguments:
+
+        frame:
+            Frame to process.
+
+    Returns:
+
+        string of the deduced namespace
+
+    .. versionadded:: 23.3.0
+    """
+    identified_namespace = frame.f_code.co_name
+
+    for cls in {
+        obj for obj in frame.f_globals.values() if inspect.isclass(obj)
+    }:
+        member = getattr(cls, frame.f_code.co_name, None)
+        # store the current namespace as a fall back (probably the namespace)
+        identified_namespace = f"{cls.__module__}.{frame.f_code.co_name}"
+        if inspect.isfunction(member) and member.__code__ == frame.f_code:
+            identified_namespace = f"{member.__module__}.{member.__qualname__}"
+            # we found our code match, can stop looking
+            break
+
+    return identified_namespace
