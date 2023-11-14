@@ -917,6 +917,12 @@ class CallsiteNamespaceAdder:
     Attempt to identify and add the caller namespace to the event dict
     under the ``namespace`` key.
 
+    Attempts to deduce the namespace by crawling through the
+    calling frame's ``f_globals`` to find matching object code.
+
+    This O(n) procedure should return as O(1) in most situations,
+    but buyer beware.
+
     Arguments:
 
         levels:
