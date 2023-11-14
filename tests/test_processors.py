@@ -1209,6 +1209,7 @@ class TestCallsiteNamespaceAddr:
             ],
         )
         structlog.get_logger().info("test!")
+
         assert (
             "{}.{}.{}".format(
                 self.__module__,
