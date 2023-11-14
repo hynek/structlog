@@ -1249,7 +1249,9 @@ class TestCallsiteNamespaceAddr:
                 structlog.processors.JSONRenderer(),
             ],
         )
+
         await structlog.get_logger().ainfo("test!")
+
         assert (
             "{}.{}.{}".format(
                 self.__module__,
