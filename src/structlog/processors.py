@@ -20,8 +20,6 @@ import sys
 import threading
 import time
 
-from collections import deque
-from types import FrameType
 from typing import (
     Any,
     Callable,
@@ -36,6 +34,7 @@ from ._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
     _format_stack,
+    _get_qual_name,
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
@@ -937,48 +936,6 @@ class CallsiteNamespaceAdder:
             return event_dict
 
         f, _ = _find_first_app_frame_and_name()
-        event_dict["namespace"] = self.get_qual_name(f)
+        event_dict["namespace"] = _get_qual_name(f)
 
         return event_dict
-
-    def get_qual_name(self, frame: FrameType) -> str:
-        """
-            For a given app frame, attempt to deduce the namespace
-            by crawling through the frame's ``f_globals`` to find
-            matching object code.
-
-            This O(n) procedure should return as O(1) in most situations,
-            but buyer beware.
-
-            Arguments:
-
-                frame:
-                    Frame to process.
-
-            Returns:
-
-                string of the deduced namespace
-
-        .. versionadded:: 23.3.0
-        """
-        identified_namespace = frame.f_code.co_name
-
-        # pull out classes from the frames `f_globals` for testing against
-        cls_queue = deque(
-            obj for obj in frame.f_globals.values() if inspect.isclass(obj)
-        )
-        namespace_found = False
-
-        while cls_queue and not namespace_found:
-            cls = cls_queue.popleft()
-            member = getattr(cls, frame.f_code.co_name, None)
-            # store the current namespace as a fall back (probably the namespace)
-            identified_namespace = f"{cls.__module__}.{frame.f_code.co_name}"
-            if inspect.isfunction(member) and member.__code__ == frame.f_code:
-                identified_namespace = (
-                    f"{member.__module__}.{member.__qualname__}"
-                )
-                # we found our code match, can stop looking
-                namespace_found = True
-
-        return identified_namespace
