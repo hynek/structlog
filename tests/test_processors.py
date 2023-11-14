@@ -1197,9 +1197,8 @@ class TestCallsiteNamespaceAddr:
 
     def test_processor(self):
         """
-        Ensure `CallsiteNamespaceAddr` Processor can be enabled, and
-        that the ``namespace`` details are present and correct in a
-        log entry
+        `CallsiteNamespaceAddr` Processor can be enabled and
+        ``namespace`` details are present.
         """
         cf = structlog.testing.CapturingLoggerFactory()
         structlog.configure(
