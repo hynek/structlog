@@ -1219,7 +1219,7 @@ class TestCallsiteNamespaceAddr:
             == json.loads(cf.logger.calls.pop().args[0])["namespace"]
         )
 
-    def test_level_limitor(self):
+    def test_level_limiter(self):
         """
         Ensure `CallsiteNamespaceAddr` Processor limits which levels
         that the ``namespace`` details are added to
