@@ -1238,9 +1238,8 @@ class TestCallsiteNamespaceAddr:
 
     async def test_async_processor(self):
         """
-        Ensure `CallsiteNamespaceAddr` Processor can be enabled, and
-        that the ``namespace`` details are present and correct
-        in an async log entry
+        `CallsiteNamespaceAddr` Processor can be enabled and
+        ``namespace`` details are present for an async log entry.
         """
         cf = structlog.testing.CapturingLoggerFactory()
         structlog.configure(
