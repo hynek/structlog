@@ -1221,8 +1221,8 @@ class TestCallsiteNamespaceAddr:
 
     def test_level_limiter(self):
         """
-        Ensure `CallsiteNamespaceAddr` Processor limits which levels
-        that the ``namespace`` details are added to
+        `CallsiteNamespaceAddr` Processor limits to which levels
+        the ``namespace`` details are added.
         """
         cf = structlog.testing.CapturingLoggerFactory()
         structlog.configure(
