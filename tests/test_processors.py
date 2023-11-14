@@ -1233,6 +1233,7 @@ class TestCallsiteNamespaceAddr:
             ],
         )
         structlog.get_logger().info("test!")
+
         # limiter is set to 'debug', so 'info' should not get the param added
         assert "namespace" not in json.loads(cf.logger.calls.pop().args[0])
 
