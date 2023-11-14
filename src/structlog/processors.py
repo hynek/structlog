@@ -981,5 +981,4 @@ class CallsiteNamespaceAdder:
                 # we found our code match, can stop looking
                 namespace_found = True
 
-        # return our identified namespace
         return identified_namespace
