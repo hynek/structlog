@@ -108,8 +108,8 @@ def _get_qual_name(frame: FrameType) -> str:
         # store the current namespace as a fall back (probably the namespace)
         identified_namespace = f"{cls.__module__}.{frame.f_code.co_name}"
         if inspect.isfunction(member) and member.__code__ == frame.f_code:
-            identified_namespace = f"{member.__module__}.{member.__qualname__}"
             # we found our code match, can stop looking
-            break
+            """identified_namespace = f"{member.__module__}.{member.__qualname__}" """
+            return f"{member.__module__}.{member.__qualname__}"
 
     return identified_namespace

@@ -1195,6 +1195,15 @@ class TestCallsiteNamespaceAdder:
             sys._getframe().f_code.co_name,
         ) == _get_qual_name(sys._getframe())
 
+    def test_async_lookup_fallback(self):
+        """
+        Simple verification of path interogation fallback when no match
+        can be found
+        """
+        assert _get_qual_name(sys._getframe().f_back).endswith(
+            "pytest_pyfunc_call"
+        )
+
     def test_processor(self):
         """
         `CallsiteNamespaceAdder` Processor can be enabled and
