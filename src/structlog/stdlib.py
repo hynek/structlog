@@ -980,7 +980,7 @@ class ProcessorFormatter(logging.Formatter):
     .. deprecated:: 21.3.0
        *processor* (singular) in favor of *processors* (plural). Removal is not
        planned.
-    .. versionadded:: 23.2.0 *use_get_message*
+    .. versionadded:: 23.3.0 *use_get_message*
     """
 
     def __init__(
