@@ -1144,7 +1144,7 @@ class TestProcessorFormatter:
 
         # This doesn't test ProcessorFormatter itself directly, but it's
         # relevant to setups where ProcessorFormatter is used, i.e. where
-        # handlers will receive LogRecord objects that come from both strutlog
+        # handlers will receive LogRecord objects that come from both structlog
         # and non-structlog loggers.
 
         records: Dict[  # noqa: UP006 - dict isn't generic until Python 3.9
@@ -1153,8 +1153,8 @@ class TestProcessorFormatter:
 
         class DummyHandler(logging.Handler):
             def emit(self, record):
-                # Don't do anything, just store the record in the records dict
-                # by its message so we can assert things about it
+                # Don't do anything; just store the record in the records dict
+                # by its message, so we can assert things about it.
                 if isinstance(record.msg, dict):
                     records[record.msg["event"]] = record
                 else:
@@ -1163,7 +1163,7 @@ class TestProcessorFormatter:
         stdlib_logger = logging.getLogger()
         structlog_logger = get_logger()
 
-        # It doesn't matter which logger we add the handler to here
+        # It doesn't matter which logger we add the handler to here.
         stdlib_logger.addHandler(DummyHandler())
 
         try:
@@ -1173,17 +1173,19 @@ class TestProcessorFormatter:
             structlog_logger.exception("baz")
 
         stdlib_record = records.pop("bar")
-        assert stdlib_record.msg == "bar"
-        assert stdlib_record.exc_info is not None
-        assert stdlib_record.exc_info[0] is Exception
-        assert stdlib_record.exc_info[1].args == ("foo",)
+
+        assert "bar" == stdlib_record.msg
+        assert stdlib_record.exc_info
+        assert Exception is stdlib_record.exc_info[0]
+        assert ("foo",) == stdlib_record.exc_info[1].args
 
         structlog_record = records.pop("baz")
-        assert structlog_record.msg["event"] == "baz"
-        assert structlog_record.msg["exc_info"] is True
-        assert structlog_record.exc_info is not None
-        assert structlog_record.exc_info[0] is Exception
-        assert structlog_record.exc_info[1].args == ("foo",)
+
+        assert "baz" == structlog_record.msg["event"]
+        assert True is structlog_record.msg["exc_info"]
+        assert structlog_record.exc_info
+        assert Exception is structlog_record.exc_info[0]
+        assert ("foo",) == structlog_record.exc_info[1].args
 
         assert not records
 
