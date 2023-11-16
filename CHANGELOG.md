@@ -28,6 +28,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.threadlocal.tmp_bind()` now also works with `BoundLoggerLazyProxy` (in other words: before anything is bound to a bound logger).
 
+- stdlib: `structlog.stdlib.BoundLogger.exception()`'s handling of`LogRecord.exc_info` is now set consistent with `logging`.
+  [#571](https://github.com/hynek/structlog/issues/571)
+  [#572](https://github.com/hynek/structlog/issues/572)
+
 
 ## [23.2.0](https://github.com/hynek/structlog/compare/23.1.0...23.2.0) - 2023-10-09
 
