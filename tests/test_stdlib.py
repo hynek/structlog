@@ -12,7 +12,7 @@ import os
 import sys
 
 from io import StringIO
-from typing import Any, Callable, Collection
+from typing import Any, Callable, Collection, Dict
 
 import pytest
 import pytest_asyncio
@@ -193,7 +193,8 @@ class TestFilterByLevel:
 
 class TestBoundLogger:
     @pytest.mark.parametrize(
-        ("method_name"), ["debug", "info", "warning", "error", "critical"]
+        ("method_name"),
+        ["debug", "info", "warning", "error", "exception", "critical"],
     )
     def test_proxies_to_correct_method(self, method_name):
         """
@@ -202,14 +203,6 @@ class TestBoundLogger:
         bl = BoundLogger(ReturnLogger(), [return_method_name], {})
 
         assert method_name == getattr(bl, method_name)("event")
-
-    def test_proxies_exception(self):
-        """
-        BoundLogger.exception is proxied to Logger.error.
-        """
-        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
-
-        assert "error" == bl.exception("event")
 
     def test_proxies_log(self):
         """
@@ -1123,6 +1116,79 @@ class TestProcessorFormatter:
             {"foo": "bar", "_record": "foo", "_from_structlog": True},
         )
 
+    def test_non_string_message_warning(self):
+        """
+        A warning is raised if the last processor in
+        ProcessorFormatter.processors doesn't return a string.
+        """
+        configure_logging(None)
+        logger = logging.getLogger()
+
+        formatter = ProcessorFormatter(
+            processors=[lambda *args, **kwargs: {"foo": "bar"}],
+        )
+        logger.handlers[0].setFormatter(formatter)
+
+        with pytest.warns(
+            RuntimeWarning,
+            match="The last processor in ProcessorFormatter.processors must return a string",
+        ):
+            logger.info("baz")
+
+    def test_logrecord_exc_info(self):
+        """
+        LogRecord.exc_info is set consistently for structlog and non-structlog
+        log records.
+        """
+        configure_logging(None)
+
+        # This doesn't test ProcessorFormatter itself directly, but it's
+        # relevant to setups where ProcessorFormatter is used, i.e. where
+        # handlers will receive LogRecord objects that come from both structlog
+        # and non-structlog loggers.
+
+        records: Dict[  # noqa: UP006 - dict isn't generic until Python 3.9
+            str, logging.LogRecord
+        ] = {}
+
+        class DummyHandler(logging.Handler):
+            def emit(self, record):
+                # Don't do anything; just store the record in the records dict
+                # by its message, so we can assert things about it.
+                if isinstance(record.msg, dict):
+                    records[record.msg["event"]] = record
+                else:
+                    records[record.msg] = record
+
+        stdlib_logger = logging.getLogger()
+        structlog_logger = get_logger()
+
+        # It doesn't matter which logger we add the handler to here.
+        stdlib_logger.addHandler(DummyHandler())
+
+        try:
+            raise Exception("foo")
+        except Exception:
+            stdlib_logger.exception("bar")
+            structlog_logger.exception("baz")
+
+        stdlib_record = records.pop("bar")
+
+        assert "bar" == stdlib_record.msg
+        assert stdlib_record.exc_info
+        assert Exception is stdlib_record.exc_info[0]
+        assert ("foo",) == stdlib_record.exc_info[1].args
+
+        structlog_record = records.pop("baz")
+
+        assert "baz" == structlog_record.msg["event"]
+        assert True is structlog_record.msg["exc_info"]
+        assert structlog_record.exc_info
+        assert Exception is structlog_record.exc_info[0]
+        assert ("foo",) == structlog_record.exc_info[1].args
+
+        assert not records
+
 
 @pytest_asyncio.fixture(name="abl")
 async def _abl(cl):
@@ -1154,7 +1220,7 @@ class TestAsyncBoundLogger:
         """
         await getattr(abl.bind(foo="bar"), stdlib_log_method)("42")
 
-        aliases = {"exception": "error", "warn": "warning"}
+        aliases = {"warn": "warning"}
 
         alias = aliases.get(stdlib_log_method)
         expect = alias if alias else stdlib_log_method

@@ -16,9 +16,10 @@ import contextvars
 import functools
 import logging
 import sys
+import warnings
 
 from functools import partial
-from typing import Any, Callable, Collection, Iterable, Sequence
+from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
 
 from . import _config
 from ._base import BoundLoggerBase
@@ -27,7 +28,14 @@ from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
 from .contextvars import _ASYNC_CALLING_STACK, merge_contextvars
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
-from .typing import Context, EventDict, ExcInfo, Processor, WrappedLogger
+from .typing import (
+    Context,
+    EventDict,
+    ExcInfo,
+    Processor,
+    ProcessorReturnValue,
+    WrappedLogger,
+)
 
 
 __all__ = [
@@ -209,12 +217,11 @@ class BoundLogger(BoundLoggerBase):
         self, event: str | None = None, *args: Any, **kw: Any
     ) -> Any:
         """
-        Process event and call `logging.Logger.error` with the result,
-        after setting ``exc_info`` to `True`.
+        Process event and call `logging.Logger.exception` with the result,
+        after setting ``exc_info`` to `True` if it's not already set.
         """
         kw.setdefault("exc_info", True)
-
-        return self.error(event, *args, **kw)
+        return self._proxy_to_logger("exception", event, *args, **kw)
 
     def log(
         self, level: int, event: str | None = None, *args: Any, **kw: Any
@@ -1026,16 +1033,17 @@ class ProcessorFormatter(logging.Formatter):
         logger = getattr(record, "_logger", _SENTINEL)
         meth_name = getattr(record, "_name", "__structlog_sentinel__")
 
+        ed: ProcessorReturnValue
         if logger is not _SENTINEL and meth_name != "__structlog_sentinel__":
             # Both attached by wrap_for_formatter
             if self.logger is not None:
                 logger = self.logger
-            meth_name = record._name  # type: ignore[attr-defined]
+            meth_name = cast(str, record._name)  # type:ignore[attr-defined]
 
             # We need to copy because it's possible that the same record gets
-            # processed by multiple logging formatters.  LogRecord.getMessage
+            # processed by multiple logging formatters. LogRecord.getMessage
             # would transform our dict into a str.
-            ed = record.msg.copy()  # type: ignore[union-attr]
+            ed = cast(Dict[str, Any], record.msg).copy()
             ed["_record"] = record
             ed["_from_structlog"] = True
         else:
@@ -1054,27 +1062,38 @@ class ProcessorFormatter(logging.Formatter):
 
             record.args = ()
 
-            # Add stack-related attributes to event_dict and unset them
-            # on the record copy so that the base implementation wouldn't
-            # append stacktraces to the output.
+            # Add stack-related attributes to the event dict
             if record.exc_info:
                 ed["exc_info"] = record.exc_info
             if record.stack_info:
                 ed["stack_info"] = record.stack_info
 
-            if not self.keep_exc_info:
-                record.exc_text = None
-                record.exc_info = None
-            if not self.keep_stack_info:
-                record.stack_info = None
-
             # Non-structlog allows to run through a chain to prepare it for the
             # final processor (e.g. adding timestamps and log levels).
             for proc in self.foreign_pre_chain or ():
-                ed = proc(logger, meth_name, ed)
+                ed = cast(EventDict, proc(logger, meth_name, ed))
+
+        # If required, unset stack-related attributes on the record copy so
+        # that the base implementation doesn't append stacktraces to the
+        # output.
+        if not self.keep_exc_info:
+            record.exc_text = None
+            record.exc_info = None
+        if not self.keep_stack_info:
+            record.stack_info = None
 
         for p in self.processors:
-            ed = p(logger, meth_name, ed)
+            ed = p(logger, meth_name, cast(EventDict, ed))
+
+        if not isinstance(ed, str):
+            warnings.warn(
+                "The last processor in ProcessorFormatter.processors must "
+                f"return a string, but {self.processors[-1]} returned a "
+                f"{type(ed)} instead.",
+                category=RuntimeWarning,
+                stacklevel=1,
+            )
+            ed = cast(str, ed)
 
         record.msg = ed
 
