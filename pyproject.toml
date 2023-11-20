@@ -67,7 +67,10 @@ raw-options = { local_scheme = "no-local-version" }
 addopts = ["-ra", "--strict-markers", "--strict-config"]
 testpaths = "tests"
 xfail_strict = true
-filterwarnings = ["once::Warning"]
+filterwarnings = [
+    "once::Warning",
+    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning:dateutil.tz',
+]
 asyncio_mode = "auto"
 
 
