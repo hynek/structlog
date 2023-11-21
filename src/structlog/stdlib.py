@@ -964,6 +964,10 @@ class ProcessorFormatter(logging.Formatter):
             This parameter exists for historic reasons. Please use *processors*
             instead.
 
+        use_get_message:
+            If True, use ``record.getMessage`` to get a fully rendered log
+            message, otherwise use ``str(record.msg)``. (default: True)
+
     Raises:
 
         TypeError: If both or neither *processor* and *processors* are passed.
@@ -976,6 +980,7 @@ class ProcessorFormatter(logging.Formatter):
     .. deprecated:: 21.3.0
        *processor* (singular) in favor of *processors* (plural). Removal is not
        planned.
+    .. versionadded:: 23.3.0 *use_get_message*
     """
 
     def __init__(
@@ -987,6 +992,7 @@ class ProcessorFormatter(logging.Formatter):
         keep_stack_info: bool = False,
         logger: logging.Logger | None = None,
         pass_foreign_args: bool = False,
+        use_get_message: bool = True,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -1011,6 +1017,7 @@ class ProcessorFormatter(logging.Formatter):
         self.keep_stack_info = keep_stack_info
         self.logger = logger
         self.pass_foreign_args = pass_foreign_args
+        self.use_get_message = use_get_message
 
     def format(self, record: logging.LogRecord) -> str:
         """
@@ -1043,7 +1050,9 @@ class ProcessorFormatter(logging.Formatter):
             logger = self.logger
             meth_name = record.levelname.lower()
             ed = {
-                "event": record.getMessage(),
+                "event": record.getMessage()
+                if self.use_get_message
+                else str(record.msg),
                 "_record": record,
                 "_from_structlog": False,
             }

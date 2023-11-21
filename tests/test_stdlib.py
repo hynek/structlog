@@ -1189,6 +1189,34 @@ class TestProcessorFormatter:
 
         assert not records
 
+    def test_use_get_message_false(self):
+        """
+        If use_get_message_is False, the event is obtained using
+        str(record.msg) instead of calling record.getMessage. That means
+        positional formatting is not performed.
+        """
+        event_dicts = []
+
+        def capture(_, __, ed):
+            event_dicts.append(ed.copy())
+
+            return str(ed)
+
+        proc = ProcessorFormatter(processors=[capture], use_get_message=False)
+
+        record = logging.LogRecord(
+            "foo",
+            logging.INFO,
+            "path.py",
+            42,
+            "le msg: %s",
+            ("keep separate",),
+            None,
+        )
+
+        assert proc.format(record)
+        assert "le msg: %s" == event_dicts[0]["event"]
+
 
 @pytest_asyncio.fixture(name="abl")
 async def _abl(cl):

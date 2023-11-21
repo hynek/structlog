@@ -28,6 +28,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.threadlocal.tmp_bind()` now also works with `BoundLoggerLazyProxy` (in other words: before anything is bound to a bound logger).
 
+- stdlib: `ProcessorFormatter` can now be told to not render the log record message using `getMessage` and just `str(record.msg)` instead.
+  [#550](https://github.com/hynek/structlog/issues/550)
+
 - stdlib: `structlog.stdlib.BoundLogger.exception()`'s handling of`LogRecord.exc_info` is now set consistent with `logging`.
   [#571](https://github.com/hynek/structlog/issues/571)
   [#572](https://github.com/hynek/structlog/issues/572)
