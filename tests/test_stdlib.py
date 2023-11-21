@@ -738,7 +738,6 @@ def configure_logging(
     pre_chain,
     logger=None,
     pass_foreign_args=False,
-    use_get_message=True,
     renderer=ConsoleRenderer(colors=False),  # noqa: B008
 ):
     """
@@ -769,7 +768,6 @@ def configure_logging(
                     "format": "%(message)s [in %(funcName)s]",
                     "logger": logger,
                     "pass_foreign_args": pass_foreign_args,
-                    "use_get_message": use_get_message,
                 }
             },
             "handlers": {
