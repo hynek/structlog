@@ -60,10 +60,14 @@ copy itself.
 .. versionadded:: 20.2.0
 """
 
-Processor = Callable[
-    [WrappedLogger, str, EventDict],
-    Union[Mapping[str, Any], str, bytes, bytearray, Tuple[Any, ...]],
+ProcessorReturnValue = Union[
+    Mapping[str, Any], str, bytes, bytearray, Tuple[Any, ...]
 ]
+"""
+A value returned by a processor.
+"""
+
+Processor = Callable[[WrappedLogger, str, EventDict], ProcessorReturnValue]
 """
 A callable that is part of the processor chain.
 
