@@ -84,13 +84,11 @@ autodoc_typehints_description_target = "documented"
 
 # -- Options for HTML output --------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
 html_theme = "furo"
 html_theme_options = {
     "top_of_page_button": None,
     "light_css_variables": {
-        "font-stack": "Inter,sans-serif",
+        "font-stack": "Inter, sans-serif",
         "font-stack--monospace": "BerkeleyMono, MonoLisa, ui-monospace, "
         "SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace",
     },
