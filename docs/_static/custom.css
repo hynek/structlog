@@ -1,0 +1,17 @@
+@import url('https://rsms.me/inter/inter.css');
+@font-face {
+    font-family: "BerkeleyMono";
+    src: local("Berkeley Mono"),
+            url("https://assets.hynek.me/bm/BerkeleyMono-Regular.woff2") format("woff2"),
+            url("https://assets.hynek.me/bm/BerkeleyMono-Italic.woff2") format("woff2"),
+            url("https://assets.hynek.me/bm/BerkeleyMono-BoldItalic.woff2") format("woff2"),
+            url("https://assets.hynek.me/bm/BerkeleyMono-Bold.woff2") format("woff2");
+    font-display: swap;
+}
+
+:root {
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+}
+@supports (font-variation-settings: normal) {
+  :root { font-family: InterVariable, sans-serif; }
+}
