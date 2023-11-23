@@ -1,40 +1,5 @@
 @import url('https://rsms.me/inter/inter.css');
-
-/* Normal */
-@font-face {
-    font-family: "BerkeleyMono";
-    src: url("https://assets.hynek.me/bm/BerkeleyMono-Regular.woff2") format("woff2");
-    font-display: swap;
-    font-style: normal;
-    font-weight: normal;
-}
-
-/* Italic */
-@font-face {
-    font-family: "BerkeleyMono";
-    src: url("https://assets.hynek.me/bm/BerkeleyMono-Italic.woff2") format("woff2");
-    font-display: swap;
-    font-style: italic;
-    font-weight: normal;
-}
-
-/* Bold Italic */
-@font-face {
-    font-family: "BerkeleyMono";
-    src: url("https://assets.hynek.me/bm/BerkeleyMono-BoldItalic.woff2") format("woff2");
-    font-display: swap;
-    font-style: italic;
-    font-weight: bold;
-}
-
-/* Bold */
-@font-face {
-    font-family: "BerkeleyMono";
-    src: url("https://assets.hynek.me/bm/BerkeleyMono-Bold.woff2") format("woff2");
-    font-display: swap;
-    font-style: normal;
-    font-weight: bold;
-}
+@import url('https://assets.hynek.me/css/bm.css');
 
 
 :root {
