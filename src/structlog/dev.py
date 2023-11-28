@@ -275,7 +275,7 @@ class ConsoleRenderer:
     *after* the log line. If Rich_ or better-exceptions_ are present, in colors
     and with extra context.
 
-    Arguments:
+    Parameters:
 
         pad_event: Pad the event to this many characters.
 
@@ -527,7 +527,7 @@ class ConsoleRenderer:
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"] renderer
             = ConsoleRenderer(level_styles=my_styles)
 
-        Arguments:
+        Parameters:
 
             colors:
                 Whether to use colorful styles. This must match the *colors*

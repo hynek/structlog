@@ -139,7 +139,7 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     - You *can* have (much) more fine-grained filtering by :ref:`writing a
       simple processor <finer-filtering>`.
 
-    Arguments:
+    Parameters:
 
         min_level:
             The log level as an integer. You can use the constants from

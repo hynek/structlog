@@ -139,7 +139,7 @@ class CapturedCall(NamedTuple):
 
     Can also be unpacked like a tuple.
 
-    Arguments:
+    Parameters:
 
         method_name: The method name that got called.
 

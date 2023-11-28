@@ -106,7 +106,7 @@ class ExceptionTransformer(Protocol):
     Used by `structlog.processors.format_exc_info()` and
     `structlog.processors.ExceptionPrettyPrinter`.
 
-    Arguments:
+    Parameters:
 
         exc_info: Is the exception tuple to format
 

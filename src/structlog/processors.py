@@ -63,7 +63,7 @@ class KeyValueRenderer:
     """
     Render ``event_dict`` as a list of ``Key=repr(Value)`` pairs.
 
-    Arguments:
+    Parameters:
 
         sort_keys: Whether to sort keys when formatting.
 
@@ -119,7 +119,7 @@ class LogfmtRenderer:
 
     .. _logfmt: https://brandur.org/logfmt
 
-    Arguments:
+    Parameters:
 
         sort_keys: Whether to sort keys when formatting.
 
@@ -237,7 +237,7 @@ class UnicodeEncoder:
     """
     Encode unicode values in ``event_dict``.
 
-    Arguments:
+    Parameters:
 
         encoding: Encoding to encode to (default: ``"utf-8"``).
 
@@ -272,7 +272,7 @@ class UnicodeDecoder:
     """
     Decode byte string values in ``event_dict``.
 
-    Arguments:
+    Parameters:
 
         encoding: Encoding to decode from (default: ``"utf-8"``).
 
@@ -308,7 +308,7 @@ class JSONRenderer:
     """
     Render the ``event_dict`` using ``serializer(event_dict, **dumps_kw)``.
 
-    Arguments:
+    Parameters:
 
         dumps_kw:
             Are passed unmodified to *serializer*.  If *default* is passed, it
@@ -385,7 +385,7 @@ class ExceptionRenderer:
     If there is no ``exc_info`` key, the *event_dict* is not touched. This
     behavior is analog to the one of the stdlib's logging.
 
-    Arguments:
+    Parameters:
 
         exception_formatter:
             A callable that is used to format the exception from the
@@ -459,7 +459,7 @@ class TimeStamper:
     """
     Add a timestamp to ``event_dict``.
 
-    Arguments:
+    Parameters:
 
         fmt:
             strftime format string, or ``"iso"`` for `ISO 8601
@@ -608,7 +608,7 @@ class ExceptionPrettyPrinter:
     """
     Pretty print exceptions and remove them from the ``event_dict``.
 
-    Arguments:
+    Parameters:
 
         file: Target file for output (default: ``sys.stdout``).
 
@@ -661,7 +661,7 @@ class StackInfoRenderer:
     involving an exception and works analogously to the *stack_info* argument
     of the Python standard library logging.
 
-    Arguments:
+    Parameters:
 
         additional_ignores:
             By default, stack frames coming from *structlog* are ignored. With
@@ -745,7 +745,7 @@ class CallsiteParameterAdder:
     The keys used for callsite parameters in the event dictionary are the
     string values of `CallsiteParameter` enum members.
 
-    Arguments:
+    Parameters:
 
         parameters:
             A collection of `CallsiteParameter` values that should be added to
@@ -880,7 +880,7 @@ class EventRenamer:
        some processors may rely on the presence and meaning of the ``event``
        key.
 
-    Arguments:
+    Parameters:
 
         to: Rename ``event_dict["event"]`` to ``event_dict[to]``
 

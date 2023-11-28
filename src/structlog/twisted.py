@@ -204,7 +204,7 @@ class PlainFileLogObserver:
     Great to just print JSON to stdout where you catch it with something like
     runit.
 
-    Arguments:
+    Parameters:
 
         file: File to print to.
 
@@ -229,7 +229,7 @@ class JSONLogObserverWrapper:
     """
     Wrap a log *observer* and render non-`JSONRenderer` entries to JSON.
 
-    Arguments:
+    Parameters:
 
         observer (ILogObserver):
             Twisted log observer to wrap.  For example
@@ -293,7 +293,7 @@ class EventAdapter:
     <https://docs.twisted.org/en/stable/api/twisted.python.log.html#err>`_
     behave as expected.
 
-    Arguments:
+    Parameters:
 
         dictRenderer:
             Renderer that is used for the actual log message. Please note that

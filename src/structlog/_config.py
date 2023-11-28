@@ -114,7 +114,7 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
     >>> log.info("hello", x=42)
     y=23 x=42 event='hello'
 
-    Arguments:
+    Parameters:
 
         args:
             *Optional* positional arguments that are passed unmodified to the
@@ -169,7 +169,7 @@ def wrap_logger(
     In other words: selective overwriting of the defaults while keeping some
     *is* possible.
 
-    Arguments:
+    Parameters:
 
         initial_values: Values that are used to pre-populate your contexts.
 
@@ -217,7 +217,7 @@ def configure(
 
     Use `reset_defaults` to undo your changes.
 
-    Arguments:
+    Parameters:
 
         processors: The processor chain. See :doc:`processors` for details.
 

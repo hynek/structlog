@@ -1047,7 +1047,7 @@ class TestCallsiteParameterAdder:
         supplied ``parameter_strings`` values and with the supplied
         ``additional_ignores`` values.
 
-        Arguments:
+        Parameters:
 
             parameter_strings:
                 Strings for which corresponding ``CallsiteParameters`` should
@@ -1077,7 +1077,7 @@ class TestCallsiteParameterAdder:
         Returns a set containing all ``CallsiteParameter`` members with values
         that are in ``parameter_strings``.
 
-        Arguments:
+        Parameters:
 
             parameter_strings:
                 The parameters strings for which corresponding
@@ -1100,7 +1100,7 @@ class TestCallsiteParameterAdder:
         Returns a dictionary that is equivalent to ``input`` but with all keys
         not in ``parameter_strings`` removed.
 
-        Arguments:
+        Parameters:
 
             parameter_strings:
                 The keys to keep in the dictionary, if this value is ``None``
@@ -1120,7 +1120,7 @@ class TestCallsiteParameterAdder:
         This function creates dictionary of callsite parameters for the line
         that is ``offset`` lines after the invocation of this function.
 
-        Arguments:
+        Parameters:
 
             offset:
                 The amount of lines after the invocation of this function that

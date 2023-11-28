@@ -123,7 +123,7 @@ class BoundLoggerBase:
         Call it to combine your *event* and *context* into an event_dict and
         process using the processor chain.
 
-        Arguments:
+        Parameters:
 
             method_name:
                 The name of the logger method.  Is passed into the processors.
@@ -197,7 +197,7 @@ class BoundLoggerBase:
         handling :exc:`structlog.DropEvent`, and finally calls *method_name* on
         :attr:`_logger` with the result.
 
-        Arguments:
+        Parameters:
 
             method_name:
                 The name of the method that's going to get called.  Technically
@@ -232,7 +232,7 @@ def get_context(bound_logger: BindableLogger) -> Context:
     The type of *bound_logger* and the type returned depend on your
     configuration.
 
-    Arguments:
+    Parameters:
 
         bound_logger: The bound logger whose context you want.
 

@@ -63,7 +63,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
     As with vanilla defaults, the backwards-compatibility guarantees don't
     apply to the settings applied here.
 
-    Arguments:
+    Parameters:
 
         log_level:
             If `None`, don't configure standard library logging **at all**.
@@ -655,7 +655,7 @@ class LoggerFactory:
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
 
-    Arguments:
+    Parameters:
 
         ignore_frame_names:
             When guessing the name of a logger, skip frames whose names *start*
@@ -814,7 +814,7 @@ class ExtraAdder:
     This processor can be used for adding data passed in the ``extra``
     parameter of the `logging` module's log methods to the event dictionary.
 
-    Arguments:
+    Parameters:
 
         allow:
             An optional collection of attributes that, if present in
@@ -906,7 +906,7 @@ class ProcessorFormatter(logging.Formatter):
 
     Please refer to :ref:`processor-formatter` for examples.
 
-    Arguments:
+    Parameters:
 
         foreign_pre_chain:
             If not `None`, it is used as a processor chain that is applied to

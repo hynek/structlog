@@ -128,7 +128,7 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
       """
       Do something.
 
-      Arguments:
+      Parameters:
 
         x: A very important parameter.
 

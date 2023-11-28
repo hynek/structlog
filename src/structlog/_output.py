@@ -36,7 +36,7 @@ class PrintLogger:
     """
     Print events into a file.
 
-    Arguments:
+    Parameters:
 
         file: File to print to. (default: `sys.stdout`)
 
@@ -122,7 +122,7 @@ class PrintLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    Arguments:
+    Parameters:
 
         file: File to print to. (default: `sys.stdout`)
 
@@ -142,7 +142,7 @@ class WriteLogger:
     """
     Write events into a file.
 
-    Arguments:
+    Parameters:
 
         file: File to print to. (default: `sys.stdout`)
 
@@ -232,7 +232,7 @@ class WriteLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    Arguments:
+    Parameters:
 
         file: File to print to. (default: `sys.stdout`)
 
@@ -252,7 +252,7 @@ class BytesLogger:
     r"""
     Writes bytes into a file.
 
-    Arguments:
+    Parameters:
         file: File to print to. (default: `sys.stdout`\ ``.buffer``)
 
     Useful if you follow `current logging best practices
@@ -336,7 +336,7 @@ class BytesLoggerFactory:
 
     To be used with `structlog.configure`\ 's ``logger_factory``.
 
-    Arguments:
+    Parameters:
 
         file: File to print to. (default: `sys.stdout`\ ``.buffer``)
 

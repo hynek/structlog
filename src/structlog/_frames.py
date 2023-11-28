@@ -41,7 +41,7 @@ def _find_first_app_frame_and_name(
     """
     Remove all intra-structlog calls and return the relevant app frame.
 
-    Arguments:
+    Parameters:
 
         additional_ignores:
             Additional names with which the first frame must not start.
