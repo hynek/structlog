@@ -5,7 +5,6 @@
 
 import copy
 import pickle
-import sys
 
 from io import BytesIO, StringIO
 
@@ -19,7 +18,7 @@ from structlog import (
     WriteLogger,
     WriteLoggerFactory,
 )
-from structlog._output import WRITE_LOCKS
+from structlog._output import WRITE_LOCKS, stderr, stdout
 
 from .utils import stdlib_log_methods
 
@@ -78,7 +77,7 @@ class TestLoggers:
 
         assert "hello" in sio.getvalue()
 
-    @pytest.mark.parametrize("file", [None, sys.stdout, sys.stderr])
+    @pytest.mark.parametrize("file", [None, stdout, stderr])
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, logger_cls, file, proto):
         """
@@ -141,6 +140,8 @@ class TestLoggers:
         """
         If stdout gets monkeypatched, the new instance receives the output.
         """
+        import sys
+
         p = PrintLogger()
         new_stdout = StringIO()
         monkeypatch.setattr(sys, "stdout", new_stdout)
@@ -165,9 +166,9 @@ class TestPrintLoggerFactory:
         """
         If a file is passed to the factory, it get passed on to the logger.
         """
-        pl = PrintLoggerFactory(sys.stderr)()
+        pl = PrintLoggerFactory(stderr)()
 
-        assert sys.stderr is pl._file
+        assert stderr is pl._file
 
     def test_ignores_args(self):
         """
@@ -190,9 +191,9 @@ class TestWriteLoggerFactory:
         """
         If a file is passed to the factory, it get passed on to the logger.
         """
-        pl = WriteLoggerFactory(sys.stderr)()
+        pl = WriteLoggerFactory(stderr)()
 
-        assert sys.stderr is pl._file
+        assert stderr is pl._file
 
     def test_ignores_args(self):
         """
@@ -255,9 +256,7 @@ class TestBytesLogger:
 
         assert b"hello" in sio.getvalue()
 
-    @pytest.mark.parametrize(
-        "file", [None, sys.stdout.buffer, sys.stderr.buffer]
-    )
+    @pytest.mark.parametrize("file", [None, stdout.buffer, stderr.buffer])
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle(self, file, proto):
         """
@@ -324,9 +323,9 @@ class TestBytesLoggerFactory:
         """
         If a file is passed to the factory, it get passed on to the logger.
         """
-        pl = BytesLoggerFactory(sys.stderr)()
+        pl = BytesLoggerFactory(stderr)()
 
-        assert sys.stderr is pl._file
+        assert stderr is pl._file
 
     def test_ignores_args(self):
         """
