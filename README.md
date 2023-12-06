@@ -112,7 +112,7 @@ The logs-loving beaver logo has been contributed by [Lynn Root](https://www.rogu
 - [**PyPI**](https://pypi.org/project/structlog/)
 - [**GitHub**](https://github.com/hynek/structlog)
 - [**Documentation**](https://www.structlog.org/)
-- [**Changelog**](https://www.structlog.org/en/stable/changelog.html)
+- [**Changelog**](https://github.com/hynek/structlog/tree/main/CHANGELOG.md)
 - [**Third-party Extensions**](https://github.com/hynek/structlog/wiki/Third-party-Extensions)
 
 
