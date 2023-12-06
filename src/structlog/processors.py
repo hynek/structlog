@@ -34,6 +34,7 @@ from ._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
     _format_stack,
+    _get_qual_name,
 )
 from ._log_levels import _NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
@@ -46,6 +47,7 @@ __all__ = [
     "add_log_level",
     "CallsiteParameter",
     "CallsiteParameterAdder",
+    "CallsiteNamespaceAdder",
     "dict_tracebacks",
     "EventRenamer",
     "ExceptionPrettyPrinter",
@@ -907,5 +909,44 @@ class EventRenamer:
             replace_by = event_dict.pop(self.replace_by, None)
             if replace_by is not None:
                 event_dict["event"] = replace_by
+
+        return event_dict
+
+
+class CallsiteNamespaceAdder:
+    """
+    Attempt to identify and add the caller namespace to the event dict
+    under the ``namespace`` key.
+
+    Attempts to deduce the namespace by crawling through the
+    calling frame's ``f_globals`` to find matching object code.
+
+    This O(n) procedure should return as O(1) in most situations,
+    but buyer beware.
+
+    Arguments:
+
+        levels:
+            A optional set of log levels to add the ``namespace`` key and
+            information to. The log levels should be supplied as an integer.
+            You can use the constants from `logging` like ``logging.INFO``
+            or pass the values directly. See `this table from the logging
+            docs <https://docs.python.org/3/library/logging.html#levels>`_ for
+            possible values. Providing `None` or an empty set == *
+
+    .. versionadded:: 23.3.0
+    """
+
+    def __init__(self, levels: set[int] | list[int] | None = None):
+        self.levels = levels
+
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        if self.levels and _NAME_TO_LEVEL[name] not in self.levels:
+            return event_dict
+
+        f, _ = _find_first_app_frame_and_name()
+        event_dict["namespace"] = _get_qual_name(f)
 
         return event_dict

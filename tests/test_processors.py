@@ -25,6 +25,7 @@ from freezegun import freeze_time
 import structlog
 
 from structlog import BoundLogger
+from structlog._frames import _get_qual_name
 from structlog._utils import get_processname
 from structlog.processors import (
     CallsiteParameter,
@@ -1170,4 +1171,102 @@ class TestRenameKey:
         """
         assert {"msg": "hi", "foo": "bar"} == EventRenamer("msg", "missing")(
             None, None, {"event": "hi", "foo": "bar"}
+        )
+
+
+class TestCallsiteNamespaceAdder:
+    def test_simple_lookup(self):
+        """
+        Simple verification of path interogation
+        """
+        assert "{}.{}.{}".format(
+            self.__module__,
+            self.__class__.__qualname__,
+            sys._getframe().f_code.co_name,
+        ) == _get_qual_name(sys._getframe())
+
+    async def test_async_lookup(self):
+        """
+        Simple verification of path interogation against async function
+        """
+        assert "{}.{}.{}".format(
+            self.__module__,
+            self.__class__.__qualname__,
+            sys._getframe().f_code.co_name,
+        ) == _get_qual_name(sys._getframe())
+
+    def test_async_lookup_fallback(self):
+        """
+        Simple verification of path interogation fallback when no match
+        can be found
+        """
+        assert _get_qual_name(sys._getframe().f_back).endswith(
+            "pytest_pyfunc_call"
+        )
+
+    def test_processor(self):
+        """
+        `CallsiteNamespaceAdder` Processor can be enabled and
+        ``namespace`` details are present.
+        """
+        cf = structlog.testing.CapturingLoggerFactory()
+        structlog.configure(
+            logger_factory=cf,
+            processors=[
+                structlog.processors.CallsiteNamespaceAdder(),
+                structlog.processors.JSONRenderer(),
+            ],
+        )
+        structlog.get_logger().info("test!")
+
+        assert (
+            "{}.{}.{}".format(
+                self.__module__,
+                self.__class__.__qualname__,
+                sys._getframe().f_code.co_name,
+            )
+            == json.loads(cf.logger.calls.pop().args[0])["namespace"]
+        )
+
+    def test_level_limiter(self):
+        """
+        `CallsiteNamespaceAdder` Processor limits to which levels
+        the ``namespace`` details are added.
+        """
+        cf = structlog.testing.CapturingLoggerFactory()
+        structlog.configure(
+            logger_factory=cf,
+            processors=[
+                structlog.processors.CallsiteNamespaceAdder(levels={"debug"}),
+                structlog.processors.JSONRenderer(),
+            ],
+        )
+        structlog.get_logger().info("test!")
+
+        # limiter is set to 'debug', so 'info' should not get the param added
+        assert "namespace" not in json.loads(cf.logger.calls.pop().args[0])
+
+    async def test_async_processor(self):
+        """
+        `CallsiteNamespaceAdder` Processor can be enabled and
+        ``namespace`` details are present for an async log entry.
+        """
+        cf = structlog.testing.CapturingLoggerFactory()
+        structlog.configure(
+            logger_factory=cf,
+            processors=[
+                structlog.processors.CallsiteNamespaceAdder(),
+                structlog.processors.JSONRenderer(),
+            ],
+        )
+
+        await structlog.get_logger().ainfo("test!")
+
+        assert (
+            "{}.{}.{}".format(
+                self.__module__,
+                self.__class__.__qualname__,
+                sys._getframe().f_code.co_name,
+            )
+            == json.loads(cf.logger.calls.pop().args[0])["namespace"]
         )
