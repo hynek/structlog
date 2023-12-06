@@ -53,6 +53,7 @@ docs = [
     "sphinx",
     "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
+    "sphinxext-opengraph",
     "twisted",
 ]
 dev = ["structlog[tests,typing]"]

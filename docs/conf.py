@@ -22,6 +22,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinxcontrib.mermaid",
+    "sphinxext.opengraph",
 ]
 
 myst_enable_extensions = [
@@ -30,6 +31,9 @@ myst_enable_extensions = [
     "deflist",
 ]
 mermaid_init_js = "mermaid.initialize({startOnLoad:true,theme:'neutral'});"
+
+ogp_image = "_static/structlog_logo.png"
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -98,24 +102,6 @@ html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 
 htmlhelp_basename = "structlogdoc"
-
-_logo = "https://www.structlog.org/en/latest/_static/structlog_logo.svg"
-_descr = (
-    "structlog makes logging in Python faster, less painful, and more "
-    "powerful by adding structure to your log entries."
-)
-_title = "structlog: Structured Logging for Python"
-rst_epilog = f"""\
-.. meta::
-    :property=og:type: website
-    :property=og:site_name: { _title }
-    :property=og:description: { _descr }
-    :property=og:author: Hynek Schlawack
-    :property=og:image: { _logo }
-    :twitter:title: { _title }
-    :twitter:image: { _logo }
-    :twitter:creator: @hynek
-"""
 
 latex_documents = [
     ("index", "structlog.tex", "structlog Documentation", "Author", "manual")
