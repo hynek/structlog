@@ -20,13 +20,14 @@ from io import StringIO
 from types import ModuleType
 from typing import (
     Any,
-    Iterable,
+    Callable,
     Literal,
     Protocol,
     Sequence,
     TextIO,
     Type,
     Union,
+    cast,
 )
 
 from ._frames import _format_exception
@@ -164,6 +165,156 @@ class _PlainStyles:
     kv_value = ""
 
 
+class ColumnFormatter(Protocol):
+    """
+    :class:`~typing.Protocol` for column formatters.
+
+    See `KeyValueColumnFormatter` and `LogLevelColumnFormatter` for examples.
+
+    .. versionadded:: 23.3.0
+    """
+
+    def __call__(self, key: str, value: object) -> str:
+        """
+        Format *value* for *key*.
+
+        This method is responsible for formatting, *key*, the ``=``, and the
+        *value*. That means that it can use any string instead of the ``=`` and
+        it can leave out both the *key* or the *value*.
+
+        If it returns an empty string, the column is omitted completely.
+        """
+
+
+@dataclass
+class Column:
+    """
+    A column defines the way a key-value pair is formatted, and, by it's
+    position to the *columns* argument of `ConsoleRenderer`, the order in which
+    it is rendered.
+
+    Args:
+        key:
+            The key for which this column is responsible. Leave empty to define
+            it as the default formatter.
+
+        formatter: The formatter for columns with *key*.
+
+    .. versionadded:: 23.3.0
+    """
+
+    key: str
+    formatter: ColumnFormatter
+
+
+@dataclass
+class KeyValueColumnFormatter:
+    """
+    Format a key-value pair.
+
+    Args:
+        key_style: The style to apply to the key. If None, the key is omitted.
+
+        value_style: The style to apply to the value.
+
+        reset_style: The style to apply whenever a style is no longer needed.
+
+        value_repr:
+            A callable that returns the string representation of the value.
+
+        width: The width to pad the value to. If 0, no padding is done.
+
+        prefix:
+            A string to prepend to the formatted key-value pair. May contain
+            styles.
+
+        postfix:
+            A string to append to the formatted key-value pair. May contain
+            styles.
+
+    .. versionadded:: 23.3.0
+    """
+
+    key_style: str | None
+    value_style: str
+    reset_style: str
+    value_repr: Callable[[object], str]
+    width: int = 0
+    prefix: str = ""
+    postfix: str = ""
+
+    def __call__(self, key: str, value: object) -> str:
+        sio = StringIO()
+
+        if self.prefix:
+            sio.write(self.prefix)
+            sio.write(self.reset_style)
+
+        if self.key_style is not None:
+            sio.write(self.key_style)
+            sio.write(key)
+            sio.write(self.reset_style)
+            sio.write("=")
+
+        sio.write(self.value_style)
+        sio.write(_pad(self.value_repr(value), self.width))
+        sio.write(self.reset_style)
+
+        if self.postfix:
+            sio.write(self.postfix)
+            sio.write(self.reset_style)
+
+        return sio.getvalue()
+
+
+class LogLevelColumnFormatter:
+    """
+    Format a log level according to *level_styles*.
+
+    The width is padded to the longest level name (if *level_styles* is passed
+    -- otherwise there's no way to know the lengths of all levels).
+
+    Args:
+        level_styles:
+            A dictionary of level names to styles that are applied to it. If
+            None, the level is formatted as a plain ``[level]``.
+
+        reset_style:
+            What to use to reset the style after the level name. Ignored if
+            if *level_styles* is None.
+
+    .. versionadded:: 23.3.0
+    """
+
+    level_styles: dict[str, str] | None
+    reset_style: str
+    width: int
+
+    def __init__(self, level_styles: dict[str, str], reset_style: str) -> None:
+        self.level_styles = level_styles
+        if level_styles:
+            self.width = len(
+                max(self.level_styles.keys(), key=lambda e: len(e))
+            )
+            self.reset_style = reset_style
+        else:
+            self.width = 0
+            self.reset_style = ""
+
+    def __call__(self, key: str, value: object) -> str:
+        level = cast(str, value)
+        style = (
+            ""
+            if self.level_styles is None
+            else self.level_styles.get(level, "")
+        )
+
+        return f"[{style}{_pad(level, self.width)}{self.reset_style}]"
+
+
+_NOTHING = object()
+
+
 def plain_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
     """
     "Pretty"-print *exc_info* to *sio* using our own plain formatter.
@@ -275,29 +426,40 @@ class ConsoleRenderer:
     *after* the log line. If Rich_ or better-exceptions_ are present, in colors
     and with extra context.
 
-    Parameters:
+    Args:
+        columns:
+            A list of `Column` objects defining both the order and format of
+            the key-value pairs in the output. If passed, most other arguments
+            become meaningless.
 
-        pad_event: Pad the event to this many characters.
+            **Must** contain a column with ``key=''`` that defines the default
+            formatter.
+
+            .. seealso:: `columns-config`
+
+        pad_event:
+            Pad the event to this many characters. Ignored if *columns* are
+            passed.
 
         colors:
             Use colors for a nicer output. `True` by default. On Windows only
-            if Colorama_ is installed.
+            if Colorama_ is installed. Ignored if *columns* are passed.
 
         force_colors:
             Force colors even for non-tty destinations. Use this option if your
             logs are stored in a file that is meant to be streamed to the
-            console. Only meaningful on Windows.
+            console. Only meaningful on Windows. Ignored if *columns* are
+            passed.
 
         repr_native_str:
-            When `True`, `repr` is also applied to native strings (i.e. unicode
-            on Python 3 and bytes on Python 2). Setting this to `False` is
-            useful if you want to have human-readable non-ASCII output on
-            Python 2.  The ``event`` key is *never* `repr` -ed.
+            When `True`, `repr` is also applied to ``str``s. The ``event`` key
+            is *never* `repr` -ed. Ignored if *columns* are passed.
 
         level_styles:
             When present, use these styles for colors. This must be a dict from
             level names (strings) to Colorama styles. The default can be
-            obtained by calling `ConsoleRenderer.get_default_level_styles`
+            obtained by calling `ConsoleRenderer.get_default_level_styles`.
+            Ignored when *columns* are passed.
 
         exception_formatter:
             A callable to render ``exc_infos``. If Rich_ or better-exceptions_
@@ -307,17 +469,24 @@ class ConsoleRenderer:
             `RichTracebackFormatter` like `rich_traceback`, or implement your
             own.
 
-        sort_keys: Whether to sort keys when formatting. `True` by default.
+        sort_keys:
+            Whether to sort keys when formatting. `True` by default. Ignored if
+            *columns* are passed.
 
         event_key:
             The key to look for the main log message. Needed when you rename it
-            e.g. using `structlog.processors.EventRenamer`.
+            e.g. using `structlog.processors.EventRenamer`. Ignored if
+            *columns* are passed.
 
         timestamp_key:
             The key to look for timestamp of the log message. Needed when you
-            rename it e.g. using `structlog.processors.EventRenamer`.
+            rename it e.g. using `structlog.processors.EventRenamer`. Ignored
+            if *columns* are passed.
 
     Requires the Colorama_ package if *colors* is `True` **on Windows**.
+
+    Raises:
+        ValueError: If there's not exactly one default column formatter.
 
     .. _Colorama: https://pypi.org/project/colorama/
     .. _better-exceptions: https://pypi.org/project/better-exceptions/
@@ -352,9 +521,10 @@ class ConsoleRenderer:
     .. versionadded:: 21.3.0 *sort_keys*
     .. versionadded:: 22.1.0 *event_key*
     .. versionadded:: 23.2.0 *timestamp_key*
+    .. versionadded:: 23.3.0 *columns*
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0912
         self,
         pad_event: int = _EVENT_WIDTH,
         colors: bool = _has_colors,
@@ -365,7 +535,57 @@ class ConsoleRenderer:
         sort_keys: bool = True,
         event_key: str = "event",
         timestamp_key: str = "timestamp",
+        columns: list[Column] | None = None,
     ):
+        self._exception_formatter = exception_formatter
+        self._sort_keys = sort_keys
+
+        if columns is not None:
+            to_warn = []
+
+            def add_meaningless_arg(arg: str) -> None:
+                to_warn.append(
+                    f"The `{arg}` argument is ignored when passing `columns`.",
+                )
+
+            if pad_event != _EVENT_WIDTH:
+                add_meaningless_arg("pad_event")
+
+            if colors != _has_colors:
+                add_meaningless_arg("colors")
+
+            if force_colors is not False:
+                add_meaningless_arg("force_colors")
+
+            if repr_native_str is not False:
+                add_meaningless_arg("repr_native_str")
+
+            if level_styles is not None:
+                add_meaningless_arg("level_styles")
+
+            if event_key != "event":
+                add_meaningless_arg("event_key")
+
+            if timestamp_key != "timestamp":
+                add_meaningless_arg("timestamp_key")
+
+            for w in to_warn:
+                warnings.warn(w, stacklevel=2)
+
+            defaults = [col for col in columns if col.key == ""]
+            if not defaults:
+                raise ValueError(
+                    "Must pass a default column formatter (a column with `key=''`)."
+                )
+            if len(defaults) > 1:
+                raise ValueError("Only one default column formatter allowed.")
+
+            self._default_column_formatter = defaults[0].formatter
+            self._columns = [col for col in columns if col.key]
+
+            return
+
+        # Create default columns configuration.
         styles: Styles
         if colors:
             if _IS_WINDOWS:  # pragma: no cover
@@ -391,24 +611,67 @@ class ConsoleRenderer:
             styles = _PlainStyles
 
         self._styles = styles
-        self._pad_event = pad_event
 
-        if level_styles is None:
-            self._level_to_color = self.get_default_level_styles(colors)
-        else:
-            self._level_to_color = level_styles
+        level_to_color = (
+            self.get_default_level_styles(colors)
+            if level_styles is None
+            else level_styles
+        )
 
-        for key in self._level_to_color:
-            self._level_to_color[key] += styles.bright
+        for key in level_to_color:
+            level_to_color[key] += styles.bright
         self._longest_level = len(
-            max(self._level_to_color.keys(), key=lambda e: len(e))
+            max(level_to_color.keys(), key=lambda e: len(e))
         )
 
         self._repr_native_str = repr_native_str
-        self._exception_formatter = exception_formatter
-        self._sort_keys = sort_keys
-        self._event_key = event_key
-        self._timestamp_key = timestamp_key
+
+        self._default_column_formatter = KeyValueColumnFormatter(
+            styles.kv_key,
+            styles.kv_value,
+            styles.reset,
+            value_repr=self._repr,
+            width=0,
+        )
+
+        logger_name_formatter = KeyValueColumnFormatter(
+            key_style=None,
+            value_style=styles.bright + styles.logger_name,
+            reset_style=styles.reset,
+            value_repr=str,
+            prefix="[",
+            postfix="]",
+        )
+
+        self._columns = [
+            Column(
+                timestamp_key,
+                KeyValueColumnFormatter(
+                    key_style=None,
+                    value_style=styles.timestamp,
+                    reset_style=styles.reset,
+                    value_repr=str,
+                ),
+            ),
+            Column(
+                "level",
+                LogLevelColumnFormatter(
+                    level_to_color, reset_style=styles.reset
+                ),
+            ),
+            Column(
+                event_key,
+                KeyValueColumnFormatter(
+                    key_style=None,
+                    value_style=styles.bright,
+                    reset_style=styles.reset,
+                    value_repr=str,
+                    width=pad_event,
+                ),
+            ),
+            Column("logger", logger_name_formatter),
+            Column("logger_name", logger_name_formatter),
+        ]
 
     def _repr(self, val: Any) -> str:
         """
@@ -423,75 +686,24 @@ class ConsoleRenderer:
 
         return repr(val)
 
-    def __call__(  # noqa: PLR0912
+    def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> str:
-        sio = StringIO()
-
-        ts = event_dict.pop(self._timestamp_key, None)
-        if ts is not None:
-            sio.write(
-                # can be a number if timestamp is UNIXy
-                self._styles.timestamp
-                + str(ts)
-                + self._styles.reset
-                + " "
-            )
-        level = event_dict.pop("level", None)
-        if level is not None:
-            sio.write(
-                "["
-                + self._level_to_color.get(level, "")
-                + _pad(level, self._longest_level)
-                + self._styles.reset
-                + "] "
-            )
-
-        # force event to str for compatibility with standard library
-        event = event_dict.pop(self._event_key, None)
-        if not isinstance(event, str):
-            event = str(event)
-
-        if event_dict:
-            event = _pad(event, self._pad_event) + self._styles.reset + " "
-        else:
-            event += self._styles.reset
-        sio.write(self._styles.bright + event)
-
-        logger_name = event_dict.pop("logger", None)
-        if logger_name is None:
-            logger_name = event_dict.pop("logger_name", None)
-
-        if logger_name is not None:
-            sio.write(
-                "["
-                + self._styles.logger_name
-                + self._styles.bright
-                + logger_name
-                + self._styles.reset
-                + "] "
-            )
-
         stack = event_dict.pop("stack", None)
         exc = event_dict.pop("exception", None)
         exc_info = event_dict.pop("exc_info", None)
 
-        event_dict_keys: Iterable[str] = event_dict.keys()
-        if self._sort_keys:
-            event_dict_keys = sorted(event_dict_keys)
+        kvs = [
+            col.formatter(col.key, val)
+            for col in self._columns
+            if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
+        ] + [
+            self._default_column_formatter(key, event_dict[key])
+            for key in (sorted(event_dict) if self._sort_keys else event_dict)
+        ]
 
-        sio.write(
-            " ".join(
-                self._styles.kv_key
-                + key
-                + self._styles.reset
-                + "="
-                + self._styles.kv_value
-                + self._repr(event_dict[key])
-                + self._styles.reset
-                for key in event_dict_keys
-            )
-        )
+        sio = StringIO()
+        sio.write((" ".join(kv for kv in kvs if kv)).rstrip(" "))
 
         if stack is not None:
             sio.write("\n" + stack)
@@ -510,6 +722,7 @@ class ConsoleRenderer:
                     "if you want pretty exceptions.",
                     stacklevel=2,
                 )
+
             sio.write("\n" + exc)
 
         return sio.getvalue()
@@ -527,8 +740,7 @@ class ConsoleRenderer:
             my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"] renderer
             = ConsoleRenderer(level_styles=my_styles)
 
-        Parameters:
-
+        Args:
             colors:
                 Whether to use colorful styles. This must match the *colors*
                 parameter to `ConsoleRenderer`. Default: `True`.

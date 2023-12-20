@@ -17,8 +17,20 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
+- The colorful development logger is now even more configurable!
+  Choose freely your colors and the order of the key-value pairs!
+  Implement your own formatters for certain keys!
+
+  Implementing the output on top of the new columns API has changed the default very slightly, but shouldn't be noticeable.
+
 - Async log methods (those starting with an `a`) now also support the collection of callsite information using `structlog.processors.CallsiteParameterAdder`.
   [#565](https://github.com/hynek/structlog/issues/565)
+
+
+### Changed
+
+- `structlog.stdlib.recreate_defaults()` now also adds `structlog.stdlib.add_logger_name` to the processors.
+  Check out the updated screenshot in the README!
 
 
 ### Fixed

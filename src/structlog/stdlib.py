@@ -63,8 +63,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
     As with vanilla defaults, the backwards-compatibility guarantees don't
     apply to the settings applied here.
 
-    Parameters:
-
+    Args:
         log_level:
             If `None`, don't configure standard library logging **at all**.
 
@@ -75,6 +74,8 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
             configure it yourself.
 
     .. versionadded:: 22.1.0
+    .. versionchanged:: 23.3.0
+       Added `add_logger_name`.
     """
     if log_level is not None:
         kw = {"force": True}
@@ -91,6 +92,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
         processors=[
             merge_contextvars,
             add_log_level,
+            add_logger_name,
             StackInfoRenderer(),
             _config._BUILTIN_DEFAULT_PROCESSORS[-2],  # TimeStamper
             _config._BUILTIN_DEFAULT_PROCESSORS[-1],  # ConsoleRenderer
@@ -1000,7 +1002,10 @@ class ProcessorFormatter(logging.Formatter):
         super().__init__(*args, fmt=fmt, **kwargs)  # type: ignore[misc]
 
         if processor and processors:
-            msg = "The `processor` and `processors` arguments are mutually exclusive."
+            msg = (
+                "The `processor` and `processors` arguments are mutually"
+                " exclusive."
+            )
             raise TypeError(msg)
 
         self.processors: Sequence[Processor]
@@ -1050,9 +1055,11 @@ class ProcessorFormatter(logging.Formatter):
             logger = self.logger
             meth_name = record.levelname.lower()
             ed = {
-                "event": record.getMessage()
-                if self.use_get_message
-                else str(record.msg),
+                "event": (
+                    record.getMessage()
+                    if self.use_get_message
+                    else str(record.msg)
+                ),
                 "_record": record,
                 "_from_structlog": False,
             }

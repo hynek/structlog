@@ -16,6 +16,8 @@ class SomeClass:
     y: str
 
 
+structlog.stdlib.recreate_defaults()  # so we have logger names
+
 log = structlog.get_logger("some_logger")
 
 log.debug("debugging is hard", a_list=[1, 2, 3])
