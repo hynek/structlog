@@ -22,6 +22,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   Implement your own formatters for certain keys!
 
   Implementing the output on top of the new columns API has changed the default very slightly, but shouldn't be noticeable.
+  [#577](https://github.com/hynek/structlog/issues/577)
 
 - Async log methods (those starting with an `a`) now also support the collection of callsite information using `structlog.processors.CallsiteParameterAdder`.
   [#565](https://github.com/hynek/structlog/issues/565)
