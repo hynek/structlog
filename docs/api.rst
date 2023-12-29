@@ -78,6 +78,12 @@ API Reference
 .. autoclass:: ConsoleRenderer
    :members: get_default_level_styles
 
+.. autoclass:: Column
+.. autoclass:: ColumnFormatter(typing.Protocol)
+   :members: __call__
+.. autoclass:: KeyValueColumnFormatter
+.. autoclass:: LogLevelColumnFormatter
+
 .. autofunction:: plain_traceback
 .. autoclass:: RichTracebackFormatter
 .. autofunction:: rich_traceback

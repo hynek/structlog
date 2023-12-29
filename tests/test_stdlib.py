@@ -879,7 +879,7 @@ class TestProcessorFormatter:
 
         assert (
             "",
-            "foo                            [sample-name]  [in test_foreign_pr"
+            "foo                            [sample-name] [in test_foreign_pr"
             "e_chain_add_logger_name]\n",
         ) == capsys.readouterr()
 

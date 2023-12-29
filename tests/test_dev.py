@@ -28,28 +28,21 @@ class TestPad:
         assert len("test") == len(dev._pad("test", 2))
 
 
-@pytest.fixture(name="cr")
+@pytest.fixture(name="cr", scope="session")
 def _cr():
     return dev.ConsoleRenderer(
         colors=dev._has_colors, exception_formatter=dev.plain_traceback
     )
 
 
-@pytest.fixture(name="styles")
+@pytest.fixture(name="styles", scope="session")
 def _styles(cr):
     return cr._styles
 
 
-@pytest.fixture(name="padded")
+@pytest.fixture(name="padded", scope="session")
 def _padded(styles):
-    return (
-        styles.bright + dev._pad("test", dev._EVENT_WIDTH) + styles.reset + " "
-    )
-
-
-@pytest.fixture(name="unpadded")
-def _unpadded(styles):
-    return styles.bright + "test" + styles.reset
+    return styles.bright + dev._pad("test", dev._EVENT_WIDTH) + styles.reset
 
 
 class TestConsoleRenderer:
@@ -70,23 +63,23 @@ class TestConsoleRenderer:
             "installed."
         ) in e.value.args[0]
 
-    def test_plain(self, cr, unpadded):
+    def test_plain(self, cr, padded):
         """
         Works with a plain event_dict with only the event.
         """
         rv = cr(None, None, {"event": "test"})
 
-        assert unpadded == rv
+        assert padded == rv
 
-    def test_timestamp(self, cr, styles, unpadded):
+    def test_timestamp(self, cr, styles, padded):
         """
         Timestamps get prepended.
         """
         rv = cr(None, None, {"event": "test", "timestamp": 42})
 
-        assert (styles.timestamp + "42" + styles.reset + " " + unpadded) == rv
+        assert (styles.timestamp + "42" + styles.reset + " " + padded) == rv
 
-    def test_event_stringified(self, cr, unpadded):
+    def test_event_stringified(self, cr, padded):
         """
         Event is cast to string.
         """
@@ -94,7 +87,7 @@ class TestConsoleRenderer:
 
         rv = cr(None, None, {"event": not_a_string})
 
-        assert unpadded == rv
+        assert padded == rv
 
     def test_event_renamed(self):
         """
@@ -112,15 +105,18 @@ class TestConsoleRenderer:
         """
         cr = dev.ConsoleRenderer(colors=False, timestamp_key="ts")
 
-        assert "2023-09-07 le event" == cr(
-            None,
-            None,
-            {"ts": "2023-09-07", "event": "le event"},
+        assert (
+            "2023-09-07 le event"
+            == cr(
+                None,
+                None,
+                {"ts": "2023-09-07", "event": "le event"},
+            ).rstrip()
         )
 
     def test_level(self, cr, styles, padded):
         """
-        Levels are rendered aligned, in square brackets, and color coded.
+        Levels are rendered aligned, in square brackets, and color-coded.
         """
         rv = cr(
             None, None, {"event": "test", "level": "critical", "foo": "bar"}
@@ -134,6 +130,7 @@ class TestConsoleRenderer:
             + styles.reset
             + "] "
             + padded
+            + " "
             + styles.kv_key
             + "foo"
             + styles.reset
@@ -168,6 +165,7 @@ class TestConsoleRenderer:
             + styles.reset
             + "] "
             + padded
+            + " "
             + styles.kv_key
             + "foo"
             + styles.reset
@@ -185,12 +183,14 @@ class TestConsoleRenderer:
 
         assert (
             padded
-            + "["
-            + dev.BLUE
+            + " ["
+            + styles.reset
             + styles.bright
+            + dev.BLUE
             + "some_module"
             + styles.reset
-            + "] "
+            + "]"
+            + styles.reset
         ) == rv
 
     def test_logger_name_name(self, cr, padded, styles):
@@ -199,12 +199,14 @@ class TestConsoleRenderer:
         """
         assert (
             padded
-            + "["
-            + dev.BLUE
+            + " ["
+            + styles.reset
             + styles.bright
+            + dev.BLUE
             + "yolo"
             + styles.reset
-            + "] "
+            + "]"
+            + styles.reset
         ) == cr(None, None, {"event": "test", "logger_name": "yolo"})
 
     def test_key_values(self, cr, styles, padded):
@@ -215,6 +217,7 @@ class TestConsoleRenderer:
 
         assert (
             padded
+            + " "
             + styles.kv_key
             + "foo"
             + styles.reset
@@ -246,6 +249,7 @@ class TestConsoleRenderer:
 
         assert (
             padded
+            + " "
             + styles.kv_key
             + "key"
             + styles.reset
@@ -264,7 +268,9 @@ class TestConsoleRenderer:
         ) == rv
 
     @pytest.mark.parametrize("wrap", [True, False])
-    def test_exception_rendered(self, cr, padded, recwarn, wrap):
+    def test_exception_rendered(
+        self, cr, recwarn, wrap, styles, padded, monkeypatch
+    ):
         """
         Exceptions are rendered after a new line if they are already rendered
         in the event dict.
@@ -275,10 +281,15 @@ class TestConsoleRenderer:
 
         # Wrap the formatter to provoke the warning.
         if wrap:
-            cr._exception_formatter = lambda s, ei: dev.plain_tracebacks(s, ei)
+            monkeypatch.setattr(
+                cr,
+                "_exception_formatter",
+                lambda s, ei: dev.plain_traceback(s, ei),
+            )
+
         rv = cr(None, None, {"event": "test", "exception": exc})
 
-        assert (padded + "\n" + exc) == rv
+        assert (f"{padded}\n" + exc) == rv
 
         if wrap:
             (w,) = recwarn.list
@@ -287,16 +298,16 @@ class TestConsoleRenderer:
                 "if you want pretty exceptions.",
             ) == w.message.args
 
-    def test_stack_info(self, cr, padded):
+    def test_stack_info(self, cr, styles, padded):
         """
         Stack traces are rendered after a new line.
         """
         stack = "fake stack"
         rv = cr(None, None, {"event": "test", "stack": stack})
 
-        assert (padded + "\n" + stack) == rv
+        assert (f"{padded}\n" + stack) == rv
 
-    def test_exc_info_tuple(self, cr, padded):
+    def test_exc_info_tuple(self, cr, styles, padded):
         """
         If exc_info is a tuple, it is used.
         """
@@ -310,9 +321,9 @@ class TestConsoleRenderer:
 
         exc = dev._format_exception(ei)
 
-        assert (padded + "\n" + exc) == rv
+        assert (f"{padded}\n" + exc) == rv
 
-    def test_exc_info_bool(self, cr, padded):
+    def test_exc_info_bool(self, cr, styles, padded):
         """
         If exc_info is True, it is obtained using sys.exc_info().
         """
@@ -325,9 +336,9 @@ class TestConsoleRenderer:
 
         exc = dev._format_exception(ei)
 
-        assert (padded + "\n" + exc) == rv
+        assert (f"{padded}\n" + exc) == rv
 
-    def test_exc_info_exception(self, cr, padded):
+    def test_exc_info_exception(self, cr, styles, padded):
         """
         If exc_info is an exception, it is used by converting to a tuple.
         """
@@ -341,7 +352,7 @@ class TestConsoleRenderer:
 
         exc = dev._format_exception((ei.__class__, ei, ei.__traceback__))
 
-        assert (padded + "\n" + exc) == rv
+        assert (f"{padded}\n" + exc) == rv
 
     def test_pad_event_param(self, styles):
         """
@@ -420,12 +431,15 @@ class TestConsoleRenderer:
             + styles.reset
             + "] "
             + padded
-            + "["
-            + dev.BLUE
+            + " ["
+            + styles.reset
             + styles.bright
+            + dev.BLUE
             + "some_module"
             + styles.reset
-            + "] "
+            + "]"
+            + styles.reset
+            + " "
             + styles.kv_key
             + "foo"
             + styles.reset
@@ -483,6 +497,7 @@ class TestConsoleRenderer:
             + styles.reset
             + "] "
             + padded
+            + " "
             + styles.kv_key
             + "foo"
             + styles.reset
@@ -535,6 +550,69 @@ class TestConsoleRenderer:
                 None, None, {"event": "hi", "exc_info": (None, None, None)}
             ).rstrip()
         )
+
+    def test_columns_warns_about_meaningless_arguments(self, recwarn):
+        """
+        If columns is set, a warning is emitted for all ignored arguments.
+        """
+        dev.ConsoleRenderer(
+            columns=[dev.Column("", lambda k, v: "")],
+            pad_event=42,
+            colors=not dev._has_colors,
+            force_colors=True,
+            repr_native_str=True,
+            level_styles=dev._PlainStyles,
+            event_key="not event",
+            timestamp_key="not timestamp",
+        )
+
+        assert {
+            f"The `{arg}` argument is ignored when passing `columns`."
+            for arg in (
+                "pad_event",
+                "colors",
+                "force_colors",
+                "repr_native_str",
+                "level_styles",
+                "event_key",
+                "timestamp_key",
+            )
+        } == {str(w.message) for w in recwarn.list}
+
+    def test_detects_default_column(self):
+        """
+        The default renderer is detected and removed from the columns list.
+        """
+        fake_formatter = object()
+        llcf = dev.Column("log_level", dev.LogLevelColumnFormatter(None, ""))
+
+        cr = dev.ConsoleRenderer(
+            columns=[dev.Column("", fake_formatter), llcf]
+        )
+
+        assert fake_formatter is cr._default_column_formatter
+        assert [llcf] == cr._columns
+
+    def test_enforces_presence_of_exactly_one_default_formatter(self):
+        """
+        If there is no, or more than one, default formatter, raise ValueError.
+        """
+        with pytest.raises(
+            ValueError,
+            match="Must pass a default column formatter",
+        ):
+            dev.ConsoleRenderer(columns=[])
+
+        with pytest.raises(
+            ValueError,
+            match="Only one default column formatter allowed.",
+        ):
+            dev.ConsoleRenderer(
+                columns=[
+                    dev.Column("", lambda k, v: ""),
+                    dev.Column("", lambda k, v: ""),
+                ]
+            )
 
 
 class TestSetExcInfo:
@@ -622,3 +700,13 @@ class TestBetterTraceback:
             dev.better_traceback(sio, sys.exc_info())
 
         assert sio.getvalue().startswith("\n")
+
+
+class TestLogLevelColumnFormatter:
+    def test_no_style(self):
+        """
+        No level_styles means no control characters and no padding.
+        """
+        assert "[critical]" == dev.LogLevelColumnFormatter(None, "foo")(
+            "", "critical"
+        )
