@@ -63,8 +63,7 @@ class KeyValueRenderer:
     """
     Render ``event_dict`` as a list of ``Key=repr(Value)`` pairs.
 
-    Parameters:
-
+    Args:
         sort_keys: Whether to sort keys when formatting.
 
         key_order:
@@ -119,8 +118,7 @@ class LogfmtRenderer:
 
     .. _logfmt: https://brandur.org/logfmt
 
-    Parameters:
-
+    Args:
         sort_keys: Whether to sort keys when formatting.
 
         key_order:
@@ -138,7 +136,6 @@ class LogfmtRenderer:
             ``flag=false``.
 
     Raises:
-
         ValueError: If a key contains non printable or space characters.
 
     .. versionadded:: 21.5.0
@@ -237,8 +234,7 @@ class UnicodeEncoder:
     """
     Encode unicode values in ``event_dict``.
 
-    Parameters:
-
+    Args:
         encoding: Encoding to encode to (default: ``"utf-8"``).
 
         errors:
@@ -272,8 +268,7 @@ class UnicodeDecoder:
     """
     Decode byte string values in ``event_dict``.
 
-    Parameters:
-
+    Args:
         encoding: Encoding to decode from (default: ``"utf-8"``).
 
         errors: How to cope with encoding errors (default: ``"replace"``).
@@ -308,8 +303,7 @@ class JSONRenderer:
     """
     Render the ``event_dict`` using ``serializer(event_dict, **dumps_kw)``.
 
-    Parameters:
-
+    Args:
         dumps_kw:
             Are passed unmodified to *serializer*.  If *default* is passed, it
             will disable support for ``__structlog__``-based serialization.
@@ -385,8 +379,7 @@ class ExceptionRenderer:
     If there is no ``exc_info`` key, the *event_dict* is not touched. This
     behavior is analog to the one of the stdlib's logging.
 
-    Parameters:
-
+    Args:
         exception_formatter:
             A callable that is used to format the exception from the
             ``exc_info`` field into the ``exception`` field.
@@ -459,8 +452,7 @@ class TimeStamper:
     """
     Add a timestamp to ``event_dict``.
 
-    Parameters:
-
+    Args:
         fmt:
             strftime format string, or ``"iso"`` for `ISO 8601
             <https://en.wikipedia.org/wiki/ISO_8601>`_, or `None` for a `UNIX
@@ -608,8 +600,7 @@ class ExceptionPrettyPrinter:
     """
     Pretty print exceptions and remove them from the ``event_dict``.
 
-    Parameters:
-
+    Args:
         file: Target file for output (default: ``sys.stdout``).
 
     This processor is mostly for development and testing so you can read
@@ -661,8 +652,7 @@ class StackInfoRenderer:
     involving an exception and works analogously to the *stack_info* argument
     of the Python standard library logging.
 
-    Parameters:
-
+    Args:
         additional_ignores:
             By default, stack frames coming from *structlog* are ignored. With
             this argument you can add additional names that are ignored, before
@@ -745,8 +735,7 @@ class CallsiteParameterAdder:
     The keys used for callsite parameters in the event dictionary are the
     string values of `CallsiteParameter` enum members.
 
-    Parameters:
-
+    Args:
         parameters:
             A collection of `CallsiteParameter` values that should be added to
             the event dictionary.
@@ -880,8 +869,7 @@ class EventRenamer:
        some processors may rely on the presence and meaning of the ``event``
        key.
 
-    Parameters:
-
+    Args:
         to: Rename ``event_dict["event"]`` to ``event_dict[to]``
 
         replace_by:

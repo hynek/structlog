@@ -106,14 +106,12 @@ class ExceptionTransformer(Protocol):
     Used by `structlog.processors.format_exc_info()` and
     `structlog.processors.ExceptionPrettyPrinter`.
 
-    Parameters:
-
+    Args:
         exc_info: Is the exception tuple to format
 
     Returns:
-
-        Anything that can be rendered by the last processor in your chain,
-        for example, a string or a JSON-serializable structure.
+        Anything that can be rendered by the last processor in your chain, for
+        example, a string or a JSON-serializable structure.
 
     .. versionadded:: 22.1.0
     """

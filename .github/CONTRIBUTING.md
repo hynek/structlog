@@ -128,13 +128,11 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
       """
       Do something.
 
-      Parameters:
-
-        x: A very important parameter.
+      Args:
+          x: A very important parameter.
 
       Returns:
-
-        A very important return value.
+          A very important return value.
       """
   ```
 - If you add or change public APIs, tag the docstring using `..  versionadded:: 16.0.0 WHAT` or `..  versionchanged:: 16.2.0 WHAT`.

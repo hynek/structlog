@@ -74,8 +74,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
             configure it yourself.
 
     .. versionadded:: 22.1.0
-    .. versionchanged:: 23.3.0
-       Added `add_logger_name`.
+    .. versionchanged:: 23.3.0 Added `add_logger_name`.
     """
     if log_level is not None:
         kw = {"force": True}
@@ -160,7 +159,6 @@ class BoundLogger(BoundLoggerBase):
         Return a new logger with *keys* removed from the context.
 
         Raises:
-
             KeyError: If the key is not part of the context.
         """
         return super().unbind(*keys)  # type: ignore[return-value]
@@ -657,8 +655,7 @@ class LoggerFactory:
     >>> from structlog.stdlib import LoggerFactory
     >>> configure(logger_factory=LoggerFactory())
 
-    Parameters:
-
+    Args:
         ignore_frame_names:
             When guessing the name of a logger, skip frames whose names *start*
             with one of these.  For example, in pyramid applications you'll
@@ -816,8 +813,7 @@ class ExtraAdder:
     This processor can be used for adding data passed in the ``extra``
     parameter of the `logging` module's log methods to the event dictionary.
 
-    Parameters:
-
+    Args:
         allow:
             An optional collection of attributes that, if present in
             `logging.LogRecord` objects, will be copied to event dictionaries.
@@ -908,8 +904,7 @@ class ProcessorFormatter(logging.Formatter):
 
     Please refer to :ref:`processor-formatter` for examples.
 
-    Parameters:
-
+    Args:
         foreign_pre_chain:
             If not `None`, it is used as a processor chain that is applied to
             **non**-*structlog* log entries before the event dictionary is
@@ -971,7 +966,6 @@ class ProcessorFormatter(logging.Formatter):
             message, otherwise use ``str(record.msg)``. (default: True)
 
     Raises:
-
         TypeError: If both or neither *processor* and *processors* are passed.
 
     .. versionadded:: 17.1.0

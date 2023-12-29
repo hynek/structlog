@@ -79,7 +79,6 @@ class BoundLoggerBase:
         Return a new logger with *keys* removed from the context.
 
         Raises:
-
             KeyError: If the key is not part of the context.
         """
         bl = self.bind()
@@ -123,8 +122,7 @@ class BoundLoggerBase:
         Call it to combine your *event* and *context* into an event_dict and
         process using the processor chain.
 
-        Parameters:
-
+        Args:
             method_name:
                 The name of the logger method.  Is passed into the processors.
 
@@ -137,7 +135,6 @@ class BoundLoggerBase:
                 *event_kw* ``{"bar": 42}``.
 
         Raises:
-
             structlog.DropEvent: if log entry should be dropped.
 
             ValueError:
@@ -148,7 +145,6 @@ class BoundLoggerBase:
              `tuple` of ``(*args, **kw)``
 
         .. note::
-
             Despite underscore available to custom wrapper classes.
 
             See also `custom-wrappers`.
@@ -197,8 +193,7 @@ class BoundLoggerBase:
         handling :exc:`structlog.DropEvent`, and finally calls *method_name* on
         :attr:`_logger` with the result.
 
-        Parameters:
-
+        Args:
             method_name:
                 The name of the method that's going to get called.  Technically
                 it should be identical to the method the user called because it
@@ -213,7 +208,6 @@ class BoundLoggerBase:
                 *event_kw* ``{"bar": 42}``.
 
         .. note::
-
             Despite underscore available to custom wrapper classes.
 
             See also `custom-wrappers`.
@@ -232,12 +226,10 @@ def get_context(bound_logger: BindableLogger) -> Context:
     The type of *bound_logger* and the type returned depend on your
     configuration.
 
-    Parameters:
-
+    Args:
         bound_logger: The bound logger whose context you want.
 
     Returns:
-
         The *actual* context from *bound_logger*. It is *not* copied first.
 
     .. versionadded:: 20.2.0

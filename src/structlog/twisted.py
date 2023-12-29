@@ -204,8 +204,7 @@ class PlainFileLogObserver:
     Great to just print JSON to stdout where you catch it with something like
     runit.
 
-    Parameters:
-
+    Args:
         file: File to print to.
 
     .. versionadded:: 0.2.0
@@ -229,8 +228,7 @@ class JSONLogObserverWrapper:
     """
     Wrap a log *observer* and render non-`JSONRenderer` entries to JSON.
 
-    Parameters:
-
+    Args:
         observer (ILogObserver):
             Twisted log observer to wrap.  For example
             :class:`PlainFileObserver` or Twisted's stock `FileLogObserver
@@ -293,8 +291,7 @@ class EventAdapter:
     <https://docs.twisted.org/en/stable/api/twisted.python.log.html#err>`_
     behave as expected.
 
-    Parameters:
-
+    Args:
         dictRenderer:
             Renderer that is used for the actual log message. Please note that
             structlog comes with a dedicated `JSONRenderer`.

@@ -13,20 +13,27 @@ import errno
 import sys
 
 from contextlib import suppress
-from typing import Any, Callable
+from typing import Any, Callable, TypeVar
 
 
-def until_not_interrupted(f: Callable[..., Any], *args: Any, **kw: Any) -> Any:
+T = TypeVar("T")
+
+
+def until_not_interrupted(
+    f: Callable[..., T], *args: object, **kw: object
+) -> T:
     """
     Retry until *f* succeeds or an exception that isn't caused by EINTR occurs.
 
-    Parameters:
-
+    Args:
         f: A callable like a function.
 
         *args: Positional arguments for *f*.
 
         **kw: Keyword arguments for *f*.
+
+    Returns:
+        Whatever *f* returns.
     """
     while True:
         try:

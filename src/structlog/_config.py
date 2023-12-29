@@ -114,8 +114,7 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
     >>> log.info("hello", x=42)
     y=23 x=42 event='hello'
 
-    Parameters:
-
+    Args:
         args:
             *Optional* positional arguments that are passed unmodified to the
             logger factory.  Therefore it depends on the factory what they
@@ -124,7 +123,6 @@ def get_logger(*args: Any, **initial_values: Any) -> Any:
         initial_values: Values that are used to pre-populate your contexts.
 
     Returns:
-
         A proxy that creates a correctly configured bound logger when
         necessary. The type of that bound logger depends on your configuration
         and is `structlog.BoundLogger` by default.
@@ -169,8 +167,7 @@ def wrap_logger(
     In other words: selective overwriting of the defaults while keeping some
     *is* possible.
 
-    Parameters:
-
+    Args:
         initial_values: Values that are used to pre-populate your contexts.
 
         logger_factory_args:
@@ -178,7 +175,6 @@ def wrap_logger(
             the logger factory if not `None`.
 
     Returns:
-
         A proxy that creates a correctly configured bound logger when
         necessary.
 
@@ -217,8 +213,7 @@ def configure(
 
     Use `reset_defaults` to undo your changes.
 
-    Parameters:
-
+    Args:
         processors: The processor chain. See :doc:`processors` for details.
 
         wrapper_class:
@@ -269,7 +264,6 @@ def configure_once(
     `configure_once` before.
 
     Raises:
-
         RuntimeWarning: if repeated configuration is attempted.
     """
     if not _CONFIG.is_configured:
