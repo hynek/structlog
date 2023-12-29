@@ -31,7 +31,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 ### Changed
 
 - `structlog.stdlib.recreate_defaults()` now also adds `structlog.stdlib.add_logger_name` to the processors.
-  Check out the updated screenshot in the README!
+  Check out the [updated screenshot](https://raw.githubusercontent.com/hynek/structlog/main/docs/_static/console_renderer.png)!
 
 
 ### Fixed
