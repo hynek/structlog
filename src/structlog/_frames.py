@@ -10,6 +10,7 @@ import traceback
 
 from io import StringIO
 from types import FrameType
+from typing import Callable
 
 from .contextvars import _ASYNC_CALLING_STACK
 from .typing import ExcInfo
@@ -37,21 +38,25 @@ def _format_exception(exc_info: ExcInfo) -> str:
 
 def _find_first_app_frame_and_name(
     additional_ignores: list[str] | None = None,
+    *,
+    _getframe: Callable[[], FrameType] = sys._getframe,
 ) -> tuple[FrameType, str]:
     """
     Remove all intra-structlog calls and return the relevant app frame.
 
-    Parameters:
-
+    Args:
         additional_ignores:
             Additional names with which the first frame must not start.
 
-    Returns:
+        _getframe:
+            Callable to find current frame. Only for testing to avoid
+            monkeypatching of sys._getframe.
 
+    Returns:
         tuple of (frame, name)
     """
     ignores = ["structlog"] + (additional_ignores or [])
-    f = _ASYNC_CALLING_STACK.get(sys._getframe())
+    f = _ASYNC_CALLING_STACK.get(_getframe())
     name = f.f_globals.get("__name__") or "?"
     while any(tuple(name.startswith(i) for i in ignores)):
         if f.f_back is None:

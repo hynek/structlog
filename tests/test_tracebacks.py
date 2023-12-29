@@ -469,6 +469,12 @@ def test_recursive():
         )
         == frames[0]
     )
+
+    # If we run the tests under Python 3.12 with sysmon enabled, it inserts
+    # frames at the end.
+    if sys.version_info >= (3, 12):
+        frames = [f for f in frames if "coverage" not in f.filename]
+
     # Depending on whether we invoke pytest directly or run tox, either "foo()"
     # or "bar()" is at the end of the stack.
     assert frames[-1] in [

@@ -865,23 +865,12 @@ class TestCallsiteParameterAdder:
         processor = self.make_processor(None, additional_ignores)
         event_dict: EventDict = {"event": test_message}
 
-        # `functools.partial` is used instead of a lambda because a lambda will
-        # add an additional frame in a module that should not be ignored.
-        _sys_getframe = functools.partial(additional_frame, sys._getframe)
-
-        # WARNING: The below three lines are sensitive to relative line numbers
-        # (i.e. the invocation of processor must be two lines after the
-        # invocation of get_callsite_parameters) and is order sensitive (i.e.
-        # monkeypatch.setattr must occur after get_callsite_parameters but
-        # before invocation of processor).
-        callsite_params = self.get_callsite_parameters(2)
-        monkeypatch.setattr(sys, "_getframe", value=_sys_getframe)
+        # Warning: the next two lines must appear exactly like this to make
+        # line numbers match.
+        callsite_params = self.get_callsite_parameters(1)
         actual = processor(None, None, event_dict)
 
-        expected = {
-            "event": test_message,
-            **callsite_params,
-        }
+        expected = {"event": test_message, **callsite_params}
 
         assert expected == actual
 
@@ -941,10 +930,7 @@ class TestCallsiteParameterAdder:
         callsite_params = self.filter_parameter_dict(
             callsite_params, parameter_strings
         )
-        expected = {
-            "event": test_message,
-            **callsite_params,
-        }
+        expected = {"event": test_message, **callsite_params}
 
         assert expected == actual
 
@@ -1029,10 +1015,7 @@ class TestCallsiteParameterAdder:
             for key, value in json.loads(string_io.getvalue()).items()
             if not key.startswith("_")
         }
-        expected = {
-            "event": test_message,
-            **callsite_params,
-        }
+        expected = {"event": test_message, **callsite_params}
 
         assert expected == actual
 
@@ -1044,18 +1027,16 @@ class TestCallsiteParameterAdder:
     ) -> CallsiteParameterAdder:
         """
         Creates a ``CallsiteParameterAdder`` with parameters matching the
-        supplied ``parameter_strings`` values and with the supplied
-        ``additional_ignores`` values.
+        supplied *parameter_strings* values and with the supplied
+        *additional_ignores* values.
 
-        Parameters:
-
+        Args:
             parameter_strings:
                 Strings for which corresponding ``CallsiteParameters`` should
                 be included in the resulting ``CallsiteParameterAdded``.
 
             additional_ignores:
-
-                Used as ``additional_ignores`` for the resulting
+                Used as *additional_ignores* for the resulting
                 ``CallsiteParameterAdded``.
         """
         if parameter_strings is None:
@@ -1097,11 +1078,10 @@ class TestCallsiteParameterAdder:
         cls, input: dict[str, object], parameter_strings: set[str] | None
     ) -> dict[str, object]:
         """
-        Returns a dictionary that is equivalent to ``input`` but with all keys
-        not in ``parameter_strings`` removed.
+        Returns a dictionary that is equivalent to *input* but with all keys
+        not in *parameter_strings* removed.
 
-        Parameters:
-
+        Args:
             parameter_strings:
                 The keys to keep in the dictionary, if this value is ``None``
                 then all keys matching ``cls.parameter_strings`` are kept.
@@ -1120,8 +1100,7 @@ class TestCallsiteParameterAdder:
         This function creates dictionary of callsite parameters for the line
         that is ``offset`` lines after the invocation of this function.
 
-        Parameters:
-
+        Args:
             offset:
                 The amount of lines after the invocation of this function that
                 callsite parameters should be generated for.

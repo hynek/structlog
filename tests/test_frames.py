@@ -9,8 +9,6 @@ import pytest
 
 from pretend import stub
 
-import structlog._frames
-
 from structlog._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
@@ -19,68 +17,69 @@ from structlog._frames import (
 
 
 class TestFindFirstAppFrameAndName:
-    def test_ignores_structlog_by_default(self, monkeypatch):
+    def test_ignores_structlog_by_default(self):
         """
         No matter what you pass in, structlog frames get always ignored.
         """
         f1 = stub(f_globals={"__name__": "test"}, f_back=None)
         f2 = stub(f_globals={"__name__": "structlog.blubb"}, f_back=f1)
-        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f2)
-        f, n = _find_first_app_frame_and_name()
+
+        f, n = _find_first_app_frame_and_name(_getframe=lambda: f2)
 
         assert (f1, "test") == (f, n)
 
-    def test_ignoring_of_additional_frame_names_works(self, monkeypatch):
+    def test_ignoring_of_additional_frame_names_works(self):
         """
         Additional names are properly ignored too.
         """
         f1 = stub(f_globals={"__name__": "test"}, f_back=None)
         f2 = stub(f_globals={"__name__": "ignored.bar"}, f_back=f1)
         f3 = stub(f_globals={"__name__": "structlog.blubb"}, f_back=f2)
-        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f3)
-        f, n = _find_first_app_frame_and_name(additional_ignores=["ignored"])
+
+        f, n = _find_first_app_frame_and_name(
+            additional_ignores=["ignored"], _getframe=lambda: f3
+        )
 
         assert (f1, "test") == (f, n)
 
-    def test_tolerates_missing_name(self, monkeypatch):
+    def test_tolerates_missing_name(self):
         """
         Use ``?`` if `f_globals` lacks a `__name__` key
         """
         f1 = stub(f_globals={}, f_back=None)
-        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
-        f, n = _find_first_app_frame_and_name()
+
+        f, n = _find_first_app_frame_and_name(_getframe=lambda: f1)
 
         assert (f1, "?") == (f, n)
 
-    def test_tolerates_name_explicitly_None_oneframe(self, monkeypatch):
+    def test_tolerates_name_explicitly_None_oneframe(self):
         """
         Use ``?`` if `f_globals` has a `None` valued `__name__` key
         """
         f1 = stub(f_globals={"__name__": None}, f_back=None)
-        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
-        f, n = _find_first_app_frame_and_name()
+
+        f, n = _find_first_app_frame_and_name(_getframe=lambda: f1)
 
         assert (f1, "?") == (f, n)
 
-    def test_tolerates_name_explicitly_None_manyframe(self, monkeypatch):
+    def test_tolerates_name_explicitly_None_manyframe(self):
         """
         Use ``?`` if `f_globals` has a `None` valued `__name__` key,
         multiple frames up.
         """
         f1 = stub(f_globals={"__name__": None}, f_back=None)
         f2 = stub(f_globals={"__name__": "structlog.blubb"}, f_back=f1)
-        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f2)
-        f, n = _find_first_app_frame_and_name()
+        f, n = _find_first_app_frame_and_name(_getframe=lambda: f2)
 
         assert (f1, "?") == (f, n)
 
-    def test_tolerates_f_back_is_None(self, monkeypatch):
+    def test_tolerates_f_back_is_None(self):
         """
         Use ``?`` if all frames are in ignored frames.
         """
         f1 = stub(f_globals={"__name__": "structlog"}, f_back=None)
-        monkeypatch.setattr(structlog._frames.sys, "_getframe", lambda: f1)
-        f, n = _find_first_app_frame_and_name()
+
+        f, n = _find_first_app_frame_and_name(_getframe=lambda: f1)
 
         assert (f1, "?") == (f, n)
 
