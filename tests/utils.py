@@ -7,10 +7,10 @@
 Shared test utilities.
 """
 
-from structlog._log_levels import _NAME_TO_LEVEL
+from structlog._log_levels import NAME_TO_LEVEL
 
 
-stdlib_log_methods = [m for m in _NAME_TO_LEVEL if m != "notset"]
+stdlib_log_methods = [m for m in NAME_TO_LEVEL if m != "notset"]
 
 
 class CustomError(Exception):

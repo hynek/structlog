@@ -35,14 +35,14 @@ from ._frames import (
     _format_exception,
     _format_stack,
 )
-from ._log_levels import _NAME_TO_LEVEL, add_log_level
+from ._log_levels import NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
 from .tracebacks import ExceptionDictTransformer
 from .typing import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
 
 
 __all__ = [
-    "_NAME_TO_LEVEL",  # some people rely on it being here
+    "NAME_TO_LEVEL",  # some people rely on it being here
     "add_log_level",
     "CallsiteParameter",
     "CallsiteParameterAdder",

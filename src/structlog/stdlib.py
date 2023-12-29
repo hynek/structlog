@@ -24,7 +24,7 @@ from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
 from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
-from ._log_levels import _LEVEL_TO_NAME, _NAME_TO_LEVEL, add_log_level
+from ._log_levels import LEVEL_TO_NAME, NAME_TO_LEVEL, add_log_level
 from .contextvars import _ASYNC_CALLING_STACK, merge_contextvars
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
@@ -230,7 +230,7 @@ class BoundLogger(BoundLoggerBase):
         Process *event* and call the appropriate logging method depending on
         *level*.
         """
-        return self._proxy_to_logger(_LEVEL_TO_NAME[level], event, *args, **kw)
+        return self._proxy_to_logger(LEVEL_TO_NAME[level], event, *args, **kw)
 
     fatal = critical
 
@@ -757,7 +757,7 @@ def filter_by_level(
     ...
     DropEvent
     """
-    if logger.isEnabledFor(_NAME_TO_LEVEL[method_name]):
+    if logger.isEnabledFor(NAME_TO_LEVEL[method_name]):
         return event_dict
 
     raise DropEvent
@@ -781,7 +781,7 @@ def add_log_level_number(
 
     .. versionadded:: 18.2.0
     """
-    event_dict["level_number"] = _NAME_TO_LEVEL[method_name]
+    event_dict["level_number"] = NAME_TO_LEVEL[method_name]
 
     return event_dict
 

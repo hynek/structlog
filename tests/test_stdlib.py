@@ -26,7 +26,7 @@ from structlog import (
     get_context,
 )
 from structlog._config import _CONFIG
-from structlog._log_levels import _NAME_TO_LEVEL, CRITICAL, WARN
+from structlog._log_levels import CRITICAL, NAME_TO_LEVEL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer, KeyValueRenderer
@@ -469,7 +469,7 @@ class TestPositionalArgumentsFormatter:
 
 
 class TestAddLogLevelNumber:
-    @pytest.mark.parametrize(("level", "number"), _NAME_TO_LEVEL.items())
+    @pytest.mark.parametrize(("level", "number"), NAME_TO_LEVEL.items())
     def test_log_level_number_added(self, level, number):
         """
         The log level number is added to the event dict.

@@ -17,11 +17,11 @@ from typing import Any, Callable
 
 from ._base import BoundLoggerBase
 from ._log_levels import (
-    _LEVEL_TO_NAME,
     CRITICAL,
     DEBUG,
     ERROR,
     INFO,
+    LEVEL_TO_NAME,
     NOTSET,
     WARNING,
 )
@@ -110,7 +110,7 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
        Async variants ``alog()``, ``adebug()``, ``ainfo()``, and so forth.
     """
 
-    return _LEVEL_TO_FILTERING_LOGGER[min_level]
+    return LEVEL_TO_FILTERING_LOGGER[min_level]
 
 
 def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
@@ -127,7 +127,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         if level < min_level:
             return _nop, _anop
 
-        name = _LEVEL_TO_NAME[level]
+        name = LEVEL_TO_NAME[level]
 
         def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
             if not args:
@@ -163,7 +163,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     def log(self: Any, level: int, event: str, *args: Any, **kw: Any) -> Any:
         if level < min_level:
             return None
-        name = _LEVEL_TO_NAME[level]
+        name = LEVEL_TO_NAME[level]
 
         if not args:
             return self._proxy_to_logger(name, event, **kw)
@@ -179,7 +179,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         """
         if level < min_level:
             return None
-        name = _LEVEL_TO_NAME[level]
+        name = LEVEL_TO_NAME[level]
         if args:
             event = event % args
 
@@ -197,7 +197,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         return runner
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
-    for lvl, name in _LEVEL_TO_NAME.items():
+    for lvl, name in LEVEL_TO_NAME.items():
         meths[name], meths[f"a{name}"] = make_method(lvl)
 
     meths["exception"] = exception
@@ -211,7 +211,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
 
     return type(
         "BoundLoggerFilteringAt%s"
-        % (_LEVEL_TO_NAME.get(min_level, "Notset").capitalize()),
+        % (LEVEL_TO_NAME.get(min_level, "Notset").capitalize()),
         (BoundLoggerBase,),
         meths,
     )
@@ -225,7 +225,7 @@ BoundLoggerFilteringAtWarning = _make_filtering_bound_logger(WARNING)
 BoundLoggerFilteringAtError = _make_filtering_bound_logger(ERROR)
 BoundLoggerFilteringAtCritical = _make_filtering_bound_logger(CRITICAL)
 
-_LEVEL_TO_FILTERING_LOGGER = {
+LEVEL_TO_FILTERING_LOGGER = {
     CRITICAL: BoundLoggerFilteringAtCritical,
     ERROR: BoundLoggerFilteringAtError,
     WARNING: BoundLoggerFilteringAtWarning,

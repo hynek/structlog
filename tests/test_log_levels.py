@@ -9,7 +9,7 @@ import pickle
 import pytest
 
 from structlog import make_filtering_bound_logger
-from structlog._log_levels import _LEVEL_TO_NAME
+from structlog._log_levels import LEVEL_TO_NAME
 from structlog.contextvars import (
     bind_contextvars,
     clear_contextvars,
@@ -259,7 +259,7 @@ class TestFilteringLogger:
 
         assert exc is cl.calls[0][2]["event"]
 
-    @pytest.mark.parametrize("level", tuple(_LEVEL_TO_NAME.keys()))
+    @pytest.mark.parametrize("level", tuple(LEVEL_TO_NAME.keys()))
     def test_pickle(self, level):
         """
         FilteringBoundLogger are pickleable.

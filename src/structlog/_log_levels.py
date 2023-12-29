@@ -24,7 +24,7 @@ INFO = 20
 DEBUG = 10
 NOTSET = 0
 
-_NAME_TO_LEVEL = {
+NAME_TO_LEVEL = {
     "critical": CRITICAL,
     "exception": ERROR,
     "error": ERROR,
@@ -35,11 +35,15 @@ _NAME_TO_LEVEL = {
     "notset": NOTSET,
 }
 
-_LEVEL_TO_NAME = {
+LEVEL_TO_NAME = {
     v: k
-    for k, v in _NAME_TO_LEVEL.items()
+    for k, v in NAME_TO_LEVEL.items()
     if k not in ("warn", "exception", "notset")
 }
+
+# Keep around for backwards-compatability in case someone imported them.
+_LEVEL_TO_NAME = LEVEL_TO_NAME
+_NAME_TO_LEVEL = NAME_TO_LEVEL
 
 
 def add_log_level(

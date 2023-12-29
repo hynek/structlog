@@ -11,7 +11,7 @@ import pytest
 
 import structlog
 
-from structlog._log_levels import _NAME_TO_LEVEL
+from structlog._log_levels import NAME_TO_LEVEL
 from structlog.testing import CapturingLogger
 
 
@@ -58,7 +58,7 @@ def _event_dict():
 
 @pytest.fixture(
     name="stdlib_log_method",
-    params=[m for m in _NAME_TO_LEVEL if m != "notset"],
+    params=[m for m in NAME_TO_LEVEL if m != "notset"],
 )
 def _stdlib_log_methods(request):
     return request.param
