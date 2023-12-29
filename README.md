@@ -41,9 +41,7 @@ Especially those generously supporting us at the *The Organization* tier and hig
 
 <p align="center">
    <a href="https://www.variomedia.de/"><img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/Variomedia.svg" width="200" height="60" /></a>
-
    <a href="https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"><img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/Tidelift.svg" width="200" height="60" /></a>
-
    <a href="https://filepreviews.io/"><img src="https://raw.githubusercontent.com/hynek/structlog/main/.github/sponsors/FilePreviews.svg" width="200" height="60" /></a>
 </p>
 
