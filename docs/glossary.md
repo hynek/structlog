@@ -14,14 +14,24 @@ Event Dictionary
 Bound Logger
     An instance of a {class}`structlog.typing.BindableLogger` that is returned by either {func}`structlog.get_logger` or the bind/unbind/new methods on it.
 
-    As the name suggests, it's possible to bind key-value pairs to it -- this data is called the **context** of the logger.
+    As the name suggests, it's possible to bind key-value pairs to it -- this data is called the {term}`context` of the logger.
 
     Its methods are the user's logging API and depend on the type of the bound logger.
     The two most common implementations are {class}`structlog.BoundLogger` and {class}`structlog.stdlib.BoundLogger`.
 
+    Bound loggers are **immutable**.
+    The context can only be modified by creating a new bound logger using its `bind()`and `unbind()` methods.
+
     :::{seealso}
     {doc}`bound-loggers`
     :::
+
+Context
+    A dictionary of key-value pairs belonging to a {term}`bound logger`.
+    When a log entry is logged out, the context is the base for the event dictionary with the keyword arguments of the logging method call merged in.
+
+    Bound loggers are **immutable**, so it's not possible to modify a context directly.
+    But you can create a new bound logger with a different context using its `bind()` and `unbind()` methods.
 
 Native Loggers
     Loggers created using {func}`structlog.make_filtering_bound_logger` which includes the default configuration.

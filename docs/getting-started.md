@@ -72,7 +72,7 @@ log = structlog.get_logger()
 - For brevity and to enable doctests, all further examples in *structlog*'s documentation use the more simplistic {class}`~structlog.processors.KeyValueRenderer()` without timestamps.
 :::
 
-Here you go, structured logging!
+There you go, structured logging!
 
 
 However, this alone wouldn't warrant its own package.
@@ -107,7 +107,7 @@ At this point, you'll be tempted to write a closure like:
 
 ```python
 def log_closure(event):
-   log.info(event, user_agent=user_agent, peer_ip=peer_ip)
+    log.info(event, user_agent=user_agent, peer_ip=peer_ip)
 ```
 
 inside of the view.
