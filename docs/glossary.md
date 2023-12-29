@@ -1,5 +1,7 @@
 # Glossary
 
+Please feel free to [file an issue](https://github.com/hynek/structlog/issues) if you feel some important concept is missing here.
+
 :::{glossary}
 
 Event Dictionary
@@ -9,7 +11,7 @@ Event Dictionary
     It's the result of the values bound to the {term}`bound logger`'s context and the key-value pairs passed to the logging method.
     It is then passed through the {term}`processor` chain that can add, modify, and even remove key-value pairs.
 
-Bound logger
+Bound Logger
     An instance of a {class}`structlog.typing.BindableLogger` that is returned by either {func}`structlog.get_logger` or the bind/unbind/new methods on it.
 
     As the name suggests, it's possible to bind key-value pairs to it -- this data is called the **context** of the logger.
@@ -21,7 +23,7 @@ Bound logger
     {doc}`bound-loggers`
     :::
 
-Native loggers
+Native Loggers
     Loggers created using {func}`structlog.make_filtering_bound_logger` which includes the default configuration.
 
     These loggers are very fast and do **not** use the standard library.
