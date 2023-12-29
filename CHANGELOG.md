@@ -124,7 +124,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Deprecated
 
-- Accessing package metadata as attributes on the *structlog* module is deprecated (e.g. `structlog.__version__`).
+- Accessing package metadata as attributes on the *structlog* module is deprecated (for example, `structlog.__version__`).
   Please use [`importlib.metadata`](https://docs.python.org/3.10/library/importlib.metadata.html) instead (for Python 3.7: the [*importlib-metadata*](https://pypi.org/project/importlib-metadata/) PyPI package).
 - The `structlog.types` module is now deprecated in favor of the `structlog.typing` module.
   It seems like the Python typing community is settling on this name.
@@ -277,7 +277,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - *structlog* switched its packaging to [*flit*](https://flit.pypa.io/).
   Users shouldn't notice a difference, but (re-)packagers might.
 - `structlog.stdlib.AsyncBoundLogger` now determines the running loop when logging, not on instantiation.
-  That has a minor performance impact, but makes it more robust when loops change (e.g. `aiohttp.web.run_app()`), or you want to use `sync_bl` *before* a loop has started.
+  That has a minor performance impact, but makes it more robust when loops change (for example, `aiohttp.web.run_app()`), or you want to use `sync_bl` *before* a loop has started.
 
 
 ### Fixed
@@ -331,7 +331,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Fixed
 
-- *structlog* is now importable if `sys.stdout` is `None` (e.g. when running using `pythonw`). [#313](https://github.com/hynek/structlog/issues/313)
+- *structlog* is now importable if `sys.stdout` is `None` (for example, when running using `pythonw`). [#313](https://github.com/hynek/structlog/issues/313)
 
 
 ## [21.1.0](https://github.com/hynek/structlog/compare/20.2.0...21.1.0) - 2021-02-18
@@ -372,7 +372,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - *structlog* has now type hints for all of its APIs!
   Since *structlog* is highly dynamic and configurable, this led to a few concessions like a specialized `structlog.stdlib.get_logger()` whose only difference to `structlog.get_logger()` is that it has the correct type hints.
 
-  We consider them provisional for the time being – i.e. the backwards-compatibility does not apply to them in its full strength until we feel we got it right.
+  We consider them provisional for the time being – that means the backwards-compatibility does not apply to them in its full strength until we feel we got it right.
   Please feel free to provide feedback!
   [#223](https://github.com/hynek/structlog/issues/223),
   [#282](https://github.com/hynek/structlog/issues/282)
@@ -788,7 +788,7 @@ Special thanks go to [Fabian Büchler](https://github.com/fabianbuechler), [Gilb
 - Add `structlog.processors.ExceptionPrettyPrinter` for development and testing when multiline log entries aren't just acceptable but even helpful.
 - Allow the standard library name guesser to ignore certain frame names.
   This is useful together with frameworks.
-- Add meta data (e.g. function names, line numbers) extraction for wrapped stdlib loggers. [#5](https://github.com/hynek/structlog/pull/5)
+- Add meta data (for example, function names, line numbers) extraction for wrapped stdlib loggers. [#5](https://github.com/hynek/structlog/pull/5)
 
 
 ## [0.3.2](https://github.com/hynek/structlog/compare/0.3.1...0.3.2) - 2013-09-27

@@ -1113,11 +1113,12 @@ class ProcessorFormatter(logging.Formatter):
         """
         Wrap *logger*, *name*, and *event_dict*.
 
-        The result is later unpacked by `ProcessorFormatter` when
-        formatting log entries.
+        The result is later unpacked by `ProcessorFormatter` when formatting
+        log entries.
 
-        Use this static method as the renderer (i.e. final processor) if you
-        want to use `ProcessorFormatter` in your `logging` configuration.
+        Use this static method as the renderer (in other words, final
+        processor) if you want to use `ProcessorFormatter` in your `logging`
+        configuration.
         """
         return (event_dict,), {"extra": {"_logger": logger, "_name": name}}
 

@@ -1,7 +1,8 @@
 # Processors
 
 The true power of *structlog* lies in its *combinable log processors*.
-A log processor is a regular callable, i.e. a function or an instance of a class with a `__call__()` method.
+A log processor is a regular callable or in other words:
+A function or an instance of a class with a `__call__()` method.
 
 (chains)=
 
@@ -29,7 +30,7 @@ The return value of each processor is passed on to the next one as `event_dict` 
 
 :::{note}
 *structlog* only looks at the return value of the **last** processor.
-That means that as long as you control the next processor in the chain (i.e. the processor that will get your return value passed as an argument), you can return whatever you want.
+That means that as long as you control the next processor in the chain (the processor that will get your return value passed as an argument), you can return whatever you want.
 
 Returning a modified event dictionary from your processors is just a convention to make processors composable.
 :::
@@ -95,7 +96,7 @@ But we can do better than that!
 
 (cond-drop)=
 
-How about dropping only log entries that are marked as coming from a certain peer (e.g. monitoring)?
+How about dropping only log entries that are marked as coming from a certain peer (for example, monitoring)?
 
 ```python
 class ConditionalDropper:

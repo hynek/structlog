@@ -30,7 +30,7 @@ logging.basicConfig(
 )
 ```
 
-This will send all log messages with the [log level](https://docs.python.org/3/library/logging.html#logging-levels) `logging.INFO` and above (that means that e.g. `logging.debug` calls are ignored) to standard out without any special formatting by the standard library.
+This will send all log messages with the [log level](https://docs.python.org/3/library/logging.html#logging-levels) `logging.INFO` and above (that means that, for example, `logging.debug` calls are ignored) to standard out without any special formatting by the standard library.
 
 If you require more complex behavior, please refer to the standard library's `logging` documentation.
 
@@ -63,13 +63,14 @@ This means an increased computational cost per log entry, but your application w
 ---
 
 
-*structlog* also comes with {class}`structlog.stdlib.AsyncBoundLogger` that blankly makes all logging methods asynchronous (i.e. `await log.info()`).
+*structlog* also comes with {class}`structlog.stdlib.AsyncBoundLogger` that blankly makes all logging methods asynchronous (in other words, you have to use `await log.info()` instead of just `log.info()`).
 
 To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger` as `wrapper_class`.
 
 ```{versionadded} 20.2.0
 ```
-
+```{deprecated} 23.1.0
+```
 
 
 ## Processors
@@ -118,7 +119,7 @@ To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger
 
 {func}`~structlog.stdlib.PositionalArgumentsFormatter`:
 
-: This processes and formats positional arguments (if any) passed to log methods in the same way the `logging` module would do, e.g. `logger.info("Hello, %s", name)`.
+: This processes and formats positional arguments (if any) passed to log methods in the same way the `logging` module would do, for example, `logger.info("Hello, %s", name)`.
 
 *structlog* also comes with {class}`~structlog.stdlib.ProcessorFormatter` which is a `logging.Formatter` that enables you to format non-*structlog* log entries using *structlog* renderers *and* multiplex *structlog*’s output with different renderers (see [below](processor-formatter) for an example).
 
@@ -285,7 +286,7 @@ structlog.configure(
 ```
 
 Now you have the event dict available within each log record.
-If you want all your log entries (i.e. also those not from your application / *structlog*) to be formatted as JSON, you can use the [*python-json-logger*] library:
+If you want *all* your log entries (meaning: also those not from your application / *structlog*) to be formatted as JSON, you can use the [*python-json-logger*] library:
 
 ```python
 import logging
@@ -393,7 +394,7 @@ amazing  _from_structlog=True _record=<LogRecord:...> events=oh yes
 ```
 
 Of course, you probably want timestamps and log levels in your output.
-The `ProcessorFormatter` has a `foreign_pre_chain` argument which is responsible for adding properties to events from the standard library -- i.e. that do not originate from a *structlog* logger -- and which should in general match the `processors` argument to {func}`structlog.configure` so you get a consistent output.
+The `ProcessorFormatter` has a `foreign_pre_chain` argument which is responsible for adding properties to events from the standard library -- in other words, those that do not originate from a *structlog* logger -- and which should in general match the `processors` argument to {func}`structlog.configure` so you get a consistent output.
 
 `_from_structlog` and `_record` allow your processors to determine whether the log entry is coming from *structlog*, and to extract information from `logging.LogRecord`s and add them to the event dictionary.
 However, you probably don't want to have them in your log files, thus we've added the `ProcessorFormatter.remove_processors_meta` processor to do so conveniently.

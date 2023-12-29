@@ -53,7 +53,7 @@ Since log entries are dictionaries, you can start binding and re-binding key-val
 2020-11-18 09:18:28 [info     ] user.logged_in    another_key=42 happy=True some_key=23 user=hynek
 ```
 
-You can also bind key-value pairs to {doc}`context variables <contextvars>` that look global, but are local to your thread or *asyncio* context (i.e. usually your request).
+You can also bind key-value pairs to {doc}`context variables <contextvars>` that look global, but are local to your thread or *asyncio* context -- which usually means your web request.
 
 
 ### Powerful Pipelines
