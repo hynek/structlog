@@ -15,7 +15,7 @@ import warnings
 
 from typing import Any, Callable, Iterable, Sequence, Type, cast
 
-from ._log_levels import make_filtering_bound_logger
+from ._native import make_filtering_bound_logger
 from ._output import PrintLoggerFactory
 from .contextvars import merge_contextvars
 from .dev import ConsoleRenderer, _has_colors, set_exc_info
