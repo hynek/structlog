@@ -39,13 +39,15 @@ For the console and beyond.
 :::{versionadded} 23.3.0
 :::
 
-You can freely configure how the key-value pairs are formatted -- regarding colors, order, and how the value is rendered.
+You can freely configure how the key-value pairs are formatted: colors, order, and how values are stringified.
 
 For that {class}`~structlog.dev.ConsoleRenderer` accepts the *columns* parameter that takes a list of {class}`~structlog.dev.Column`s.
 It allows you to assign a formatter to each key and a default formatter for the rest (by passing an empty key name).
-The order of the column definitions is the order in which the columns are rendered, the rest is -- depending on the *sort_keys* argument to {class}`~structlog.dev.ConsoleRenderer` -- either sorted alphabetically, or in the order of the keys in the event dictionary.
+The order of the column definitions is the order in which the columns are rendered;
+the rest is -- depending on the *sort_keys* argument to {class}`~structlog.dev.ConsoleRenderer` -- either sorted alphabetically or in the order of the keys in the event dictionary.
 
-You can use a column to drop a key-value pair from the output by returning an empty string from the formatter.
+You can use a column definition to drop a key-value pair from the output by returning an empty string from the formatter.
+
 When the API talks about "styles", it means ANSI control strings.
 You can find them, for example, in [Colorama](https://github.com/tartley/colorama).
 
