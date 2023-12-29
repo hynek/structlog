@@ -1,6 +1,6 @@
 # Glossary
 
-Please feel free to [file an issue](https://github.com/hynek/structlog/issues) if you feel some important concept is missing here.
+Please feel free to [file an issue](https://github.com/hynek/structlog/issues) if you think some important concept is missing here.
 
 :::{glossary}
 
