@@ -27,6 +27,7 @@ why
 
 The first chapters teach you all you need to use *structlog* productively.
 They build gently on each other, so ideally, read them in order.
+If anything seems confusing, don't hesitate to have a look at the {doc}`glossary`!
 
 
 ```{toctree}
@@ -92,27 +93,13 @@ thread-local
 ```
 
 
-## API Reference
+## Reference
 
 ```{toctree}
 :maxdepth: 2
 
 api
-```
-
-
-## Project Links
-
-```{include} ../README.md
-:start-after: "## Project Links"
-```
-
-% stop Sphinx from complaining about orphaned docs, we link them elsewhere
-
-```{toctree}
-:hidden: true
-
-license
+glossary
 ```
 
 
@@ -120,3 +107,18 @@ license
 
 - {any}`genindex`
 - {any}`modindex`
+- {any}`glossary`
+
+
+```{toctree}
+:hidden:
+:caption: Meta
+
+license
+PyPI <https://pypi.org/project/structlog/>
+GitHub <https://github.com/hynek/structlog/>
+Changelog <https://github.com/hynek/structlog/blob/main/CHANGELOG.md>
+Contributing <https://github.com/hynek/structlog/blob/main/.github/CONTRIBUTING.md>
+Security Policy <https://github.com/hynek/structlog/blob/main/.github/SECURITY.md>
+Funding <https://hynek.me/say-thanks/>
+```
