@@ -7,7 +7,7 @@ Event Dictionary
     It's a dictionary that contains all the information that is logged, with the `event` key having the special role of being the name of the event.
 
     It's the result of the values bound to the {term}`bound logger`'s context and the key-value pairs passed to the logging method.
-    It is then passed through the {term}`processor` chain..
+    It is then passed through the {term}`processor` chain that can add, modify, and even remove key-value pairs.
 
 Bound logger
     An instance of a {class}`structlog.typing.BindableLogger` that is returned by either {func}`structlog.get_logger` or the bind/unbind/new methods on it.

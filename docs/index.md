@@ -27,7 +27,7 @@ why
 
 The first chapters teach you all you need to use *structlog* productively.
 They build gently on each other, so ideally, read them in order.
-If anything seems confusing, don't hesitate to have a look at the {doc}`glossary`!
+If anything seems confusing, don't hesitate to have a look at our {doc}`glossary`!
 
 
 ```{toctree}
