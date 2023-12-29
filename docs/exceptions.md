@@ -2,7 +2,7 @@
 
 While you should use a proper crash reporter like [Sentry](https://sentry.io) in production, *structlog* has helpers for formatting exceptions for humans and machines.
 
-All *structog*'s exception features center around passing an `exc_info` key-value pair in the event dict.
+All *structlog*'s exception features center around passing an `exc_info` key-value pair in the event dict.
 There are three possible behaviors depending on its value:
 
 1. If the value is a tuple, render it as if it was returned by {func}`sys.exc_info`.
