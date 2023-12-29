@@ -84,15 +84,6 @@ performance
 ```
 
 
-## Deprecated Features
-
-```{toctree}
-:maxdepth: 1
-
-thread-local
-```
-
-
 ## Reference
 
 ```{toctree}
@@ -100,6 +91,15 @@ thread-local
 
 api
 glossary
+```
+
+
+## Deprecated Features
+
+```{toctree}
+:maxdepth: 1
+
+thread-local
 ```
 
 
