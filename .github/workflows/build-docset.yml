@@ -29,7 +29,7 @@ jobs:
       - run: tox -e docset
       - run: tar --exclude='.DS_Store' -cvzf structlog.tgz structlog.docset
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: docset
           path: structlog.tgz
