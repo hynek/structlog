@@ -22,14 +22,14 @@ jobs:
           fetch-depth: 0  # get correct version
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
 
       - run: pip install tox
 
       - run: tox -e docset
       - run: tar --exclude='.DS_Store' -cvzf structlog.tgz structlog.docset
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: docset
           path: structlog.tgz
