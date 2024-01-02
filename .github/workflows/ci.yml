@@ -64,7 +64,7 @@ jobs:
           if-no-files-found: ignore
 
   coverage:
-    name: Combine & check coverage.
+    name: Combine & check coverage
     needs: tests
     runs-on: ubuntu-latest
 
