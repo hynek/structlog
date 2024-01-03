@@ -312,7 +312,7 @@ class BoundLoggerLazyProxy:
     # fulfill BindableLogger protocol without carrying accidental state
     @property
     def _context(self) -> dict[str, str]:
-        return {}
+        return self._initial_values
 
     def __init__(
         self,

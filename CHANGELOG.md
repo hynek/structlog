@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/23.3.0...HEAD)
 
+### Fixed
+
+- The lazy logger proxy returned by `structlog.get_logger()` now returns its initial values when asked for context.
+  When asked for context before binding for the first time, it returned an empty dictionary in 23.3.0.
+
 
 ## [23.3.0](https://github.com/hynek/structlog/compare/23.2.0...23.3.0) - 2023-12-29
 

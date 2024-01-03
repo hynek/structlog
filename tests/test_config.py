@@ -67,6 +67,16 @@ def test_lazy_logger_is_an_instance_of_bindable_logger():
     assert isinstance(get_logger(), BindableLogger)
 
 
+def test_lazy_logger_context_is_initial_values():
+    """
+    If a user asks for _context (e.g., using get_context) return
+    initial_values.
+    """
+    logger = get_logger(context="a")
+
+    assert {"context": "a"} == structlog.get_context(logger)
+
+
 def test_default_context_class():
     """
     Default context class is dict.
