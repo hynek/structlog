@@ -60,10 +60,15 @@ def add_log_level(
     .. versionchanged:: 20.2.0
        Importable from `structlog.processors` (additionally to
        `structlog.stdlib`).
+    .. versionchanged:: 24.1.0
+       Added mapping from "exception" to "error"
     """
     if method_name == "warn":
         # The stdlib has an alias
         method_name = "warning"
+    if method_name == "exception":
+        # exception("") method is the same as error("", exc_info=True)
+        method_name = "error"
 
     event_dict["level"] = method_name
 

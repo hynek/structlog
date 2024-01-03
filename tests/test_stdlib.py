@@ -488,13 +488,16 @@ class TestAddLogLevel:
 
         assert "error" == event_dict["level"]
 
-    def test_log_level_alias_normalized(self):
+    @pytest.mark.parametrize(
+        ("alias", "normalized"), [("warn", "warning"), ("exception", "error")]
+    )
+    def test_log_level_alias_normalized(self, alias, normalized):
         """
         The normalized name of the log level is added to the event dict.
         """
-        event_dict = add_log_level(None, "warn", {})
+        event_dict = add_log_level(None, alias, {})
 
-        assert "warning" == event_dict["level"]
+        assert normalized == event_dict["level"]
 
 
 @pytest.fixture(name="make_log_record")
