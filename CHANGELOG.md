@@ -23,6 +23,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   Fixes regression in 23.3.0.
   [#584](https://github.com/hynek/structlog/issues/584)
 
+- Don't ignore the `width` argument of `RichTracebackFormatter`.
+  [#587](https://github.com/hynek/structlog/issues/587)
+
 
 ## [23.3.0](https://github.com/hynek/structlog/compare/23.2.0...23.3.0) - 2023-12-29
 
