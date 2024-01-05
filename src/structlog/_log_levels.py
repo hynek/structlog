@@ -66,7 +66,7 @@ def add_log_level(
     if method_name == "warn":
         # The stdlib has an alias
         method_name = "warning"
-    if method_name == "exception":
+    elif method_name == "exception":
         # exception("") method is the same as error("", exc_info=True)
         method_name = "error"
 
