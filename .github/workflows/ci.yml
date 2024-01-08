@@ -177,8 +177,8 @@ jobs:
       - run: python -Im pip install -e .[dev]
       - run: python -Ic 'import structlog; print(structlog.__version__)'
 
-  # Ensure everything required is passing for branch protection.
   required-checks-pass:
+    name: Ensure everything required is passing for branch protection
     if: always()
 
     needs:
