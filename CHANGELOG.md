@@ -20,6 +20,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - The lazy logger proxy returned by `structlog.get_logger()` now returns its initial values when asked for context.
   When asked for context before binding for the first time, it returned an empty dictionary in 23.3.0.
 
+- The displayed level name when using `structlog.stdlib.BoundLogger.exception()` is `"error"` instead of `"exception"`.
+  Fixes regression in 23.3.0.
+  [#584](https://github.com/hynek/structlog/issues/584)
+
 - Don't ignore the `width` argument of `RichTracebackFormatter`.
   [#587](https://github.com/hynek/structlog/issues/587)
 
