@@ -69,7 +69,7 @@ $ git clone https://github.com/YOU/structlog.git
 >   Yes, you can work on `main` in your fork and submit pull requests.
 >   But this will *inevitably* lead to you not being able to synchronize your fork with upstream and having to start over.
 
-Change into the newly created directory and after activating a virtual environment, install an editable version of *structlog* along with its tests and docs requirements:
+Change into the newly created directory and after activating a virtual environment, install an editable version of *structlog* along with its tests requirements:
 
 ```console
 $ cd structlog
@@ -85,14 +85,14 @@ $ python -m pytest
 
 When working on the documentation, use:
 
-```bash
+```console
 $ tox run -e docs-watch
 ```
 
 ... to watch your files and automatically rebuild when a file changes.
 And use:
 
-```bash
+```console
 $ tox run -e docs
 ```
 
@@ -130,6 +130,10 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
 
       Args:
           x: A very important parameter.
+
+          y:
+              Another important parameter but one that doesn't fit a line so
+              it already starts on the next one.
 
       Returns:
           A very important return value.
@@ -180,7 +184,7 @@ But it's way more comfortable to run it locally and catch avoidable errors befor
 
   ## Header of New Top Section
 
-  ###  Header of New Section
+  ### Header of New Section
 
   First line of new section.
   ```
