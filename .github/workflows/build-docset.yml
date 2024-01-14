@@ -10,8 +10,7 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1
   PIP_NO_PYTHON_VERSION_WARNING: 1
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   docset:
@@ -26,7 +25,7 @@ jobs:
 
       - run: pip install tox
 
-      - run: tox -e docset
+      - run: tox run -e docset
       - run: tar --exclude='.DS_Store' -cvzf structlog.tgz structlog.docset
 
       - uses: actions/upload-artifact@v4
