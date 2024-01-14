@@ -208,6 +208,7 @@ jobs:
         with:
           python-version-file: .python-version-default
           cache: pip
-      - run: python -Im pip install tox
+      # tox 4.12.0 started passing FORCE_COLOR and NO_COLOR by default.
+      - run: python -Im pip install 'tox>=4.12.0'
 
       - run: python -Im tox run -f color
