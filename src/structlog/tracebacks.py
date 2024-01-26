@@ -177,12 +177,14 @@ def extract(
                 filename=filename or "?",
                 lineno=line_no,
                 name=frame_summary.f_code.co_name,
-                locals={
-                    key: to_repr(value, max_string=locals_max_string)
-                    for key, value in frame_summary.f_locals.items()
-                }
-                if show_locals
-                else None,
+                locals=(
+                    {
+                        key: to_repr(value, max_string=locals_max_string)
+                        for key, value in frame_summary.f_locals.items()
+                    }
+                    if show_locals
+                    else None
+                ),
             )
             append(frame)
 

@@ -199,6 +199,7 @@ class CapturingLoggerFactory:
 
     .. versionadded:: 20.2.0
     """
+
     logger: CapturingLogger
 
     def __init__(self) -> None:

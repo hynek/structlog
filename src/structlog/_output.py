@@ -257,6 +257,7 @@ class BytesLogger:
 
     .. versionadded:: 20.2.0
     """
+
     __slots__ = ("_file", "_write", "_flush", "_lock")
 
     def __init__(self, file: BinaryIO | None = None):
@@ -339,6 +340,7 @@ class BytesLoggerFactory:
 
     .. versionadded:: 20.2.0
     """
+
     __slots__ = ("_file",)
 
     def __init__(self, file: BinaryIO | None = None):

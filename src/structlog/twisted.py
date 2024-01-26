@@ -303,8 +303,9 @@ class EventAdapter:
 
     def __init__(
         self,
-        dictRenderer: Callable[[WrappedLogger, str, EventDict], str]
-        | None = None,
+        dictRenderer: (
+            Callable[[WrappedLogger, str, EventDict], str] | None
+        ) = None,
     ) -> None:
         self._dictRenderer = dictRenderer or _BUILTIN_DEFAULT_PROCESSORS[-1]
 

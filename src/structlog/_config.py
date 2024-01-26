@@ -63,9 +63,9 @@ class _Configuration:
     default_processors: Iterable[Processor] = _BUILTIN_DEFAULT_PROCESSORS[:]
     default_context_class: type[Context] = _BUILTIN_DEFAULT_CONTEXT_CLASS
     default_wrapper_class: Any = _BUILTIN_DEFAULT_WRAPPER_CLASS
-    logger_factory: Callable[
-        ..., WrappedLogger
-    ] = _BUILTIN_DEFAULT_LOGGER_FACTORY
+    logger_factory: Callable[..., WrappedLogger] = (
+        _BUILTIN_DEFAULT_LOGGER_FACTORY
+    )
     cache_logger_on_first_use: bool = _BUILTIN_CACHE_LOGGER_ON_FIRST_USE
 
 
