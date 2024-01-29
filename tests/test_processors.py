@@ -290,6 +290,16 @@ class TestLogfmtRenderer:
         with pytest.raises(ValueError, match='Invalid key: "invalid key"'):
             LogfmtRenderer()(None, None, event_dict)
 
+    def test_newline_in_value(self):
+        """
+        Newlines in values are escaped.
+        """
+        event_dict = {"with_newline": "some\nvalue"}
+
+        rv = LogfmtRenderer()(None, None, event_dict)
+
+        assert r"with_newline=some\nvalue" == rv
+
 
 class TestJSONRenderer:
     def test_renders_json(self, event_dict):

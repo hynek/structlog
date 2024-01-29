@@ -170,7 +170,7 @@ class LogfmtRenderer:
                     continue
                 value = "true" if value else "false"
 
-            value = f"{value}".replace('"', '\\"')
+            value = f"{value}".replace('"', '\\"').replace("\n", "\\n")
 
             if " " in value or "=" in value:
                 value = f'"{value}"'
