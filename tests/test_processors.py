@@ -292,10 +292,12 @@ class TestLogfmtRenderer:
 
     def test_newline_in_value(self):
         """
-        Newlines in values should be escaped
+        Newlines in values are escaped.
         """
         event_dict = {"with_newline": "some\nvalue"}
+
         rv = LogfmtRenderer()(None, None, event_dict)
+
         assert r"with_newline=some\nvalue" == rv
 
 
