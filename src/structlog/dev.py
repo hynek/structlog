@@ -454,7 +454,7 @@ class ConsoleRenderer:
             passed.
 
         repr_native_str:
-            When `True`, `repr` is also applied to ``str``s. The ``event`` key
+            When `True`, `repr` is also applied to ``str`` s. The ``event`` key
             is *never* `repr` -ed. Ignored if *columns* are passed.
 
         level_styles:
