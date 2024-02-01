@@ -6,7 +6,7 @@
 """
 Helpers that make development with *structlog* more pleasant.
 
-See also the narrative documentation in `development`.
+See also the narrative documentation in `console-output`.
 """
 
 from __future__ import annotations
