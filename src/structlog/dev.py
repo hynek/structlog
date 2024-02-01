@@ -421,7 +421,7 @@ else:
 
 
 class ConsoleRenderer:
-    """
+    r"""
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
     If ``event_dict`` contains a true-ish ``exc_info`` key, it will be rendered
@@ -454,8 +454,8 @@ class ConsoleRenderer:
             passed.
 
         repr_native_str:
-            When `True`, `repr` is also applied to ``str`` s. The ``event`` key
-            is *never* `repr` -ed. Ignored if *columns* are passed.
+            When `True`, `repr` is also applied to ``str``\ s. The ``event``
+            key is *never* `repr` -ed. Ignored if *columns* are passed.
 
         level_styles:
             When present, use these styles for colors. This must be a dict from
