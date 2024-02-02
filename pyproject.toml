@@ -118,6 +118,8 @@ line-length = 79
 
 [tool.ruff]
 src = ["src", "tests"]
+
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
     "A",       # shadowing is fine
@@ -149,11 +151,12 @@ ignore = [
     "PTH",     # pathlib can be slow, so no point to rewrite
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = [
     "B018",    # "useless" expressions can be useful in tests
     "BLE",     # tests have different rules around exceptions
     "EM",      # tests have different rules around exceptions
+    "LOG001",  # need to instantiate log messages in tests
     "PLC1901", # empty strings are falsey, but are less specific in tests
     "PT005",   # we always add underscores and explicit name
     "RUF012",  # no type hints in tests
@@ -162,7 +165,7 @@ ignore = [
     "TRY",     # tests have different rules around exceptions
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 lines-between-types = 1
 lines-after-imports = 2
 

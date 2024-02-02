@@ -302,7 +302,7 @@ def test_syntax_error():
     try:
         # raises SyntaxError: invalid syntax
         lineno = get_next_lineno()
-        eval("2 +* 2")  # noqa: PGH001
+        eval("2 +* 2")
     except SyntaxError as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
