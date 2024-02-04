@@ -145,6 +145,7 @@ ignore = [
     "T201",    # prints are fine
     "TCH",     # TYPE_CHECKING blocks break autodocs
     "TD",      # we don't follow other people's todo style
+    "TID252",  # Relative imports are fine
     "TRY003",  # simple strings are fine
     "TRY004",  # too many false negatives
     "TRY300",  # else blocks are nice, but code-locality is nicer
