@@ -136,7 +136,7 @@ class LogfmtRenderer:
             ``flag=false``.
 
     Raises:
-        ValueError: If a key contains non printable or space characters.
+        ValueError: If a key contains non-printable or whitespace characters.
 
     .. versionadded:: 21.5.0
     """
