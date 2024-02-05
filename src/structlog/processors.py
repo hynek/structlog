@@ -170,9 +170,14 @@ class LogfmtRenderer:
                     continue
                 value = "true" if value else "false"
 
-            value = f"{value}".replace('"', '\\"').replace("\n", "\\n")
+            value = str(value)
+            backslashes_need_escaping = " " in value or "=" in value
+            if backslashes_need_escaping and "\\" in value:
+                value = value.replace("\\", "\\\\")
 
-            if " " in value or "=" in value:
+            value = value.replace('"', '\\"').replace("\n", "\\n")
+
+            if backslashes_need_escaping:
                 value = f'"{value}"'
 
             elements.append(f"{key}={value}")

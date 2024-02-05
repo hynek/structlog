@@ -275,6 +275,33 @@ class TestLogfmtRenderer:
 
         assert r"with_newline=some\nvalue" == rv
 
+    @pytest.mark.parametrize(
+        ("raw", "escaped"),
+        [
+            # Slash by itself does not need to be escaped.
+            (r"a\slash", r"a\slash"),
+            # A quote requires quoting, and escaping the quote.
+            ('a"quote', r"a\"quote"),
+            # If anything triggers quoting of the string, then the slash must
+            # be escaped.
+            (
+                r'a\slash with space or a"quote',
+                r'"a\\slash with space or a\"quote"',
+            ),
+            (
+                r"I want to render this \"string\" with logfmtrenderer",
+                r'"I want to render this \\\"string\\\" with logfmtrenderer"',
+            ),
+        ],
+    )
+    def test_escaping(self, raw, escaped):
+        """
+        Backslashes and quotes are escaped.
+        """
+        rv = LogfmtRenderer()(None, None, {"key": raw})
+
+        assert f"key={escaped}" == rv
+
 
 class TestJSONRenderer:
     def test_renders_json(self, event_dict):
