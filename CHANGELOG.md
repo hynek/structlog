@@ -21,6 +21,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#592](https://github.com/hynek/structlog/pull/592)
 
 - `structlog.processors.LogfmtRenderer` now escapes backslashes and double quotes.
+  [#594](https://github.com/hynek/structlog/pull/594)
 
 
 ## [24.1.0](https://github.com/hynek/structlog/compare/23.3.0...24.1.0) - 2024-01-08
