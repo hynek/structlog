@@ -281,7 +281,7 @@ class TestLogfmtRenderer:
             # Slash by itself does not need to be escaped.
             (r"a\slash", r"a\slash"),
             # A quote requires quoting, and escaping the quote.
-            ('a"quote', r"a\"quote"),
+            ('a"quote', r'"a\"quote"'),
             # If anything triggers quoting of the string, then the slash must
             # be escaped.
             (
