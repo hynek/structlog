@@ -171,7 +171,9 @@ class LogfmtRenderer:
                 value = "true" if value else "false"
 
             value = str(value)
-            backslashes_need_escaping = " " in value or "=" in value
+            backslashes_need_escaping = (
+                " " in value or "=" in value or '"' in value
+            )
             if backslashes_need_escaping and "\\" in value:
                 value = value.replace("\\", "\\\\")
 
