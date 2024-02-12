@@ -219,6 +219,7 @@ class TestContextvars:
 
         assert {"a": 1, "b": 2, "c": 3} == await coro1_task
         assert {"a": 2, "b": 2, "c": 3} == await coro2_task
+        assert merge_contextvars(None, "", {}) == {"c": 3}
 
     def test_get_only_gets_structlog_without_deleted(self):
         """
