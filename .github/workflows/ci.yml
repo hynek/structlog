@@ -202,7 +202,6 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
 
-
   colors:
     name: Visual check for color settings using env variables
     needs: build-package
