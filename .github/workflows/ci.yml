@@ -177,7 +177,11 @@ jobs:
       - run: python -Im pip install uv
       - run: uv venv
       - run: uv pip install -e .[dev]
+
       - run: .venv/bin/python -Ic 'import structlog; print(structlog.__version__)'
+        if: runner.os != 'Windows'
+      - run: .\.venv\Scripts\python.exe -Ic 'import structlog; print(structlog.__version__)'
+        if: runner.os == 'Windows'
 
   required-checks-pass:
     name: Ensure everything required is passing for branch protection
