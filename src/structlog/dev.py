@@ -291,7 +291,12 @@ class LogLevelColumnFormatter:
     width: int
     skip_padding: bool
 
-    def __init__(self, level_styles: dict[str, str], reset_style: str, skip_padding: bool = False) -> None:
+    def __init__(
+        self,
+        level_styles: dict[str, str],
+        reset_style: str,
+        skip_padding: bool = False,
+    ) -> None:
         self.level_styles = level_styles
         if level_styles:
             self.width = len(
@@ -662,7 +667,9 @@ class ConsoleRenderer:
             Column(
                 "level",
                 LogLevelColumnFormatter(
-                    level_to_color, reset_style=styles.reset, skip_padding=skip_level_padding
+                    level_to_color,
+                    reset_style=styles.reset,
+                    skip_padding=skip_level_padding,
                 ),
             ),
             Column(
