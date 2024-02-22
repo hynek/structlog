@@ -289,8 +289,9 @@ class LogLevelColumnFormatter:
     level_styles: dict[str, str] | None
     reset_style: str
     width: int
+    skip_padding: bool
 
-    def __init__(self, level_styles: dict[str, str], reset_style: str) -> None:
+    def __init__(self, level_styles: dict[str, str], reset_style: str, skip_padding: bool = False) -> None:
         self.level_styles = level_styles
         if level_styles:
             self.width = len(
@@ -300,6 +301,7 @@ class LogLevelColumnFormatter:
         else:
             self.width = 0
             self.reset_style = ""
+        self.skip_padding = skip_padding
 
     def __call__(self, key: str, value: object) -> str:
         level = cast(str, value)
@@ -309,7 +311,8 @@ class LogLevelColumnFormatter:
             else self.level_styles.get(level, "")
         )
 
-        return f"[{style}{_pad(level, self.width)}{self.reset_style}]"
+        padded = _pad(level, self.width) if not self.skip_padding else level
+        return f"[{style}{padded}{self.reset_style}]"
 
 
 _NOTHING = object()
@@ -538,6 +541,7 @@ class ConsoleRenderer:
         event_key: str = "event",
         timestamp_key: str = "timestamp",
         columns: list[Column] | None = None,
+        skip_level_padding: bool = False,
     ):
         self._exception_formatter = exception_formatter
         self._sort_keys = sort_keys
@@ -658,7 +662,7 @@ class ConsoleRenderer:
             Column(
                 "level",
                 LogLevelColumnFormatter(
-                    level_to_color, reset_style=styles.reset
+                    level_to_color, reset_style=styles.reset, skip_padding=skip_level_padding
                 ),
             ),
             Column(
