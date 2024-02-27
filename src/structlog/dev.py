@@ -283,30 +283,27 @@ class LogLevelColumnFormatter:
             What to use to reset the style after the level name. Ignored if
             if *level_styles* is None.
 
+    width:
+        The width to pad the level to. If 0, no padding is done.
+
     .. versionadded:: 23.3.0
+    .. versionadded:: 24.1.0 *width*
     """
 
     level_styles: dict[str, str] | None
     reset_style: str
     width: int
-    skip_padding: bool
 
-    def __init__(
-        self,
-        level_styles: dict[str, str],
-        reset_style: str,
-        skip_padding: bool = False,
-    ) -> None:
+    def __init__(self, level_styles: dict[str, str], reset_style: str, width: int | None = None) -> None:
         self.level_styles = level_styles
         if level_styles:
-            self.width = len(
+            self.width = 0 if width == 0 else len(
                 max(self.level_styles.keys(), key=lambda e: len(e))
             )
             self.reset_style = reset_style
         else:
             self.width = 0
             self.reset_style = ""
-        self.skip_padding = skip_padding
 
     def __call__(self, key: str, value: object) -> str:
         level = cast(str, value)
@@ -316,8 +313,7 @@ class LogLevelColumnFormatter:
             else self.level_styles.get(level, "")
         )
 
-        padded = _pad(level, self.width) if not self.skip_padding else level
-        return f"[{style}{padded}{self.reset_style}]"
+        return f"[{style}{_pad(level, self.width)}{self.reset_style}]"
 
 
 _NOTHING = object()
@@ -493,6 +489,10 @@ class ConsoleRenderer:
             rename it e.g. using `structlog.processors.EventRenamer`. Ignored
             if *columns* are passed.
 
+        pad_level:
+            Whether to pad log level with blanks to the longest amongst all
+            level label.
+
     Requires the Colorama_ package if *colors* is `True` **on Windows**.
 
     Raises:
@@ -532,6 +532,7 @@ class ConsoleRenderer:
     .. versionadded:: 22.1.0 *event_key*
     .. versionadded:: 23.2.0 *timestamp_key*
     .. versionadded:: 23.3.0 *columns*
+    .. versionadded:: 24.1.0 *pad_level*
     """
 
     def __init__(  # noqa: PLR0912
@@ -546,7 +547,7 @@ class ConsoleRenderer:
         event_key: str = "event",
         timestamp_key: str = "timestamp",
         columns: list[Column] | None = None,
-        skip_level_padding: bool = False,
+        pad_level: bool = True,
     ):
         self._exception_formatter = exception_formatter
         self._sort_keys = sort_keys
@@ -654,6 +655,8 @@ class ConsoleRenderer:
             postfix="]",
         )
 
+        level_width = 0 if not pad_level else None
+
         self._columns = [
             Column(
                 timestamp_key,
@@ -667,9 +670,7 @@ class ConsoleRenderer:
             Column(
                 "level",
                 LogLevelColumnFormatter(
-                    level_to_color,
-                    reset_style=styles.reset,
-                    skip_padding=skip_level_padding,
+                    level_to_color, reset_style=styles.reset, width=level_width
                 ),
             ),
             Column(
