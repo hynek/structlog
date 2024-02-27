@@ -294,11 +294,18 @@ class LogLevelColumnFormatter:
     reset_style: str
     width: int
 
-    def __init__(self, level_styles: dict[str, str], reset_style: str, width: int | None = None) -> None:
+    def __init__(
+        self,
+        level_styles: dict[str, str],
+        reset_style: str,
+        width: int | None = None,
+    ) -> None:
         self.level_styles = level_styles
         if level_styles:
-            self.width = 0 if width == 0 else len(
-                max(self.level_styles.keys(), key=lambda e: len(e))
+            self.width = (
+                0
+                if width == 0
+                else len(max(self.level_styles.keys(), key=lambda e: len(e)))
             )
             self.reset_style = reset_style
         else:
