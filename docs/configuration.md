@@ -30,7 +30,7 @@ At any time, you can check whether and how *structlog* is configured using {func
 ```pycon
 >>> structlog.is_configured()
 False
->>> structlog.configure(logger_factory=structlog.stdlib.LoggerFactory)
+>>> structlog.configure(logger_factory=structlog.stdlib.LoggerFactory())
 >>> structlog.is_configured()
 True
 >>> cfg = structlog.get_config()
