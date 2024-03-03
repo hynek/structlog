@@ -357,6 +357,9 @@ class RichTracebackFormatter:
     color_system: Literal[
         "auto", "standard", "256", "truecolor", "windows"
     ] = "truecolor"
+    color_system: Literal["auto", "standard", "256", "truecolor", "windows"] = (
+        "truecolor"
+    )
     show_locals: bool = True
     max_frames: int = 100
     theme: str | None = None
@@ -542,7 +545,7 @@ class ConsoleRenderer:
     .. versionadded:: 24.1.0 *pad_level*
     """
 
-    def __init__(  # noqa: PLR0912
+    def __init__(  # noqa: PLR0912, PLR0915
         self,
         pad_event: int = _EVENT_WIDTH,
         colors: bool = _has_colors,
