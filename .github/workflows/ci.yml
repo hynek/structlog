@@ -52,7 +52,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
           cache: pip
-      - run: python -Im pip install tox
+      - run: python -Im pip install tox-uv
 
       - run: python -Im tox run --installpkg dist/*.whl -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
@@ -115,7 +115,7 @@ jobs:
           python-version-file: .python-version-default
           allow-prereleases: true
           cache: pip
-      - run: python -Im pip install tox
+      - run: python -Im pip install tox-uv
 
       - run: python -Im tox run --installpkg dist/*.whl -e mypy-pkg
 
@@ -136,7 +136,7 @@ jobs:
           python-version-file: .python-version-default
           allow-prereleases: true
           cache: pip
-      - run: python -Im pip install tox
+      - run: python -Im pip install tox-uv
 
       - run: python -Im tox run --installpkg dist/*.whl -e pyright
 
@@ -156,7 +156,7 @@ jobs:
           # Keep in sync with tox.ini/docs & .readthedocs.yaml
           python-version: "3.12"
           cache: pip
-      - run: python -Im pip install tox
+      - run: python -Im pip install tox-uv
 
       - run: python -Im tox run -e docs
 
@@ -174,8 +174,14 @@ jobs:
           python-version-file: .python-version-default
           cache: pip
 
-      - run: python -Im pip install -e .[dev]
-      - run: python -Ic 'import structlog; print(structlog.__version__)'
+      - run: python -Im pip install uv
+      - run: uv venv
+      - run: uv pip install -e .[dev]
+
+      - run: .venv/bin/python -Ic 'import structlog; print(structlog.__version__)'
+        if: runner.os != 'Windows'
+      - run: .\.venv\Scripts\python.exe -Ic 'import structlog; print(structlog.__version__)'
+        if: runner.os == 'Windows'
 
   required-checks-pass:
     name: Ensure everything required is passing for branch protection
@@ -196,7 +202,6 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
 
-
   colors:
     name: Visual check for color settings using env variables
     needs: build-package
@@ -209,6 +214,6 @@ jobs:
           python-version-file: .python-version-default
           cache: pip
       # tox 4.12.0 started passing FORCE_COLOR and NO_COLOR by default.
-      - run: python -Im pip install 'tox>=4.12.0'
+      - run: python -Im pip install 'tox>=4.12.0' tox-uv
 
       - run: python -Im tox run -f color
