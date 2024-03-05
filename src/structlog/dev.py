@@ -287,7 +287,7 @@ class LogLevelColumnFormatter:
             The width to pad the level to. If 0, no padding is done.
 
     .. versionadded:: 23.3.0
-    .. versionadded:: 24.1.0 *width*
+    .. versionadded:: 24.2.0 *width*
     """
 
     level_styles: dict[str, str] | None
