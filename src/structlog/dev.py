@@ -539,7 +539,7 @@ class ConsoleRenderer:
     .. versionadded:: 22.1.0 *event_key*
     .. versionadded:: 23.2.0 *timestamp_key*
     .. versionadded:: 23.3.0 *columns*
-    .. versionadded:: 24.1.0 *pad_level*
+    .. versionadded:: 24.2.0 *pad_level*
     """
 
     def __init__(  # noqa: PLR0912, PLR0915
