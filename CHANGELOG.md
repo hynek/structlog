@@ -15,6 +15,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/24.1.0...HEAD)
 
+### Added
+
+- It is now possible to disable log level-padding in `structlog.dev.LogLevelColumnFormatter` and `structlog.dev.ConsoleRenderer`.
+  [#599](https://github.com/hynek/structlog/pull/599)
+
+
+
 ### Changed
 
 - `structlog.processors.LogfmtRenderer` now escapes newlines.
@@ -22,6 +29,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.processors.LogfmtRenderer` now escapes backslashes and double quotes.
   [#594](https://github.com/hynek/structlog/pull/594)
+
 
 
 ## [24.1.0](https://github.com/hynek/structlog/compare/23.3.0...24.1.0) - 2024-01-08
