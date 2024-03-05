@@ -283,8 +283,8 @@ class LogLevelColumnFormatter:
             What to use to reset the style after the level name. Ignored if
             if *level_styles* is None.
 
-    width:
-        The width to pad the level to. If 0, no padding is done.
+        width:
+            The width to pad the level to. If 0, no padding is done.
 
     .. versionadded:: 23.3.0
     .. versionadded:: 24.1.0 *width*
