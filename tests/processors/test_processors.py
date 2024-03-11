@@ -11,6 +11,7 @@ import itertools
 import json
 import logging
 import os
+import pickle
 import sys
 import threading
 
@@ -491,6 +492,17 @@ class TestCallsiteParameterAdder:
         expected = {"event": test_message, **callsite_params}
 
         assert expected == actual
+
+    def test_pickeable_callsite_parameter_adder(self) -> None:
+        """
+        An instance of ``CallsiteParameterAdder`` can be pickled.  This
+        functionality may be used to propagate structlog configurations to
+        subprocesses.
+
+        To ensure that ``CallsiteParameterAdder`` can be pickled, the handlers
+        should be defined as free functions, not as lambda functions.
+        """
+        pickle.dumps(CallsiteParameterAdder())
 
     @classmethod
     def make_processor(
