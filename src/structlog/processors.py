@@ -723,32 +723,42 @@ class CallsiteParameter(enum.Enum):
     #: The name of the process the callsite was executed in.
     PROCESS_NAME = "process_name"
 
+
 def _pathname(module, frame_info) -> Any:
     return frame_info.filename
+
 
 def _filename(module, frame_info) -> Any:
     return os.path.basename(frame_info.filename)
 
+
 def _module(module, frame_info) -> Any:
     return os.path.splitext(os.path.basename(frame_info.filename))[0]
+
 
 def _func_name(module, frame_info) -> Any:
     return frame_info.function
 
+
 def _lineno(module, frame_info) -> Any:
     return frame_info.lineno
+
 
 def _thread(module, frame_info) -> Any:
     return threading.get_ident()
 
+
 def _thread_name(module, frame_info) -> Any:
     return threading.current_thread().name
+
 
 def _process(module, frame_info) -> Any:
     return os.getpid()
 
+
 def _process_name(module, frame_info) -> Any:
     return get_processname()
+
 
 class CallsiteParameterAdder:
     """
