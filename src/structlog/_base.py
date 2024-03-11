@@ -51,9 +51,7 @@ class BoundLoggerBase:
         self._context = context
 
     def __repr__(self) -> str:
-        return "<{}(context={!r}, processors={!r})>".format(
-            self.__class__.__name__, self._context, self._processors
-        )
+        return f"<{self.__class__.__name__}(context={self._context!r}, processors={self._processors!r})>"
 
     def __eq__(self, other: object) -> bool:
         try:
