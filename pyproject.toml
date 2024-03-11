@@ -173,6 +173,7 @@ lines-after-imports = 2
 
 [tool.mypy]
 strict = true
+pretty = true
 
 show_error_codes = true
 enable_error_code = ["ignore-without-code"]
