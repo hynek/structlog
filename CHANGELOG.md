@@ -20,6 +20,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - It is now possible to disable log level-padding in `structlog.dev.LogLevelColumnFormatter` and `structlog.dev.ConsoleRenderer`.
   [#599](https://github.com/hynek/structlog/pull/599)
 
+- The `structlog.processors.CallsiteParameterAdder` can now be pickled.
+  [#603](https://github.com/hynek/structlog/pull/603)
 
 
 ### Changed
