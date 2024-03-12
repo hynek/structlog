@@ -724,39 +724,43 @@ class CallsiteParameter(enum.Enum):
     PROCESS_NAME = "process_name"
 
 
-def _pathname(module, frame_info) -> Any:
+def _get_callsite_pathname(module: str, frame_info: inspect.Traceback) -> Any:
     return frame_info.filename
 
 
-def _filename(module, frame_info) -> Any:
+def _get_callsite_filename(module: str, frame_info: inspect.Traceback) -> Any:
     return os.path.basename(frame_info.filename)
 
 
-def _module(module, frame_info) -> Any:
+def _get_callsite_module(module: str, frame_info: inspect.Traceback) -> Any:
     return os.path.splitext(os.path.basename(frame_info.filename))[0]
 
 
-def _func_name(module, frame_info) -> Any:
+def _get_callsite_func_name(module: str, frame_info: inspect.Traceback) -> Any:
     return frame_info.function
 
 
-def _lineno(module, frame_info) -> Any:
+def _get_callsite_lineno(module: str, frame_info: inspect.Traceback) -> Any:
     return frame_info.lineno
 
 
-def _thread(module, frame_info) -> Any:
+def _get_callsite_thread(module: str, frame_info: inspect.Traceback) -> Any:
     return threading.get_ident()
 
 
-def _thread_name(module, frame_info) -> Any:
+def _get_callsite_thread_name(
+    module: str, frame_info: inspect.Traceback
+) -> Any:
     return threading.current_thread().name
 
 
-def _process(module, frame_info) -> Any:
+def _get_callsite_process(module: str, frame_info: inspect.Traceback) -> Any:
     return os.getpid()
 
 
-def _process_name(module, frame_info) -> Any:
+def _get_callsite_process_name(
+    module: str, frame_info: inspect.Traceback
+) -> Any:
     return get_processname()
 
 
@@ -803,15 +807,15 @@ class CallsiteParameterAdder:
     _handlers: ClassVar[
         dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
     ] = {
-        CallsiteParameter.PATHNAME: _pathname,
-        CallsiteParameter.FILENAME: _filename,
-        CallsiteParameter.MODULE: _module,
-        CallsiteParameter.FUNC_NAME: _func_name,
-        CallsiteParameter.LINENO: _lineno,
-        CallsiteParameter.THREAD: _thread,
-        CallsiteParameter.THREAD_NAME: _thread_name,
-        CallsiteParameter.PROCESS: _process,
-        CallsiteParameter.PROCESS_NAME: _process_name,
+        CallsiteParameter.PATHNAME: _get_callsite_pathname,
+        CallsiteParameter.FILENAME: _get_callsite_filename,
+        CallsiteParameter.MODULE: _get_callsite_module,
+        CallsiteParameter.FUNC_NAME: _get_callsite_func_name,
+        CallsiteParameter.LINENO: _get_callsite_lineno,
+        CallsiteParameter.THREAD: _get_callsite_thread,
+        CallsiteParameter.THREAD_NAME: _get_callsite_thread_name,
+        CallsiteParameter.PROCESS: _get_callsite_process,
+        CallsiteParameter.PROCESS_NAME: _get_callsite_process_name,
     }
     _record_attribute_map: ClassVar[dict[CallsiteParameter, str]] = {
         CallsiteParameter.PATHNAME: "pathname",
