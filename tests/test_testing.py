@@ -155,18 +155,30 @@ class TestCapturingLogger:
 
     def test_captures(self):
         """
-        All calls to all names are captured.
+        All calls to all names are captured, BoundLogger methods can be used.
         """
         cl = CapturingLogger()
 
-        cl.info("hi", val=42)
-        cl.trololo("yolo", foo={"bar": "baz"})
+        assert cl.info("hi", val=42) is None
+        new_cl = cl.new(new=True)
+        bound_cl = new_cl.bind(bound=True)
+        assert bound_cl.trololo("yolo", foo={"bar": "baz"}) is None
+        unbound_cl = new_cl.unbind("bound", "new")
+        unbound_cl.error("Where are my vars?")
 
         assert [
             CapturedCall(method_name="info", args=("hi",), kwargs={"val": 42}),
+            CapturedCall(method_name="new", args=(), kwargs={"new": True}),
+            CapturedCall(method_name="bind", args=(), kwargs={"bound": True}),
             CapturedCall(
                 method_name="trololo",
                 args=("yolo",),
                 kwargs={"foo": {"bar": "baz"}},
+            ),
+            CapturedCall(
+                method_name="unbind", args=("bound", "new"), kwargs={}
+            ),
+            CapturedCall(
+                method_name="error", args=("Where are my vars?",), kwargs={}
             ),
         ] == cl.calls

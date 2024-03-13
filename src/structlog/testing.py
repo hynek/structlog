@@ -164,6 +164,9 @@ class CapturingLogger:
     **Any** method name is supported.
 
     .. versionadded:: 20.2.0
+    .. versionchanged:: 23.2.0
+       Handle `BoundLogger` methods like `bind`, `new` or `unbind` now properly
+       returning itself.
     """
 
     calls: list[CapturedCall]
@@ -179,8 +182,12 @@ class CapturingLogger:
         Capture call to `calls`
         """
 
-        def log(*args: Any, **kw: Any) -> None:
+        def log(*args: Any, **kw: Any) -> Any:
             self.calls.append(CapturedCall(name, args, kw))
+            if name in ("bind", "new", "unbind"):
+                # these BoundLogger methods expect to return a "new" logger
+                return self
+            return None
 
         return log
 
