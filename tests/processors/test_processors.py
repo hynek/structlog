@@ -498,9 +498,6 @@ class TestCallsiteParameterAdder:
         An instance of ``CallsiteParameterAdder`` can be pickled.  This
         functionality may be used to propagate structlog configurations to
         subprocesses.
-
-        To ensure that ``CallsiteParameterAdder`` can be pickled, the handlers
-        should be defined as free functions, not as lambda functions.
         """
         pickle.dumps(CallsiteParameterAdder())
 
