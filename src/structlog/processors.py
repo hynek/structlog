@@ -724,6 +724,46 @@ class CallsiteParameter(enum.Enum):
     PROCESS_NAME = "process_name"
 
 
+def _get_callsite_pathname(module: str, frame_info: inspect.Traceback) -> Any:
+    return frame_info.filename
+
+
+def _get_callsite_filename(module: str, frame_info: inspect.Traceback) -> Any:
+    return os.path.basename(frame_info.filename)
+
+
+def _get_callsite_module(module: str, frame_info: inspect.Traceback) -> Any:
+    return os.path.splitext(os.path.basename(frame_info.filename))[0]
+
+
+def _get_callsite_func_name(module: str, frame_info: inspect.Traceback) -> Any:
+    return frame_info.function
+
+
+def _get_callsite_lineno(module: str, frame_info: inspect.Traceback) -> Any:
+    return frame_info.lineno
+
+
+def _get_callsite_thread(module: str, frame_info: inspect.Traceback) -> Any:
+    return threading.get_ident()
+
+
+def _get_callsite_thread_name(
+    module: str, frame_info: inspect.Traceback
+) -> Any:
+    return threading.current_thread().name
+
+
+def _get_callsite_process(module: str, frame_info: inspect.Traceback) -> Any:
+    return os.getpid()
+
+
+def _get_callsite_process_name(
+    module: str, frame_info: inspect.Traceback
+) -> Any:
+    return get_processname()
+
+
 class CallsiteParameterAdder:
     """
     Adds parameters of the callsite that an event dictionary originated from to
@@ -767,33 +807,15 @@ class CallsiteParameterAdder:
     _handlers: ClassVar[
         dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
     ] = {
-        CallsiteParameter.PATHNAME: (
-            lambda module, frame_info: frame_info.filename
-        ),
-        CallsiteParameter.FILENAME: (
-            lambda module, frame_info: os.path.basename(frame_info.filename)
-        ),
-        CallsiteParameter.MODULE: (
-            lambda module, frame_info: os.path.splitext(
-                os.path.basename(frame_info.filename)
-            )[0]
-        ),
-        CallsiteParameter.FUNC_NAME: (
-            lambda module, frame_info: frame_info.function
-        ),
-        CallsiteParameter.LINENO: (
-            lambda module, frame_info: frame_info.lineno
-        ),
-        CallsiteParameter.THREAD: (
-            lambda module, frame_info: threading.get_ident()
-        ),
-        CallsiteParameter.THREAD_NAME: (
-            lambda module, frame_info: threading.current_thread().name
-        ),
-        CallsiteParameter.PROCESS: (lambda module, frame_info: os.getpid()),
-        CallsiteParameter.PROCESS_NAME: (
-            lambda module, frame_info: get_processname()
-        ),
+        CallsiteParameter.PATHNAME: _get_callsite_pathname,
+        CallsiteParameter.FILENAME: _get_callsite_filename,
+        CallsiteParameter.MODULE: _get_callsite_module,
+        CallsiteParameter.FUNC_NAME: _get_callsite_func_name,
+        CallsiteParameter.LINENO: _get_callsite_lineno,
+        CallsiteParameter.THREAD: _get_callsite_thread,
+        CallsiteParameter.THREAD_NAME: _get_callsite_thread_name,
+        CallsiteParameter.PROCESS: _get_callsite_process,
+        CallsiteParameter.PROCESS_NAME: _get_callsite_process_name,
     }
     _record_attribute_map: ClassVar[dict[CallsiteParameter, str]] = {
         CallsiteParameter.PATHNAME: "pathname",
