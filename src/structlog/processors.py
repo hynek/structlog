@@ -845,7 +845,7 @@ class CallsiteParameterAdder:
         # module should not be logging using structlog.
         self._additional_ignores = ["logging", *additional_ignores]
         self._active_handlers: list[
-            tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+            tuple[CallsiteParameter, Callable[[str, FrameType], Any]]
         ] = []
         self._record_mappings: list[CallsiteParameterAdder._RecordMapping] = []
         for parameter in parameters:
