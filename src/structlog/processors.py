@@ -748,9 +748,7 @@ def _get_callsite_thread(module: str, frame: FrameType) -> Any:
     return threading.get_ident()
 
 
-def _get_callsite_thread_name(
-    module: str, frame: FrameType
-) -> Any:
+def _get_callsite_thread_name(module: str, frame: FrameType) -> Any:
     return threading.current_thread().name
 
 
@@ -758,9 +756,7 @@ def _get_callsite_process(module: str, frame: FrameType) -> Any:
     return os.getpid()
 
 
-def _get_callsite_process_name(
-    module: str, frame: FrameType
-) -> Any:
+def _get_callsite_process_name(module: str, frame: FrameType) -> Any:
     return get_processname()
 
 
