@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import datetime
 import enum
-import inspect
 import json
 import logging
 import operator
@@ -20,6 +19,7 @@ import sys
 import threading
 import time
 
+from types import FrameType
 from typing import (
     Any,
     Callable,
@@ -724,43 +724,39 @@ class CallsiteParameter(enum.Enum):
     PROCESS_NAME = "process_name"
 
 
-def _get_callsite_pathname(module: str, frame_info: inspect.Traceback) -> Any:
-    return frame_info.filename
+def _get_callsite_pathname(module: str, frame: FrameType) -> Any:
+    return frame.f_code.co_filename
 
 
-def _get_callsite_filename(module: str, frame_info: inspect.Traceback) -> Any:
-    return os.path.basename(frame_info.filename)
+def _get_callsite_filename(module: str, frame: FrameType) -> Any:
+    return os.path.basename(frame.f_code.co_filename)
 
 
-def _get_callsite_module(module: str, frame_info: inspect.Traceback) -> Any:
-    return os.path.splitext(os.path.basename(frame_info.filename))[0]
+def _get_callsite_module(module: str, frame: FrameType) -> Any:
+    return os.path.splitext(os.path.basename(frame.f_code.co_filename))[0]
 
 
-def _get_callsite_func_name(module: str, frame_info: inspect.Traceback) -> Any:
-    return frame_info.function
+def _get_callsite_func_name(module: str, frame: FrameType) -> Any:
+    return frame.f_code.co_name
 
 
-def _get_callsite_lineno(module: str, frame_info: inspect.Traceback) -> Any:
-    return frame_info.lineno
+def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
+    return frame.f_lineno
 
 
-def _get_callsite_thread(module: str, frame_info: inspect.Traceback) -> Any:
+def _get_callsite_thread(module: str, frame: FrameType) -> Any:
     return threading.get_ident()
 
 
-def _get_callsite_thread_name(
-    module: str, frame_info: inspect.Traceback
-) -> Any:
+def _get_callsite_thread_name(module: str, frame: FrameType) -> Any:
     return threading.current_thread().name
 
 
-def _get_callsite_process(module: str, frame_info: inspect.Traceback) -> Any:
+def _get_callsite_process(module: str, frame: FrameType) -> Any:
     return os.getpid()
 
 
-def _get_callsite_process_name(
-    module: str, frame_info: inspect.Traceback
-) -> Any:
+def _get_callsite_process_name(module: str, frame: FrameType) -> Any:
     return get_processname()
 
 
@@ -805,7 +801,7 @@ class CallsiteParameterAdder:
     """
 
     _handlers: ClassVar[
-        dict[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+        dict[CallsiteParameter, Callable[[str, FrameType], Any]]
     ] = {
         CallsiteParameter.PATHNAME: _get_callsite_pathname,
         CallsiteParameter.FILENAME: _get_callsite_filename,
@@ -849,7 +845,7 @@ class CallsiteParameterAdder:
         # module should not be logging using structlog.
         self._additional_ignores = ["logging", *additional_ignores]
         self._active_handlers: list[
-            tuple[CallsiteParameter, Callable[[str, inspect.Traceback], Any]]
+            tuple[CallsiteParameter, Callable[[str, FrameType], Any]]
         ] = []
         self._record_mappings: list[CallsiteParameterAdder._RecordMapping] = []
         for parameter in parameters:
@@ -879,9 +875,8 @@ class CallsiteParameterAdder:
             frame, module = _find_first_app_frame_and_name(
                 additional_ignores=self._additional_ignores
             )
-            frame_info = inspect.getframeinfo(frame)
             for parameter, handler in self._active_handlers:
-                event_dict[parameter.value] = handler(module, frame_info)
+                event_dict[parameter.value] = handler(module, frame)
         return event_dict
 
 
