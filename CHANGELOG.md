@@ -32,7 +32,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.processors.LogfmtRenderer` now escapes backslashes and double quotes.
   [#594](https://github.com/hynek/structlog/pull/594)
 
-- `structlog.processors.CallsiteParameterAdder` has been optimized to be 30% faster.
+- `structlog.processors.CallsiteParameterAdder` has been optimized to be about 2x faster.
   [#606](https://github.com/hynek/structlog/pull/606)
 
 
