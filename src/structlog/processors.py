@@ -879,7 +879,7 @@ class CallsiteParameterAdder:
             frame, module = _find_first_app_frame_and_name(
                 additional_ignores=self._additional_ignores
             )
-            frame_info = inspect.getframeinfo(frame)
+            frame_info = inspect.getframeinfo(frame, context=0)
             for parameter, handler in self._active_handlers:
                 event_dict[parameter.value] = handler(module, frame_info)
         return event_dict
