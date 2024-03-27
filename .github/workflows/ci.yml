@@ -25,6 +25,10 @@ jobs:
           fetch-depth: 0
 
       - uses: hynek/build-and-inspect-python-package@v2
+        id: baipp
+
+    outputs:
+      python-versions: ${{ steps.baipp.outputs.supported_python_classifiers_json_array }}
 
   tests:
     name: Tests & API Mypy on ${{ matrix.python-version }}
@@ -33,12 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-          - "3.8"
-          - "3.9"
-          - "3.10"
-          - "3.11"
-          - "3.12"
+        python-version: ${{ fromJson(needs.build-package.outputs.python-versions) }}
 
     steps:
       - name: Download pre-built packages
