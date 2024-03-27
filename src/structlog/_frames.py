@@ -58,7 +58,7 @@ def _find_first_app_frame_and_name(
     ignores = ["structlog"] + (additional_ignores or [])
     f = _ASYNC_CALLING_STACK.get(_getframe())
     name = f.f_globals.get("__name__") or "?"
-    while any(tuple(name.startswith(i) for i in ignores)):
+    while any(name.startswith(i) for i in ignores):
         if f.f_back is None:
             name = "?"
             break
