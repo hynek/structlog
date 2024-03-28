@@ -143,7 +143,9 @@ The most straight-forward option is to configure standard library `logging` clos
 
 Since these are usually log entries from third parties that don't take advantage of *structlog*'s features, this is surprisingly often a perfectly adequate approach.
 
-For instance, if you log JSON in production, configure `logging` to use [*python-json-logger*] to make it print JSON too, and then tweak the configuration to match their outputs.
+For instance, if you log JSON in production, configure `logging` to use [*python-json-logger*] to make it print JSON too, and then tweak the configuration to match their outputs. You can also use {class}`~structlog.stdlib.ProcessorFormatter` as a formatter for `logging` to get the same output for both *structlog* and `logging` log entries. (see [below](processor-formatter) for an example).
+
+If you want to use same file (e.g. `sys.stdout` or `sys.stderr`) for both *structlog* and `logging` log entries, you must use {class}`~structlog.WriterLogger` instead of {class}`~structlog.PrintLogger`. This is because {class}`~structlog.PrintLogger` uses `print(log, file=file, flush=True)` to write log and `print` writes `log` and `"\n"` to the file separatedly. This can cause interleaving of log entries from *structlog* and `logging` loggers. {class}`~structlog.WriterLogger` writes log entries atomically to the file (e.g. `file.write(log+"\n")`).
 
 
 ### Rendering Within *structlog*
