@@ -55,22 +55,15 @@ def _find_first_app_frame_and_name(
     Returns:
         tuple of (frame, name)
     """
-    ignores = ["structlog"] + (additional_ignores or [])
+    ignores = tuple(["structlog"] + (additional_ignores or []))
     f = _ASYNC_CALLING_STACK.get(_getframe())
-    # while any(name.startswith(i) for i in ignores):
-    # See https://github.com/hynek/structlog/pull/174
-    # This might be fixed in recent Python, but not sure.
-    while True:
-        name = f.f_globals.get("__name__") or "?"
-        for i in ignores:
-            if name.startswith(i):
-                break
-        else:  # no match. for-else is hidden gem in Python.
-            break
+    name = f.f_globals.get("__name__") or "?"
+    while name.startswith(ignores):
         if f.f_back is None:
             name = "?"
             break
         f = f.f_back
+        name = f.f_globals.get("__name__") or "?"
     return f, name
 
 
