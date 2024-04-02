@@ -24,7 +24,6 @@ from zope.interface import implementer
 
 from ._base import BoundLoggerBase
 from ._config import _BUILTIN_DEFAULT_PROCESSORS
-from ._utils import until_not_interrupted
 from .processors import JSONRenderer as GenericJSONRenderer
 from .typing import EventDict, WrappedLogger
 
@@ -215,12 +214,11 @@ class PlainFileLogObserver:
         self._flush = file.flush
 
     def __call__(self, eventDict: EventDict) -> None:
-        until_not_interrupted(
-            self._write,
+        self._write(
             textFromEventDict(eventDict)  # type: ignore[arg-type, operator]
             + "\n",
         )
-        until_not_interrupted(self._flush)
+        self._flush()
 
 
 @implementer(ILogObserver)
