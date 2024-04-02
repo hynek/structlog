@@ -3,54 +3,12 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-import errno
 import multiprocessing
 import sys
 
 import pytest
 
-from pretend import raiser
-
-from structlog._utils import get_processname, until_not_interrupted
-
-
-class TestUntilNotInterrupted:
-    def test_passes_arguments_and_returns_return_value(self):
-        """
-        until_not_interrupted() passes arguments to the wrapped function and
-        returns its return value.
-        """
-
-        def returner(*args, **kw):
-            assert (42,) == args
-            assert {"x": 23} == kw
-
-            return "foo"
-
-        assert "foo" == until_not_interrupted(returner, 42, x=23)
-
-    def test_leaves_unrelated_exceptions_through(self):
-        """
-        Exceptions that are not an EINTR OSError are not intercepted/retried.
-        """
-        exc = IOError
-        with pytest.raises(exc):
-            until_not_interrupted(raiser(exc("not EINTR")))
-
-    def test_retries_on_EINTR(self):
-        """
-        Wrapped functions that raise EINTR OSErrors are retried.
-        """
-        calls = [0]
-
-        def raise_on_first_three():
-            if calls[0] < 3:
-                calls[0] += 1
-                raise OSError(errno.EINTR)
-
-        until_not_interrupted(raise_on_first_three)
-
-        assert 3 == calls[0]
+from structlog._utils import get_processname
 
 
 class TestGetProcessname:

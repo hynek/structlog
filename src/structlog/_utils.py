@@ -9,39 +9,10 @@ Generic utilities.
 
 from __future__ import annotations
 
-import errno
 import sys
 
 from contextlib import suppress
-from typing import Any, Callable, TypeVar
-
-
-T = TypeVar("T")
-
-
-def until_not_interrupted(
-    f: Callable[..., T], *args: object, **kw: object
-) -> T:
-    """
-    Retry until *f* succeeds or an exception that isn't caused by EINTR occurs.
-
-    Args:
-        f: A callable like a function.
-
-        *args: Positional arguments for *f*.
-
-        **kw: Keyword arguments for *f*.
-
-    Returns:
-        Whatever *f* returns.
-    """
-    while True:
-        try:
-            return f(*args, **kw)
-        except OSError as e:  # noqa: PERF203
-            if e.args[0] == errno.EINTR:
-                continue
-            raise
+from typing import Any
 
 
 def get_processname() -> str:

@@ -17,8 +17,6 @@ from pickle import PicklingError
 from sys import stderr, stdout
 from typing import IO, Any, BinaryIO, TextIO
 
-from structlog._utils import until_not_interrupted
-
 
 WRITE_LOCKS: dict[IO[Any], threading.Lock] = {}
 
@@ -109,7 +107,7 @@ class PrintLogger:
         """
         f = self._file if self._file is not stdout else None
         with self._lock:
-            until_not_interrupted(print, message, file=f, flush=True)
+            print(message, file=f, flush=True)
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg
@@ -216,8 +214,8 @@ class WriteLogger:
         Write and flush *message*.
         """
         with self._lock:
-            until_not_interrupted(self._write, message + "\n")
-            until_not_interrupted(self._flush)
+            self._write(message + "\n")
+            self._flush()
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg
@@ -320,8 +318,8 @@ class BytesLogger:
         Write *message*.
         """
         with self._lock:
-            until_not_interrupted(self._write, message + b"\n")
-            until_not_interrupted(self._flush)
+            self._write(message + b"\n")
+            self._flush()
 
     log = debug = info = warn = warning = msg
     fatal = failure = err = error = critical = exception = msg
