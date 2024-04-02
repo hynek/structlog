@@ -3,7 +3,6 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
-import errno
 import multiprocessing
 import sys
 
