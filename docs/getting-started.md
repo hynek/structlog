@@ -120,7 +120,7 @@ Let's have a look at a better approach:
 
 ```python
 def view(request):
-    log = logger.bind(
+    log = log.bind(
         user_agent=request.get("HTTP_USER_AGENT", "UNKNOWN"),
         peer_ip=request.client_addr,
     )
