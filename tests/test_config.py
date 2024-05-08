@@ -51,7 +51,7 @@ def test_lazy_logger_is_not_detected_as_abstract_method():
     See https://github.com/hynek/structlog/issues/229
     """
 
-    class Foo(metaclass=abc.ABCMeta):
+    class Foo(metaclass=abc.ABCMeta):  # noqa: B024
         log = structlog.get_logger()
 
     Foo()
