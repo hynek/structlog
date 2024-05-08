@@ -210,8 +210,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     meths["amsg"] = meths["ainfo"]
 
     return type(
-        "BoundLoggerFilteringAt%s"
-        % (LEVEL_TO_NAME.get(min_level, "Notset").capitalize()),
+        f"BoundLoggerFilteringAt{LEVEL_TO_NAME.get(min_level, 'Notset').capitalize()}",
         (BoundLoggerBase,),
         meths,
     )
