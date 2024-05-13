@@ -392,13 +392,20 @@ class BoundLogger(BoundLoggerBase):
     ) -> None:
         """
         Merge contextvars and log using the sync logger in a thread pool.
+
+        .. versionchanged:: 24.2.0
+           Callsite parameters are now also collected under asyncio.
         """
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
-        await asyncio.get_running_loop().run_in_executor(
-            None,
-            lambda: ctx.run(lambda: meth(event, *args, **kw)),
-        )
+        try:
+            await asyncio.get_running_loop().run_in_executor(
+                None,
+                lambda: ctx.run(lambda: meth(event, *args, **kw)),
+            )
+        finally:
+            _ASYNC_CALLING_STACK.reset(scs_token)
 
     async def adebug(self, event: str, *args: Any, **kw: Any) -> None:
         """
@@ -594,6 +601,7 @@ class AsyncBoundLogger:
     ) -> None:
         """
         Merge contextvars and log using the sync logger in a thread pool.
+
         .. versionchanged:: 23.3.0
            Callsite parameters are now also collected under asyncio.
         """
