@@ -23,6 +23,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - The `structlog.processors.CallsiteParameterAdder` can now be pickled.
   [#603](https://github.com/hynek/structlog/pull/603)
 
+- `structlog.processors.CallsiteParameterAdder` now also works with `structlog.stdlib.BoundLogger`'s non-standard async methods (`ainfo()`, and so forth)
+  [#618](https://github.com/hynek/structlog/pull/618)
+
 
 ### Changed
 

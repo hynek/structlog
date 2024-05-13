@@ -298,28 +298,35 @@ class TestCallsiteParameterAdder:
         assert self.parameter_strings == self.get_callsite_parameters().keys()
 
     @pytest.mark.asyncio()
-    async def test_async(self) -> None:
+    @pytest.mark.parametrize(
+        ("wrapper_class", "method_name"),
+        [
+            (structlog.stdlib.BoundLogger, "ainfo"),
+            (structlog.stdlib.AsyncBoundLogger, "info"),
+        ],
+    )
+    async def test_async(self, wrapper_class, method_name) -> None:
         """
         Callsite information for async invocations are correct.
         """
         string_io = StringIO()
 
-        class StingIOLogger(structlog.PrintLogger):
+        class StringIOLogger(structlog.PrintLogger):
             def __init__(self):
                 super().__init__(file=string_io)
 
         processor = self.make_processor(None, ["concurrent", "threading"])
         structlog.configure(
             processors=[processor, JSONRenderer()],
-            logger_factory=StingIOLogger,
-            wrapper_class=structlog.stdlib.AsyncBoundLogger,
+            logger_factory=StringIOLogger,
+            wrapper_class=wrapper_class,
             cache_logger_on_first_use=True,
         )
 
         logger = structlog.stdlib.get_logger()
 
         callsite_params = self.get_callsite_parameters()
-        await logger.info("baz")
+        await getattr(logger, method_name)("baz")
         logger_params = json.loads(string_io.getvalue())
 
         # These are different when running under async

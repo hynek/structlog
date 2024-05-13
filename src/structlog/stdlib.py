@@ -144,6 +144,10 @@ class BoundLogger(BoundLoggerBase):
 
     .. versionadded:: 23.1.0
        Async variants `alog()`, `adebug()`, `ainfo()`, and so forth.
+
+    .. versionchanged:: 24.2.0
+        Callsite parameters are now also collected by
+        `structlog.processors.CallsiteParameterAdder` for async log methods.
     """
 
     _logger: logging.Logger
@@ -393,12 +397,16 @@ class BoundLogger(BoundLoggerBase):
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
-        await asyncio.get_running_loop().run_in_executor(
-            None,
-            lambda: ctx.run(lambda: meth(event, *args, **kw)),
-        )
+        try:
+            await asyncio.get_running_loop().run_in_executor(
+                None,
+                lambda: ctx.run(lambda: meth(event, *args, **kw)),
+            )
+        finally:
+            _ASYNC_CALLING_STACK.reset(scs_token)
 
     async def adebug(self, event: str, *args: Any, **kw: Any) -> None:
         """
@@ -499,6 +507,8 @@ class AsyncBoundLogger:
     .. versionchanged:: 20.2.0 fix _dispatch_to_sync contextvars usage
     .. deprecated:: 23.1.0
        Use the regular `BoundLogger` with its a-prefixed methods instead.
+    .. versionchanged:: 23.3.0
+        Callsite parameters are now also collected for async log methods.
     """
 
     __slots__ = ("sync_bl", "_loop")
@@ -594,8 +604,6 @@ class AsyncBoundLogger:
     ) -> None:
         """
         Merge contextvars and log using the sync logger in a thread pool.
-        .. versionchanged:: 23.3.0
-           Callsite parameters are now also collected under asyncio.
         """
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
