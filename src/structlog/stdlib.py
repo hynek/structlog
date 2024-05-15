@@ -877,9 +877,7 @@ def render_to_log_kwargs(
     _: logging.Logger, __: str, event_dict: EventDict
 ) -> EventDict:
     """
-    Render ``event_dict`` into keyword arguments for `logging.log`.
-    reserved stdlib keywords are in logging.Logger._log
-        https://github.com/python/cpython/blob/main/Lib/logging/__init__.py#L1632
+    Render ``event_dict`` into keyword arguments for `logging.log` (see `logging.Logger._log`).
 
     The ``event`` field is translated into ``msg`` and the rest of the
     *event_dict* is added as ``extra``.
