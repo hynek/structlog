@@ -42,7 +42,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 ### Fixed
 
 - `structlog.stdlib.render_to_log_kwargs` now correctly passes stacklevel as a kwarg to stdlib logging.
-  [#619](https://github.com/hynek/structlog/issues/619)
+  [#619](https://github.com/hynek/structlog/pull/620)
 
 
 
