@@ -13,6 +13,7 @@ import sys
 
 from io import StringIO
 from typing import Any, Callable, Collection, Dict
+from unittest.mock import patch
 
 import pytest
 import pytest_asyncio
@@ -24,6 +25,7 @@ from structlog import (
     ReturnLogger,
     configure,
     get_context,
+    wrap_logger,
 )
 from structlog._config import _CONFIG
 from structlog._log_levels import CRITICAL, NAME_TO_LEVEL, WARN
@@ -671,8 +673,18 @@ class TestExtraAdder:
         }
 
 
+@pytest.fixture()
+def stdlib_logger():
+    logger = logging.getLogger("test_logger")
+    logger.setLevel(logging.DEBUG)
+
+    yield logger
+
+    logging.basicConfig()
+
+
 class TestRenderToLogKW:
-    def test_default(self):
+    def test_default(self, stdlib_logger):
         """
         Translates `event` to `msg` and handles otherwise empty `event_dict`s.
         """
@@ -680,7 +692,17 @@ class TestRenderToLogKW:
 
         assert {"msg": "message", "extra": {}} == d
 
-    def test_add_extra_event_dict(self, event_dict):
+        # now check stdlib logger likes those kwargs
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            stdlib_logger.info(**d)
+            mock_log.assert_called_once()
+            (level, msg, args), kwargs = mock_log.call_args
+            assert level == logging.INFO
+            assert msg == "message"
+            assert args == ()
+            assert kwargs == {"extra": {}}
+
+    def test_add_extra_event_dict(self, event_dict, stdlib_logger):
         """
         Adds all remaining data from `event_dict` into `extra`.
         """
@@ -689,9 +711,19 @@ class TestRenderToLogKW:
 
         assert {"msg": "message", "extra": event_dict} == d
 
-    def test_handles_special_kw(self, event_dict):
+        # now check stdlib logger likes those kwargs
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            stdlib_logger.info(**d)
+            mock_log.assert_called_once()
+            (level, msg, args), kwargs = mock_log.call_args
+            assert level == logging.INFO
+            assert msg == "message"
+            assert args == ()
+            assert kwargs == {"extra": event_dict}
+
+    def test_handles_special_kw(self, event_dict, stdlib_logger):
         """
-        "exc_info", "stack_info", and "stackLevel" aren't passed as extras.
+        "exc_info", "stack_info", and "stacklevel" aren't passed as extras.
 
         Cf. https://github.com/hynek/structlog/issues/424
         """
@@ -700,22 +732,72 @@ class TestRenderToLogKW:
 
         event_dict["exc_info"] = True
         event_dict["stack_info"] = False
-        event_dict["stackLevel"] = 1
+        event_dict["stacklevel"] = 1
+        event_dict["stackLevel"] = 1  # not a reserved kw
 
         d = render_to_log_kwargs(None, None, event_dict)
-
-        assert {
+        expected = {
             "msg": "message",
             "exc_info": True,
             "stack_info": False,
-            "stackLevel": 1,
+            "stacklevel": 1,
             "extra": {
                 "b": [3, 4],
                 "x": 7,
                 "y": "test",
                 "z": (1, 2),
+                "stackLevel": 1,
             },
-        } == d
+        }
+
+        assert expected == d
+
+        # now check stdlib logger likes those kwargs
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            stdlib_logger.info(**d)
+            mock_log.assert_called_once()
+            (level, msg, args), kwargs = mock_log.call_args
+            assert level == logging.INFO
+            assert msg == "message"
+            assert args == ()
+            expected.pop("msg")
+            assert expected == kwargs
+
+    def test_integration_special_kw(self, event_dict, stdlib_logger):
+        """
+        test the render_to_log_kwargs processor with a wrapped logger calls the stdlib logger
+        correctly
+
+        reserved stdlib keywords are in logging.Logger._log
+        https://github.com/python/cpython/blob/main/Lib/logging/__init__.py#L1632
+        """
+        expected = {
+            "msg": "message",
+            "exc_info": True,
+            "stack_info": False,
+            "stacklevel": 1,
+            "extra": {**event_dict},
+        }
+
+        event_dict["exc_info"] = True
+        event_dict["stack_info"] = False
+        event_dict["stacklevel"] = 1
+
+        struct_logger = wrap_logger(
+            stdlib_logger,
+            processors=[render_to_log_kwargs],
+        )
+
+        # now check struct logger passes those kwargs to stdlib
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            struct_logger.info("message", **event_dict)
+            mock_log.assert_called_once()
+            (level, msg, args), kwargs = mock_log.call_args
+            assert level == logging.INFO
+            assert msg == "message"
+            assert args == ()
+            expected.pop("msg")
+            assert expected == kwargs
 
 
 @pytest.fixture(name="configure_for_processor_formatter")

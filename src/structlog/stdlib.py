@@ -397,7 +397,9 @@ class BoundLogger(BoundLoggerBase):
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
+        scs_token = _ASYNC_CALLING_STACK.set(
+            sys._getframe().f_back.f_back
+        )  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
         try:
@@ -605,7 +607,9 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
+        scs_token = _ASYNC_CALLING_STACK.set(
+            sys._getframe().f_back.f_back
+        )  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
         try:
@@ -878,6 +882,8 @@ def render_to_log_kwargs(
 ) -> EventDict:
     """
     Render ``event_dict`` into keyword arguments for `logging.log`.
+    reserved stdlib keywords are in logging.Logger._log
+        https://github.com/python/cpython/blob/main/Lib/logging/__init__.py#L1632
 
     The ``event`` field is translated into ``msg`` and the rest of the
     *event_dict* is added as ``extra``.
@@ -886,15 +892,17 @@ def render_to_log_kwargs(
 
     .. versionadded:: 17.1.0
     .. versionchanged:: 22.1.0
-       ``exc_info``, ``stack_info``, and ``stackLevel`` are passed as proper
+       ``exc_info``, ``stack_info``, and ``stacklevel`` are passed as proper
        kwargs and not put into ``extra``.
+    .. versionchanged:: Unreleased
+       ``stackLevel`` corrected to ``stacklevel``.
     """
     return {
         "msg": event_dict.pop("event"),
         "extra": event_dict,
         **{
             kw: event_dict.pop(kw)
-            for kw in ("exc_info", "stack_info", "stackLevel")
+            for kw in ("exc_info", "stack_info", "stacklevel")
             if kw in event_dict
         },
     }
