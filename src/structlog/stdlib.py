@@ -397,9 +397,7 @@ class BoundLogger(BoundLoggerBase):
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        scs_token = _ASYNC_CALLING_STACK.set(
-            sys._getframe().f_back.f_back
-        )  # type: ignore[union-attr, arg-type, unused-ignore]
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
         try:
@@ -607,9 +605,7 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        scs_token = _ASYNC_CALLING_STACK.set(
-            sys._getframe().f_back.f_back
-        )  # type: ignore[union-attr, arg-type, unused-ignore]
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
         try:
@@ -894,7 +890,7 @@ def render_to_log_kwargs(
     .. versionchanged:: 22.1.0
        ``exc_info``, ``stack_info``, and ``stacklevel`` are passed as proper
        kwargs and not put into ``extra``.
-    .. versionchanged:: Unreleased
+    .. versionchanged:: 24.2.0
        ``stackLevel`` corrected to ``stacklevel``.
     """
     return {
