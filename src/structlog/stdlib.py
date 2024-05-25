@@ -878,7 +878,7 @@ def render_to_log_kwargs(
 ) -> EventDict:
     """
     Render ``event_dict`` into keyword arguments for `logging.log`.
-    See the Python logging.Logger._log for kwargs reference.
+    See `logging.Logger`'s ``_log`` method for kwargs reference.
 
     The ``event`` field is translated into ``msg`` and the rest of the
     *event_dict* is added as ``extra``.

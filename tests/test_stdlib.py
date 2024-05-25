@@ -673,8 +673,8 @@ class TestExtraAdder:
         }
 
 
-@pytest.fixture()
-def stdlib_logger():
+@pytest.fixture(name="stdlib_logger")
+def _stdlib_logger():
     logger = logging.getLogger("test_logger")
     logger.setLevel(logging.DEBUG)
 
