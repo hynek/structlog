@@ -757,11 +757,11 @@ class TestRenderToLogKW:
 
     def test_integration_special_kw(self, event_dict, stdlib_logger):
         """
-        test the render_to_log_kwargs processor with a wrapped logger calls the stdlib logger
+        render_to_log_kwargs with a wrapped logger calls the stdlib logger
         correctly
 
         reserved stdlib keywords are in logging.Logger._log
-        https://github.com/python/cpython/blob/main/Lib/logging/__init__.py#L1632
+        https://github.com/python/cpython/blob/ae7b17673f29efe17b416cbcfbf43b5b3ff5977c/Lib/logging/__init__.py#L1632
         """
         expected = {
             "msg": "message",
