@@ -695,12 +695,8 @@ class TestRenderToLogKW:
         # now check stdlib logger likes those kwargs
         with patch.object(stdlib_logger, "_log") as mock_log:
             stdlib_logger.info(**d)
-            mock_log.assert_called_once()
-            (level, msg, args), kwargs = mock_log.call_args
-            assert level == logging.INFO
-            assert msg == "message"
-            assert args == ()
-            assert kwargs == {"extra": {}}
+
+        mock_log.assert_called_once_with(logging.INFO, "message", (), extra={})
 
     def test_add_extra_event_dict(self, event_dict, stdlib_logger):
         """
@@ -714,12 +710,10 @@ class TestRenderToLogKW:
         # now check stdlib logger likes those kwargs
         with patch.object(stdlib_logger, "_log") as mock_log:
             stdlib_logger.info(**d)
-            mock_log.assert_called_once()
-            (level, msg, args), kwargs = mock_log.call_args
-            assert level == logging.INFO
-            assert msg == "message"
-            assert args == ()
-            assert kwargs == {"extra": event_dict}
+
+        mock_log.assert_called_once_with(
+            logging.INFO, "message", (), extra=event_dict
+        )
 
     def test_handles_special_kw(self, event_dict, stdlib_logger):
         """
@@ -755,13 +749,11 @@ class TestRenderToLogKW:
         # now check stdlib logger likes those kwargs
         with patch.object(stdlib_logger, "_log") as mock_log:
             stdlib_logger.info(**d)
-            mock_log.assert_called_once()
-            (level, msg, args), kwargs = mock_log.call_args
-            assert level == logging.INFO
-            assert msg == "message"
-            assert args == ()
-            expected.pop("msg")
-            assert expected == kwargs
+
+        expected.pop("msg")
+        mock_log.assert_called_once_with(
+            logging.INFO, "message", (), **expected
+        )
 
     def test_integration_special_kw(self, event_dict, stdlib_logger):
         """
@@ -791,13 +783,11 @@ class TestRenderToLogKW:
         # now check struct logger passes those kwargs to stdlib
         with patch.object(stdlib_logger, "_log") as mock_log:
             struct_logger.info("message", **event_dict)
-            mock_log.assert_called_once()
-            (level, msg, args), kwargs = mock_log.call_args
-            assert level == logging.INFO
-            assert msg == "message"
-            assert args == ()
-            expected.pop("msg")
-            assert expected == kwargs
+
+        expected.pop("msg")
+        mock_log.assert_called_once_with(
+            logging.INFO, "message", (), **expected
+        )
 
 
 @pytest.fixture(name="configure_for_processor_formatter")
