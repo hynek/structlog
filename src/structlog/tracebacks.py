@@ -92,7 +92,7 @@ class Trace:
 
 
 def safe_str(_object: Any) -> str:
-    """Don't allow exceptions from __str__ to propegate."""
+    """Don't allow exceptions from __str__ to propagate."""
     try:
         return str(_object)
     except Exception as error:  # noqa: BLE001
