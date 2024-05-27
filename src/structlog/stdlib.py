@@ -878,6 +878,7 @@ def render_to_log_kwargs(
 ) -> EventDict:
     """
     Render ``event_dict`` into keyword arguments for `logging.log`.
+    See `logging.Logger`'s ``_log`` method for kwargs reference.
 
     The ``event`` field is translated into ``msg`` and the rest of the
     *event_dict* is added as ``extra``.
@@ -886,15 +887,17 @@ def render_to_log_kwargs(
 
     .. versionadded:: 17.1.0
     .. versionchanged:: 22.1.0
-       ``exc_info``, ``stack_info``, and ``stackLevel`` are passed as proper
+       ``exc_info``, ``stack_info``, and ``stacklevel`` are passed as proper
        kwargs and not put into ``extra``.
+    .. versionchanged:: 24.2.0
+       ``stackLevel`` corrected to ``stacklevel``.
     """
     return {
         "msg": event_dict.pop("event"),
         "extra": event_dict,
         **{
             kw: event_dict.pop(kw)
-            for kw in ("exc_info", "stack_info", "stackLevel")
+            for kw in ("exc_info", "stack_info", "stacklevel")
             if kw in event_dict
         },
     }
