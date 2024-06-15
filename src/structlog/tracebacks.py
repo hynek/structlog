@@ -20,14 +20,14 @@ import os.path
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import ModuleType, TracebackType
-from typing import Any, Iterable, Sequence, Tuple, Union
+from typing import Any, Iterable, Sequence, Tuple, Union, cast
 
 
 try:
     import rich
     import rich.pretty
 except ImportError:
-    rich = None
+    rich = None  # type: ignore[assignment]
 
 from .typing import ExcInfo
 
@@ -114,20 +114,21 @@ def to_repr(
     """Get repr string for an object, but catch errors."""
     if rich is not None:
         # Let rich render the repr if it is available.
+        # It produces much better results for containers and dataclasses/attrs.
         obj_repr = rich.pretty.traverse(
             obj, max_length=max_length, max_string=max_string
         ).render()
     else:
+        # Generate a (truncated) repr if rich is not available.
+        # Handle str/bytes differently to get better results for truncated
+        # representations.  Also catch all errors, similarly to "safe_str()".
         try:
-
             if isinstance(obj, (str, bytes)):
                 if max_string is not None and len(obj) > max_string:
-                    truncated = len(obj_repr) - max_string
-                    obj_repr = f"{obj_repr[:max_string]!r}+{truncated}"
-                    obj = f"{obj[:max_string]}"
-
-                truncated = len(obj_repr) - max_string
-                obj_repr = f"{obj[:max_string]!r}+{truncated}"
+                    truncated = len(obj) - max_string
+                    obj_repr = f"{obj[:max_string]!r}+{truncated}"
+                else:
+                    obj_repr = repr(obj)
             else:
                 obj_repr = repr(obj)
                 if max_string is not None and len(obj_repr) > max_string:
@@ -196,8 +197,8 @@ def extract(
         append = stack.frames.append  # pylint: disable=no-member
 
         def get_locals(
-            iter_locals: Iterable[Tuple[str, object]],
-        ) -> Iterable[Tuple[str, object]]:
+            iter_locals: Iterable[tuple[str, object]],
+        ) -> Iterable[tuple[str, object]]:
             """Extract locals from an iterator of key pairs."""
             if not (locals_hide_dunder or locals_hide_sunder):
                 yield from iter_locals
@@ -213,8 +214,9 @@ def extract(
             filename = frame_summary.f_code.co_filename
             if filename and not filename.startswith("<"):
                 filename = os.path.abspath(filename)
-            if frame_summary.f_locals.get("_rich_traceback_omit", False):
-                continue
+            # Rich has this, but we are not rich and like to keep all frames:
+            # if frame_summary.f_locals.get("_rich_traceback_omit", False):
+            #     continue  # noqa: ERA001
 
             frame = Frame(
                 filename=filename or "?",
@@ -299,7 +301,7 @@ class ExceptionDictTransformer:
         locals_max_string: int = LOCALS_MAX_STRING,
         locals_hide_dunder: bool = True,
         locals_hide_sunder: bool = False,
-        suppress: Iterable[Union[str, ModuleType]] = (),
+        suppress: Iterable[str | ModuleType] = (),
         max_frames: int = MAX_FRAMES,
     ) -> None:
         if locals_max_string < 0:
@@ -309,7 +311,7 @@ class ExceptionDictTransformer:
             msg = f'"max_frames" must be >= 2: {max_frames}'
             raise ValueError(msg)
         self.show_locals = show_locals
-        self.locals_max_lenght = locals_max_length
+        self.locals_max_length = locals_max_length
         self.locals_max_string = locals_max_string
         self.locals_hide_dunder = locals_hide_dunder
         self.locals_hide_sunder = locals_hide_sunder
@@ -318,7 +320,7 @@ class ExceptionDictTransformer:
             if not isinstance(suppress_entity, str):
                 if suppress_entity.__file__ is None:
                     f"{suppress_entity!r} must be a module with '__file__' attribute"
-                path = os.path.dirname(suppress_entity.__file__)
+                path = os.path.dirname(cast(str, suppress_entity.__file__))
             else:
                 path = suppress_entity
             path = os.path.normpath(os.path.abspath(path))
@@ -356,7 +358,7 @@ class ExceptionDictTransformer:
         stacks = [asdict(stack) for stack in trace.stacks]
         for stack_dict in stacks:
             for frame_dict in stack_dict["frames"]:
-                if not frame_dict[
+                if not frame_dict[  # TODO: Test
                     "line"
                 ]:  # "line" is only used in SyntaxError frames
                     del frame_dict["line"]
