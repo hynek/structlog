@@ -41,7 +41,7 @@ def test_save_str(data: Any, expected: str):
     """
     "safe_str()" returns the str repr of an object.
     """
-    assert expected == tracebacks.safe_str(data)
+    assert tracebacks.safe_str(data) == expected
 
 
 def test_safe_str_error():
@@ -56,7 +56,7 @@ def test_safe_str_error():
     with pytest.raises(ValueError, match="BAAM!"):
         str(Baam())
 
-    assert "<str-error 'BAAM!'>" == tracebacks.safe_str(Baam())
+    assert tracebacks.safe_str(Baam()) == "<str-error 'BAAM!'>"
 
 
 @pytest.mark.parametrize(
@@ -76,7 +76,7 @@ def test_to_repr(data: Any, max_len: int | None, expected: str) -> None:
     """
     "to_repr()" returns the repr of an object, trimmed to max_len.
     """
-    assert expected == tracebacks.to_repr(data, max_string=max_len)
+    assert tracebacks.to_repr(data, max_string=max_len) == expected
 
 
 @pytest.mark.parametrize(
@@ -106,7 +106,7 @@ def test_to_repr_rich(
         pytest.skip(reason="rich not installed")
 
     monkeypatch.setattr(tracebacks, "rich", rich)
-    assert expected == tracebacks.to_repr(data, max_string=max_len)
+    assert tracebacks.to_repr(data, max_string=max_len) == expected
 
 
 def test_to_repr_error() -> None:
@@ -121,7 +121,7 @@ def test_to_repr_error() -> None:
     with pytest.raises(ValueError, match="BAAM!"):
         repr(Baam())
 
-    assert "<repr-error 'BAAM!'>" == tracebacks.to_repr(Baam())
+    assert tracebacks.to_repr(Baam()) == "<repr-error 'BAAM!'>"
 
 
 def test_simple_exception():
@@ -134,7 +134,7 @@ def test_simple_exception():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
@@ -145,12 +145,11 @@ def test_simple_exception():
                     filename=__file__,
                     lineno=lineno,
                     name="test_simple_exception",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_raise_hide_cause():
@@ -167,7 +166,7 @@ def test_raise_hide_cause():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -178,12 +177,11 @@ def test_raise_hide_cause():
                     filename=__file__,
                     lineno=lineno,
                     name="test_raise_hide_cause",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_raise_with_cause():
@@ -201,7 +199,7 @@ def test_raise_with_cause():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -212,7 +210,6 @@ def test_raise_with_cause():
                     filename=__file__,
                     lineno=lineno_2,
                     name="test_raise_with_cause",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -227,12 +224,11 @@ def test_raise_with_cause():
                     filename=__file__,
                     lineno=lineno_1,
                     name="test_raise_with_cause",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_raise_with_cause_no_tb():
@@ -245,7 +241,7 @@ def test_raise_with_cause_no_tb():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -256,12 +252,11 @@ def test_raise_with_cause_no_tb():
                     filename=__file__,
                     lineno=lineno,
                     name="test_raise_with_cause_no_tb",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_raise_nested():
@@ -279,7 +274,7 @@ def test_raise_nested():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -290,7 +285,6 @@ def test_raise_nested():
                     filename=__file__,
                     lineno=lineno_2,
                     name="test_raise_nested",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -305,12 +299,11 @@ def test_raise_nested():
                     filename=__file__,
                     lineno=lineno_1,
                     name="test_raise_nested",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_raise_no_msg():
@@ -324,7 +317,7 @@ def test_raise_no_msg():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="RuntimeError",
             exc_value="",
@@ -335,12 +328,11 @@ def test_raise_no_msg():
                     filename=__file__,
                     lineno=lineno,
                     name="test_raise_no_msg",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_syntax_error():
@@ -354,7 +346,7 @@ def test_syntax_error():
     except SyntaxError as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="SyntaxError",
             exc_value="invalid syntax (<string>, line 1)",
@@ -371,12 +363,10 @@ def test_syntax_error():
                     filename=__file__,
                     lineno=lineno,
                     name="test_syntax_error",
-                    line="",
-                    locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_filename_with_bracket():
@@ -389,7 +379,7 @@ def test_filename_with_bracket():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
@@ -400,19 +390,17 @@ def test_filename_with_bracket():
                     filename=__file__,
                     lineno=lineno,
                     name="test_filename_with_bracket",
-                    line="",
                     locals=None,
                 ),
                 tracebacks.Frame(
                     filename="<string>",
                     lineno=1,
                     name="<module>",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_filename_not_a_file():
@@ -425,7 +413,7 @@ def test_filename_not_a_file():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
@@ -436,19 +424,17 @@ def test_filename_not_a_file():
                     filename=__file__,
                     lineno=lineno,
                     name="test_filename_not_a_file",
-                    line="",
                     locals=None,
                 ),
                 tracebacks.Frame(
                     filename=str(Path.cwd().joinpath("string")),
                     lineno=1,
                     name="<module>",
-                    line="",
                     locals=None,
                 ),
             ],
         ),
-    ] == trace.stacks
+    ]
 
 
 def test_show_locals():
@@ -497,7 +483,7 @@ def test_recursive():
     frames = trace.stacks[0].frames
     trace.stacks[0].frames = []
 
-    assert [
+    assert trace.stacks == [
         tracebacks.Stack(
             exc_type="RecursionError",
             exc_value="maximum recursion depth exceeded",
@@ -505,7 +491,7 @@ def test_recursive():
             is_cause=False,
             frames=[],
         ),
-    ] == trace.stacks
+    ]
     assert (
         len(frames) > sys.getrecursionlimit() - 50
     )  # Buffer for frames from pytest
@@ -550,7 +536,7 @@ def test_json_traceback():
         format_json = tracebacks.ExceptionDictTransformer(show_locals=False)
         result = format_json((type(e), e, e.__traceback__))
 
-    assert [
+    assert result == [
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
@@ -564,7 +550,7 @@ def test_json_traceback():
             "is_cause": False,
             "syntax_error": None,
         },
-    ] == result
+    ]
 
 
 def test_json_traceback_locals_max_string():
@@ -579,7 +565,7 @@ def test_json_traceback_locals_max_string():
         result = tracebacks.ExceptionDictTransformer(locals_max_string=4)(
             (type(e), e, e.__traceback__)
         )
-    assert [
+    assert result == [
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
@@ -598,7 +584,7 @@ def test_json_traceback_locals_max_string():
             "is_cause": False,
             "syntax_error": None,
         },
-    ] == result
+    ]
 
 
 @pytest.mark.parametrize(
@@ -719,16 +705,22 @@ def test_json_tracebacks_skip_sunder_dunder(
 @pytest.mark.parametrize(
     "kwargs",
     [
+        {"locals_max_length": -1},
         {"locals_max_string": -1},
         {"max_frames": -1},
         {"max_frames": 0},
         {"max_frames": 1},
+        {"suppress": (json,)},
     ],
 )
-def test_json_traceback_value_error(kwargs):
+def test_json_traceback_value_error(
+    kwargs: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
     """
     Wrong arguments to ExceptionDictTransformer raise a ValueError that
     contains the name of the argument..
     """
+    if "suppress" in kwargs:
+        monkeypatch.setattr(kwargs["suppress"][0], "__file__", None)
     with pytest.raises(ValueError, match=next(iter(kwargs.keys()))):
         tracebacks.ExceptionDictTransformer(**kwargs)

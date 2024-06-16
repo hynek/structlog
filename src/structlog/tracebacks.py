@@ -20,7 +20,7 @@ import os.path
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import ModuleType, TracebackType
-from typing import Any, Iterable, Sequence, Tuple, Union, cast
+from typing import Any, Iterable, Sequence, Tuple, Union
 
 
 try:
@@ -61,7 +61,6 @@ class Frame:
     filename: str
     lineno: int
     name: str
-    line: str = ""
     locals: dict[str, str] | None = None
 
 
@@ -111,7 +110,25 @@ def safe_str(_object: Any) -> str:
 def to_repr(
     obj: Any, max_length: int | None = None, max_string: int | None = None
 ) -> str:
-    """Get repr string for an object, but catch errors."""
+    """
+    Get repr string for an object, but catch errors.
+
+    :func:`repr()` is used for strings, too, so that secret wrappers that
+    inherit from :func:`str` and overwrite ``__repr__()`` are handled correctly
+    (i.e. secrets are not logged in plain text).
+
+    Args:
+        obj: Object to get a string representation for.
+
+        max_length: Maximum length of containers before abbreviating, or
+            ``None`` for no abbreviation.
+
+        max_string: Maximum length of string before truncating, or ``None`` to
+            disable truncating.
+
+    Returns:
+        The string representation of *obj*.
+    """
     if rich is not None:
         # Let rich render the repr if it is available.
         # It produces much better results for containers and dataclasses/attrs.
@@ -163,10 +180,22 @@ def extract(
 
         show_locals: Enable display of local variables. Defaults to False.
 
-        locals_max_string:
-            Maximum length of string before truncating, or ``None`` to disable.
+        locals_max_length:
+            Maximum length of containers before abbreviating, or ``None`` for
+            no abbreviation.
 
-        max_frames: Maximum number of frames in each stack
+        locals_max_string:
+            Maximum length of string before truncating, or ``None`` to disable
+            truncating.
+
+        locals_hide_dunder:
+            Hide locals prefixed with double underscore.
+            Defaults to True.
+
+        locals_hide_sunder:
+            Hide locals prefixed with single underscore.
+            This implies hiding *locals_hide_dunder*.
+            Defaults to False.
 
     Returns:
         A Trace instance with structured information about all exceptions.
@@ -277,9 +306,26 @@ class ExceptionDictTransformer:
             Whether or not to include the values of a stack frame's local
             variables.
 
+        locals_max_length:
+            Maximum length of containers before abbreviating, or ``None`` for
+            no abbreviation.
+
         locals_max_string:
-            The maximum length after which long string representations are
-            truncated.
+            Maximum length of string before truncating, or ``None`` to disable
+            truncating.
+
+        locals_hide_dunder:
+            Hide locals prefixed with double underscore.
+            Defaults to True.
+
+        locals_hide_sunder:
+            Hide locals prefixed with single underscore.
+            This implies hiding *locals_hide_dunder*.
+            Defaults to False.
+
+        suppress:
+            Optional sequence of modules or paths for which to suppress the
+            display of locals even if *show_locals* is ``True``.
 
         max_frames:
             Maximum number of frames in each stack.  Frames are removed from
@@ -304,6 +350,9 @@ class ExceptionDictTransformer:
         suppress: Iterable[str | ModuleType] = (),
         max_frames: int = MAX_FRAMES,
     ) -> None:
+        if locals_max_length < 0:
+            msg = f'"locals_max_length" must be >= 0: {locals_max_length}'
+            raise ValueError(msg)
         if locals_max_string < 0:
             msg = f'"locals_max_string" must be >= 0: {locals_max_string}'
             raise ValueError(msg)
@@ -319,8 +368,12 @@ class ExceptionDictTransformer:
         for suppress_entity in suppress:
             if not isinstance(suppress_entity, str):
                 if suppress_entity.__file__ is None:
-                    f"{suppress_entity!r} must be a module with '__file__' attribute"
-                path = os.path.dirname(cast(str, suppress_entity.__file__))
+                    msg = (
+                        f'"suppress" item {suppress_entity!r} must be a '
+                        f"module with '__file__' attribute"
+                    )
+                    raise ValueError(msg)
+                path = os.path.dirname(suppress_entity.__file__)
             else:
                 path = suppress_entity
             path = os.path.normpath(os.path.abspath(path))
@@ -358,10 +411,6 @@ class ExceptionDictTransformer:
         stacks = [asdict(stack) for stack in trace.stacks]
         for stack_dict in stacks:
             for frame_dict in stack_dict["frames"]:
-                if not frame_dict[  # TODO: Test
-                    "line"
-                ]:  # "line" is only used in SyntaxError frames
-                    del frame_dict["line"]
                 if frame_dict["locals"] is None or any(
                     frame_dict["filename"].startswith(path)
                     for path in self.suppress
