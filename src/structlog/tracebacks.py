@@ -6,7 +6,7 @@
 """
 Extract a structured traceback from an exception.
 
-`Contributed by Will McGugan
+Based on `work by Will McGugan
 <https://github.com/hynek/structlog/pull/407#issuecomment-1150926246>`_ from
 `rich.traceback
 <https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py>`_.
