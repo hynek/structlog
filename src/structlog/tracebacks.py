@@ -128,6 +128,11 @@ def to_repr(
 
     Returns:
         The string representation of *obj*.
+
+    .. versionchanged:: 24.3.0
+       Added *max_length* argument.  Use :program:`rich` to render locals if it
+       is available.  Call :func:`repr()` on strings in fallback
+       implementation.
     """
     if rich is not None:
         # Let rich render the repr if it is available.
@@ -201,6 +206,9 @@ def extract(
         A Trace instance with structured information about all exceptions.
 
     .. versionadded:: 22.1.0
+    .. versionchanged:: 24.3.0
+       Added *locals_max_length*, *locals_hide_sunder* and
+       *locals_hide_dunder* arguments.
     """
 
     stacks: list[Stack] = []
@@ -337,6 +345,9 @@ class ExceptionDictTransformer:
     .. seealso::
         :doc:`exceptions` for a broader explanation of *structlog*'s exception
         features.
+    .. versionchanged:: 24.3.0
+       Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*
+       and *suppress* arguments.
     """
 
     def __init__(
