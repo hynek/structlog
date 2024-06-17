@@ -15,11 +15,23 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/24.2.0...HEAD)
 
+### Added
+
+- Restore feature parity between `structlog.traceback.ExceptionDictTransformer` and Rich's traceback extractor:
+
+  - When displaying locals, use Rich for formatting if it is available.
+  - When displaying locals, call `repr()` on strings, too (improves handling of `SecretStr` implementations).
+  - Add `locals_max_length` config option
+  - Add `locals_hide_sunder` config option
+  - Add `locals_hide_dunder` config option
+  - Add `suppress` config option
+
+  [!627](https://github.com/hynek/structlog/pull/627)
+
 ### Changed
 
 - `structlog.testing.capture_logs()` now maps the `exception` log level to `error` (as it's elsewhere).
   [#628](https://github.com/hynek/structlog/pull/628)
-
 
 ## [24.2.0](https://github.com/hynek/structlog/compare/24.1.0...24.2.0) - 2024-05-27
 
