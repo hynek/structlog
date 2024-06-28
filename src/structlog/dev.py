@@ -73,7 +73,7 @@ def _pad(s: str, length: int) -> str:
     """
     missing = length - len(s)
 
-    return s + " " * (missing if missing > 0 else 0)
+    return s + " " * (max(0, missing))
 
 
 if colorama is not None:

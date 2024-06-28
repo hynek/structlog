@@ -437,7 +437,7 @@ class TestFunctions:
             configure_once()
 
         assert 1 == len(warns)
-        assert RuntimeWarning == warns[0].category
+        assert RuntimeWarning is warns[0].category
         assert "Repeated configuration attempted." == warns[0].message.args[0]
 
     def test_get_logger_configures_according_to_config(self):
