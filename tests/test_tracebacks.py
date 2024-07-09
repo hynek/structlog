@@ -41,7 +41,7 @@ def test_save_str(data: Any, expected: str):
     """
     "safe_str()" returns the str repr of an object.
     """
-    assert tracebacks.safe_str(data) == expected
+    assert expected == tracebacks.safe_str(data)
 
 
 def test_safe_str_error():
@@ -56,7 +56,7 @@ def test_safe_str_error():
     with pytest.raises(ValueError, match="BAAM!"):
         str(Baam())
 
-    assert tracebacks.safe_str(Baam()) == "<str-error 'BAAM!'>"
+    assert "<str-error 'BAAM!'>" == tracebacks.safe_str(Baam())
 
 
 @pytest.mark.parametrize(
@@ -76,7 +76,7 @@ def test_to_repr(data: Any, max_len: int | None, expected: str) -> None:
     """
     "to_repr()" returns the repr of an object, trimmed to max_len.
     """
-    assert tracebacks.to_repr(data, max_string=max_len) == expected
+    assert expected == tracebacks.to_repr(data, max_string=max_len)
 
 
 @pytest.mark.parametrize(
@@ -106,7 +106,7 @@ def test_to_repr_rich(
         pytest.skip(reason="rich not installed")
 
     monkeypatch.setattr(tracebacks, "rich", rich)
-    assert tracebacks.to_repr(data, max_string=max_len) == expected
+    assert expected == tracebacks.to_repr(data, max_string=max_len)
 
 
 def test_to_repr_error() -> None:
@@ -121,7 +121,7 @@ def test_to_repr_error() -> None:
     with pytest.raises(ValueError, match="BAAM!"):
         repr(Baam())
 
-    assert tracebacks.to_repr(Baam()) == "<repr-error 'BAAM!'>"
+    assert "<repr-error 'BAAM!'>" == tracebacks.to_repr(Baam())
 
 
 def test_simple_exception():
@@ -134,7 +134,7 @@ def test_simple_exception():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
@@ -149,7 +149,7 @@ def test_simple_exception():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_raise_hide_cause():
@@ -166,7 +166,7 @@ def test_raise_hide_cause():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -181,7 +181,7 @@ def test_raise_hide_cause():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_raise_with_cause():
@@ -199,7 +199,7 @@ def test_raise_with_cause():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -228,7 +228,7 @@ def test_raise_with_cause():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_raise_with_cause_no_tb():
@@ -241,7 +241,7 @@ def test_raise_with_cause_no_tb():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -256,7 +256,7 @@ def test_raise_with_cause_no_tb():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_raise_nested():
@@ -274,7 +274,7 @@ def test_raise_nested():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ValueError",
             exc_value="onoes",
@@ -303,7 +303,7 @@ def test_raise_nested():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_raise_no_msg():
@@ -317,7 +317,7 @@ def test_raise_no_msg():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="RuntimeError",
             exc_value="",
@@ -332,7 +332,7 @@ def test_raise_no_msg():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_syntax_error():
@@ -346,7 +346,7 @@ def test_syntax_error():
     except SyntaxError as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="SyntaxError",
             exc_value="invalid syntax (<string>, line 1)",
@@ -366,7 +366,7 @@ def test_syntax_error():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_filename_with_bracket():
@@ -379,7 +379,7 @@ def test_filename_with_bracket():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
@@ -400,7 +400,7 @@ def test_filename_with_bracket():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_filename_not_a_file():
@@ -413,7 +413,7 @@ def test_filename_not_a_file():
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
@@ -434,7 +434,7 @@ def test_filename_not_a_file():
                 ),
             ],
         ),
-    ]
+    ] == trace.stacks
 
 
 def test_show_locals():
@@ -483,7 +483,7 @@ def test_recursive():
     frames = trace.stacks[0].frames
     trace.stacks[0].frames = []
 
-    assert trace.stacks == [
+    assert [
         tracebacks.Stack(
             exc_type="RecursionError",
             exc_value="maximum recursion depth exceeded",
@@ -491,7 +491,7 @@ def test_recursive():
             is_cause=False,
             frames=[],
         ),
-    ]
+    ] == trace.stacks
     assert (
         len(frames) > sys.getrecursionlimit() - 50
     )  # Buffer for frames from pytest
@@ -536,7 +536,7 @@ def test_json_traceback():
         format_json = tracebacks.ExceptionDictTransformer(show_locals=False)
         result = format_json((type(e), e, e.__traceback__))
 
-    assert result == [
+    assert [
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
@@ -550,7 +550,7 @@ def test_json_traceback():
             "is_cause": False,
             "syntax_error": None,
         },
-    ]
+    ] == result
 
 
 def test_json_traceback_locals_max_string():
@@ -565,7 +565,7 @@ def test_json_traceback_locals_max_string():
         result = tracebacks.ExceptionDictTransformer(locals_max_string=4)(
             (type(e), e, e.__traceback__)
         )
-    assert result == [
+    assert [
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
@@ -584,7 +584,7 @@ def test_json_traceback_locals_max_string():
             "is_cause": False,
             "syntax_error": None,
         },
-    ]
+    ] == result
 
 
 @pytest.mark.parametrize(
@@ -699,7 +699,7 @@ def test_json_tracebacks_skip_sunder_dunder(
             locals_hide_dunder=hide_dunder,
         )
         result = format_json((type(e), e, e.__traceback__))
-        assert set(result[0]["frames"][1]["locals"]) == expected
+        assert expected == set(result[0]["frames"][1]["locals"])
 
 
 @pytest.mark.parametrize(
