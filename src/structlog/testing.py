@@ -42,6 +42,10 @@ class LogCapture:
     :ivar List[structlog.typing.EventDict] entries: The captured log entries.
 
     .. versionadded:: 20.1.0
+
+    .. versionchanged:: 24.3.0
+       Added mapping from "exception" to "error"
+       Added mapping from "warn" to "warning"
     """
 
     entries: list[EventDict]
