@@ -17,6 +17,7 @@ from contextlib import contextmanager
 from typing import Any, Generator, NamedTuple, NoReturn
 
 from ._config import configure, get_config
+from ._log_levels import map_method_name
 from .exceptions import DropEvent
 from .typing import EventDict, WrappedLogger
 
@@ -51,7 +52,7 @@ class LogCapture:
     def __call__(
         self, _: WrappedLogger, method_name: str, event_dict: EventDict
     ) -> NoReturn:
-        event_dict["log_level"] = method_name
+        event_dict["log_level"] = map_method_name(method_name)
         self.entries.append(event_dict)
 
         raise DropEvent

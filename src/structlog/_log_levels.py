@@ -36,14 +36,20 @@ NAME_TO_LEVEL = {
 }
 
 LEVEL_TO_NAME = {
-    v: k
-    for k, v in NAME_TO_LEVEL.items()
-    if k not in ("warn", "exception", "notset")
+    v: k for k, v in NAME_TO_LEVEL.items() if k not in ("warn", "exception", "notset")
 }
 
 # Keep around for backwards-compatability in case someone imported them.
 _LEVEL_TO_NAME = LEVEL_TO_NAME
 _NAME_TO_LEVEL = NAME_TO_LEVEL
+
+
+def map_method_name(method_name: str) -> str:
+    if method_name == "warn":
+        return "warning"
+    if method_name == "exception":
+        return "error"
+    return method_name
 
 
 def add_log_level(
@@ -63,13 +69,7 @@ def add_log_level(
     .. versionchanged:: 24.1.0
        Added mapping from "exception" to "error"
     """
-    if method_name == "warn":
-        # The stdlib has an alias
-        method_name = "warning"
-    elif method_name == "exception":
-        # exception("") method is the same as error("", exc_info=True)
-        method_name = "error"
 
-    event_dict["level"] = method_name
+    event_dict["level"] = map_method_name(method_name)
 
     return event_dict
