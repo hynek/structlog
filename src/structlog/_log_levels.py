@@ -36,7 +36,9 @@ NAME_TO_LEVEL = {
 }
 
 LEVEL_TO_NAME = {
-    v: k for k, v in NAME_TO_LEVEL.items() if k not in ("warn", "exception", "notset")
+    v: k
+    for k, v in NAME_TO_LEVEL.items()
+    if k not in ("warn", "exception", "notset")
 }
 
 # Keep around for backwards-compatability in case someone imported them.
