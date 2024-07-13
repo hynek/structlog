@@ -3,8 +3,18 @@
 
 
 :root {
-  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  /* fix for Chrome */
 }
+
 @supports (font-variation-settings: normal) {
-  :root { font-family: InterVariable, sans-serif; }
+  :root {
+    font-family: InterVariable, sans-serif;
+  }
+}
+
+
+/* Hide ToC caption text within the main body (but leave them in the side-bar). */
+#furo-main-content span.caption-text {
+  display: none;
 }

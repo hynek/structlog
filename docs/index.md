@@ -32,6 +32,7 @@ If anything seems confusing, don't hesitate to have a look at our {doc}`glossary
 
 ```{toctree}
 :maxdepth: 2
+:caption: Basics
 
 getting-started
 bound-loggers
@@ -48,6 +49,8 @@ exceptions
 
 ```{toctree}
 :maxdepth: 2
+:caption: Development Affordances
+
 console-output
 testing
 typing
@@ -63,6 +66,7 @@ Dedicated support for the standard library and Twisted is shipped out-of-the-box
 
 ```{toctree}
 :maxdepth: 2
+:caption: Integrations
 
 frameworks
 standard-library
@@ -77,6 +81,7 @@ The following chapters deal with considerations of using *structlog* in the real
 
 ```{toctree}
 :maxdepth: 2
+:caption: In Practice
 
 recipes
 logging-best-practices
@@ -88,9 +93,12 @@ performance
 
 ```{toctree}
 :maxdepth: 2
+:caption: Reference
 
 api
 glossary
+genindex
+modindex
 ```
 
 
@@ -98,16 +106,10 @@ glossary
 
 ```{toctree}
 :maxdepth: 1
+:caption: Deprecated Features
 
 thread-local
 ```
-
-
-## Indices and tables
-
-- {any}`genindex`
-- {any}`modindex`
-- {any}`glossary`
 
 
 ```{toctree}
