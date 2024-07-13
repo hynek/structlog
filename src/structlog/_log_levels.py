@@ -47,10 +47,14 @@ _NAME_TO_LEVEL = NAME_TO_LEVEL
 
 
 def map_method_name(method_name: str) -> str:
+    # warn is just a deprecated alias in the stdlib.
     if method_name == "warn":
         return "warning"
+
+    # Calling exception("") is the same as error("", exc_info=True)
     if method_name == "exception":
         return "error"
+
     return method_name
 
 
