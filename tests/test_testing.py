@@ -89,7 +89,7 @@ class TestCaptureLogs:
 
     def test_captures_log_level_mapping(self):
         """
-        Log level mapping is captured.
+        exceptions and warn log levels are mapped like in regular loggers.
         """
         structlog.configure(
             processors=[
@@ -100,15 +100,21 @@ class TestCaptureLogs:
         )
         with testing.capture_logs() as logs:
             get_logger().exception("hello", answer=42)
+            get_logger().warn("again", answer=23)
 
-        assert logs == [
+        assert [
             {
                 "event": "hello",
                 "answer": 42,
                 "exc_info": True,
                 "log_level": "error",
-            }
-        ]
+            },
+            {
+                "answer": 23,
+                "event": "again",
+                "log_level": "warning",
+            },
+        ] == logs
 
 
 class TestReturnLogger:

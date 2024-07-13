@@ -17,7 +17,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Changed
 
-- capture_logs now map exception log level to error
+- `structlog.testing.capture_logs()` now maps the `exception` log level to `error` (as it's elsewhere).
+  [#628](https://github.com/hynek/structlog/pull/628)
 
 
 ## [24.2.0](https://github.com/hynek/structlog/compare/24.1.0...24.2.0) - 2024-05-27
