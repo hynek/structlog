@@ -5,6 +5,8 @@
 
 import pytest
 
+import structlog
+
 from structlog import get_config, get_logger, testing
 from structlog.testing import (
     CapturedCall,
@@ -84,6 +86,35 @@ class TestCaptureLogs:
                 "log_level": "info",
             }
         ]
+
+    def test_captures_log_level_mapping(self):
+        """
+        exceptions and warn log levels are mapped like in regular loggers.
+        """
+        structlog.configure(
+            processors=[
+                structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=structlog.stdlib.LoggerFactory(),
+            wrapper_class=structlog.stdlib.BoundLogger,
+        )
+        with testing.capture_logs() as logs:
+            get_logger().exception("hello", answer=42)
+            get_logger().warn("again", answer=23)
+
+        assert [
+            {
+                "event": "hello",
+                "answer": 42,
+                "exc_info": True,
+                "log_level": "error",
+            },
+            {
+                "answer": 23,
+                "event": "again",
+                "log_level": "warning",
+            },
+        ] == logs
 
 
 class TestReturnLogger:
