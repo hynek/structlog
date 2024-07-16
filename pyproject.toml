@@ -233,6 +233,12 @@ text = """
 
 """
 
+# Change sponsor URLs from GitHub to the docs.
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = 'docs/_static/sponsors'
+replacement = '/en/$HFPR_VERSION/sponsors'
+
+
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "README.md"
 start-at = "## Credits"
