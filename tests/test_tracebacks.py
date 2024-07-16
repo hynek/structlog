@@ -101,7 +101,7 @@ def test_to_repr_rich(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """
-    "to_repr()" uses Rich to get a nice repl if it is installed and if
+    "to_repr()" uses Rich to get a nice repr if it is installed and if
     "use_rich" is True.
     """
     try:
