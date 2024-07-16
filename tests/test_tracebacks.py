@@ -80,25 +80,29 @@ def test_to_repr(data: Any, max_len: int | None, expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    ("data", "max_len", "expected"),
+    ("use_rich", "data", "max_len", "expected"),
     [
-        (3, None, "3"),
-        ("spam", None, "'spam'"),
-        (b"spam", None, "b'spam'"),
-        ("bacon", 3, "'bac'+2"),
-        ("bacon", 5, "'bacon'"),
-        (SecretStr("password"), None, "*******"),
-        (["spam", "eggs", "bacon"], 4, "['spam', 'eggs', 'baco'+1]"),
+        (True, 3, None, "3"),
+        (True, "spam", None, "'spam'"),
+        (True, b"spam", None, "b'spam'"),
+        (True, "bacon", 3, "'bac'+2"),
+        (True, "bacon", 5, "'bacon'"),
+        (True, SecretStr("password"), None, "*******"),
+        (True, ["spam", "eggs", "bacon"], 4, "['spam', 'eggs', 'baco'+1]"),
+        (False, "bacon", 3, "'bac'+2"),
+        (False, ["spam", "eggs", "bacon"], 4, '"[\'sp"+21'),
     ],
 )
 def test_to_repr_rich(
+    use_rich: bool,
     data: Any,
     max_len: int | None,
     expected: str,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """
-    "to_repr()" uses Rich to get a nice repl if it is installed.
+    "to_repr()" uses Rich to get a nice repl if it is installed and if
+    "use_rich" is True.
     """
     try:
         import rich
@@ -106,7 +110,9 @@ def test_to_repr_rich(
         pytest.skip(reason="rich not installed")
 
     monkeypatch.setattr(tracebacks, "rich", rich)
-    assert expected == tracebacks.to_repr(data, max_string=max_len)
+    assert expected == tracebacks.to_repr(
+        data, max_string=max_len, use_rich=use_rich
+    )
 
 
 def test_to_repr_error() -> None:

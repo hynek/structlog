@@ -6,7 +6,7 @@
 """
 Extract a structured traceback from an exception.
 
-Based on `work by Will McGugan
+Based on work by Will McGugan
 <https://github.com/hynek/structlog/pull/407#issuecomment-1150926246>`_ from
 `rich.traceback
 <https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py>`_.
@@ -108,7 +108,10 @@ def safe_str(_object: Any) -> str:
 
 
 def to_repr(
-    obj: Any, max_length: int | None = None, max_string: int | None = None
+    obj: Any,
+    max_length: int | None = None,
+    max_string: int | None = None,
+    use_rich: bool = True,
 ) -> str:
     """
     Get repr string for an object, but catch errors.
@@ -126,6 +129,10 @@ def to_repr(
         max_string: Maximum length of string before truncating, or ``None`` to
             disable truncating.
 
+        use_rich: If ``True`` (the default), use rich_ to compute the repr.
+            If ``False`` or if rich_ is not installed, fall back to a simpler
+            algorithm.
+
     Returns:
         The string representation of *obj*.
 
@@ -134,7 +141,7 @@ def to_repr(
        is available.  Call :func:`repr()` on strings in fallback
        implementation.
     """
-    if rich is not None:
+    if use_rich and rich is not None:
         # Let rich render the repr if it is available.
         # It produces much better results for containers and dataclasses/attrs.
         obj_repr = rich.pretty.traverse(
@@ -172,6 +179,7 @@ def extract(
     locals_max_string: int = LOCALS_MAX_STRING,
     locals_hide_dunder: bool = True,
     locals_hide_sunder: bool = False,
+    use_rich: bool = True,
 ) -> Trace:
     """
     Extract traceback information.
@@ -202,13 +210,17 @@ def extract(
             This implies hiding *locals_hide_dunder*.
             Defaults to False.
 
+        use_rich: If ``True`` (the default), use rich_ to compute the repr.
+            If ``False`` or if rich_ is not installed, fall back to a simpler
+            algorithm.
+
     Returns:
         A Trace instance with structured information about all exceptions.
 
     .. versionadded:: 22.1.0
     .. versionchanged:: 24.3.0
-       Added *locals_max_length*, *locals_hide_sunder* and
-       *locals_hide_dunder* arguments.
+       Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*
+       and *use_rich* arguments.
     """
 
     stacks: list[Stack] = []
@@ -265,6 +277,7 @@ def extract(
                             value,
                             max_length=locals_max_length,
                             max_string=locals_max_string,
+                            use_rich=use_rich,
                         )
                         for key, value in get_locals(
                             frame_summary.f_locals.items()
@@ -342,12 +355,17 @@ class ExceptionDictTransformer:
             the exception actually happened.  With larger web frameworks, this
             does not always work, so you should stick with the default.
 
+        use_rich: If ``True`` (the default), use rich_ to compute the repr of
+            locals.  If ``False`` or if rich_ is not installed, fall back to
+            a simpler algorithm.
+
     .. seealso::
         :doc:`exceptions` for a broader explanation of *structlog*'s exception
         features.
+
     .. versionchanged:: 24.3.0
-       Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*
-       and *suppress* arguments.
+       Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*,
+       *suppress* and *use_rich* arguments.
     """
 
     def __init__(
@@ -360,6 +378,7 @@ class ExceptionDictTransformer:
         locals_hide_sunder: bool = False,
         suppress: Iterable[str | ModuleType] = (),
         max_frames: int = MAX_FRAMES,
+        use_rich: bool = True,
     ) -> None:
         if locals_max_length < 0:
             msg = f'"locals_max_length" must be >= 0: {locals_max_length}'
@@ -390,6 +409,7 @@ class ExceptionDictTransformer:
             path = os.path.normpath(os.path.abspath(path))
             self.suppress.append(path)
         self.max_frames = max_frames
+        self.use_rich = use_rich
 
     def __call__(self, exc_info: ExcInfo) -> list[dict[str, Any]]:
         trace = extract(
@@ -399,6 +419,7 @@ class ExceptionDictTransformer:
             locals_max_string=self.locals_max_string,
             locals_hide_dunder=self.locals_hide_dunder,
             locals_hide_sunder=self.locals_hide_sunder,
+            use_rich=self.use_rich,
         )
 
         for stack in trace.stacks:

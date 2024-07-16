@@ -26,7 +26,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   - Add `locals_hide_dunder` config option
   - Add `suppress` config option
 
-  [!627](https://github.com/hynek/structlog/pull/627)
+  [#627](https://github.com/hynek/structlog/pull/627)
 
 ### Changed
 
