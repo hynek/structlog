@@ -197,7 +197,7 @@ API Reference
          ...     1 / 0
          ... except ZeroDivisionError:
          ...     log.exception("Cannot compute!")
-         {"event": "Cannot compute!", "exception": [{"exc_type": "ZeroDivisionError", "exc_value": "division by zero", "syntax_error": null, "is_cause": false, "frames": [{"filename": "<doctest default[3]>", "lineno": 2, "name": "<module>", "line": "", "locals": {..., "var": "spam"}}]}]}
+         {"event": "Cannot compute!", "exception": [{"exc_type": "ZeroDivisionError", "exc_value": "division by zero", "syntax_error": null, "is_cause": false, "frames": [{"filename": "<doctest default[3]>", "lineno": 2, "name": "<module>", "locals": {..., "var": "'spam'"}}]}]}
 
 .. autoclass:: KeyValueRenderer
 

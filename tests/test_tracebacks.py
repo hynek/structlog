@@ -6,14 +6,30 @@
 from __future__ import annotations
 
 import inspect
+import json
 import sys
 
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 import pytest
 
 from structlog import tracebacks
+
+
+class SecretStr(str):  # noqa: SLOT000
+    """
+    Secrets representation as used in Typed Settings or Pydantic.
+    """
+
+    def __repr__(self) -> str:
+        return "*******"
+
+
+@pytest.fixture(autouse=True)
+def _unimport_rich(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(tracebacks, "rich", None)
 
 
 def get_next_lineno() -> int:
@@ -47,21 +63,59 @@ def test_safe_str_error():
     ("data", "max_len", "expected"),
     [
         (3, None, "3"),
-        ("spam", None, "spam"),
+        ("spam", None, "'spam'"),
         (b"spam", None, "b'spam'"),
         ("bacon", 3, "'bac'+2"),
         ("bacon", 4, "'baco'+1"),
-        ("bacon", 5, "bacon"),
+        ("bacon", 5, "'bacon'"),
+        (SecretStr("password"), None, "*******"),
+        (["spam", "eggs", "bacon"], 10, "\"['spam', '\"+15"),
     ],
 )
-def test_to_repr(data: Any, max_len: int | None, expected: str):
+def test_to_repr(data: Any, max_len: int | None, expected: str) -> None:
     """
     "to_repr()" returns the repr of an object, trimmed to max_len.
     """
     assert expected == tracebacks.to_repr(data, max_string=max_len)
 
 
-def test_to_repr_error():
+@pytest.mark.parametrize(
+    ("use_rich", "data", "max_len", "expected"),
+    [
+        (True, 3, None, "3"),
+        (True, "spam", None, "'spam'"),
+        (True, b"spam", None, "b'spam'"),
+        (True, "bacon", 3, "'bac'+2"),
+        (True, "bacon", 5, "'bacon'"),
+        (True, SecretStr("password"), None, "*******"),
+        (True, ["spam", "eggs", "bacon"], 4, "['spam', 'eggs', 'baco'+1]"),
+        (False, "bacon", 3, "'bac'+2"),
+        (False, ["spam", "eggs", "bacon"], 4, '"[\'sp"+21'),
+    ],
+)
+def test_to_repr_rich(
+    use_rich: bool,
+    data: Any,
+    max_len: int | None,
+    expected: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """
+    "to_repr()" uses Rich to get a nice repr if it is installed and if
+    "use_rich" is True.
+    """
+    try:
+        import rich
+    except ImportError:
+        pytest.skip(reason="rich not installed")
+
+    monkeypatch.setattr(tracebacks, "rich", rich)
+    assert expected == tracebacks.to_repr(
+        data, max_string=max_len, use_rich=use_rich
+    )
+
+
+def test_to_repr_error() -> None:
     """
     "to_repr()" does not fail if __repr__() raises an exception.
     """
@@ -97,7 +151,6 @@ def test_simple_exception():
                     filename=__file__,
                     lineno=lineno,
                     name="test_simple_exception",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -130,7 +183,6 @@ def test_raise_hide_cause():
                     filename=__file__,
                     lineno=lineno,
                     name="test_raise_hide_cause",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -164,7 +216,6 @@ def test_raise_with_cause():
                     filename=__file__,
                     lineno=lineno_2,
                     name="test_raise_with_cause",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -179,7 +230,6 @@ def test_raise_with_cause():
                     filename=__file__,
                     lineno=lineno_1,
                     name="test_raise_with_cause",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -208,7 +258,6 @@ def test_raise_with_cause_no_tb():
                     filename=__file__,
                     lineno=lineno,
                     name="test_raise_with_cause_no_tb",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -242,7 +291,6 @@ def test_raise_nested():
                     filename=__file__,
                     lineno=lineno_2,
                     name="test_raise_nested",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -257,7 +305,6 @@ def test_raise_nested():
                     filename=__file__,
                     lineno=lineno_1,
                     name="test_raise_nested",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -287,7 +334,6 @@ def test_raise_no_msg():
                     filename=__file__,
                     lineno=lineno,
                     name="test_raise_no_msg",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -323,8 +369,6 @@ def test_syntax_error():
                     filename=__file__,
                     lineno=lineno,
                     name="test_syntax_error",
-                    line="",
-                    locals=None,
                 ),
             ],
         ),
@@ -352,14 +396,12 @@ def test_filename_with_bracket():
                     filename=__file__,
                     lineno=lineno,
                     name="test_filename_with_bracket",
-                    line="",
                     locals=None,
                 ),
                 tracebacks.Frame(
                     filename="<string>",
                     lineno=1,
                     name="<module>",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -388,14 +430,12 @@ def test_filename_not_a_file():
                     filename=__file__,
                     lineno=lineno,
                     name="test_filename_not_a_file",
-                    line="",
                     locals=None,
                 ),
                 tracebacks.Frame(
                     filename=str(Path.cwd().joinpath("string")),
                     lineno=1,
                     name="<module>",
-                    line="",
                     locals=None,
                 ),
             ],
@@ -509,9 +549,7 @@ def test_json_traceback():
             "frames": [
                 {
                     "filename": __file__,
-                    "line": "",
                     "lineno": lineno,
-                    "locals": None,
                     "name": "test_json_traceback",
                 }
             ],
@@ -540,7 +578,6 @@ def test_json_traceback_locals_max_string():
             "frames": [
                 {
                     "filename": __file__,
-                    "line": "",
                     "lineno": lineno,
                     "locals": {
                         "_var": "'spam'+8",
@@ -594,9 +631,7 @@ def test_json_traceback_max_frames(
         if skipped_count:
             assert trace["frames"][skipped_idx] == {
                 "filename": "",
-                "line": "",
                 "lineno": -1,
-                "locals": None,
                 "name": f"Skipped frames: {skipped_count}",
             }
         else:
@@ -604,18 +639,94 @@ def test_json_traceback_max_frames(
 
 
 @pytest.mark.parametrize(
+    ("suppress", "file_no_locals"),
+    [
+        pytest.param((__file__,), __file__, id="file"),
+        pytest.param((json,), json.__file__, id="json"),
+    ],
+)
+def test_json_tracebacks_suppress(
+    suppress: tuple[str | ModuleType, ...],
+    file_no_locals: str,
+    capsys: pytest.CaptureFixture,
+) -> None:
+    """
+    Console and JSON output look as expected
+
+    This means also warnings are logged correctly.
+    """
+    try:
+        try:
+            json.loads(42)  # type: ignore[arg-type]
+        except Exception as e:
+            raise ValueError("error shown to users") from e
+    except ValueError as e:
+        format_json = tracebacks.ExceptionDictTransformer(
+            show_locals=True, suppress=suppress
+        )
+        result = format_json((type(e), e, e.__traceback__))
+        for stack in result:
+            for frame in stack["frames"]:
+                no_locals = frame["filename"] == file_no_locals
+                if no_locals:
+                    assert "locals" not in frame
+                else:
+                    assert "locals" in frame
+
+
+@pytest.mark.parametrize(
+    ("hide_sunder", "hide_dunder", "expected"),
+    [
+        (False, False, {"_spam", "__eggs"}),
+        (True, False, set()),  # Also hides "__eggs", b/c it starts with "_"!
+        (False, True, {"_spam"}),
+        (True, True, set()),
+    ],
+)
+def test_json_tracebacks_skip_sunder_dunder(
+    hide_sunder: bool, hide_dunder: bool, expected: set[str]
+) -> None:
+    """
+    Local variables starting with "_" or "__" can be hidden from the locals
+    dict.
+    """
+
+    def func() -> None:
+        _spam = True
+        __eggs = 3
+        1 / 0
+
+    try:
+        func()
+    except ZeroDivisionError as e:
+        format_json = tracebacks.ExceptionDictTransformer(
+            show_locals=True,
+            locals_hide_sunder=hide_sunder,
+            locals_hide_dunder=hide_dunder,
+        )
+        result = format_json((type(e), e, e.__traceback__))
+        assert expected == set(result[0]["frames"][1]["locals"])
+
+
+@pytest.mark.parametrize(
     "kwargs",
     [
+        {"locals_max_length": -1},
         {"locals_max_string": -1},
         {"max_frames": -1},
         {"max_frames": 0},
         {"max_frames": 1},
+        {"suppress": (json,)},
     ],
 )
-def test_json_traceback_value_error(kwargs):
+def test_json_traceback_value_error(
+    kwargs: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
     """
     Wrong arguments to ExceptionDictTransformer raise a ValueError that
     contains the name of the argument..
     """
+    if "suppress" in kwargs:
+        monkeypatch.setattr(kwargs["suppress"][0], "__file__", None)
     with pytest.raises(ValueError, match=next(iter(kwargs.keys()))):
         tracebacks.ExceptionDictTransformer(**kwargs)

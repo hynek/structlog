@@ -77,6 +77,7 @@ nitpick_ignore = [
     ("py:class", "WrappedLogger"),
     ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "structlog.typing.EventDict"),
+    ("py:class", "ModuleType"),
 ]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
