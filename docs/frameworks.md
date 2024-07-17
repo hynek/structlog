@@ -74,7 +74,7 @@ request_started.connect(bind_request_details, app)
 
 ## OpenTelemetry
 
-The [Python OpenTelemetry SDK](https://opentelemetry.io/docs/instrumentation/python/) offers an easy API to get the current span, so you can enrich your logs with a straight-forward processor:
+The [Python OpenTelemetry SDK](https://opentelemetry.io/docs/languages/python/) offers an easy API to get the current span, so you can enrich your logs with a straight-forward processor:
 
 ```python
 from opentelemetry import trace

@@ -82,9 +82,9 @@ All you have to do is to tell [Logstash] either that your log entries are prepen
 
 ### Graylog
 
-[Graylog](https://www.graylog.org/) goes one step further.
+[Graylog](https://graylog.org/) goes one step further.
 It not only supports everything those above do (and then some); you can also directly log JSON entries towards it -- optionally even through an AMQP server (like [RabbitMQ](https://www.rabbitmq.com/)) for better reliability.
-Additionally, [Graylog's Extended Log Format](https://docs.graylog.org/docs/gelf) (GELF) allows for structured data which makes it an obvious choice to use together with *structlog*.
+Additionally, [Graylog's Extended Log Format](https://go2docs.graylog.org/current/getting_in_log_data/gelf.html) (GELF) allows for structured data which makes it an obvious choice to use together with *structlog*.
 
 
 [elasticsearch]: https://www.elastic.co/elasticsearch
