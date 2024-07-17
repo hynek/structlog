@@ -237,3 +237,29 @@ text = """
 path = "README.md"
 start-at = "## Credits"
 end-before = "<!-- begin-meta -->"
+
+# Point sponsor image URLs to versions.
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = 'docs\/_static\/sponsors'
+replacement = '/en/$HFPR_VERSION/_static/sponsors'
+
+
+[[tool.sponcon.sponsors]]
+title = "Variomedia AG"
+url = "https://www.variomedia.de/"
+img = "Variomedia.svg"
+
+[[tool.sponcon.sponsors]]
+title = "Tidelift"
+url = "https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"
+img = "Tidelift.svg"
+
+[[tool.sponcon.sponsors]]
+title = "Klaviyo"
+url = "https://klaviyo.com/"
+img = "Klaviyo.svg"
+
+[[tool.sponcon.sponsors]]
+title = "FilePreviews"
+url = "https://filepreviews.io/"
+img = "FilePreviews.svg"
