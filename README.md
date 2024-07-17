@@ -42,6 +42,7 @@ Especially those generously supporting us at the *The Organization* tier and hig
 <!-- pause-short -->
 
 <p align="center">
+
 <!-- [[[cog
 import pathlib, tomllib
 
@@ -53,6 +54,7 @@ for sponsor in tomllib.loads(pathlib.Path("pyproject.toml").read_text())["tool"]
 <a href="https://klaviyo.com/"><img title="Klaviyo" src="docs/_static/sponsors/Klaviyo.svg" width="200" height="60" /></a>
 <a href="https://filepreviews.io/"><img title="FilePreviews" src="docs/_static/sponsors/FilePreviews.svg" width="200" height="60" /></a>
 <!-- [[[end]]] -->
+
 </p>
 
 <p align="center">
