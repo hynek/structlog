@@ -242,7 +242,7 @@ end-before = "<!-- begin-meta -->"
 # Point sponsor image URLs to versions.
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
 pattern = 'docs\/_static\/sponsors'
-replacement = '/en/$HFPR_VERSION/_static/sponsors'
+replacement = 'https://www.structlog.org/en/$HFPR_VERSION/_static/sponsors'
 
 
 [[tool.sponcon.sponsors]]

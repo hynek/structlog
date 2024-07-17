@@ -15,6 +15,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/24.3.0...HEAD)
 
+### Changed
+
+No code changes since 24.3.0
+
 
 ## [24.3.0](https://github.com/hynek/structlog/compare/24.2.0...24.3.0) - 2024-07-17
 
