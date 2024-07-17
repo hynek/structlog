@@ -11,7 +11,6 @@ Release **{sub-ref}`release`**  ([What's new?](https://github.com/hynek/structlo
 :end-before: <!-- pause-short -->
 ```
 
-{sub-ref}
 <!-- [[[cog
 import pathlib, tomllib, importlib.metadata
 
