@@ -76,9 +76,6 @@ Change into the newly created directory and after activating a virtual environme
 $ pip install -e .[dev]  # or `uv pip install -e .[dev]`
 ```
 
-This will also install *tox* for you.
-If you use *uv* and want to make the *tox* runs faster, you can also additionally install the [*tox-uv*](https://github.com/tox-dev/tox-uv) plugin using `uv pip install tox-uv`.
-
 Now you can run the test suite:
 
 ```console
