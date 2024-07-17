@@ -131,7 +131,7 @@ You will find the built documentation in `docs/_build/html`.
   We follow CalVer, so the next version will be the current with with the middle number incremented (for example, `24.1.0` -> `24.2.0`).
 
 - We use [Ruff](https://ruff.rs/) to sort our imports, and we follow the [Black](https://github.com/psf/black) code style with a line length of 79 characters.
-  As long as you run our full *tox* suite before committing, or install our [*pre-commit*](https://pre-commit.com/) hooks (ideally you'll do both – see [*Local Development Environment*](#local-development-environment) above), you won't have to spend any time on formatting your code at all.
+  As long as you run our full *tox* suite before committing, or install our [*pre-commit*](https://pre-commit.com/) hooks (ideally you'll do both -- see [*Local Development Environment*](#local-development-environment) above), you won't have to spend any time on formatting your code at all.
   If you don't, CI will catch it for you -- but that seems like a waste of your time!
 
 
@@ -146,7 +146,7 @@ You will find the built documentation in `docs/_build/html`.
   assert "foo" == x._a_private_attribute
   ```
 
-- You can run  the test suite runs with all (optional) dependencies against all Python versions just as it will in our CI by running `tox`.
+- You can run  the test suite runs with all (optional) dependencies against all supported Python versions just as it will in our CI by running `tox`.
 
 - Write [good test docstrings](https://jml.io/test-docstrings/).
 
