@@ -3,8 +3,17 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+import os
+
 from importlib import metadata
 
+
+# Set canonical URL from the Read the Docs Domain
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+
+# Tell Jinja2 templates the build is running on Read the Docs
+if os.environ.get("READTHEDOCS", "") == "True":
+    html_context = {"READTHEDOCS": True}
 
 # We want an image in the README and include the README in the docs.
 suppress_warnings = ["image.nonlocal_uri"]

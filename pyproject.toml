@@ -48,6 +48,7 @@ tests = [
 # Otherwise mypy fails in tox.
 typing = ["mypy>=1.4", "rich", "twisted"]
 docs = [
+    "cogapp",
     "furo",
     "myst-parser",
     "sphinx",
