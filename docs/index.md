@@ -12,6 +12,8 @@ Release **{sub-ref}`release`**  ([What's new?](https://github.com/hynek/structlo
 ```
 
 <!-- [[[cog
+# This is mainly called from RTD's pre_build job!
+
 import pathlib, tomllib, importlib.metadata
 
 if "dev" in (version := importlib.metadata.version("structlog")):
