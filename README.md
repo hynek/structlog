@@ -55,14 +55,6 @@ for sponsor in tomllib.loads(pathlib.Path("pyproject.toml").read_text())["tool"]
 <!-- [[[end]]] -->
 </p>
 
-
-<p align="center">
-   <a href="https://www.variomedia.de/"><img src="docs/_static/sponsors/Variomedia.svg" width="200" height="60" /></a>
-   <a href="https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"><img src="docs/_static/sponsors/Tidelift.svg" width="200" height="60" /></a>
-   <a href="https://klaviyo.com/"><img src="docs/_static/sponsors/Klaviyo.svg" width="200" height="60"/></a>
-   <a href="https://filepreviews.io/"><img src="docs/_static/sponsors/FilePreviews.svg" width="200" height="60"/></a>
-</p>
-
 <p align="center">
    <strong>Please consider <a href="https://github.com/sponsors/hynek">joining them</a> to help make <em>structlog</em>’s maintenance more sustainable!</strong>
 </p>
