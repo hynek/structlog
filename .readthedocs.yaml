@@ -7,6 +7,11 @@ build:
     # Keep version in sync with tox.ini/docs and ci.yml/docs
     python: "3.12"
   jobs:
+    # Need the tags to calculate the version
+    post_checkout:
+      - git fetch --tags
+
+    # Replace versions in sponsor URLs
     pre_build:
       - cog -rP docs/index.md
 
