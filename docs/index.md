@@ -14,13 +14,10 @@ Release **{sub-ref}`release`**  ([What's new?](https://github.com/hynek/structlo
 <!-- [[[cog
 # This is mainly called from RTD's pre_build job!
 
-import pathlib, tomllib, importlib.metadata
-
-if "dev" in (version := importlib.metadata.version("structlog")):
-    version = "latest"
+import pathlib, tomllib
 
 for sponsor in tomllib.loads(pathlib.Path("pyproject.toml").read_text())["tool"]["sponcon"]["sponsors"]:
-      print(f'<a href="{sponsor["url"]}"><img title="{sponsor["title"]}" src="/en/{version}/_static/sponsors/{sponsor["img"]}" width="200" height="60" /></a>')
+      print(f'<a href="{sponsor["url"]}"><img title="{sponsor["title"]}" src="_static/sponsors/{sponsor["img"]}" width="190" height="60" /></a>')
 ]]] -->
 <a href="https://www.variomedia.de/"><img title="Variomedia AG" src="/en/latest/_static/sponsors/Variomedia.svg" width="200" height="60" /></a>
 <a href="https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"><img title="Tidelift" src="/en/latest/_static/sponsors/Tidelift.svg" width="200" height="60" /></a>
