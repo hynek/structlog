@@ -28,6 +28,8 @@ from typing import (
     NamedTuple,
     Sequence,
     TextIO,
+    Tuple,
+    Union,
 )
 
 from ._frames import (
@@ -407,11 +409,9 @@ class ExceptionRenderer:
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> EventDict:
-        exc_info = event_dict.pop("exc_info", None)
-        if exc_info:
-            event_dict["exception"] = self.format_exception(
-                _figure_out_exc_info(exc_info)
-            )
+        exc_info = _figure_out_exc_info(event_dict.pop("exc_info", None))
+        if exc_info != (None, None, None):
+            event_dict["exception"] = self.format_exception(exc_info)
 
         return event_dict
 
@@ -586,7 +586,7 @@ class MaybeTimeStamper:
         return event_dict
 
 
-def _figure_out_exc_info(v: Any) -> ExcInfo:
+def _figure_out_exc_info(v: Any) -> Union[ExcInfo, Tuple[None, None, None]]:
     """
     Depending on the Python version will try to do the smartest thing possible
     to transform *v* into an ``exc_info`` tuple.
@@ -598,7 +598,8 @@ def _figure_out_exc_info(v: Any) -> ExcInfo:
         return v
 
     if v:
-        return sys.exc_info()  # type: ignore[return-value]
+        # Can be "(None, None, None)" if not called inside an error context:
+        return sys.exc_info()
 
     return v
 
@@ -642,7 +643,7 @@ class ExceptionPrettyPrinter:
         exc = event_dict.pop("exception", None)
         if exc is None:
             exc_info = _figure_out_exc_info(event_dict.pop("exc_info", None))
-            if exc_info:
+            if exc_info != (None, None, None):
                 exc = _format_exception(exc_info)
 
         if exc:
