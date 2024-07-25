@@ -9,7 +9,7 @@ Extracted log level data used by both stdlib and native log level filters.
 
 from __future__ import annotations
 
-import logging
+from typing import Any
 
 from .typing import EventDict
 
@@ -59,7 +59,7 @@ def map_method_name(method_name: str) -> str:
 
 
 def add_log_level(
-    logger: logging.Logger, method_name: str, event_dict: EventDict
+    logger: Any, method_name: str, event_dict: EventDict
 ) -> EventDict:
     """
     Add the log level to the event dict under the ``level`` key.
