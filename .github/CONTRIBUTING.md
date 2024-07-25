@@ -26,13 +26,16 @@ It's people like *you* who make this project such a great tool for everyone.
 - Since we squash on merge, it's up to you how you handle updates to the `main` branch.
   Whether you prefer to rebase on `main` or merge `main` into your branch, do whatever is more comfortable for you.
 
+  Just remember to [not use your own `main` branch for the pull request](https://hynek.me/articles/pull-requests-branch/).
+
 - *Always* add tests and docs for your code.
   This is a hard rule; patches with missing tests or documentation won't be merged.
 
-- Consider updating [`CHANGELOG.md`](../CHANGELOG.md) to reflect the changes as observed by people using this library.
+- Consider updating [`CHANGELOG.md`](../CHANGELOG.md) to reflect the changes as observed by people *using* this library.
 
 - Make sure your changes pass our [CI](https://github.com/hynek/structlog/actions).
   You won't get any feedback until it's green unless you ask for it.
+
   For the CI to pass, the coverage must be 100%.
   If you have problems to test something, open anyway and ask for advice.
   In some situations, we may agree to add an `# pragma: no cover`.
@@ -122,7 +125,7 @@ You will find the built documentation in `docs/_build/html`.
       """
   ```
 
-  Please note that unlike everything else, the API docstrings are still reStructuredText.
+  Please note that the API docstrings are still reStructuredText.
 
 - If you add or change public APIs, tag the docstring using `..  versionadded:: 24.1.0 WHAT` or `..  versionchanged:: 24.1.0 WHAT`.
   We follow CalVer, so the next version will be the current with with the middle number incremented (for example, `24.1.0` -> `24.2.0`).
@@ -143,7 +146,7 @@ You will find the built documentation in `docs/_build/html`.
   assert "foo" == x._a_private_attribute
   ```
 
-- You can run  the test suite runs with all (optional) dependencies against all supported Python versions just as it will in our CI by running `tox`.
+- You can run the test suite runs with all (optional) dependencies against all supported Python versions -- just as it will in our CI -- by running `tox`.
 
 - Write [good test docstrings](https://jml.io/test-docstrings/).
 
