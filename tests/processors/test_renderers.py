@@ -580,6 +580,4 @@ class TestFormatExcInfo:
         """
         A missing exception does not blow up.
         """
-        assert {"exception": "MISSING"} == format_exc_info(
-            None, None, {"exc_info": ei}
-        )
+        assert {} == format_exc_info(None, None, {"exc_info": ei})
