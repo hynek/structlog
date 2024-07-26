@@ -50,8 +50,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
-          cache: pip
-      - run: python -Im pip install tox-uv
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-uv
 
       - run: python -Im tox run --installpkg dist/*.whl -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
@@ -72,8 +72,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version-file: .python-version-default
-          cache: pip
-      - run: python -Im pip install --upgrade coverage[toml]
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system --upgrade coverage[toml]
       - uses: actions/download-artifact@v4
         with:
           pattern: coverage-data-*
@@ -113,8 +113,8 @@ jobs:
         with:
           python-version-file: .python-version-default
           allow-prereleases: true
-          cache: pip
-      - run: python -Im pip install tox-uv
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-uv
 
       - run: python -Im tox run --installpkg dist/*.whl -e mypy-pkg
 
@@ -134,8 +134,8 @@ jobs:
         with:
           python-version-file: .python-version-default
           allow-prereleases: true
-          cache: pip
-      - run: python -Im pip install tox-uv
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-uv
 
       - run: python -Im tox run --installpkg dist/*.whl -e pyright
 
@@ -154,8 +154,8 @@ jobs:
         with:
           # Keep in sync with tox.ini/docs & .readthedocs.yaml
           python-version: "3.12"
-          cache: pip
-      - run: python -Im pip install tox-uv
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-uv
 
       - run: python -Im tox run -e docs
 
@@ -171,9 +171,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version-file: .python-version-default
-          cache: pip
+      - uses: hynek/setup-cached-uv@v2
 
-      - run: python -Im pip install uv
       - run: uv venv
       - run: uv pip install -e .[dev]
 
@@ -211,8 +210,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version-file: .python-version-default
-          cache: pip
-      # tox 4.12.0 started passing FORCE_COLOR and NO_COLOR by default.
-      - run: python -Im pip install 'tox>=4.12.0' tox-uv
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-uv
 
       - run: python -Im tox run -f color
