@@ -227,7 +227,7 @@ class TestEventAdapter:
             la(None, "err", {"event": "someEvent", "_why": "someReason"})
 
 
-@pytest.fixture()
+@pytest.fixture
 def jr():
     """
     A plain Twisted JSONRenderer.

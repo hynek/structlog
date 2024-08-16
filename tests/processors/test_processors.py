@@ -204,7 +204,7 @@ class TestExceptionPrettyPrinter:
         assert "XXX" in sio.getvalue()
 
 
-@pytest.fixture()
+@pytest.fixture
 def sir():
     return StackInfoRenderer()
 
@@ -297,7 +297,7 @@ class TestCallsiteParameterAdder:
         }
         assert self.parameter_strings == self.get_callsite_parameters().keys()
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         ("wrapper_class", "method_name"),
         [
