@@ -152,7 +152,7 @@ def tmp_bind(
 
     saved = as_immutable(logger)._context
     try:
-        yield logger.bind(**tmp_values)  # type: ignore[misc]
+        yield logger.bind(**tmp_values)
     finally:
         logger._context.clear()
         logger._context.update(saved)

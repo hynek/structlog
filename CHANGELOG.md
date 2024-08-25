@@ -15,6 +15,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/24.4.0...HEAD)
 
+## Changed
+
+- `structlog.typing.BindableLogger` protocol now returns `Self` instead of `BindableLogger`.
+  This adds a dependency on [*typing-extensions*](https://pypi.org/project/typing-extensions/) for Pythons older than 3.11.
+
+  [#642](https://github.com/hynek/structlog/pull/642)
+
 
 ## [24.4.0](https://github.com/hynek/structlog/compare/24.3.0...24.4.0) - 2024-07-17
 

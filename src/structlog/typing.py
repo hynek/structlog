@@ -14,6 +14,8 @@ probably change to something more elegant.
 
 from __future__ import annotations
 
+import sys
+
 from types import TracebackType
 from typing import (
     Any,
@@ -29,6 +31,12 @@ from typing import (
     Union,
     runtime_checkable,
 )
+
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 
 WrappedLogger = Any
@@ -130,13 +138,13 @@ class BindableLogger(Protocol):
 
     _context: Context
 
-    def bind(self, **new_values: Any) -> BindableLogger: ...
+    def bind(self, **new_values: Any) -> Self: ...
 
-    def unbind(self, *keys: str) -> BindableLogger: ...
+    def unbind(self, *keys: str) -> Self: ...
 
-    def try_unbind(self, *keys: str) -> BindableLogger: ...
+    def try_unbind(self, *keys: str) -> Self: ...
 
-    def new(self, **new_values: Any) -> BindableLogger: ...
+    def new(self, **new_values: Any) -> Self: ...
 
 
 class FilteringBoundLogger(BindableLogger, Protocol):
