@@ -26,7 +26,7 @@ classifiers = [
     "Topic :: System :: Logging",
     "Typing :: Typed",
 ]
-dependencies = []
+dependencies = ["typing-extensions; python_version<'3.11'"]
 
 [project.urls]
 Documentation = "https://www.structlog.org/"
