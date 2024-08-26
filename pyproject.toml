@@ -264,3 +264,8 @@ img = "Klaviyo.svg"
 title = "FilePreviews"
 url = "https://filepreviews.io/"
 img = "FilePreviews.svg"
+
+[[tool.sponcon.sponsors]]
+title = "Polar"
+url = "https://polar.sh/"
+img = "Polar.svg"
