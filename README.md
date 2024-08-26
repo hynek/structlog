@@ -58,13 +58,13 @@ for sponsor in tomllib.loads(pathlib.Path("pyproject.toml").read_text())["tool"]
 
 </p>
 
+<!-- continue-short -->
+
 <p align="center">
    <strong>Please consider <a href="https://github.com/sponsors/hynek">joining them</a> to help make <em>structlog</em>’s maintenance more sustainable!</strong>
 </p>
 
----
-
-<!-- continue-short -->
+## Introduction
 
 *structlog* has been successfully used in production at every scale since **2013**, while embracing cutting-edge technologies like *asyncio*, context variables, or type hints as they emerged.
 Its paradigms proved influential enough to [help design](https://twitter.com/sirupsen/status/638330548361019392) structured logging [packages across ecosystems](https://github.com/sirupsen/logrus).
