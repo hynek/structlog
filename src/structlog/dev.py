@@ -53,7 +53,6 @@ try:
 except ImportError:
     rich = None  # type: ignore[assignment]
 
-
 __all__ = [
     "ConsoleRenderer",
     "plain_traceback",
@@ -649,7 +648,7 @@ class ConsoleRenderer:
             styles.kv_key,
             styles.kv_value,
             styles.reset,
-            value_repr=self._repr,
+            value_repr=self.value_repr,
             width=0,
         )
 
@@ -694,7 +693,7 @@ class ConsoleRenderer:
             Column("logger_name", logger_name_formatter),
         ]
 
-    def _repr(self, val: Any) -> str:
+    def value_repr(self, val: Any) -> str:
         """
         Determine representation of *val* depending on its type &
         self._repr_native_str.
@@ -703,6 +702,8 @@ class ConsoleRenderer:
             return repr(val)
 
         if isinstance(val, str):
+            if set(val) & {' ', '\t', '=', '\n'}:
+                return repr(val)
             return val
 
         return repr(val)
@@ -715,13 +716,13 @@ class ConsoleRenderer:
         exc_info = event_dict.pop("exc_info", None)
 
         kvs = [
-            col.formatter(col.key, val)
-            for col in self._columns
-            if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
-        ] + [
-            self._default_column_formatter(key, event_dict[key])
-            for key in (sorted(event_dict) if self._sort_keys else event_dict)
-        ]
+                  col.formatter(col.key, val)
+                  for col in self._columns
+                  if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
+              ] + [
+                  self._default_column_formatter(key, event_dict[key])
+                  for key in (sorted(event_dict) if self._sort_keys else event_dict)
+              ]
 
         sio = StringIO()
         sio.write((" ".join(kv for kv in kvs if kv)).rstrip(" "))
