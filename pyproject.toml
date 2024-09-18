@@ -114,12 +114,9 @@ fail-under = 100
 whitelist-regex = ["test_.*"]
 
 
-[tool.black]
-line-length = 79
-
-
 [tool.ruff]
 src = ["src", "tests"]
+line-length = 79
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -128,13 +125,14 @@ ignore = [
     "ANN",     # Mypy is better at this
     "ARG",     # unused arguments are common w/ interfaces
     "C901",    # sometimes you trade complexity for performance
-    "COM",     # Black takes care of our commas
+    "COM",     # Formatter takes care of our commas
     "D",       # We prefer our own docstring style.
-    "E501",    # leave line-length enforcement to Black
+    "E501",    # leave line-length enforcement to formatter
     "EM101",   # simple strings are fine
     "FBT",     # bools are our friends
     "FIX",     # Yes, we want XXX as a marker.
     "INP001",  # sometimes we want Python files outside of packages
+    "ISC001",  # conflicts with formatter
     "N802",    # some names are non-pep8 due to stdlib logging / Twisted
     "N803",    # ditto
     "N806",    # ditto

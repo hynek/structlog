@@ -363,7 +363,9 @@ class BoundLoggerLazyProxy:
         # Looks like Protocols ignore definitions of __init__ so we have to
         # silence Mypy here.
         logger = cls(
-            _logger, processors=procs, context=ctx  # type: ignore[call-arg]
+            _logger,
+            processors=procs,
+            context=ctx,  # type: ignore[call-arg]
         )
 
         def finalized_bind(**new_values: Any) -> BindableLogger:
