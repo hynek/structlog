@@ -53,7 +53,6 @@ try:
 except ImportError:
     rich = None  # type: ignore[assignment]
 
-
 __all__ = [
     "ConsoleRenderer",
     "plain_traceback",
@@ -703,6 +702,8 @@ class ConsoleRenderer:
             return repr(val)
 
         if isinstance(val, str):
+            if set(val) & {" ", "\t", "=", "\r", "\n", '"', "'"}:
+                return repr(val)
             return val
 
         return repr(val)

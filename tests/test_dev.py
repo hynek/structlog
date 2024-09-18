@@ -95,7 +95,7 @@ class TestConsoleRenderer:
         """
         cr = dev.ConsoleRenderer(colors=False, event_key="msg")
 
-        assert "new event name                 event=something custom" == cr(
+        assert "new event name                 event='something custom'" == cr(
             None, None, {"msg": "new event name", "event": "something custom"}
         )
 
