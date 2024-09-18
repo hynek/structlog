@@ -124,7 +124,7 @@ jobs:
       - run: >
           uvx --with=tox-uv
           tox run
-          --installpkg dist/*.whl \
+          --installpkg dist/*.whl
           -e mypy-pkg
 
   pyright:
