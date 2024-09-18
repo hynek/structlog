@@ -648,7 +648,7 @@ class ConsoleRenderer:
             styles.kv_key,
             styles.kv_value,
             styles.reset,
-            value_repr=self.value_repr,
+            value_repr=self._repr,
             width=0,
         )
 
@@ -693,7 +693,7 @@ class ConsoleRenderer:
             Column("logger_name", logger_name_formatter),
         ]
 
-    def value_repr(self, val: Any) -> str:
+    def _repr(self, val: Any) -> str:
         """
         Determine representation of *val* depending on its type &
         self._repr_native_str.
