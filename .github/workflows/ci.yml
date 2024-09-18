@@ -51,9 +51,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
       - uses: hynek/setup-cached-uv@v2
-      - run: uv pip install --system tox-uv
 
-      - run: python -Im tox run --installpkg dist/*.whl -f py$(echo ${{ matrix.python-version }} | tr -d .)
+      - run: >
+          uvx --with=tox-uv
+          tox run
+          --installpkg dist/*.whl
+          -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v4
@@ -82,14 +85,16 @@ jobs:
 
       - name: Combine coverage & fail if it's <100%.
         run: |
-          python -Im coverage combine
-          python -Im coverage html --skip-covered --skip-empty
+          uv tool install 'coverage[toml]'
+
+          coverage combine
+          coverage html --skip-covered --skip-empty
 
           # Report and write to summary.
-          python -Im coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
+          coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
 
           # Report again and fail if under 100%.
-          python -Im coverage report --fail-under=100
+          coverage report --fail-under=100
 
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v4
@@ -115,9 +120,12 @@ jobs:
           python-version-file: .python-version-default
           allow-prereleases: true
       - uses: hynek/setup-cached-uv@v2
-      - run: uv pip install --system tox-uv
 
-      - run: python -Im tox run --installpkg dist/*.whl -e mypy-pkg
+      - run: >
+          uvx --with=tox-uv
+          tox run
+          --installpkg dist/*.whl
+          -e mypy-pkg
 
   pyright:
     name: Pyright
@@ -136,9 +144,12 @@ jobs:
           python-version-file: .python-version-default
           allow-prereleases: true
       - uses: hynek/setup-cached-uv@v2
-      - run: uv pip install --system tox-uv
 
-      - run: python -Im tox run --installpkg dist/*.whl -e pyright
+      - run: >
+          uvx --with=tox-uv
+          tox run
+          --installpkg dist/*.whl
+          -e pyright
 
   docs:
     name: Build docs & run doctests
@@ -156,9 +167,11 @@ jobs:
           # Keep in sync with tox.ini/docs & .readthedocs.yaml
           python-version: "3.12"
       - uses: hynek/setup-cached-uv@v2
-      - run: uv pip install --system tox-uv
 
-      - run: python -Im tox run -e docs
+      - run: >
+          uvx --with=tox-uv
+          tox run
+          -e docs
 
   install-dev:
     name: Verify dev env
@@ -212,6 +225,8 @@ jobs:
         with:
           python-version-file: .python-version-default
       - uses: hynek/setup-cached-uv@v2
-      - run: uv pip install --system tox-uv
 
-      - run: python -Im tox run -f color
+      - run: >
+          uvx --with=tox-uv
+          tox run
+          -f color
