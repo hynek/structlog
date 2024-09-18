@@ -9,6 +9,7 @@
 .pytest_cache
 .tox
 .vscode
+.idea
 benchmarks
 build
 dist
