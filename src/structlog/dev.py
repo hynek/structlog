@@ -702,7 +702,7 @@ class ConsoleRenderer:
             return repr(val)
 
         if isinstance(val, str):
-            if set(val) & {" ", "\t", "=", "\n"}:
+            if set(val) & {" ", "\t", "=", '\r', "\n", '"', "'"}:
                 return repr(val)
             return val
 
@@ -716,13 +716,13 @@ class ConsoleRenderer:
         exc_info = event_dict.pop("exc_info", None)
 
         kvs = [
-            col.formatter(col.key, val)
-            for col in self._columns
-            if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
-        ] + [
-            self._default_column_formatter(key, event_dict[key])
-            for key in (sorted(event_dict) if self._sort_keys else event_dict)
-        ]
+                  col.formatter(col.key, val)
+                  for col in self._columns
+                  if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
+              ] + [
+                  self._default_column_formatter(key, event_dict[key])
+                  for key in (sorted(event_dict) if self._sort_keys else event_dict)
+              ]
 
         sio = StringIO()
         sio.write((" ".join(kv for kv in kvs if kv)).rstrip(" "))
