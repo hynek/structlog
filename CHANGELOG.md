@@ -22,7 +22,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
   [#642](https://github.com/hynek/structlog/pull/642)
 
-- `structlog.dev.ConsoleRenderer` will code quote string value with special characters.
+- `structlog.dev.ConsoleRenderer` will quote string value with special characters.
 
   [#647](https://github.com/hynek/structlog/pull/647)
 
