@@ -8,7 +8,7 @@
 
 <p align="center">
    <a href="https://www.structlog.org/en/stable/?badge=stable"><img src="https://img.shields.io/badge/Docs-Read%20The%20Docs-black" alt="Documentation" /></a>
-   <a href="https://github.com/hynek/structlog/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT / Apache 2.0" /></a>
+   <a href="https://github.com/hynek/structlog/blob/main/COPYRIGHT"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT / Apache 2.0" /></a>
    <a href="https://bestpractices.coreinfrastructure.org/projects/6560"><img src="https://bestpractices.coreinfrastructure.org/projects/6560/badge"></a>
    <a href="https://doi.org/10.5281/zenodo.7353739"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7353739.svg" alt="DOI"></a>
    <a href="https://pypi.org/project/structlog/"><img src="https://img.shields.io/pypi/pyversions/structlog.svg" alt="Supported Python versions of the current PyPI release." /></a>
