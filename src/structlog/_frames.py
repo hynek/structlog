@@ -15,6 +15,7 @@ from typing import Callable
 from .contextvars import _ASYNC_CALLING_STACK
 from .typing import ExcInfo
 
+
 def is_missing_exc_info(exc_info: ExcInfo) -> bool:
     """
     Return True if exc_info is the missing value.

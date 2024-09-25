@@ -24,6 +24,7 @@ from typing import Any, Iterable, Sequence, Tuple, Union
 
 from ._frames import is_missing_exc_info
 
+
 try:
     import rich
     import rich.pretty
