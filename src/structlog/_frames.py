@@ -15,6 +15,12 @@ from typing import Callable
 from .contextvars import _ASYNC_CALLING_STACK
 from .typing import ExcInfo
 
+def is_missing_exc_info(exc_info: ExcInfo) -> bool:
+    """
+    Return True if exc_info is the missing value.
+    """
+    return exc_info == (None, None, None)  # type: ignore[comparison-overlap]
+
 
 def _format_exception(exc_info: ExcInfo) -> str:
     """
@@ -22,7 +28,7 @@ def _format_exception(exc_info: ExcInfo) -> str:
 
     Shamelessly stolen from stdlib's logging module.
     """
-    if exc_info == (None, None, None):  # type: ignore[comparison-overlap]
+    if is_missing_exc_info(exc_info):
         return "MISSING"
 
     sio = StringIO()
