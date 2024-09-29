@@ -77,7 +77,6 @@ jobs:
         with:
           python-version-file: .python-version-default
       - uses: hynek/setup-cached-uv@v2
-      - run: uv pip install --system --upgrade coverage[toml]
       - uses: actions/download-artifact@v4
         with:
           pattern: coverage-data-*
