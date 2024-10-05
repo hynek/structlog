@@ -28,7 +28,6 @@ from typing import (
     TextIO,
     Tuple,
     Type,
-    TypeAlias,
     Union,
     runtime_checkable,
 )
