@@ -28,17 +28,16 @@ from typing import (
     TextIO,
     Tuple,
     Type,
+    TypeAlias,
     Union,
     runtime_checkable,
 )
 
 
 if sys.version_info >= (3, 11):
-    from typing import Self as _Self
+    from typing import Self as Self
 else:
-    from typing_extensions import Self as _Self
-
-Self = _Self
+    from typing_extensions import Self as Self
 
 
 WrappedLogger = Any
