@@ -38,6 +38,8 @@ if sys.version_info >= (3, 11):
 else:
     from typing_extensions import Self
 
+Self = Self
+
 
 WrappedLogger = Any
 """
