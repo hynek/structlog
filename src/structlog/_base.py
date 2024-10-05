@@ -19,9 +19,9 @@ from .typing import BindableLogger, Context, Processor, WrappedLogger
 
 
 if sys.version_info >= (3, 11):
-    from typing import Self as Self
+    from typing import Self
 else:
-    from typing_extensions import Self as Self
+    from typing_extensions import Self
 
 
 class BoundLoggerBase:
