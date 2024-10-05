@@ -156,7 +156,7 @@ class BoundLogger(BoundLoggerBase):
         """
         Return a new logger with *new_values* added to the existing ones.
         """
-        return super().bind(**new_values)  # type: ignore[return-value]
+        return super().bind(**new_values)
 
     def unbind(self, *keys: str) -> BoundLogger:
         """
@@ -165,7 +165,7 @@ class BoundLogger(BoundLoggerBase):
         Raises:
             KeyError: If the key is not part of the context.
         """
-        return super().unbind(*keys)  # type: ignore[return-value]
+        return super().unbind(*keys)
 
     def try_unbind(self, *keys: str) -> BoundLogger:
         """
@@ -173,7 +173,7 @@ class BoundLogger(BoundLoggerBase):
 
         .. versionadded:: 18.2.0
         """
-        return super().try_unbind(*keys)  # type: ignore[return-value]
+        return super().try_unbind(*keys)
 
     def new(self, **new_values: Any) -> BoundLogger:
         """
