@@ -183,7 +183,7 @@ class BoundLogger(BoundLoggerBase):
         those wrapped by `structlog.threadlocal.wrap_dict` when threads
         are re-used.
         """
-        return super().new(**new_values)  # type: ignore[return-value]
+        return super().new(**new_values)
 
     def debug(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
         """
