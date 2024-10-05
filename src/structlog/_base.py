@@ -13,7 +13,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from structlog.exceptions import DropEvent
 
-from .typing import BindableLogger, Context, Processor, WrappedLogger, Self
+from .typing import BindableLogger, Context, Processor, Self, WrappedLogger
 
 
 class BoundLoggerBase:
