@@ -34,11 +34,11 @@ from typing import (
 
 
 if sys.version_info >= (3, 11):
-    from typing import Self as _self
+    from typing import Self as _Self
 else:
-    from typing_extensions import Self as _self
+    from typing_extensions import Self as _Self
 
-Self = _self
+Self = _Self
 
 
 WrappedLogger = Any
