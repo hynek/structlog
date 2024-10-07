@@ -323,6 +323,14 @@ async def typecheck_stdlib_async() -> None:
     await logger.alog(logging.CRITICAL, "async log")
 
 
+def typecheck_bound_logger_return() -> None:
+    blogger: structlog.BoundLogger = structlog.get_logger(__name__)
+    blog = blogger.bind(key1="value1", key2="value2", key3="value3")
+    blog = blog.unbind("key1")
+    blog = blog.try_unbind("bad_key")
+    blog = blog.new(new="value")
+
+
 # Structured tracebacks and ExceptionRenderer with ExceptionDictTransformer
 struct_tb: structlog.tracebacks.Trace = structlog.tracebacks.extract(
     ValueError, ValueError("onoes"), None

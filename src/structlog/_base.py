@@ -9,11 +9,19 @@ Logger wrapper and helper class.
 
 from __future__ import annotations
 
+import sys
+
 from typing import Any, Iterable, Mapping, Sequence
 
 from structlog.exceptions import DropEvent
 
 from .typing import BindableLogger, Context, Processor, WrappedLogger
+
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 
 class BoundLoggerBase:
@@ -62,7 +70,7 @@ class BoundLoggerBase:
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def bind(self, **new_values: Any) -> BoundLoggerBase:
+    def bind(self, **new_values: Any) -> Self:
         """
         Return a new logger with *new_values* added to the existing ones.
         """
@@ -72,7 +80,7 @@ class BoundLoggerBase:
             self._context.__class__(self._context, **new_values),
         )
 
-    def unbind(self, *keys: str) -> BoundLoggerBase:
+    def unbind(self, *keys: str) -> Self:
         """
         Return a new logger with *keys* removed from the context.
 
@@ -85,7 +93,7 @@ class BoundLoggerBase:
 
         return bl
 
-    def try_unbind(self, *keys: str) -> BoundLoggerBase:
+    def try_unbind(self, *keys: str) -> Self:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
@@ -97,7 +105,7 @@ class BoundLoggerBase:
 
         return bl
 
-    def new(self, **new_values: Any) -> BoundLoggerBase:
+    def new(self, **new_values: Any) -> Self:
         """
         Clear context and binds *new_values* using `bind`.
 
