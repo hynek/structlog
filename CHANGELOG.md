@@ -21,6 +21,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This adds a dependency on [*typing-extensions*](https://pypi.org/project/typing-extensions/) for Pythons older than 3.11.
 
   [#642](https://github.com/hynek/structlog/pull/642)
+  [#659](https://github.com/hynek/structlog/pull/659)
 
 - `structlog.dev.ConsoleRenderer` will quote string value with special characters.
 
