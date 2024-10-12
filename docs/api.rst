@@ -152,7 +152,7 @@ API Reference
    .. doctest::
 
       >>> from structlog.processors import JSONRenderer
-      >>> JSONRenderer(sort_keys=True)(None, None, {"a": 42, "b": [1, 2, 3]})
+      >>> JSONRenderer(sort_keys=True)(None, "", {"a": 42, "b": [1, 2, 3]})
       '{"a": 42, "b": [1, 2, 3]}'
 
    Bound objects are attempted to be serialize using a ``__structlog__`` method.
@@ -169,7 +169,7 @@ API Reference
       ...     def __repr__(self):
       ...         return "No __structlog__, so this is used."
       >>> from structlog.processors import JSONRenderer
-      >>> JSONRenderer(sort_keys=True)(None, None, {"c1": C1(), "c2": C2()})
+      >>> JSONRenderer(sort_keys=True)(None, "", {"c1": C1(), "c2": C2()})
       '{"c1": ["C1!"], "c2": "No __structlog__, so this is used."}'
 
    Please note that additionally to strings, you can also return any type the standard library JSON module knows about -- like in this example a list.
@@ -204,9 +204,9 @@ API Reference
    .. doctest::
 
       >>> from structlog.processors import KeyValueRenderer
-      >>> KeyValueRenderer(sort_keys=True)(None, None, {"a": 42, "b": [1, 2, 3]})
+      >>> KeyValueRenderer(sort_keys=True)(None, "", {"a": 42, "b": [1, 2, 3]})
       'a=42 b=[1, 2, 3]'
-      >>> KeyValueRenderer(key_order=["b", "a"])(None, None,
+      >>> KeyValueRenderer(key_order=["b", "a"])(None, "",
       ...                                       {"a": 42, "b": [1, 2, 3]})
       'b=[1, 2, 3] a=42'
 
@@ -216,9 +216,9 @@ API Reference
 
       >>> from structlog.processors import LogfmtRenderer
       >>> event_dict = {"a": 42, "b": [1, 2, 3], "flag": True}
-      >>> LogfmtRenderer(sort_keys=True)(None, None, event_dict)
+      >>> LogfmtRenderer(sort_keys=True)(None, "", event_dict)
       'a=42 b="[1, 2, 3]" flag'
-      >>> LogfmtRenderer(key_order=["b", "a"], bool_as_flag=False)(None, None, event_dict)
+      >>> LogfmtRenderer(key_order=["b", "a"], bool_as_flag=False)(None, "", event_dict)
       'b="[1, 2, 3]" a=42 flag=true'
 
 .. autoclass:: EventRenamer
@@ -239,7 +239,7 @@ API Reference
       >>> try:
       ...     raise ValueError
       ... except ValueError:
-      ...     format_exc_info(None, None, {"exc_info": True})  # doctest: +ELLIPSIS
+      ...     format_exc_info(None, "", {"exc_info": True})  # doctest: +ELLIPSIS
       {'exception': 'Traceback (most recent call last):...
 
 .. autofunction:: dict_tracebacks
@@ -250,7 +250,7 @@ API Reference
       >>> try:
       ...     raise ValueError("onoes")
       ... except ValueError:
-      ...     dict_tracebacks(None, None, {"exc_info": True})  # doctest: +ELLIPSIS
+      ...     dict_tracebacks(None, "", {"exc_info": True})  # doctest: +ELLIPSIS
       {'exception': [{'exc_type': 'ValueError', 'exc_value': 'onoes', ..., 'frames': [{'filename': ...
 
 .. autoclass:: StackInfoRenderer
@@ -262,11 +262,11 @@ API Reference
    .. doctest::
 
       >>> from structlog.processors import TimeStamper
-      >>> TimeStamper()(None, None, {})  # doctest: +SKIP
+      >>> TimeStamper()(None, "", {})  # doctest: +SKIP
       {'timestamp': 1378994017}
-      >>> TimeStamper(fmt="iso")(None, None, {})  # doctest: +SKIP
+      >>> TimeStamper(fmt="iso")(None, "", {})  # doctest: +SKIP
       {'timestamp': '2013-09-12T13:54:26.996778Z'}
-      >>> TimeStamper(fmt="%Y", key="year")(None, None, {})  # doctest: +SKIP
+      >>> TimeStamper(fmt="%Y", key="year")(None, "", {})  # doctest: +SKIP
       {'year': '2013'}
 
 .. autoclass:: MaybeTimeStamper
@@ -274,9 +274,9 @@ API Reference
    .. doctest::
 
       >>> from structlog.processors import MaybeTimeStamper
-      >>> MaybeTimeStamper()(None, None, {})  # doctest: +SKIP
+      >>> MaybeTimeStamper()(None, "", {})  # doctest: +SKIP
       {'timestamp': 1690036074.494428}
-      >>> MaybeTimeStamper()(None, None, {"timestamp": 42})
+      >>> MaybeTimeStamper()(None, "", {"timestamp": 42})
       {'timestamp': 42}
 
 .. autoclass:: CallsiteParameter

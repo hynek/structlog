@@ -17,7 +17,7 @@ With the {class}`structlog.processors.EventRenamer` processor, you can, for inst
 ```pycon
 >>> from structlog.processors import EventRenamer
 >>> event_dict = {"event": "something happened", "_event": "our event!"}
->>> EventRenamer("msg", "_event")(None, None, event_dict)
+>>> EventRenamer("msg", "_event")(None, "", event_dict)
 {'msg': 'something happened', 'event': 'our event!'}
 ```
 

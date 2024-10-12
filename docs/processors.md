@@ -106,9 +106,9 @@ class ConditionalDropper:
     def __call__(self, logger, method_name, event_dict):
         """
         >>> cd = ConditionalDropper("127.0.0.1")
-        >>> cd(None, None, {"event": "foo", "peer": "10.0.0.1"})
+        >>> cd(None, "", {"event": "foo", "peer": "10.0.0.1"})
         {'peer': '10.0.0.1', 'event': 'foo'}
-        >>> cd(None, None, {"event": "foo", "peer": "127.0.0.1"})
+        >>> cd(None, "", {"event": "foo", "peer": "127.0.0.1"})
         Traceback (most recent call last):
         ...
         DropEvent
