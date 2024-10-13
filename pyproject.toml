@@ -52,7 +52,7 @@ docs = [
     "cogapp",
     "furo",
     "myst-parser",
-    "sphinx<8.1",
+    "sphinx",
     "sphinx-notfound-page",
     "sphinxcontrib-mermaid",
     "sphinxext-opengraph",
