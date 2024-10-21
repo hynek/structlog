@@ -12,6 +12,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 <!-- changelog follows -->
 
+## [Unreleased](https://github.com/hynek/structlog/compare/hynek:structlog:main...python-mutation-testing:structlog:test-false-utc-formatting)
+
+### Added
+- Add the `tests.test_renderers.test_false_utc` test to test the effect of false value of the `utc` parameter on time formatting in the `MaybeTimeStamper` class.
+
+  [#661](https://github.com/hynek/structlog/issues/661)
+
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/24.4.0...HEAD)
 
