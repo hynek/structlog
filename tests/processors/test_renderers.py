@@ -493,7 +493,9 @@ class TestMaybeTimeStamper:
         timestamp = mts(None, None, {})["timestamp"]
 
         try:
-            datetime.datetime.strptime(timestamp, expected_format)
+            datetime.datetime.strptime(timestamp, expected_format).replace(
+                tzinfo=datetime.timezone.utc
+            )
         except ValueError:
             pytest.fail("Timestamp does not match expected format")
 
