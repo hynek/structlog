@@ -487,7 +487,7 @@ class TestMaybeTimeStamper:
         If utc is False, the formatter should return a timestamp in local time.
         """
         mts = MaybeTimeStamper(utc=False, fmt="iso")
-        expected_format = '%Y-%m-%dT%H:%M:%S.%f'
+        expected_format = "%Y-%m-%dT%H:%M:%S.%f"
 
         assert "timestamp" in mts(None, None, {})
         timestamp = mts(None, None, {})["timestamp"]
