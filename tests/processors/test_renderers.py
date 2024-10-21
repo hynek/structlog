@@ -482,6 +482,21 @@ class TestMaybeTimeStamper:
 
         assert "timestamp" in mts(None, None, {})
 
+    def test_false_utc(self):
+        """
+        If utc is False, the formatter should return a timestamp in local time.
+        """
+        mts = MaybeTimeStamper(utc=False, fmt="iso")
+        expected_format = '%Y-%m-%dT%H:%M:%S.%f'
+
+        assert "timestamp" in mts(None, None, {})
+        timestamp = mts(None, None, {})["timestamp"]
+
+        try:
+            datetime.datetime.strptime(timestamp, expected_format)
+        except ValueError:
+            assert False, "Timestamp does not match the expected format"
+
 
 class TestFormatExcInfo:
     def test_custom_formatter(self):
