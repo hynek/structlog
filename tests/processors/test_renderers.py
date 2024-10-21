@@ -495,7 +495,7 @@ class TestMaybeTimeStamper:
         try:
             datetime.datetime.strptime(timestamp, expected_format)
         except ValueError:
-            pytest.fail(f"Timestamp does not match expected format")
+            pytest.fail("Timestamp does not match expected format")
 
 
 class TestFormatExcInfo:
