@@ -469,9 +469,10 @@ class ConsoleRenderer:
 
         level_styles:
             When present, use these styles for colors. This must be a dict from
-            level names (strings) to Colorama styles. The default can be
-            obtained by calling `ConsoleRenderer.get_default_level_styles`.
-            Ignored when *columns* are passed.
+            level names (strings) to terminal sequences (for example, Colorama)
+            styles. The default can be obtained by calling
+            `ConsoleRenderer.get_default_level_styles`. Ignored when *columns*
+            are passed.
 
         exception_formatter:
             A callable to render ``exc_infos``. If Rich_ or better-exceptions_
@@ -547,7 +548,7 @@ class ConsoleRenderer:
         colors: bool = _has_colors,
         force_colors: bool = False,
         repr_native_str: bool = False,
-        level_styles: Styles | None = None,
+        level_styles: dict[str, str] | None = None,
         exception_formatter: ExceptionRenderer = default_exception_formatter,
         sort_keys: bool = True,
         event_key: str = "event",
@@ -750,7 +751,7 @@ class ConsoleRenderer:
         return sio.getvalue()
 
     @staticmethod
-    def get_default_level_styles(colors: bool = True) -> Any:
+    def get_default_level_styles(colors: bool = True) -> dict[str, str]:
         """
         Get the default styles for log levels
 
