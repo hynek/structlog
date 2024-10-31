@@ -1,5 +1,5 @@
 ---
-name: Build & maybe upload PyPI package
+name: Build & upload PyPI package
 
 on:
   push:
@@ -10,20 +10,21 @@ on:
       - published
   workflow_dispatch:
 
-permissions:
-  attestations: write
-  contents: read
-  id-token: write
 
 jobs:
+  # Always build & lint package.
   build-package:
     name: Build & verify package
     runs-on: ubuntu-latest
+    permissions:
+      attestations: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: hynek/build-and-inspect-python-package@v2
         with:
@@ -33,9 +34,12 @@ jobs:
   release-test-pypi:
     name: Publish in-dev package to test.pypi.org
     environment: release-test-pypi
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.repository_owner == 'hynek' && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build-package
+
+    permissions:
+      id-token: write
 
     steps:
       - name: Download packages built by build-and-inspect-python-package
@@ -53,9 +57,12 @@ jobs:
   release-pypi:
     name: Publish released package to pypi.org
     environment: release-pypi
-    if: github.event.action == 'published'
+    if: github.repository_owner == 'hynek' && github.event.action == 'published'
     runs-on: ubuntu-latest
     needs: build-package
+
+    permissions:
+      id-token: write
 
     steps:
       - name: Download packages built by build-and-inspect-python-package
