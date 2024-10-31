@@ -84,6 +84,7 @@ jobs:
           --installpkg dist/*.whl
           -e py${PYTHON//./}-mypy
 
+
   coverage:
     name: Ensure 100% test coverage
     runs-on: ubuntu-latest
@@ -125,6 +126,7 @@ jobs:
           path: htmlcov
         if: ${{ failure() }}
 
+
   mypy-pkg:
     name: Mypy Codebase
     runs-on: ubuntu-latest
@@ -145,6 +147,7 @@ jobs:
       - run: >
           uvx --with tox-uv
           tox run -e mypy-pkg
+
 
   pyright:
     name: Pyright Codebase
@@ -188,6 +191,7 @@ jobs:
           uvx --with tox-uv
           tox run -e docs
 
+
   install-dev:
     name: Verify dev env
     runs-on: ${{ matrix.os }}
@@ -212,6 +216,7 @@ jobs:
       - run: .\.venv\Scripts\python.exe -Ic 'import structlog; print(structlog.__version__)'
         if: runner.os == 'Windows'
 
+
   required-checks-pass:
     name: Ensure everything required is passing for branch protection
     if: always()
@@ -230,6 +235,7 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+
 
   colors:
     name: Visual check for color settings using env variables
