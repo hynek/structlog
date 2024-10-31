@@ -45,6 +45,9 @@ jobs:
         # Created by the build-and-inspect-python-package action above.
         python-version: ${{ fromJson(needs.build-package.outputs.python-versions) }}
 
+    env:
+      PYTHON: ${{ matrix.python-version }}
+
     steps:
       - name: Download pre-built packages
         uses: actions/download-artifact@v4
@@ -61,8 +64,6 @@ jobs:
       - uses: hynek/setup-cached-uv@v2
 
       - name: Run tests
-        env:
-          PYTHON: ${{ matrix.python-version }}
         run: >
           uvx --with tox-uv tox run
           --installpkg dist/*.whl
@@ -77,8 +78,6 @@ jobs:
           if-no-files-found: ignore
 
       - name: Check public API with Mypy
-        env:
-          PYTHON: ${{ matrix.python-version }}
         run: >
           uvx --with tox-uv tox run
           --installpkg dist/*.whl
