@@ -50,6 +50,7 @@ __all__ = [
     "PositionalArgumentsFormatter",
     "ProcessorFormatter",
     "recreate_defaults",
+    "render_to_log_args_and_kwargs",
     "render_to_log_kwargs",
 ]
 
@@ -885,15 +886,50 @@ class ExtraAdder:
                 event_dict[key] = record.__dict__[key]
 
 
+LOG_KWARG_NAMES = ("exc_info", "stack_info", "stacklevel")
+
+
+def render_to_log_args_and_kwargs(
+    _: logging.Logger, __: str, event_dict: EventDict
+) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """
+    Render ``event_dict`` into positional and keyword arguments for
+    `logging.Logger` logging methods.
+    See `logging.Logger.debug` method for keyword arguments reference.
+
+    The ``event`` field is passed in the first positional argument, positional
+    arguments from ``positional_args`` field are passed in subsequent positional
+    arguments, keyword arguments are extracted from the *event_dict* and the
+    rest of the *event_dict* is added as ``extra``.
+
+    This allows you to defer formatting to `logging`.
+
+    .. versionadded:: 24.5.0
+    """
+    args = (event_dict.pop("event"), *event_dict.pop("positional_args", ()))
+
+    kwargs = {
+        kwarg_name: event_dict.pop(kwarg_name)
+        for kwarg_name in LOG_KWARG_NAMES
+        if kwarg_name in event_dict
+    }
+    if event_dict:
+        kwargs["extra"] = event_dict
+
+    return args, kwargs
+
+
 def render_to_log_kwargs(
     _: logging.Logger, __: str, event_dict: EventDict
 ) -> EventDict:
     """
-    Render ``event_dict`` into keyword arguments for `logging.log`.
-    See `logging.Logger`'s ``_log`` method for kwargs reference.
+    Render ``event_dict`` into keyword arguments for `logging.Logger` logging
+    methods.
+    See `logging.Logger.debug` method for keyword arguments reference.
 
-    The ``event`` field is translated into ``msg`` and the rest of the
-    *event_dict* is added as ``extra``.
+    The ``event`` field is translated into ``msg``, keyword arguments are
+    extracted from the *event_dict* and the rest of the *event_dict* is added as
+    ``extra``.
 
     This allows you to defer formatting to `logging`.
 
@@ -909,7 +945,7 @@ def render_to_log_kwargs(
         "extra": event_dict,
         **{
             kw: event_dict.pop(kw)
-            for kw in ("exc_info", "stack_info", "stacklevel")
+            for kw in LOG_KWARG_NAMES
             if kw in event_dict
         },
     }
