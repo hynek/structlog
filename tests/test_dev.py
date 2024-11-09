@@ -614,6 +614,19 @@ class TestConsoleRenderer:
                 ]
             )
 
+    def test_does_not_modify_styles(self):
+        """
+        Instantiating ConsoleRenderer should not modify the styles passed in.
+
+        Ref #643
+        """
+        styles = {"info": "something"}
+        copy = styles.copy()
+
+        dev.ConsoleRenderer(level_styles=styles)
+
+        assert copy == styles
+
 
 class TestSetExcInfo:
     def test_wrong_name(self):
