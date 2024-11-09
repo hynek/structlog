@@ -737,7 +737,7 @@ def test_exception_dict_transformer_missing_exc_info():
     ExceptionDictTransformer returns an empty list if exc_info is missing.
     """
     transformer = tracebacks.ExceptionDictTransformer()
-    
+
     result = transformer(exc_info=(None, None, None))
-    
+
     assert [] == result
