@@ -730,3 +730,14 @@ def test_json_traceback_value_error(
         monkeypatch.setattr(kwargs["suppress"][0], "__file__", None)
     with pytest.raises(ValueError, match=next(iter(kwargs.keys()))):
         tracebacks.ExceptionDictTransformer(**kwargs)
+
+
+def test_exception_dict_transformer_missing_exc_info():
+    """
+    ExceptionDictTransformer returns an empty list if exc_info is missing.
+    """
+    transformer = tracebacks.ExceptionDictTransformer()
+
+    result = transformer(exc_info=(None, None, None))
+
+    assert [] == result

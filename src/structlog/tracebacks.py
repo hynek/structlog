@@ -22,6 +22,8 @@ from traceback import walk_tb
 from types import ModuleType, TracebackType
 from typing import Any, Iterable, Sequence, Tuple, Union
 
+from ._frames import is_missing_exc_info
+
 
 try:
     import rich
@@ -412,6 +414,8 @@ class ExceptionDictTransformer:
         self.use_rich = use_rich
 
     def __call__(self, exc_info: ExcInfo) -> list[dict[str, Any]]:
+        if is_missing_exc_info(exc_info):
+            return []
         trace = extract(
             *exc_info,
             show_locals=self.show_locals,
