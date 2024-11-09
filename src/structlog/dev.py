@@ -635,7 +635,7 @@ class ConsoleRenderer:
             self.get_default_level_styles(colors)
             if level_styles is None
             else level_styles
-        )
+        ).copy()
 
         for key in level_to_color:
             level_to_color[key] += styles.bright

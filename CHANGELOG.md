@@ -28,13 +28,15 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#647](https://github.com/hynek/structlog/pull/647)
 
 
-
 ## Fixed
 
 - `structlog.traceback.ExceptionDictTransformer` now correctly handles missing exceptions.
 
   [#657](https://github.com/hynek/structlog/pull/657)
 
+- Instantiating `structlog.dev.ConsoleRenderer` does not mutate the passed *styles* dict anymore.
+
+  [#658](https://github.com/hynek/structlog/pull/658)
 
 
 ## [24.4.0](https://github.com/hynek/structlog/compare/24.3.0...24.4.0) - 2024-07-17
