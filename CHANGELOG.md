@@ -36,7 +36,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - Instantiating `structlog.dev.ConsoleRenderer` does not mutate the passed *styles* dict anymore.
 
-  [#658](https://github.com/hynek/structlog/pull/658)
+  [#669](https://github.com/hynek/structlog/pull/669)
 
 
 ## [24.4.0](https://github.com/hynek/structlog/compare/24.3.0...24.4.0) - 2024-07-17
