@@ -217,6 +217,12 @@ class BoundLogger(BoundLoggerBase):
         """
         return self._proxy_to_logger("critical", event, *args, **kw)
 
+    def fatal(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
+        """
+        Process event and call `logging.Logger.critical` with the result.
+        """
+        return self._proxy_to_logger("critical", event, *args, **kw)
+
     def exception(
         self, event: str | None = None, *args: Any, **kw: Any
     ) -> Any:
@@ -235,8 +241,6 @@ class BoundLogger(BoundLoggerBase):
         *level*.
         """
         return self._proxy_to_logger(LEVEL_TO_NAME[level], event, *args, **kw)
-
-    fatal = critical
 
     def _proxy_to_logger(
         self,
@@ -448,7 +452,13 @@ class BoundLogger(BoundLoggerBase):
         """
         await self._dispatch_to_sync(self.critical, event, args, kw)
 
-    afatal = acritical
+    async def afatal(self, event: str, *args: Any, **kw: Any) -> None:
+        """
+        Log using `critical()`, but asynchronously in a separate thread.
+
+        .. versionadded:: 23.1.0
+        """
+        await self._dispatch_to_sync(self.critical, event, args, kw)
 
     async def aexception(self, event: str, *args: Any, **kw: Any) -> None:
         """
@@ -625,7 +635,8 @@ class AsyncBoundLogger:
     async def warning(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.warning, event, args, kw)
 
-    warn = warning
+    async def warn(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._dispatch_to_sync(self.sync_bl.warning, event, args, kw)
 
     async def error(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.error, event, args, kw)
@@ -633,7 +644,8 @@ class AsyncBoundLogger:
     async def critical(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.critical, event, args, kw)
 
-    fatal = critical
+    async def fatal(self, event: str, *args: Any, **kw: Any) -> None:
+        await self._dispatch_to_sync(self.sync_bl.critical, event, args, kw)
 
     async def exception(self, event: str, *args: Any, **kw: Any) -> None:
         # To make `log.exception("foo") work, we have to check if the user
