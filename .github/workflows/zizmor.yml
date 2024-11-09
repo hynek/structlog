@@ -1,5 +1,5 @@
 # https://github.com/woodruffw/zizmor
-name: GitHub Actions Security Analysis with Zizmor
+name: Zizmor
 
 on:
   push:
