@@ -35,6 +35,7 @@ GitHub = "https://github.com/hynek/structlog"
 Funding = "https://github.com/sponsors/hynek"
 Tidelift = "https://tidelift.com?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"
 Mastodon = "https://mastodon.social/@hynek"
+Bluesky = "https://bsky.app/profile/hynek.me"
 Twitter = "https://twitter.com/hynek"
 
 [project.optional-dependencies]
