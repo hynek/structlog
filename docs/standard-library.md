@@ -12,7 +12,7 @@ It will recreate the default configuration on top of `logging` and optionally co
 :::
 
 
-## Just Enough `logging`
+## Just enough `logging`
 
 If you want to use *structlog* with `logging`, you should have at least a fleeting understanding on how the standard library operates because *structlog* will *not* do any magic things in the background for you.
 Most importantly you have to *configure* the `logging` system *additionally* to configuring *structlog*.
@@ -35,7 +35,7 @@ This will send all log messages with the [log level](https://docs.python.org/3/l
 If you require more complex behavior, please refer to the standard library's `logging` documentation.
 
 
-## Concrete Bound Logger
+## Concrete bound logger
 
 *structlog* ships a stdlib-specific [*bound logger*](bound-loggers.md) that  mirrors the log methods of standard library's {any}`logging.Logger` with correct type hints.
 
@@ -125,7 +125,7 @@ To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger
 
 (stdlib-config)=
 
-## Suggested Configurations
+## Suggested configurations
 
 :::{note}
 We do appreciate that fully integrating *structlog* with standard library's `logging` is fiddly when done for the first time.
@@ -137,7 +137,7 @@ However, once it is set up, you can rely on not having to ever touch it again.
 Depending *where* you'd like to do your formatting, you can take one of four approaches:
 
 
-### Don't Integrate
+### Don't integrate
 
 The most straight-forward option is to configure standard library `logging` close enough to what *structlog* is logging and leaving it at that.
 
@@ -155,7 +155,7 @@ This can cause interleaving of log entries from *structlog* and `logging` logger
 :::
 
 
-### Rendering Within *structlog*
+### Rendering within *structlog*
 
 This is the simplest approach where *structlog* does all the heavy lifting and passes a fully-formatted string to `logging`.
 Chances are, this is all you need.
@@ -250,7 +250,7 @@ hello
 ```
 
 
-### Rendering Using `logging`-based Formatters
+### Rendering using `logging`-based formatters
 
 You can choose to use *structlog* only for building the event dictionary and leave all formatting -- additionally to the output -- to the standard library.
 
@@ -328,7 +328,7 @@ Keep this in mind if you only get the event name without any context, and except
 
 (processor-formatter)=
 
-### Rendering Using *structlog*-based Formatters Within `logging`
+### Rendering using *structlog*-based formatters within `logging`
 
 Finally, the most ambitious approach.
 Here, you use *structlog*'s {class}`~structlog.stdlib.ProcessorFormatter` as a {any}`logging.Formatter` for both `logging` as well as *structlog* log entries.

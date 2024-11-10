@@ -7,7 +7,7 @@ Please note that recipes related to integration with frameworks have an [own cha
 
 (rename-event)=
 
-## Renaming the `event` Key
+## Renaming the `event` key
 
 The name of the event is hard-coded in *structlog* to `event`.
 But that doesn't mean it has to be called that in your logs.
@@ -23,7 +23,7 @@ With the {class}`structlog.processors.EventRenamer` processor, you can, for inst
 
 (finer-filtering)=
 
-## Fine-Grained Log-Level Filtering
+## Fine-grained log-level filtering
 
 *structlog*'s native log levels as provided by {func}`structlog.make_filtering_bound_logger` only know **one** log level – the one that is passed to `make_filtering_bound_logger()`.
 Sometimes, that can be a bit too coarse, though.
@@ -78,7 +78,7 @@ Pick the data you're interested in from the {class}`structlog.processors.Callsit
 
 (custom-wrappers)=
 
-## Custom Wrappers
+## Custom wrappers
 
 ```{testsetup}
 import structlog
@@ -141,7 +141,7 @@ These two methods and one attribute are all you need to write own *bound loggers
 [dry]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 
 
-## Passing Context to Worker Threads
+## Passing context to worker threads
 
 Thread-local context data based on [context variables](contextvars.md) is -- as the name says -- local to the thread that binds it.
 When using threads to process work in parallel, you have to pass the thread-local context **into** the worker threads.
@@ -188,7 +188,7 @@ def manager(request_id: str):
 See the [issue 425](https://github.com/hynek/structlog/issues/425) for a more complete example.
 
 
-## Switching Console Output to Standard Error
+## Switching console output to standard error
 
 When using structlog without standard library integration and want the log output to go to standard error (*stderr*) instead of standard out (*stdout*), you can switch with a single line of configuration:
 

@@ -21,7 +21,7 @@ structlog.reset_defaults()
 ```
 
 
-## The `merge_threadlocal` Processor
+## The `merge_threadlocal` processor
 
 *structlog* provides a simple set of functions that allow explicitly binding certain fields to a global (thread-local) context and merge them later using a processor into the event dict.
 
@@ -43,7 +43,7 @@ These functions map 1:1 to the {doc}`contextvars` APIs, so please use those inst
 - {func}`structlog.contextvars.get_merged_contextvars`
 
 
-## Thread-local Contexts
+## Thread-local contexts
 
 *structlog* also provides thread-local context storage in a form that you may already know from [*Flask*](https://flask.palletsprojects.com/en/latest/design/#thread-locals) and that makes the *entire context* global to your thread or greenlet.
 
@@ -51,7 +51,7 @@ This makes its behavior more difficult to reason about which is why we generally
 Therefore, there are currently no plans to re-implement this behavior on top of context variables.
 
 
-### Wrapped Dicts
+### Wrapped dicts
 
 In order to make your context thread-local, *structlog* ships with a function that can wrap any dict-like class to make it usable for thread-local storage: {func}`structlog.threadlocal.wrap_dict`.
 
@@ -123,7 +123,7 @@ The state before the `with` statement is saved and restored once it's left.
 If you want to detach a logger from thread-local data, there's {func}`structlog.threadlocal.as_immutable`.
 
 
-#### Downsides & Caveats
+#### Downsides & caveats
 
 The convenience of having a thread-local context comes at a price though:
 

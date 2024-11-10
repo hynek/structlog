@@ -101,7 +101,7 @@ def _helper():
 
 (flask-example)=
 
-## Example: Flask and Thread-Local Data
+## Example: Flask and thread-local data
 
 Let's assume you want to bind a unique request ID, the URL path, and the peer's IP to every log entry by storing it in thread-local storage that is managed by context variables:
 

@@ -62,7 +62,7 @@ exceptions
 ```
 
 
-## Development Affordances
+## Development affordances
 
 *structlog*'s focus is on production systems, but it comes with **pretty console logging** and handy in-development helpers both for your **comfort** and your code's **quality**.
 
@@ -77,7 +77,7 @@ typing
 
 (integration)=
 
-## Integration with Existing Systems
+## Integration with existing systems
 
 *structlog* is both zero-config as well as highly configurable.
 You can use it on its own or integrate with existing systems.
@@ -93,7 +93,7 @@ twisted
 ```
 
 
-## *structlog* in Practice
+## *structlog* in practice
 
 The following chapters deal with considerations of using *structlog* in the real world.
 
@@ -121,7 +121,7 @@ modindex
 ```
 
 
-## Deprecated Features
+## Deprecated features
 
 ```{toctree}
 :maxdepth: 1

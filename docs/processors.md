@@ -124,7 +124,7 @@ It does **not** use the standard library, but it does use its names and order of
 
 (adapting)=
 
-## Adapting and Rendering
+## Adapting and rendering
 
 An important role is played by the *last* processor because its duty is to adapt the `event_dict` into something the logging methods of the *wrapped logger* understand.
 With that, it's also the *only* processor that needs to know anything about the underlying system.
@@ -156,7 +156,7 @@ Advanced log aggregation and analysis tools like [*Logstash*](https://www.elasti
 For a list of shipped processors, check out the {ref}`API documentation <procs>`.
 
 
-## Third-Party Packages
+## Third-Party packages
 
 *structlog* was specifically designed to be as composable and reusable as possible, so whatever you're missing:
 chances are, you can solve it with a processor!

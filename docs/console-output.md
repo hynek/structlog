@@ -34,7 +34,7 @@ For the console and beyond.
 
 (columns-config)=
 
-## Console Output Configuration
+## Console output configuration
 
 :::{versionadded} 23.3.0
 :::
@@ -106,7 +106,7 @@ structlog.configure(processors=structlog.get_config()["processors"][:-1]+[cr])
 :::
 
 
-## Standard Environment Variables
+## Standard environment variables
 
 *structlog*'s default configuration uses colors if standard out is a TTY (that is, an interactive session).
 
@@ -117,6 +117,6 @@ It's possible to override this behavior by setting two standard environment vari
   Please note that `NO_COLOR` disables _all_ styling, including bold and italics.
 
 
-## Disabling Exception Pretty-Printing
+## Disabling exception pretty-printing
 
 If you prefer the default terse Exception rendering, but still want Rich installed, you can disable the pretty-printing by instantiating {class}`structlog.dev.ConsoleRenderer()` yourself and passing `exception_formatter=structlog.dev.plain_traceback`.

@@ -1,6 +1,6 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
 We are following [*CalVer*](https://calver.org) with generous backwards-compatibility guarantees.
 Therefore we only support the latest version.
@@ -13,7 +13,7 @@ They may be adjusted in the future to provide a better experience when starting 
 So please make sure to **always** properly configure your applications.
 
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
 Tidelift will coordinate the fix and disclosure.

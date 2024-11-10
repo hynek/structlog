@@ -51,12 +51,12 @@ See also {doc}`performance`.
 :::
 
 
-## What To Configure
+## What to configure
 
 You can find the details in the API documentation of {func}`structlog.configure`, but let's introduce the most important ones at a high level first.
 
 
-### Wrapper Classes
+### Wrapper classes
 
 You've met {doc}`bound-loggers` in the last chapter.
 They're the objects returned by {func}`~structlog.get_logger` and allow to bind key-value pairs into their private context.
@@ -65,7 +65,7 @@ You can configure their type using the `wrapper_class` keyword.
 Whenever you bind or unbind data to a *bound logger*, this class is instantiated with the new context and returned.
 
 
-### Logger Factories
+### Logger factories
 
 We've already talked about wrapped loggers responsible for the output, but we haven't explained where they come from until now.
 Unlike with *bound loggers*, you often need more flexibility when instantiating them.

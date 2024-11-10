@@ -16,7 +16,7 @@ Try both to find out which one you like better -- the screenshot in the README a
 On **Windows**, you also have to install [Colorama](https://pypi.org/project/colorama/) if you want colorful output beside exceptions.
 
 
-## Your First Log Entry
+## Your first log entry
 
 A lot of effort went into making *structlog* accessible without reading pages of documentation.
 As a result, the simplest possible usage looks like this:
@@ -81,7 +81,7 @@ So let's go a step further.
 
 (building-ctx)=
 
-## Building a Context
+## Building a context
 
 Imagine a hypothetical web application that wants to log out all relevant data with just the APIs that we've introduced so far:
 
@@ -167,7 +167,7 @@ For that, *structlog* gives you thread-local context storage based on the {mod}`
 See {doc}`contextvars` for more information and a more complete example.
 
 
-## Manipulating Log Entries in Flight
+## Manipulating log entries in flight
 
 Now that your log events are dictionaries, it's also much easier to manipulate them than if they were plain strings.
 
@@ -212,7 +212,7 @@ So assuming you want to follow [best practices](logging-best-practices.md) and r
 ```
 
 
-## *structlog* and Standard Library's `logging`
+## *structlog* and standard library's `logging`
 
 While *structlog*'s loggers are very fast and sufficient for the majority of our users, you're not bound to them.
 Instead, it's been designed from day one to wrap your *existing* loggers and **add** *structure* and *incremental context building* to them.

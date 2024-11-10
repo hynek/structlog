@@ -14,7 +14,7 @@ It doesn't matter where or how your application runs -- it just works, and the r
 [^unix]: This is obviously a privileged UNIX-centric view but even Windows has tools and means for log management although we won't be able to discuss them here.
 
 
-## Canonical Log Lines
+## Canonical log lines
 
 Generally speaking, having as few log entries per request as possible is a good thing.
 The less noise, the more insights.
@@ -24,7 +24,7 @@ The less noise, the more insights.
 At Stripe, this concept is called [Canonical Log Lines](https://brandur.org/canonical-log-lines).
 
 
-## Pretty Printing vs. Structured Output
+## Pretty printing vs. structured output
 
 Colorful and pretty printed log messages are nice during development when you locally run your code.
 
@@ -61,7 +61,7 @@ Here is a simple example of how you can have pretty logs during development and 
 ```
 
 
-## Centralized Logging
+## Centralized logging
 
 Nowadays you usually don't want your log files in compressed archives distributed over dozens -- if not thousands -- of servers or cluster nodes.
 You want them in a single location.

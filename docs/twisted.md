@@ -9,7 +9,7 @@ Since `sys.exc_clear` has been dropped in Python 3, there is currently no way to
 :::
 
 
-## Concrete Bound Logger
+## Concrete bound logger
 
 To make *structlog*'s behavior less magical, it ships with a Twisted-specific wrapper class that has an explicit API instead of improvising: `structlog.twisted.BoundLogger`.
 It behaves exactly like the generic `structlog.BoundLogger` except:
@@ -56,7 +56,7 @@ In order to avoid that *structlog* disturbs your CamelCase harmony, it comes wit
   That gives you regular and simple-to-parse single-line JSON log entries no matter what happens.
 
 
-## Bending Foreign Logging To Your Will
+## Bending foreign logging to your will
 
 *structlog* comes with a wrapper for Twisted's log observers to ensure the rest of your logs are in JSON too: `structlog.twisted.JSONLogObserverWrapper`.
 
@@ -89,7 +89,7 @@ $ twistd -n --logger structlog.twisted.plainJSONStdOutLogger web
 ...
 ```
 
-## Suggested Configuration
+## Suggested configuration
 
 ```python
 import structlog

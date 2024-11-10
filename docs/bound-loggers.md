@@ -65,7 +65,7 @@ Whenever you call one of those methods on the *bound logger*, it will:
 [^str]: {any}`str`, {any}`bytes`, or {any}`bytearray` to be exact.
 
 
-### Step-by-Step Example
+### Step-by-Step example
 
 Assuming you've left the default configuration and have:
 
@@ -103,7 +103,7 @@ If you call `log.info("Hello, %s!", "world", number=42)` now, the following happ
 
 (filtering)=
 
-## Filtering by Log Levels
+## Filtering by log levels
 
 Filtering based on log levels can be done in a processor very easily[^stdlib], however that means unnecessary performance overhead through function calls.
 We care a lot about performance and that's why *structlog*'s default *bound logger* class implements level-filtering as close to the users as possible: in the *bound logger*'s logging methods *before* even creating an *event dict* and starting the processor chain.
@@ -146,7 +146,7 @@ Passing `20` instead of `logging.INFO` would have worked too.
 [^stdlib]: And it's in fact supported for standard library logging with the {func}`structlog.stdlib.filter_by_level` processor.
 
 
-## Wrapping Loggers Manually
+## Wrapping loggers manually
 
 In practice, you won't be instantiating bound loggers yourself.
 You will configure *structlog* as explained in the {doc}`next chapter <configuration>` and then just call {func}`structlog.get_logger`.

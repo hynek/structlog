@@ -45,7 +45,7 @@ It's people like *you* who make this project such a great tool for everyone.
 - Don't break [backwards-compatibility](SECURITY.md).
 
 
-## Local Development Environment
+## Local development environment
 
 First, **fork** the repository on GitHub and **clone** it using one of the alternatives that you can copy-paste by pressing the big green button labeled `<> Code`.
 
@@ -224,7 +224,7 @@ If your change is interesting to end-users, there needs to be an entry in our `C
   ```
 
 
-## See You on GitHub!
+## See you on GitHub!
 
 Again, this whole file is mainly to help you to get started by codifying tribal knowledge and expectations to save you time and turnarounds.
 It is **not** meant to be a barrier to entry, so don't be afraid to open half-finished PRs and ask questions if something is unclear!
