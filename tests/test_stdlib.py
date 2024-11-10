@@ -206,6 +206,15 @@ class TestBoundLogger:
 
         assert method_name == getattr(bl, method_name)("event")
 
+    def test_proxies_to_correct_method_special_cases(self):
+        """
+        Fatal maps to critical and warn to warning.
+        """
+        bl = BoundLogger(ReturnLogger(), [return_method_name], {})
+
+        assert "warning" == bl.warn("event")
+        assert "critical" == bl.fatal("event")
+
     def test_proxies_log(self):
         """
         BoundLogger.exception.log() is proxied to the appropriate method.
@@ -357,6 +366,20 @@ class TestBoundLogger:
 
         assert [
             CapturedCall(method_name=meth, args=(), kwargs={"event": "Async!"})
+        ] == cl.calls
+
+    async def test_async_log_methods_special_cases(self, cl):
+        """
+        afatal maps to critical.
+        """
+        bl = build_bl(cl, processors=[])
+
+        await bl.afatal("Async!")
+
+        assert [
+            CapturedCall(
+                method_name="critical", args=(), kwargs={"event": "Async!"}
+            )
         ] == cl.calls
 
     async def test_alog(self, cl):
@@ -1325,10 +1348,18 @@ class TestAsyncBoundLogger:
 
         aliases = {"warn": "warning"}
 
-        alias = aliases.get(stdlib_log_method)
-        expect = alias if alias else stdlib_log_method
+        expect = aliases.get(stdlib_log_method, stdlib_log_method)
 
         assert expect == cl.calls[0].method_name
+
+    @pytest.mark.asyncio
+    async def test_correct_level_fatal(self, abl, cl):
+        """
+        fatal, that I have no idea why we support, maps to critical.
+        """
+        await abl.bind(foo="bar").fatal("42")
+
+        assert "critical" == cl.calls[0].method_name
 
     @pytest.mark.asyncio
     async def test_log_method(self, abl, cl):
