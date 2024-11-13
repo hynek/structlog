@@ -13,6 +13,7 @@
    <a href="https://doi.org/10.5281/zenodo.7353739"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7353739.svg" alt="DOI"></a>
    <a href="https://pypi.org/project/structlog/"><img src="https://img.shields.io/pypi/pyversions/structlog.svg" alt="Supported Python versions of the current PyPI release." /></a>
    <a href="https://pepy.tech/project/structlog"><img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" /></a>
+   <a href="https://gurubase.io/g/structlog"><img src="https://img.shields.io/badge/Gurubase-Ask%20structlog%20Guru-006BFF" alt="Gurubase"></a>
 </p>
 
 <p align="center"><em>Simple. Powerful. Fast. Pick three.</em></p>
