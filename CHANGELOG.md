@@ -38,6 +38,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
   [#669](https://github.com/hynek/structlog/pull/669)
 
+- The native `FilteringBoundLogger.fatal()` method now maps to the critical level, as it does in the standard library.
+  Note that the level is discouraged to use there, so we recommend to stick to `error()` or `critical()`.
+
+  [#677](https://github.com/hynek/structlog/pull/677)
+
 
 ## [24.4.0](https://github.com/hynek/structlog/compare/24.3.0...24.4.0) - 2024-07-17
 
