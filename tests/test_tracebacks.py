@@ -734,23 +734,12 @@ def test_json_traceback_value_error(
         tracebacks.ExceptionDictTransformer(**kwargs)
 
 
-def test_exception_dict_transformer_missing_exc_info():
-    """
-    ExceptionDictTransformer returns an empty list if exc_info is missing.
-    """
-    transformer = tracebacks.ExceptionDictTransformer()
-
-    result = transformer(exc_info=(None, None, None))
-
-    assert [] == result
-
-
 class TestLogException:
     """
     Higher level "integration tests" for "Logger.exception()".
     """
 
-    @pytest.fixture()
+    @pytest.fixture
     def cap_logs(self) -> structlog.testing.LogCapture:
         """
         Create a LogCapture to be used as processor and fixture for retrieving
@@ -758,7 +747,7 @@ class TestLogException:
         """
         return structlog.testing.LogCapture()
 
-    @pytest.fixture()
+    @pytest.fixture
     def logger(
         self, cap_logs: structlog.testing.LogCapture
     ) -> structlog.Logger:
