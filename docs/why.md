@@ -81,7 +81,7 @@ There are [plenty of processors](structlog.processors) for most common tasks com
 Since each log entry is a dictionary, it can be formatted to **any** format:
 
 - A colorful key-value format for [local development](console-output.md),
-- [JSON](structlog.processors.JSONRenderer) of [*logfmt*](structlog.processors.LogfmtRenderer) for easy parsing,
+- [JSON](structlog.processors.JSONRenderer) or [*logfmt*](structlog.processors.LogfmtRenderer) for easy parsing,
 - or some standard format you have parsers for like *nginx* or Apache *httpd*.
 
 Internally, formatters are processors whose return value (usually a string) is passed into loggers that are responsible for the output of your message.
