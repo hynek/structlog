@@ -238,7 +238,8 @@ def extract(
             exc_value=safe_str(exc_value),
             exc_notes=(
                 "\n".join(safe_str(note) for note in exc_value.__notes__)
-                if hasattr(exc_value, "__notes__") else None
+                if hasattr(exc_value, "__notes__")
+                else None
             ),
             is_cause=is_cause,
         )
