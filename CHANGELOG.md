@@ -29,6 +29,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.tracebacks.Stack` now includes an `exc_notes` field reflecting the notes attached to the exception.
 
+  [#684](https://github.com/hynek/structlog/pull/684)
+
 ## Fixed
 
 - `structlog.traceback.ExceptionDictTransformer` now correctly handles missing exceptions.
