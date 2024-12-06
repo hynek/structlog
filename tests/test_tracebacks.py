@@ -158,7 +158,9 @@ def test_simple_exception():
     ] == trace.stacks
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="Requires Python 3.11 or higher")
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
 def test_simple_exception_with_notes():
     """
     Notes are included in the traceback.
@@ -592,7 +594,9 @@ def test_json_traceback():
     ] == result
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="Requires Python 3.11 or higher")
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
 def test_json_traceback_with_notes():
     """
     Tracebacks are formatted to JSON with all information.
