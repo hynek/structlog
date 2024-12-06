@@ -382,10 +382,10 @@ class ExceptionDictTransformer:
         max_frames: int = MAX_FRAMES,
         use_rich: bool = True,
     ) -> None:
-        if locals_max_length < 0:
+        if locals_max_length is not None and locals_max_length < 0:
             msg = f'"locals_max_length" must be >= 0: {locals_max_length}'
             raise ValueError(msg)
-        if locals_max_string < 0:
+        if locals_max_string is not None and locals_max_string < 0:
             msg = f'"locals_max_string" must be >= 0: {locals_max_string}'
             raise ValueError(msg)
         if max_frames < 2:
