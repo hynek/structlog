@@ -83,6 +83,9 @@ class SyntaxError_:  # noqa: N801
 class Stack:
     """
     Represents an exception and a list of stack frames.
+
+    .. versionchanged:: 24.5.0
+       Added the *exc_notes* field.
     """
 
     exc_type: str

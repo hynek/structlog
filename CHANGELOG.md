@@ -27,6 +27,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
   [#647](https://github.com/hynek/structlog/pull/647)
 
+- `structlog.tracebacks.Stack` now includes an `exc_notes` field reflecting the notes attached to the exception.
 
 ## Fixed
 
