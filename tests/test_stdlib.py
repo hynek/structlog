@@ -46,6 +46,7 @@ from structlog.stdlib import (
     filter_by_level,
     get_logger,
     recreate_defaults,
+    render_to_log_args_and_kwargs,
     render_to_log_kwargs,
 )
 from structlog.testing import CapturedCall
@@ -706,7 +707,171 @@ def _stdlib_logger():
     logging.basicConfig()
 
 
-class TestRenderToLogKW:
+class TestRenderToLogArgsAndKwargs:
+    def test_default(self, stdlib_logger: logging.Logger):
+        """
+        Passes `event` key from `event_dict` in the first positional argument
+        and handles otherwise empty `event_dict`.
+        """
+        method_name = "debug"
+        event = "message"
+        args, kwargs = render_to_log_args_and_kwargs(
+            stdlib_logger, method_name, {"event": event}
+        )
+
+        assert (event,) == args
+        assert {} == kwargs
+
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            getattr(stdlib_logger, method_name)(*args, **kwargs)
+
+        mock_log.assert_called_once_with(logging.DEBUG, event, ())
+
+    def test_pass_remaining_event_dict_as_extra(
+        self, stdlib_logger: logging.Logger, event_dict: dict[str, Any]
+    ):
+        """
+        Passes remaining `event_dict` as `extra`.
+        """
+        expected_extra = event_dict.copy()
+
+        method_name = "info"
+        event = "message"
+        event_dict["event"] = event
+
+        args, kwargs = render_to_log_args_and_kwargs(
+            stdlib_logger, method_name, event_dict
+        )
+
+        assert (event,) == args
+        assert {"extra": expected_extra} == kwargs
+
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            getattr(stdlib_logger, method_name)(*args, **kwargs)
+
+        mock_log.assert_called_once_with(
+            logging.INFO, event, (), extra=expected_extra
+        )
+
+    def test_pass_positional_args_from_event_dict_as_args(
+        self, stdlib_logger: logging.Logger, event_dict: dict[str, Any]
+    ):
+        """
+        Passes items from "positional_args" key from `event_dict` as positional
+        arguments.
+        """
+        expected_extra = event_dict.copy()
+
+        method_name = "warning"
+        event = "message: a = %s, b = %d"
+        positional_args = ("foo", 123)
+        event_dict["event"] = event
+        event_dict["positional_args"] = positional_args
+
+        args, kwargs = render_to_log_args_and_kwargs(
+            stdlib_logger, method_name, event_dict
+        )
+
+        assert (event, *(positional_args)) == args
+        assert {"extra": expected_extra} == kwargs
+
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            getattr(stdlib_logger, method_name)(*args, **kwargs)
+
+        mock_log.assert_called_once_with(
+            logging.WARNING, event, positional_args, extra=expected_extra
+        )
+
+    def test_pass_kwargs_from_event_dict_as_kwargs(
+        self, stdlib_logger: logging.Logger, event_dict: dict[str, Any]
+    ):
+        """
+        Passes "exc_info", "stack_info", and "stacklevel" keys from `event_dict`
+        as keyword arguments.
+        """
+        expected_extra = event_dict.copy()
+
+        method_name = "info"
+        event = "message"
+        exc_info = True
+        stack_info = False
+        stacklevel = 2
+        event_dict["event"] = event
+        event_dict["exc_info"] = exc_info
+        event_dict["stack_info"] = stack_info
+        event_dict["stacklevel"] = stacklevel
+
+        args, kwargs = render_to_log_args_and_kwargs(
+            stdlib_logger, method_name, event_dict
+        )
+
+        assert (event,) == args
+        assert {
+            "exc_info": exc_info,
+            "stack_info": stack_info,
+            "stacklevel": stacklevel,
+            "extra": expected_extra,
+        } == kwargs
+
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            getattr(stdlib_logger, method_name)(*args, **kwargs)
+
+        mock_log.assert_called_once_with(
+            logging.INFO,
+            event,
+            (),
+            exc_info=exc_info,
+            stack_info=stack_info,
+            stacklevel=stacklevel,
+            extra=expected_extra,
+        )
+
+    def test_integration(
+        self, stdlib_logger: logging.Logger, event_dict: dict[str, Any]
+    ):
+        """
+        `render_to_log_args_and_kwargs` with a wrapped logger calls the stdlib
+        logger correctly.
+
+        Reserved stdlib keyword arguments are in `logging.Logger._log`.
+        https://github.com/python/cpython/blob/60403a5409ff2c3f3b07dd2ca91a7a3e096839c7/Lib/logging/__init__.py#L1640
+        """
+        event = "message: a = %s, b = %d"
+        arg_1 = "foo"
+        arg_2 = 123
+        exc_info = False
+        stack_info = True
+        stacklevel = 3
+
+        struct_logger = wrap_logger(
+            stdlib_logger,
+            processors=[render_to_log_args_and_kwargs],
+            wrapper_class=BoundLogger,
+        )
+
+        with patch.object(stdlib_logger, "_log") as mock_log:
+            struct_logger.info(
+                event,
+                arg_1,
+                arg_2,
+                exc_info=exc_info,
+                stack_info=stack_info,
+                stacklevel=stacklevel,
+                **event_dict,
+            )
+
+        mock_log.assert_called_once_with(
+            logging.INFO,
+            event,
+            (arg_1, arg_2),
+            exc_info=exc_info,
+            stack_info=stack_info,
+            stacklevel=stacklevel,
+            extra=event_dict,
+        )
+
+
+class TestRenderToLogKwargs:
     def test_default(self, stdlib_logger):
         """
         Translates `event` to `msg` and handles otherwise empty `event_dict`s.

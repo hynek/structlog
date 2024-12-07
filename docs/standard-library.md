@@ -77,10 +77,15 @@ To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger
 
 *structlog* comes with a few standard library-specific processors:
 
+{func}`~structlog.stdlib.render_to_log_args_and_kwargs`:
+
+: Renders the event dictionary into positional and keyword arguments for `logging.Logger` logging methods.
+  This is useful if you want to render your log entries entirely within `logging`.
+
 {func}`~structlog.stdlib.render_to_log_kwargs`:
 
-: Renders the event dictionary into keyword arguments for `logging.log` that attaches everything except the `event` field to the *extra* argument.
-  This is useful if you want to render your log entries entirely within `logging`.
+: Same as above, but does not support passing positional arguments from *structlog* loggers to `logging.Logger` logging methods as positional arguments.
+  *structlog* positional arguments are still passed to `logging` under `positional_args` key of `extra` keyword argument.
 
 {func}`~structlog.stdlib.filter_by_level`:
 
@@ -91,12 +96,6 @@ To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger
 {func}`~structlog.stdlib.add_logger_name`:
 
 : Adds the name of the logger to the event dictionary under the key `logger`.
-
-{func}`~structlog.stdlib.ExtraAdder`:
-
-: Add extra attributes of `logging.LogRecord` objects to the event dictionary.
-
-  This processor can be used for adding data passed in the `extra` parameter of the `logging` module's log methods to the event dictionary.
 
 {func}`~structlog.stdlib.add_log_level`:
 
@@ -116,6 +115,12 @@ To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger
   ```
 
   The mapping of names to numbers is in `structlog.stdlib._NAME_TO_LEVEL`.
+
+{func}`~structlog.stdlib.ExtraAdder`:
+
+: Add extra attributes of `logging.LogRecord` objects to the event dictionary.
+
+This processor can be used for adding data passed in the `extra` parameter of the `logging` module's log methods to the event dictionary.
 
 {func}`~structlog.stdlib.PositionalArgumentsFormatter`:
 
