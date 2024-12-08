@@ -733,11 +733,9 @@ class ConsoleRenderer:
             if exc_info or exc is not None:
                 sio.write("\n\n" + "=" * 79 + "\n")
 
+        exc_info = _figure_out_exc_info(exc_info)
         if exc_info:
-            exc_info = _figure_out_exc_info(exc_info)
-
-            if exc_info != (None, None, None):
-                self._exception_formatter(sio, exc_info)
+            self._exception_formatter(sio, exc_info)
         elif exc is not None:
             if self._exception_formatter is not plain_traceback:
                 warnings.warn(

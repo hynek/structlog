@@ -16,22 +16,12 @@ from .contextvars import _ASYNC_CALLING_STACK
 from .typing import ExcInfo
 
 
-def is_missing_exc_info(exc_info: ExcInfo) -> bool:
-    """
-    Return True if exc_info is the missing value.
-    """
-    return exc_info == (None, None, None)  # type: ignore[comparison-overlap]
-
-
 def _format_exception(exc_info: ExcInfo) -> str:
     """
     Prettyprint an `exc_info` tuple.
 
     Shamelessly stolen from stdlib's logging module.
     """
-    if is_missing_exc_info(exc_info):
-        return "MISSING"
-
     sio = StringIO()
 
     traceback.print_exception(exc_info[0], exc_info[1], exc_info[2], None, sio)
