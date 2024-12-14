@@ -83,10 +83,14 @@ class SyntaxError_:  # noqa: N801
 class Stack:
     """
     Represents an exception and a list of stack frames.
+
+    .. versionchanged:: 24.5.0
+       Added the *exc_notes* field.
     """
 
     exc_type: str
     exc_value: str
+    exc_notes: str | None = None
     syntax_error: SyntaxError_ | None = None
     is_cause: bool = False
     frames: list[Frame] = field(default_factory=list)
@@ -232,6 +236,11 @@ def extract(
         stack = Stack(
             exc_type=safe_str(exc_type.__name__),
             exc_value=safe_str(exc_value),
+            exc_notes=(
+                "\n".join(safe_str(note) for note in exc_value.__notes__)
+                if hasattr(exc_value, "__notes__")
+                else None
+            ),
             is_cause=is_cause,
         )
 
