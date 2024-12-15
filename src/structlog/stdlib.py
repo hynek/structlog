@@ -39,16 +39,16 @@ from .typing import (
 
 
 __all__ = [
-    "add_log_level_number",
-    "add_log_level",
-    "add_logger_name",
-    "ExtraAdder",
     "BoundLogger",
-    "filter_by_level",
-    "get_logger",
+    "ExtraAdder",
     "LoggerFactory",
     "PositionalArgumentsFormatter",
     "ProcessorFormatter",
+    "add_log_level",
+    "add_log_level_number",
+    "add_logger_name",
+    "filter_by_level",
+    "get_logger",
     "recreate_defaults",
     "render_to_log_kwargs",
 ]
@@ -521,7 +521,7 @@ class AsyncBoundLogger:
         Callsite parameters are now also collected for async log methods.
     """
 
-    __slots__ = ("sync_bl", "_loop")
+    __slots__ = ("_loop", "sync_bl")
 
     #: The wrapped synchronous logger. It is useful to be able to log
     #: synchronously occasionally.

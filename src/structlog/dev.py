@@ -55,9 +55,9 @@ except ImportError:
 
 __all__ = [
     "ConsoleRenderer",
+    "better_traceback",
     "plain_traceback",
     "rich_traceback",
-    "better_traceback",
 ]
 
 _IS_WINDOWS = sys.platform == "win32"

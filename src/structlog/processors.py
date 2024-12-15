@@ -49,19 +49,19 @@ from .typing import (
 
 __all__ = [
     "NAME_TO_LEVEL",  # some people rely on it being here
-    "add_log_level",
     "CallsiteParameter",
     "CallsiteParameterAdder",
-    "dict_tracebacks",
     "EventRenamer",
     "ExceptionPrettyPrinter",
-    "format_exc_info",
     "JSONRenderer",
     "KeyValueRenderer",
     "StackInfoRenderer",
     "TimeStamper",
     "UnicodeDecoder",
     "UnicodeEncoder",
+    "add_log_level",
+    "dict_tracebacks",
+    "format_exc_info",
 ]
 
 
@@ -476,7 +476,7 @@ class TimeStamper:
     .. versionchanged:: 19.2.0 Can be pickled now.
     """
 
-    __slots__ = ("_stamper", "fmt", "utc", "key")
+    __slots__ = ("_stamper", "fmt", "key", "utc")
 
     def __init__(
         self,
