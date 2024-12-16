@@ -303,6 +303,8 @@ API Reference
 .. autoclass:: LoggerFactory
    :members: __call__
 
+.. autofunction:: render_to_log_args_and_kwargs
+
 .. autofunction:: render_to_log_kwargs
 
 .. autofunction:: filter_by_level
@@ -313,7 +315,7 @@ API Reference
 
 .. autofunction:: add_logger_name
 
-.. autofunction:: ExtraAdder
+.. autoclass:: ExtraAdder
 
 .. autoclass:: PositionalArgumentsFormatter
 

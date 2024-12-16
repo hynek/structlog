@@ -44,6 +44,14 @@ structlog.configure(
     processors=[structlog.processors.JSONRenderer(serializer=bytes_dumps)]
 )
 
+structlog.configure(
+    processors=[
+        structlog.stdlib.render_to_log_args_and_kwargs,
+    ],
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
 
 structlog.configure(
     processors=[
