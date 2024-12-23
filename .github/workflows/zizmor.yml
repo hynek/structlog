@@ -20,8 +20,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
       - uses: hynek/setup-cached-uv@v2
 
       - name: Run zizmor 🌈
