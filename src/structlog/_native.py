@@ -202,8 +202,8 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
 
     meths["exception"] = exception
     meths["aexception"] = aexception
-    meths["fatal"] = meths["error"]
-    meths["afatal"] = meths["aerror"]
+    meths["fatal"] = meths["critical"]
+    meths["afatal"] = meths["acritical"]
     meths["warn"] = meths["warning"]
     meths["awarn"] = meths["awarning"]
     meths["msg"] = meths["info"]

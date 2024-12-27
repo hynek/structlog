@@ -29,6 +29,7 @@ bls.info("hello", whom="world", x=42, y={})
 
 def bytes_dumps(
     __obj: Any,
+    /,
     default: Callable[[Any], Any] | None = None,
     option: int | None = None,
 ) -> bytes:

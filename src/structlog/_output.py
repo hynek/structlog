@@ -256,7 +256,7 @@ class BytesLogger:
     .. versionadded:: 20.2.0
     """
 
-    __slots__ = ("_file", "_write", "_flush", "_lock")
+    __slots__ = ("_file", "_flush", "_lock", "_write")
 
     def __init__(self, file: BinaryIO | None = None):
         self._file = file or sys.stdout.buffer
