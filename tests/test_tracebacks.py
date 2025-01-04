@@ -531,6 +531,46 @@ def test_recursive():
     ]
 
 
+@pytest.mark.parametrize(
+    ("kwargs", "local_variable"),
+    [
+        (
+            {"locals_max_string": None},
+            "x" * (tracebacks.LOCALS_MAX_STRING + 10),
+        ),
+        (
+            {"locals_max_length": None},
+            list(range(tracebacks.LOCALS_MAX_LENGTH + 10)),
+        ),
+    ],
+)
+def test_exception_dict_transformer_locals_max_accept_none_argument(
+    kwargs, local_variable
+):
+    """
+    ExceptionDictTransformer works when either locals_max_string or
+    locals_max_length is set to None.
+    """
+
+    try:
+        my_local = local_variable
+        1 / 0
+    except Exception as e:
+        format_json = tracebacks.ExceptionDictTransformer(
+            show_locals=True, **kwargs
+        )
+        result = format_json((type(e), e, e.__traceback__))
+
+    _ = my_local
+
+    assert len(result) == 1
+    assert len(result[0]["frames"]) == 1
+
+    frame = result[0]["frames"][0]
+
+    assert frame["locals"]["my_local"].strip("'") == str(local_variable)
+
+
 def test_json_traceback():
     """
     Tracebacks are formatted to JSON with all information.
