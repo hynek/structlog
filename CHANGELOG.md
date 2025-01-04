@@ -43,6 +43,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
   [#677](https://github.com/hynek/structlog/pull/677)
 
+- `structlog.tracebacks.ExceptionDictTransformer` now actually accepts `None` `locals_max_length` and `locals_max_string`.
+
+  [#675](https://github.com/hynek/structlog/pull/675)
+
 
 ## [24.4.0](https://github.com/hynek/structlog/compare/24.3.0...24.4.0) - 2024-07-17
 
