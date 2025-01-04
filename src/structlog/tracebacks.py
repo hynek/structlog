@@ -368,6 +368,10 @@ class ExceptionDictTransformer:
     .. versionchanged:: 24.3.0
        Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*,
        *suppress* and *use_rich* arguments.
+
+    .. versionchanged:: 25.1.0
+       *locals_max_length* and *locals_max_string* may be None to disable
+       truncation.
     """
 
     def __init__(
