@@ -567,6 +567,7 @@ def test_exception_dict_transformer_locals_max_accept_none_argument(
     assert len(result[0]["frames"]) == 1
 
     frame = result[0]["frames"][0]
+
     assert frame["locals"]["my_local"].strip("'") == str(local_variable)
 
 
