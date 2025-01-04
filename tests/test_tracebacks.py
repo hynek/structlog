@@ -776,7 +776,7 @@ def test_json_traceback_value_error(
 
 class TestLogException:
     """
-    Higher level "integration tests" for "Logger.exception()".
+    Higher level integration tests for `Logger.exception()`.
     """
 
     @pytest.fixture
@@ -806,7 +806,7 @@ class TestLogException:
         self, logger: structlog.Logger, cap_logs: structlog.testing.LogCapture
     ) -> None:
         """
-        The log row contains a traceback when "Logger.exception()" is
+        The log row contains a traceback when `Logger.exception()` is
         explicitly called with an exception instance.
         """
         try:
@@ -815,14 +815,15 @@ class TestLogException:
             logger.exception("onoes", exception=e)
 
         log_row = cap_logs.entries[0]
+
         assert log_row["exception"][0]["exc_type"] == "ZeroDivisionError"
 
     def test_log_implicit_exception(
         self, logger: structlog.Logger, cap_logs: structlog.testing.LogCapture
     ) -> None:
         """
-        The log row contains a traceback when "Logger.exception()" is called
-        in an "except" block but without explicitly passing the exception.
+        The log row contains a traceback when `Logger.exception()` is called
+        in an `except` block but without explicitly passing the exception.
         """
         try:
             1 / 0
@@ -830,16 +831,18 @@ class TestLogException:
             logger.exception("onoes")
 
         log_row = cap_logs.entries[0]
+
         assert log_row["exception"][0]["exc_type"] == "ZeroDivisionError"
 
     def test_no_exception(
         self, logger: structlog.Logger, cap_logs: structlog.testing.LogCapture
     ) -> None:
         """
-        "Logger.exception()" should not be called outside an "except" block
+        `Logger.exception()` should not be called outside an `except` block
         but this cases is gracefully handled and does not lead to an exception.
 
         See: https://github.com/hynek/structlog/issues/634
         """
         logger.exception("onoes")
+
         assert [{"event": "onoes", "log_level": "error"}] == cap_logs.entries
