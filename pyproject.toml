@@ -145,7 +145,7 @@ ignore = [
     "RUF001",  # leave my smart characters alone
     "SLF001",  # private members are accessed by friendly functions
     "T201",    # prints are fine
-    "TCH",     # TYPE_CHECKING blocks break autodocs
+    "TC",      # TYPE_CHECKING blocks break autodocs
     "TD",      # we don't follow other people's todo style
     "TID252",  # Relative imports are fine
     "TRY003",  # simple strings are fine
