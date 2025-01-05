@@ -30,9 +30,14 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## Fixed
 
-- `structlog.traceback.ExceptionDictTransformer` now correctly handles missing exceptions.
+- Fix handling calls to `{logger}.exception()` outside of exception blocks.
+  Depending on the structlog configuration,
+  this either resulted in an event dict key `exception: "MISSING"` or lead to an error.
+  Now, an invalid or missing `exc_info` will just be ignored.
+  This means, that calling `{logger}.exception()` outside of an exception block is basically the same as calling `{logger}.error()`.
 
-  [#657](https://github.com/hynek/structlog/pull/657)
+  [#634](https://github.com/hynek/structlog/issues/634)
+  [#680](https://github.com/hynek/structlog/pull/680)
 
 - Instantiating `structlog.dev.ConsoleRenderer` does not mutate the passed *styles* dict anymore.
 
