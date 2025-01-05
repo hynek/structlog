@@ -545,10 +545,7 @@ class TestConsoleRenderer:
         r = dev.ConsoleRenderer(colors=False)
 
         assert (
-            "hi"
-            == r(
-                None, None, {"event": "hi", "exc_info": (None, None, None)}
-            ).rstrip()
+            "hi" == r(None, None, {"event": "hi", "exc_info": None}).rstrip()
         )
 
     def test_columns_warns_about_meaningless_arguments(self, recwarn):

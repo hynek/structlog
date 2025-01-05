@@ -514,12 +514,12 @@ class TestFormatExcInfo:
 
     def test_formats_tuple(self):
         """
-        If exc_info is a tuple, it is used.
+        If exc_info is an arbitrary 3-tuple, it is not used.
         """
         formatter = ExceptionRenderer(lambda exc_info: exc_info)
         d = formatter(None, None, {"exc_info": (None, None, 42)})
 
-        assert {"exception": (None, None, 42)} == d
+        assert {} == d
 
     def test_gets_exc_info_on_bool(self):
         """
@@ -580,6 +580,4 @@ class TestFormatExcInfo:
         """
         A missing exception does not blow up.
         """
-        assert {"exception": "MISSING"} == format_exc_info(
-            None, None, {"exc_info": ei}
-        )
+        assert {} == format_exc_info(None, None, {"exc_info": ei})
