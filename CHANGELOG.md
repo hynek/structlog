@@ -22,6 +22,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   With it, you do not need to add `structlog.stdlib.PositionalArgumentsFormatter` processor to format positional arguments from *structlog* loggers.
   [#668](https://github.com/hynek/structlog/pull/668)
 
+
 ## Changed
 
 - `structlog.typing.BindableLogger` protocol now returns `Self` instead of `BindableLogger`.
