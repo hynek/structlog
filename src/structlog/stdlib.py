@@ -76,6 +76,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
 
     .. versionadded:: 22.1.0
     .. versionchanged:: 23.3.0 Added `add_logger_name`.
+    .. versionchanged:: 25.1.0 Added `PositionalArgumentsFormatter`.
     """
     if log_level is not None:
         kw = {"force": True}
@@ -90,6 +91,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
     _config.reset_defaults()
     _config.configure(
         processors=[
+            PositionalArgumentsFormatter(),  # handled by native loggers
             merge_contextvars,
             add_log_level,
             add_logger_name,

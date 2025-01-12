@@ -35,6 +35,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
   [#647](https://github.com/hynek/structlog/pull/647)
 
+- `structlog.stdlib.recreate_defaults()` now also adds `structlog.stdlib.PositionalArgumentsFormatter`.
+  In default native mode, this is done by the loggers at the edge.
+
 
 ## Fixed
 
