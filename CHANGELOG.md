@@ -15,6 +15,14 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/24.4.0...HEAD)
 
+### Added
+
+- Add `structlog.stdlib.render_to_log_args_and_kwargs` processor.
+  Same as `structlog.stdlib.render_to_log_kwargs`, but also allows to pass positional arguments to `logging`.
+  With it, you do not need to add `structlog.stdlib.PositionalArgumentsFormatter` processor to format positional arguments from *structlog* loggers.
+  [#668](https://github.com/hynek/structlog/pull/668)
+
+
 ## Changed
 
 - `structlog.typing.BindableLogger` protocol now returns `Self` instead of `BindableLogger`.
