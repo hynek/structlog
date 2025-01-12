@@ -904,7 +904,7 @@ def render_to_log_args_and_kwargs(
 
     This allows you to defer formatting to `logging`.
 
-    .. versionadded:: 24.5.0
+    .. versionadded:: 25.1.0
     """
     args = (event_dict.pop("event"), *event_dict.pop("positional_args", ()))
 
