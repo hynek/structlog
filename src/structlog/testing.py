@@ -177,7 +177,7 @@ class CapturingLogger:
         self.calls = []
 
     def __repr__(self) -> str:
-        return f"<CapturingLogger with { len(self.calls) } call(s)>"
+        return f"<CapturingLogger with {len(self.calls)} call(s)>"
 
     def __getattr__(self, name: str) -> Any:
         """

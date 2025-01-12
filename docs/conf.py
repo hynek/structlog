@@ -56,7 +56,7 @@ master_doc = "index"
 # General information about the project.
 project = "structlog"
 author = "Hynek Schlawack"
-copyright = f"2013, { author }"
+copyright = f"2013, {author}"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
