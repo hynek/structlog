@@ -116,7 +116,7 @@ To use it, {doc}`configure <configuration>` *structlog* to use `AsyncBoundLogger
 
   The mapping of names to numbers is in `structlog.stdlib._NAME_TO_LEVEL`.
 
-{func}`~structlog.stdlib.ExtraAdder`:
+{class}`~structlog.stdlib.ExtraAdder`:
 
 : Add extra attributes of `logging.LogRecord` objects to the event dictionary.
 
