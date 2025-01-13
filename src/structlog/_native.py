@@ -219,6 +219,10 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     meths["msg"] = meths["info"]
     meths["amsg"] = meths["ainfo"]
 
+    # Introspection
+    meths["is_enabled_for"] = lambda self, level: level >= min_level
+    meths["get_effective_level"] = lambda self: min_level
+
     return type(
         f"BoundLoggerFilteringAt{LEVEL_TO_NAME.get(min_level, 'Notset').capitalize()}",
         (BoundLoggerBase,),

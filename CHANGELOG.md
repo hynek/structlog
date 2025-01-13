@@ -22,6 +22,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   With it, you do not need to add `structlog.stdlib.PositionalArgumentsFormatter` processor to format positional arguments from *structlog* loggers.
   [#668](https://github.com/hynek/structlog/pull/668)
 
+- Native loggers now have `is_enabled_for()` and `get_effective_level()` methods that mirror the behavior of the standard library's `logging.Logger.isEnabledFor()` and `logging.Logger.getEffectiveLevel()`.
+
 
 ## Changed
 
