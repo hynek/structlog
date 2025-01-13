@@ -1,4 +1,4 @@
-@import url('https://rsms.me/inter/inter.css');
+@import url(https://fonts.bunny.net/css?family=b612:400,400i,700,700i);
 @import url('https://assets.hynek.me/css/bm.css');
 
 
@@ -9,7 +9,7 @@
 
 @supports (font-variation-settings: normal) {
   :root {
-    font-family: InterVariable, sans-serif;
+    font-family: 'B612', sans-serif;
   }
 }
 
