@@ -15,3 +15,6 @@ build:
 
     - uvx --with tox-uv tox run -e docs-sponsors
     - uvx --with tox-uv tox run -e docs -- $READTHEDOCS_OUTPUT
+
+sphinx:
+  configuration: docs/conf.py
