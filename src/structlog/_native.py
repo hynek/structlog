@@ -22,6 +22,7 @@ from ._log_levels import (
     ERROR,
     INFO,
     LEVEL_TO_NAME,
+    NAME_TO_LEVEL,
     NOTSET,
     WARNING,
 )
@@ -70,7 +71,9 @@ async def aexception(
     return runner
 
 
-def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
+def make_filtering_bound_logger(
+    min_level: int | str,
+) -> type[FilteringBoundLogger]:
     """
     Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
 
@@ -103,12 +106,19 @@ def make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             <https://docs.python.org/3/library/logging.html#levels>`_ for
             possible values.
 
+            If you pass a string, it must be one of: ``critical``, ``error``,
+            ``warning``, ``info``, ``debug``, ``notset`` (upper/lower case
+            doesn't matter).
+
     .. versionadded:: 20.2.0
     .. versionchanged:: 21.1.0 The returned loggers are now pickleable.
     .. versionadded:: 20.1.0 The ``log()`` method.
     .. versionadded:: 22.2.0
        Async variants ``alog()``, ``adebug()``, ``ainfo()``, and so forth.
+    .. versionchanged:: 25.1.0 *min_level* can now be a string.
     """
+    if isinstance(min_level, str):
+        min_level = NAME_TO_LEVEL[min_level.lower()]
 
     return LEVEL_TO_FILTERING_LOGGER[min_level]
 

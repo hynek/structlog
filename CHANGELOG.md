@@ -38,6 +38,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.stdlib.recreate_defaults()` now also adds `structlog.stdlib.PositionalArgumentsFormatter`.
   In default native mode, this is done by the loggers at the edge.
 
+- `structlog.make_filtering_bound_logger()` now also accepts a string for *min_level*.
+
 
 ## Fixed
 
