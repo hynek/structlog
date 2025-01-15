@@ -23,7 +23,23 @@ def _bl(cl):
     return make_filtering_bound_logger(logging.INFO)(cl, [], {})
 
 
-class TestFilteringLogger:
+class TestNativeFilteringLogger:
+    def test_is_enabled_for(self, bl):
+        """
+        is_enabled_for returns True if the log level is enabled.
+        """
+        assert bl.is_enabled_for(20)
+        assert bl.is_enabled_for(logging.INFO)
+
+        assert not bl.is_enabled_for(19)
+        assert not bl.is_enabled_for(logging.DEBUG)
+
+    def test_get_effective_level(self, bl):
+        """
+        get_effective_level returns the log level.
+        """
+        assert 20 == logging.INFO == bl.get_effective_level()
+
     def test_exact_level(self, bl, cl):
         """
         if log level is exactly the min_level, log.
