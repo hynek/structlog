@@ -26,7 +26,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#689](https://github.com/hynek/structlog/pull/689)
 
 
-## Changed
+### Changed
 
 - `structlog.typing.BindableLogger` protocol now returns `Self` instead of `BindableLogger`.
   This adds a dependency on [*typing-extensions*](https://pypi.org/project/typing-extensions/) for Pythons older than 3.11.
@@ -44,7 +44,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.make_filtering_bound_logger()` now also accepts a string for *min_level*.
 
 
-## Fixed
+### Fixed
 
 - Fix handling calls to `{logger}.exception()` outside of exception blocks.
   Depending on the structlog configuration,
