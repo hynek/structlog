@@ -13,7 +13,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 <!-- changelog follows -->
 
 
-## [Unreleased](https://github.com/hynek/structlog/compare/24.4.0...HEAD)
+## [25.1.0](https://github.com/hynek/structlog/compare/24.4.0...25.1.0) - 2025-01-16
 
 ### Added
 
