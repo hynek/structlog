@@ -19,16 +19,14 @@ import sys
 import warnings
 
 from functools import partial
-from typing import (
-    Any,
-    Callable,
-    Collection,
-    Dict,
-    Iterable,
-    Self,
-    Sequence,
-    cast,
-)
+from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
+
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 
 from . import _config
 from ._base import BoundLoggerBase
