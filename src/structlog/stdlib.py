@@ -155,13 +155,13 @@ class BoundLogger(BoundLoggerBase):
 
     _logger: logging.Logger
 
-    def bind(self, **new_values: Any) -> BoundLogger:
+    def bind(self, **new_values: Any) -> Self:
         """
         Return a new logger with *new_values* added to the existing ones.
         """
         return super().bind(**new_values)
 
-    def unbind(self, *keys: str) -> BoundLogger:
+    def unbind(self, *keys: str) -> Self:
         """
         Return a new logger with *keys* removed from the context.
 
@@ -170,7 +170,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().unbind(*keys)
 
-    def try_unbind(self, *keys: str) -> BoundLogger:
+    def try_unbind(self, *keys: str) -> Self:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
@@ -178,7 +178,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().try_unbind(*keys)
 
-    def new(self, **new_values: Any) -> BoundLogger:
+    def new(self, **new_values: Any) -> Self:
         """
         Clear context and binds *initial_values* using `bind`.
 
