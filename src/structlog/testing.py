@@ -194,7 +194,7 @@ class CapturingLoggerFactory:
     r"""
     Produce and cache `CapturingLogger`\ s.
 
-    Each factory produces and re-uses only **one** logger.
+    Each factory produces and reuses only **one** logger.
 
     You can access it via the ``logger`` attribute.
 

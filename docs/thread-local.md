@@ -128,7 +128,7 @@ If you want to detach a logger from thread-local data, there's {func}`structlog.
 The convenience of having a thread-local context comes at a price though:
 
 :::{warning}
-- If you can't rule out that your application re-uses threads, you *must* remember to **initialize your thread-local context** at the start of each request using {func}`~structlog.BoundLogger.new` (instead of {func}`~structlog.BoundLogger.bind`).
+- If you can't rule out that your application reuses threads, you *must* remember to **initialize your thread-local context** at the start of each request using {func}`~structlog.BoundLogger.new` (instead of {func}`~structlog.BoundLogger.bind`).
   Otherwise you may start a new request with the context still filled with data from the request before.
 
 - **Don't** stop assigning the results of your `bind()`s and `new()`s!
