@@ -21,6 +21,13 @@ import warnings
 from functools import partial
 from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
 
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
+
 from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
@@ -155,13 +162,13 @@ class BoundLogger(BoundLoggerBase):
 
     _logger: logging.Logger
 
-    def bind(self, **new_values: Any) -> BoundLogger:
+    def bind(self, **new_values: Any) -> Self:
         """
         Return a new logger with *new_values* added to the existing ones.
         """
         return super().bind(**new_values)
 
-    def unbind(self, *keys: str) -> BoundLogger:
+    def unbind(self, *keys: str) -> Self:
         """
         Return a new logger with *keys* removed from the context.
 
@@ -170,7 +177,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().unbind(*keys)
 
-    def try_unbind(self, *keys: str) -> BoundLogger:
+    def try_unbind(self, *keys: str) -> Self:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
@@ -178,7 +185,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().try_unbind(*keys)
 
-    def new(self, **new_values: Any) -> BoundLogger:
+    def new(self, **new_values: Any) -> Self:
         """
         Clear context and binds *initial_values* using `bind`.
 
