@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/25.1.0...HEAD)
 
+### Changed
+
+- `structlog.stdlib.BoundLogger`'s binding-related methods now also return `Self`.
+  [#694](https://github.com/hynek/structlog/pull/694)
+
 
 ## [25.1.0](https://github.com/hynek/structlog/compare/24.4.0...25.1.0) - 2025-01-16
 
