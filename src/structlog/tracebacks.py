@@ -16,14 +16,12 @@ from __future__ import annotations
 
 import os
 import os.path
-
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import ModuleType, TracebackType
 from typing import Any, Iterable, Sequence, Tuple, Union
 
 from ._frames import is_missing_exc_info
-
 
 try:
     import rich
@@ -32,7 +30,6 @@ except ImportError:
     rich = None  # type: ignore[assignment]
 
 from .typing import ExcInfo
-
 
 __all__ = [
     "ExceptionDictTransformer",
@@ -90,7 +87,7 @@ class Stack:
 
     exc_type: str
     exc_value: str
-    exc_notes: str | None = None
+    exc_notes: tuple[str, ...]  = ()
     syntax_error: SyntaxError_ | None = None
     is_cause: bool = False
     frames: list[Frame] = field(default_factory=list)
@@ -237,9 +234,9 @@ def extract(
             exc_type=safe_str(exc_type.__name__),
             exc_value=safe_str(exc_value),
             exc_notes=(
-                "\n".join(safe_str(note) for note in exc_value.__notes__)
+                tuple(safe_str(note) for note in exc_value.__notes__)
                 if hasattr(exc_value, "__notes__")
-                else None
+                else ()
             ),
             is_cause=is_cause,
         )
