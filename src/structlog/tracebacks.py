@@ -82,7 +82,7 @@ class Stack:
     """
     Represents an exception and a list of stack frames.
 
-    .. versionchanged:: 24.5.0
+    .. versionchanged:: 25.2.0
        Added the *exc_notes* field.
     """
 
