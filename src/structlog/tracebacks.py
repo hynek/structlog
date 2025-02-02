@@ -16,10 +16,12 @@ from __future__ import annotations
 
 import os
 import os.path
+
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import ModuleType, TracebackType
 from typing import Any, Iterable, Sequence, Tuple, Union
+
 
 try:
     import rich
@@ -28,6 +30,7 @@ except ImportError:
     rich = None  # type: ignore[assignment]
 
 from .typing import ExcInfo
+
 
 __all__ = [
     "ExceptionDictTransformer",
@@ -85,7 +88,7 @@ class Stack:
 
     exc_type: str
     exc_value: str
-    exc_notes: tuple[str, ...]  = ()
+    exc_notes: tuple[str, ...] = ()
     syntax_error: SyntaxError_ | None = None
     is_cause: bool = False
     frames: list[Frame] = field(default_factory=list)
