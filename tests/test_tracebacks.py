@@ -14,6 +14,8 @@ from typing import Any
 
 import pytest
 
+import structlog
+
 from structlog import tracebacks
 
 
@@ -564,6 +566,46 @@ def test_recursive():
     ]
 
 
+@pytest.mark.parametrize(
+    ("kwargs", "local_variable"),
+    [
+        (
+            {"locals_max_string": None},
+            "x" * (tracebacks.LOCALS_MAX_STRING + 10),
+        ),
+        (
+            {"locals_max_length": None},
+            list(range(tracebacks.LOCALS_MAX_LENGTH + 10)),
+        ),
+    ],
+)
+def test_exception_dict_transformer_locals_max_accept_none_argument(
+    kwargs, local_variable
+):
+    """
+    ExceptionDictTransformer works when either locals_max_string or
+    locals_max_length is set to None.
+    """
+
+    try:
+        my_local = local_variable
+        1 / 0
+    except Exception as e:
+        format_json = tracebacks.ExceptionDictTransformer(
+            show_locals=True, **kwargs
+        )
+        result = format_json((type(e), e, e.__traceback__))
+
+    _ = my_local
+
+    assert len(result) == 1
+    assert len(result[0]["frames"]) == 1
+
+    frame = result[0]["frames"][0]
+
+    assert frame["locals"]["my_local"].strip("'") == str(local_variable)
+
+
 def test_json_traceback():
     """
     Tracebacks are formatted to JSON with all information.
@@ -801,12 +843,75 @@ def test_json_traceback_value_error(
         tracebacks.ExceptionDictTransformer(**kwargs)
 
 
-def test_exception_dict_transformer_missing_exc_info():
+class TestLogException:
     """
-    ExceptionDictTransformer returns an empty list if exc_info is missing.
+    Higher level integration tests for `Logger.exception()`.
     """
-    transformer = tracebacks.ExceptionDictTransformer()
 
-    result = transformer(exc_info=(None, None, None))
+    @pytest.fixture
+    def cap_logs(self) -> structlog.testing.LogCapture:
+        """
+        Create a LogCapture to be used as processor and fixture for retrieving
+        logs in tests.
+        """
+        return structlog.testing.LogCapture()
 
-    assert [] == result
+    @pytest.fixture
+    def logger(
+        self, cap_logs: structlog.testing.LogCapture
+    ) -> structlog.Logger:
+        """
+        Create a logger with the dict_tracebacks and a LogCapture processor.
+        """
+        old_processors = structlog.get_config()["processors"]
+        structlog.configure([structlog.processors.dict_tracebacks, cap_logs])
+        logger = structlog.get_logger("dict_tracebacks")
+        try:
+            yield logger
+        finally:
+            structlog.configure(processors=old_processors)
+
+    def test_log_explicit_exception(
+        self, logger: structlog.Logger, cap_logs: structlog.testing.LogCapture
+    ) -> None:
+        """
+        The log row contains a traceback when `Logger.exception()` is
+        explicitly called with an exception instance.
+        """
+        try:
+            1 / 0
+        except ZeroDivisionError as e:
+            logger.exception("onoes", exception=e)
+
+        log_row = cap_logs.entries[0]
+
+        assert log_row["exception"][0]["exc_type"] == "ZeroDivisionError"
+
+    def test_log_implicit_exception(
+        self, logger: structlog.Logger, cap_logs: structlog.testing.LogCapture
+    ) -> None:
+        """
+        The log row contains a traceback when `Logger.exception()` is called
+        in an `except` block but without explicitly passing the exception.
+        """
+        try:
+            1 / 0
+        except ZeroDivisionError:
+            logger.exception("onoes")
+
+        log_row = cap_logs.entries[0]
+
+        assert log_row["exception"][0]["exc_type"] == "ZeroDivisionError"
+
+    def test_no_exception(
+        self, logger: structlog.Logger, cap_logs: structlog.testing.LogCapture
+    ) -> None:
+        """
+        `Logger.exception()` should not be called outside an `except` block
+        but this cases is gracefully handled and does not lead to an exception.
+
+        See: https://github.com/hynek/structlog/issues/634
+        """
+        logger.exception("onoes")
+
+        assert [{"event": "onoes", "log_level": "error"}] == cap_logs.entries

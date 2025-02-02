@@ -21,6 +21,13 @@ import warnings
 from functools import partial
 from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
 
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
+
 from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
@@ -50,6 +57,7 @@ __all__ = [
     "filter_by_level",
     "get_logger",
     "recreate_defaults",
+    "render_to_log_args_and_kwargs",
     "render_to_log_kwargs",
 ]
 
@@ -75,6 +83,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
 
     .. versionadded:: 22.1.0
     .. versionchanged:: 23.3.0 Added `add_logger_name`.
+    .. versionchanged:: 25.1.0 Added `PositionalArgumentsFormatter`.
     """
     if log_level is not None:
         kw = {"force": True}
@@ -89,6 +98,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
     _config.reset_defaults()
     _config.configure(
         processors=[
+            PositionalArgumentsFormatter(),  # handled by native loggers
             merge_contextvars,
             add_log_level,
             add_logger_name,
@@ -152,13 +162,13 @@ class BoundLogger(BoundLoggerBase):
 
     _logger: logging.Logger
 
-    def bind(self, **new_values: Any) -> BoundLogger:
+    def bind(self, **new_values: Any) -> Self:
         """
         Return a new logger with *new_values* added to the existing ones.
         """
         return super().bind(**new_values)
 
-    def unbind(self, *keys: str) -> BoundLogger:
+    def unbind(self, *keys: str) -> Self:
         """
         Return a new logger with *keys* removed from the context.
 
@@ -167,7 +177,7 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().unbind(*keys)
 
-    def try_unbind(self, *keys: str) -> BoundLogger:
+    def try_unbind(self, *keys: str) -> Self:
         """
         Like :meth:`unbind`, but best effort: missing keys are ignored.
 
@@ -175,13 +185,13 @@ class BoundLogger(BoundLoggerBase):
         """
         return super().try_unbind(*keys)
 
-    def new(self, **new_values: Any) -> BoundLogger:
+    def new(self, **new_values: Any) -> Self:
         """
         Clear context and binds *initial_values* using `bind`.
 
         Only necessary with dict implementations that keep global state like
         those wrapped by `structlog.threadlocal.wrap_dict` when threads
-        are re-used.
+        are reused.
         """
         return super().new(**new_values)
 
@@ -885,15 +895,50 @@ class ExtraAdder:
                 event_dict[key] = record.__dict__[key]
 
 
+LOG_KWARG_NAMES = ("exc_info", "stack_info", "stacklevel")
+
+
+def render_to_log_args_and_kwargs(
+    _: logging.Logger, __: str, event_dict: EventDict
+) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """
+    Render ``event_dict`` into positional and keyword arguments for
+    `logging.Logger` logging methods.
+    See `logging.Logger.debug` method for keyword arguments reference.
+
+    The ``event`` field is passed in the first positional argument, positional
+    arguments from ``positional_args`` field are passed in subsequent positional
+    arguments, keyword arguments are extracted from the *event_dict* and the
+    rest of the *event_dict* is added as ``extra``.
+
+    This allows you to defer formatting to `logging`.
+
+    .. versionadded:: 25.1.0
+    """
+    args = (event_dict.pop("event"), *event_dict.pop("positional_args", ()))
+
+    kwargs = {
+        kwarg_name: event_dict.pop(kwarg_name)
+        for kwarg_name in LOG_KWARG_NAMES
+        if kwarg_name in event_dict
+    }
+    if event_dict:
+        kwargs["extra"] = event_dict
+
+    return args, kwargs
+
+
 def render_to_log_kwargs(
     _: logging.Logger, __: str, event_dict: EventDict
 ) -> EventDict:
     """
-    Render ``event_dict`` into keyword arguments for `logging.log`.
-    See `logging.Logger`'s ``_log`` method for kwargs reference.
+    Render ``event_dict`` into keyword arguments for `logging.Logger` logging
+    methods.
+    See `logging.Logger.debug` method for keyword arguments reference.
 
-    The ``event`` field is translated into ``msg`` and the rest of the
-    *event_dict* is added as ``extra``.
+    The ``event`` field is translated into ``msg``, keyword arguments are
+    extracted from the *event_dict* and the rest of the *event_dict* is added as
+    ``extra``.
 
     This allows you to defer formatting to `logging`.
 
@@ -909,7 +954,7 @@ def render_to_log_kwargs(
         "extra": event_dict,
         **{
             kw: event_dict.pop(kw)
-            for kw in ("exc_info", "stack_info", "stacklevel")
+            for kw in LOG_KWARG_NAMES
             if kw in event_dict
         },
     }

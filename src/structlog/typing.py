@@ -190,6 +190,20 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         .. versionadded:: 22.1.0
         """
 
+    def is_enabled_for(self, level: int) -> bool:
+        """
+        Check whether the logger is enabled for *level*.
+
+        .. versionadded:: 25.1.0
+        """
+
+    def get_effective_level(self) -> int:
+        """
+        Return the effective level of the logger.
+
+        .. versionadded:: 25.1.0
+        """
+
     def debug(self, event: str, *args: Any, **kw: Any) -> Any:
         """
         Log ``event % args`` with **kw** at **debug** level.

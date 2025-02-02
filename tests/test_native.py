@@ -10,6 +10,7 @@ import pytest
 
 from structlog import make_filtering_bound_logger
 from structlog._log_levels import LEVEL_TO_NAME
+from structlog._native import _nop
 from structlog.contextvars import (
     bind_contextvars,
     clear_contextvars,
@@ -22,7 +23,23 @@ def _bl(cl):
     return make_filtering_bound_logger(logging.INFO)(cl, [], {})
 
 
-class TestFilteringLogger:
+class TestNativeFilteringLogger:
+    def test_is_enabled_for(self, bl):
+        """
+        is_enabled_for returns True if the log level is enabled.
+        """
+        assert bl.is_enabled_for(20)
+        assert bl.is_enabled_for(logging.INFO)
+
+        assert not bl.is_enabled_for(19)
+        assert not bl.is_enabled_for(logging.DEBUG)
+
+    def test_get_effective_level(self, bl):
+        """
+        get_effective_level returns the log level.
+        """
+        assert 20 == logging.INFO == bl.get_effective_level()
+
     def test_exact_level(self, bl, cl):
         """
         if log level is exactly the min_level, log.
@@ -314,3 +331,12 @@ class TestFilteringLogger:
         bl.info("hey %! %%!")
 
         assert [("info", (), {"event": "hey %! %%!"})] == cl.calls
+
+    def test_log_level_str(self):
+        """
+        *min_level* can be a string and the case doesn't matter.
+        """
+        bl = make_filtering_bound_logger("wArNiNg")
+
+        assert bl.warning is not _nop
+        assert bl.info is _nop

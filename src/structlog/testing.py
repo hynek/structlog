@@ -177,7 +177,7 @@ class CapturingLogger:
         self.calls = []
 
     def __repr__(self) -> str:
-        return f"<CapturingLogger with { len(self.calls) } call(s)>"
+        return f"<CapturingLogger with {len(self.calls)} call(s)>"
 
     def __getattr__(self, name: str) -> Any:
         """
@@ -194,7 +194,7 @@ class CapturingLoggerFactory:
     r"""
     Produce and cache `CapturingLogger`\ s.
 
-    Each factory produces and re-uses only **one** logger.
+    Each factory produces and reuses only **one** logger.
 
     You can access it via the ``logger`` attribute.
 

@@ -13,38 +13,65 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 <!-- changelog follows -->
 
 
-## [Unreleased](https://github.com/hynek/structlog/compare/24.4.0...HEAD)
+## [Unreleased](https://github.com/hynek/structlog/compare/25.1.0...HEAD)
 
-## Changed
+### Changed
 
-- `structlog.typing.BindableLogger` protocol now returns `Self` instead of `BindableLogger`.
-  This adds a dependency on [*typing-extensions*](https://pypi.org/project/typing-extensions/) for Pythons older than 3.11.
-
-  [#642](https://github.com/hynek/structlog/pull/642)
-  [#659](https://github.com/hynek/structlog/pull/659)
-
-- `structlog.dev.ConsoleRenderer` will quote string value with special characters.
-
-  [#647](https://github.com/hynek/structlog/pull/647)
+- `structlog.stdlib.BoundLogger`'s binding-related methods now also return `Self`.
+  [#694](https://github.com/hynek/structlog/pull/694)
 
 - `structlog.tracebacks.Stack` now includes an `exc_notes` field reflecting the notes attached to the exception.
 
   [#684](https://github.com/hynek/structlog/pull/684)
 
-## Fixed
+## [25.1.0](https://github.com/hynek/structlog/compare/24.4.0...25.1.0) - 2025-01-16
 
-- `structlog.traceback.ExceptionDictTransformer` now correctly handles missing exceptions.
+### Added
 
-  [#657](https://github.com/hynek/structlog/pull/657)
+- Add `structlog.stdlib.render_to_log_args_and_kwargs` processor.
+  Same as `structlog.stdlib.render_to_log_kwargs`, but also allows to pass positional arguments to `logging`.
+  With it, you do not need to add `structlog.stdlib.PositionalArgumentsFormatter` processor to format positional arguments from *structlog* loggers.
+  [#668](https://github.com/hynek/structlog/pull/668)
+
+- Native loggers now have `is_enabled_for()` and `get_effective_level()` methods that mirror the behavior of the standard library's `logging.Logger.isEnabledFor()` and `logging.Logger.getEffectiveLevel()`.
+  [#689](https://github.com/hynek/structlog/pull/689)
+
+
+### Changed
+
+- `structlog.typing.BindableLogger` protocol now returns `Self` instead of `BindableLogger`.
+  This adds a dependency on [*typing-extensions*](https://pypi.org/project/typing-extensions/) for Pythons older than 3.11.
+  [#642](https://github.com/hynek/structlog/pull/642)
+  [#659](https://github.com/hynek/structlog/pull/659)
+
+- `structlog.dev.ConsoleRenderer` will quote string value with special characters.
+  [#647](https://github.com/hynek/structlog/pull/647)
+
+- `structlog.stdlib.recreate_defaults()` now also adds `structlog.stdlib.PositionalArgumentsFormatter`.
+  In default native mode, this is done by the loggers at the edge.
+
+- `structlog.make_filtering_bound_logger()` now also accepts a string for *min_level*.
+
+
+### Fixed
+
+- Fix handling calls to `{logger}.exception()` outside of exception blocks.
+  Depending on the structlog configuration,
+  this either resulted in an event dict key `exception: "MISSING"` or lead to an error.
+  Now, an invalid or missing `exc_info` will just be ignored.
+  This means, that calling `{logger}.exception()` outside of an exception block is basically the same as calling `{logger}.error()`.
+  [#634](https://github.com/hynek/structlog/issues/634)
+  [#680](https://github.com/hynek/structlog/pull/680)
 
 - Instantiating `structlog.dev.ConsoleRenderer` does not mutate the passed *styles* dict anymore.
-
   [#669](https://github.com/hynek/structlog/pull/669)
 
 - The native `FilteringBoundLogger.fatal()` method now maps to the critical level, as it does in the standard library.
   Note that the level is discouraged to use there, so we recommend to stick to `error()` or `critical()`.
-
   [#677](https://github.com/hynek/structlog/pull/677)
+
+- `structlog.tracebacks.ExceptionDictTransformer` now actually accepts `None` for `locals_max_length` and `locals_max_string`.
+  [#675](https://github.com/hynek/structlog/pull/675)
 
 
 ## [24.4.0](https://github.com/hynek/structlog/compare/24.3.0...24.4.0) - 2024-07-17

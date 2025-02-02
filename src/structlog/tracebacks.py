@@ -21,8 +21,6 @@ from traceback import walk_tb
 from types import ModuleType, TracebackType
 from typing import Any, Iterable, Sequence, Tuple, Union
 
-from ._frames import is_missing_exc_info
-
 try:
     import rich
     import rich.pretty
@@ -374,6 +372,10 @@ class ExceptionDictTransformer:
     .. versionchanged:: 24.3.0
        Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*,
        *suppress* and *use_rich* arguments.
+
+    .. versionchanged:: 25.1.0
+       *locals_max_length* and *locals_max_string* may be None to disable
+       truncation.
     """
 
     def __init__(
@@ -388,10 +390,10 @@ class ExceptionDictTransformer:
         max_frames: int = MAX_FRAMES,
         use_rich: bool = True,
     ) -> None:
-        if locals_max_length < 0:
+        if locals_max_length is not None and locals_max_length < 0:
             msg = f'"locals_max_length" must be >= 0: {locals_max_length}'
             raise ValueError(msg)
-        if locals_max_string < 0:
+        if locals_max_string is not None and locals_max_string < 0:
             msg = f'"locals_max_string" must be >= 0: {locals_max_string}'
             raise ValueError(msg)
         if max_frames < 2:
@@ -420,8 +422,6 @@ class ExceptionDictTransformer:
         self.use_rich = use_rich
 
     def __call__(self, exc_info: ExcInfo) -> list[dict[str, Any]]:
-        if is_missing_exc_info(exc_info):
-            return []
         trace = extract(
             *exc_info,
             show_locals=self.show_locals,

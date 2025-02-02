@@ -47,6 +47,7 @@ structlog.configure(
 
 structlog.configure(
     processors=[
+        structlog.stdlib.render_to_log_args_and_kwargs,
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
@@ -351,3 +352,9 @@ structlog.configure(
 
 fbl: FilteringBoundLogger = structlog.get_logger()
 fbl.info("Hello %s! The answer is %d.", "World", 42, x=1)
+
+
+# Introspection
+level: int = fbl.get_effective_level()
+is_active: bool = fbl.is_enabled_for(logging.INFO)
+is_active = fbl.is_enabled_for(20)

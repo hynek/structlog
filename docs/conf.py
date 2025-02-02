@@ -56,7 +56,7 @@ master_doc = "index"
 # General information about the project.
 project = "structlog"
 author = "Hynek Schlawack"
-copyright = f"2013, { author }"
+copyright = f"2013, {author}"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -102,7 +102,7 @@ html_theme = "furo"
 html_theme_options = {
     "top_of_page_buttons": [],
     "light_css_variables": {
-        "font-stack": "Inter, sans-serif",
+        "font-stack": "B612, sans-serif",
         "font-stack--monospace": "BerkeleyMono, MonoLisa, ui-monospace, "
         "SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace",
     },

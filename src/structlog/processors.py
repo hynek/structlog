@@ -19,7 +19,7 @@ import sys
 import threading
 import time
 
-from types import FrameType
+from types import FrameType, TracebackType
 from typing import (
     Any,
     Callable,
@@ -28,6 +28,7 @@ from typing import (
     NamedTuple,
     Sequence,
     TextIO,
+    cast,
 )
 
 from ._frames import (
@@ -38,7 +39,12 @@ from ._frames import (
 from ._log_levels import NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
 from .tracebacks import ExceptionDictTransformer
-from .typing import EventDict, ExceptionTransformer, ExcInfo, WrappedLogger
+from .typing import (
+    EventDict,
+    ExceptionTransformer,
+    ExcInfo,
+    WrappedLogger,
+)
 
 
 __all__ = [
@@ -407,11 +413,9 @@ class ExceptionRenderer:
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> EventDict:
-        exc_info = event_dict.pop("exc_info", None)
+        exc_info = _figure_out_exc_info(event_dict.pop("exc_info", None))
         if exc_info:
-            event_dict["exception"] = self.format_exception(
-                _figure_out_exc_info(exc_info)
-            )
+            event_dict["exception"] = self.format_exception(exc_info)
 
         return event_dict
 
@@ -586,21 +590,30 @@ class MaybeTimeStamper:
         return event_dict
 
 
-def _figure_out_exc_info(v: Any) -> ExcInfo:
+def _figure_out_exc_info(v: Any) -> ExcInfo | None:
     """
-    Depending on the Python version will try to do the smartest thing possible
-    to transform *v* into an ``exc_info`` tuple.
+    Try to convert *v* into an ``exc_info`` tuple.
+
+    Return ``None`` if *v* does not represent an exception or if there is no
+    current exception.
     """
     if isinstance(v, BaseException):
         return (v.__class__, v, v.__traceback__)
 
-    if isinstance(v, tuple):
-        return v
+    if isinstance(v, tuple) and len(v) == 3:
+        has_type = isinstance(v[0], type) and issubclass(v[0], BaseException)
+        has_exc = isinstance(v[1], BaseException)
+        has_tb = v[2] is None or isinstance(v[2], TracebackType)
+        if has_type and has_exc and has_tb:
+            return v
 
     if v:
-        return sys.exc_info()  # type: ignore[return-value]
+        result = sys.exc_info()
+        if result == (None, None, None):
+            return None
+        return cast(ExcInfo, result)
 
-    return v
+    return None
 
 
 class ExceptionPrettyPrinter:

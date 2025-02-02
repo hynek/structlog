@@ -111,7 +111,7 @@ class BoundLoggerBase:
 
         Only necessary with dict implementations that keep global state like
         those wrapped by `structlog.threadlocal.wrap_dict` when threads
-        are re-used.
+        are reused.
         """
         self._context.clear()
 
