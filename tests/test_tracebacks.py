@@ -160,6 +160,40 @@ def test_simple_exception():
     ] == trace.stacks
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
+def test_simple_exception_with_notes():
+    """
+    Notes are included in the traceback.
+    """
+    try:
+        lineno = get_next_lineno()
+        1 / 0
+    except Exception as e:
+        e.add_note("This is a note.")
+        e.add_note("This is another note.")
+        trace = tracebacks.extract(type(e), e, e.__traceback__)
+
+    assert [
+        tracebacks.Stack(
+            exc_type="ZeroDivisionError",
+            exc_value="division by zero",
+            exc_notes=["This is a note.", "This is another note."],
+            syntax_error=None,
+            is_cause=False,
+            frames=[
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=lineno,
+                    name="test_simple_exception_with_notes",
+                    locals=None,
+                ),
+            ],
+        ),
+    ] == trace.stacks
+
+
 def test_raise_hide_cause():
     """
     If "raise ... from None" is used, the trace looks like from a simple
@@ -588,11 +622,46 @@ def test_json_traceback():
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
+            "exc_notes": [],
             "frames": [
                 {
                     "filename": __file__,
                     "lineno": lineno,
                     "name": "test_json_traceback",
+                }
+            ],
+            "is_cause": False,
+            "syntax_error": None,
+        },
+    ] == result
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
+def test_json_traceback_with_notes():
+    """
+    Tracebacks are formatted to JSON with all information.
+    """
+    try:
+        lineno = get_next_lineno()
+        1 / 0
+    except Exception as e:
+        e.add_note("This is a note.")
+        e.add_note("This is another note.")
+        format_json = tracebacks.ExceptionDictTransformer(show_locals=False)
+        result = format_json((type(e), e, e.__traceback__))
+
+    assert [
+        {
+            "exc_type": "ZeroDivisionError",
+            "exc_value": "division by zero",
+            "exc_notes": ["This is a note.", "This is another note."],
+            "frames": [
+                {
+                    "filename": __file__,
+                    "lineno": lineno,
+                    "name": "test_json_traceback_with_notes",
                 }
             ],
             "is_cause": False,
@@ -617,6 +686,7 @@ def test_json_traceback_locals_max_string():
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
+            "exc_notes": [],
             "frames": [
                 {
                     "filename": __file__,

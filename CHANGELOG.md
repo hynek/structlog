@@ -15,6 +15,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/25.1.0...HEAD)
 
+### Added
+
+- `structlog.tracebacks.Stack` now includes an `exc_notes` field reflecting the notes attached to the exception.
+  [#684](https://github.com/hynek/structlog/pull/684)
+
+
 ### Changed
 
 - `structlog.stdlib.BoundLogger`'s binding-related methods now also return `Self`.
