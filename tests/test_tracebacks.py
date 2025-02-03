@@ -179,7 +179,7 @@ def test_simple_exception_with_notes():
         tracebacks.Stack(
             exc_type="ZeroDivisionError",
             exc_value="division by zero",
-            exc_notes=("This is a note.", "This is another note."),
+            exc_notes=["This is a note.", "This is another note."],
             syntax_error=None,
             is_cause=False,
             frames=[
@@ -622,7 +622,7 @@ def test_json_traceback():
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
-            "exc_notes": (),
+            "exc_notes": [],
             "frames": [
                 {
                     "filename": __file__,
@@ -656,7 +656,7 @@ def test_json_traceback_with_notes():
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
-            "exc_notes": ("This is a note.", "This is another note."),
+            "exc_notes": ["This is a note.", "This is another note."],
             "frames": [
                 {
                     "filename": __file__,
@@ -686,7 +686,7 @@ def test_json_traceback_locals_max_string():
         {
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
-            "exc_notes": (),
+            "exc_notes": [],
             "frames": [
                 {
                     "filename": __file__,

@@ -88,7 +88,7 @@ class Stack:
 
     exc_type: str
     exc_value: str
-    exc_notes: tuple[str, ...] = ()
+    exc_notes: list[str] = field(default_factory=list)
     syntax_error: SyntaxError_ | None = None
     is_cause: bool = False
     frames: list[Frame] = field(default_factory=list)
@@ -234,9 +234,9 @@ def extract(
         stack = Stack(
             exc_type=safe_str(exc_type.__name__),
             exc_value=safe_str(exc_value),
-            exc_notes=tuple(
+            exc_notes=[
                 safe_str(note) for note in getattr(exc_value, "__notes__", ())
-            ),
+            ],
             is_cause=is_cause,
         )
 
