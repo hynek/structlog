@@ -9,10 +9,11 @@ Generic utilities.
 
 from __future__ import annotations
 
+import asyncio
 import sys
 
 from contextlib import suppress
-from typing import Any
+from typing import Any, Optional
 
 
 def get_processname() -> str:
@@ -28,3 +29,17 @@ def get_processname() -> str:
             processname = mp.current_process().name
 
     return processname
+
+
+def get_taskname() -> Optional[str]:  # noqa: UP007
+    """
+    Get the current asynchronous task if applicable.
+
+    Returns:
+        Optional[str]: asynchronous task name.
+    """
+    task_name = None
+    with suppress(Exception):
+        task = asyncio.current_task()
+        task_name = task.get_name() if task else None
+    return task_name
