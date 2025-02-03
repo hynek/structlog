@@ -3,12 +3,13 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+import asyncio
 import multiprocessing
 import sys
 
 import pytest
 
-from structlog._utils import get_processname
+from structlog._utils import get_processname, get_taskname
 
 
 class TestGetProcessname:
@@ -69,3 +70,30 @@ class TestGetProcessname:
         )
 
         assert get_processname() == "n/a"
+
+
+class TestGetTaskname:
+    def test_event_loop_running(self) -> None:
+        """
+        Test returned task name when executed within an event loop.
+        """
+
+        async def aroutine() -> None:
+            assert get_taskname() == "AsyncTask"
+
+        async def run() -> None:
+            task = asyncio.create_task(aroutine(), name="AsyncTask")
+            await asyncio.gather(task)
+
+        asyncio.run(run())
+
+    def test_no_event_loop_running(self) -> None:
+        """
+        Test returned task name when executed asynchronously without an event
+        loop.
+        """
+
+        def routine() -> None:
+            assert get_taskname() is None
+
+        routine()
