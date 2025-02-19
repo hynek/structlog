@@ -55,6 +55,7 @@ except ImportError:
 
 __all__ = [
     "ConsoleRenderer",
+    "RichTracebackFormatter",
     "better_traceback",
     "plain_traceback",
     "rich_traceback",
