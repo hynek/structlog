@@ -27,6 +27,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#694](https://github.com/hynek/structlog/pull/694)
 
 
+### Fixed
+
+-  Expose `structlog.dev.RichTracebackFormatter` for imports.
+   [#699](https://github.com/hynek/structlog/pull/699)
+
+
 ## [25.1.0](https://github.com/hynek/structlog/compare/24.4.0...25.1.0) - 2025-01-16
 
 ### Added
