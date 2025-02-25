@@ -55,6 +55,7 @@ __all__ = [
     "ExceptionPrettyPrinter",
     "JSONRenderer",
     "KeyValueRenderer",
+    "LogfmtRenderer",
     "StackInfoRenderer",
     "TimeStamper",
     "UnicodeDecoder",
