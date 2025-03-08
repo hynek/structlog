@@ -525,8 +525,7 @@ def _make_stamper(
     else:
 
         def now() -> datetime.datetime:
-            # A naive local datetime is fine here, because we only format it.
-            return datetime.datetime.now()  # noqa: DTZ005
+            return datetime.datetime.now().astimezone()
 
     if fmt is None:
 
@@ -540,7 +539,9 @@ def _make_stamper(
     if fmt.upper() == "ISO":
 
         def stamper_iso_local(event_dict: EventDict) -> EventDict:
-            event_dict[key] = now().isoformat()
+            # We remove the timezone offset for backwards-compatibility. If the
+            # user wants a timezone, they have to set fmt manually.
+            event_dict[key] = now().isoformat().rsplit("+", 1)[0]
             return event_dict
 
         def stamper_iso_utc(event_dict: EventDict) -> EventDict:

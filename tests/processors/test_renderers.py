@@ -396,8 +396,8 @@ class TestTimeStamper:
     @freeze_time("1980-03-25 16:00:00")
     def test_local(self):
         """
-        Timestamp in local timezone work.  We can't add a timezone to the
-        string without additional libraries.
+        Timestamp in local timezone work. Due to historic reasons, the default
+        format does not include a timezone.
         """
         ts = TimeStamper(fmt="iso", utc=False)
         d = ts(None, None, {})
@@ -413,6 +413,17 @@ class TestTimeStamper:
         d = ts(None, None, {})
 
         assert "1980" == d["timestamp"]
+
+    @freeze_time("1980-03-25 16:00:00")
+    def test_tz_aware(self):
+        """
+        The timestamp that is used for formatting is timezone-aware.
+        """
+        ts = TimeStamper(fmt="%z")
+        d = ts(None, None, {})
+
+        assert "" == datetime.datetime.now().strftime("%z")  # noqa: DTZ005
+        assert "" != d["timestamp"]
 
     @freeze_time("1980-03-25 16:00:00")
     def test_adds_Z_to_iso(self):
