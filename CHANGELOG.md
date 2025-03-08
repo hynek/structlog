@@ -26,6 +26,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.stdlib.BoundLogger`'s binding-related methods now also return `Self`.
   [#694](https://github.com/hynek/structlog/pull/694)
 
+- `structlog.processors.TimeStamper` now produces internally timezone-aware `datetime` objects.
+  Default output hasn't changed, but you can now use `%z` in your *fmt* string.
+  [#709](https://github.com/hynek/structlog/pull/709)
+
 
 ### Fixed
 

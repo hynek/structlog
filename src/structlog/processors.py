@@ -525,7 +525,8 @@ def _make_stamper(
     else:
 
         def now() -> datetime.datetime:
-            # A naive local datetime is fine here, because we only format it.
+            # We don't need the TZ for our own formatting. We add it only for
+            # user-defined formats later.
             return datetime.datetime.now()  # noqa: DTZ005
 
     if fmt is None:
@@ -553,7 +554,7 @@ def _make_stamper(
         return stamper_iso_local
 
     def stamper_fmt(event_dict: EventDict) -> EventDict:
-        event_dict[key] = now().strftime(fmt)
+        event_dict[key] = now().astimezone().strftime(fmt)
 
         return event_dict
 
