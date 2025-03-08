@@ -541,7 +541,7 @@ def _make_stamper(
         def stamper_iso_local(event_dict: EventDict) -> EventDict:
             # We remove the timezone offset for backwards-compatibility. If the
             # user wants a timezone, they have to set fmt manually.
-            event_dict[key] = now().isoformat().rsplit("+", 1)[0]
+            event_dict[key] = now().isoformat()[:-6]
             return event_dict
 
         def stamper_iso_utc(event_dict: EventDict) -> EventDict:
