@@ -17,6 +17,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Fixed
 - `structlog.processors.TimeStamper` now returns UTC timezone for custom format string.
+  [#713](https://github.com/hynek/structlog/pull/713)
 
 ## [25.2.0](https://github.com/hynek/structlog/compare/25.1.0...25.2.0) - 2025-03-11
 
