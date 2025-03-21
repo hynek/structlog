@@ -435,6 +435,8 @@ def pretty_traceback_formatter(sio: TextIO, exc_info: ExcInfo) -> None:
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
     Used by default if *pretty-traceback* is installed.
+
+    .. versionadded:: 25.3.0
     """
 
     from pretty_traceback.formatting import exc_to_traceback_str

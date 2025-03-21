@@ -6,7 +6,7 @@ The highlight is {class}`structlog.dev.ConsoleRenderer` that offers nicely align
 
 [^win]: Requires the [Colorama package](https://pypi.org/project/colorama/) on Windows.
 
-If either of the [Rich](https://rich.readthedocs.io/) or [*better-exceptions*](https://github.com/Qix-/better-exceptions) packages is installed, it will also pretty-print exceptions with helpful contextual data.
+If either of the [Rich](https://rich.readthedocs.io/), [*better-exceptions*](https://github.com/Qix-/better-exceptions), or [*pretty-traceback*](https://github.com/mbarkhau/pretty-traceback) packages is installed, it will also pretty-print exceptions with helpful contextual data.
 Rich takes precedence over *better-exceptions*, but you can configure it by passing {func}`structlog.dev.plain_traceback` or {func}`structlog.dev.better_traceback` for the `exception_formatter` parameter of {class}`~structlog.dev.ConsoleRenderer`.
 
 The following output is rendered using Rich:
