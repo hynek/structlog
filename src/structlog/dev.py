@@ -46,6 +46,11 @@ except ImportError:
     better_exceptions = None
 
 try:
+    import pretty_traceback
+except ImportError:
+    pretty_traceback = None
+
+try:
     import rich
 
     from rich.console import Console
@@ -416,17 +421,36 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    Used by default if *better-exceptions* is installed and Rich is absent.
+    Used by default if *better-exceptions* is installed.
 
     .. versionadded:: 21.2.0
     """
     sio.write("\n" + "".join(better_exceptions.format_exception(*exc_info)))
 
 
-if rich is not None:
-    default_exception_formatter = rich_traceback
-elif better_exceptions is not None:
+def pretty_traceback_formatter(sio: TextIO, exc_info: ExcInfo) -> None:
+    """
+    Pretty-print *exc_info* to *sio* using the *pretty-traceback* package.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    Used by default if *pretty-traceback* is installed.
+    """
+
+    from pretty_traceback.formatting import exc_to_traceback_str
+
+    _, exc_value, traceback = exc_info
+    formatted_exception = exc_to_traceback_str(exc_value, traceback)
+    sio.write("\n" + formatted_exception)
+
+
+# rich can be installed by many different libraries, so better_exceptions and pretty_traceback are preferred
+if better_exceptions is not None:
     default_exception_formatter = better_traceback
+elif pretty_traceback is not None:
+    default_exception_formatter = pretty_traceback_formatter
+elif rich is not None:
+    default_exception_formatter = rich_traceback
 else:
     default_exception_formatter = plain_traceback
 

@@ -712,6 +712,34 @@ class TestBetterTraceback:
         assert sio.getvalue().startswith("\n")
 
 
+@pytest.mark.skipif(
+    dev.pretty_traceback is None, reason="Needs pretty-traceback."
+)
+class TestPrettyTraceback:
+    def test_default(self):
+        """
+        If pretty-traceback is present and Rich is NOT present, it's the
+        default.
+        """
+        assert (
+            dev.rich is not None
+            or dev.default_exception_formatter is dev.pretty_traceback
+        )
+
+    def test_does_not_blow_up(self):
+        """
+        We trust pretty-traceback to do the right thing, so we just exercise
+        the function.
+        """
+        sio = StringIO()
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            dev.pretty_traceback_formatter(sio, sys.exc_info())
+
+        assert sio.getvalue().startswith("\n")
+
+
 class TestLogLevelColumnFormatter:
     def test_no_style(self):
         """
