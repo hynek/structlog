@@ -718,7 +718,9 @@ class TestPrettyTraceback:
         If pretty-traceback is present and Rich is NOT present, it's the
         default.
         """
-        assert dev.default_exception_formatter is dev.pretty_traceback
+        assert (
+            dev.default_exception_formatter is dev.pretty_traceback_formatter
+        )
 
     def test_does_not_blow_up(self):
         """
