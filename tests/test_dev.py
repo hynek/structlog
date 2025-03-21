@@ -693,10 +693,7 @@ class TestBetterTraceback:
         If better-exceptions is present and Rich is NOT present, it's the
         default.
         """
-        assert (
-            dev.rich is not None
-            or dev.default_exception_formatter is dev.better_traceback
-        )
+        assert dev.default_exception_formatter is dev.better_traceback
 
     def test_does_not_blow_up(self):
         """
@@ -721,10 +718,7 @@ class TestPrettyTraceback:
         If pretty-traceback is present and Rich is NOT present, it's the
         default.
         """
-        assert (
-            dev.rich is not None
-            or dev.default_exception_formatter is dev.pretty_traceback
-        )
+        assert dev.default_exception_formatter is dev.pretty_traceback
 
     def test_does_not_blow_up(self):
         """
