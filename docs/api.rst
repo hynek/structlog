@@ -88,6 +88,7 @@ API Reference
 .. autoclass:: RichTracebackFormatter
 .. autofunction:: rich_traceback
 .. autofunction:: better_traceback
+.. autofunction:: pretty_traceback_formatter
 
 .. autofunction:: set_exc_info
 
