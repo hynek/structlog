@@ -663,7 +663,7 @@ class TestExtraAdder:
         handler.setLevel(0)
         logger.addHandler(handler)
         logger.setLevel(0)
-        logging.warning("allow = %s", allow)
+        logging.warning("allow = %s", allow)  # noqa: LOG015
 
         event_dict = {"event": "Some text"}
         expected = self._copy_allowed(event_dict, extra_dict, allow)
