@@ -15,6 +15,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/25.2.0...HEAD)
 
+### Added
+
+- [pretty-traceback](https://github.com/mbarkhau/pretty-traceback) is now supported as a pretty-printing library for tracebacks.
+
+### Changed
+
+- better-exceptions or pretty-traceback are preferred over rich traceback formatting if they available.
 
 ## [25.2.0](https://github.com/hynek/structlog/compare/25.1.0...25.2.0) - 2025-03-11
 
