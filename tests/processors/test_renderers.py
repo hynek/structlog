@@ -415,6 +415,36 @@ class TestTimeStamper:
         assert "1980" == d["timestamp"]
 
     @freeze_time("1980-03-25 16:00:00")
+    def test_inserts_formatted_utc(self):
+        """
+        The fmt string in UTC timezone works.
+
+        The exact hours calculated here maybe incorrect because of freezegun bugs:
+        https://github.com/spulec/freezegun/issues/348
+        https://github.com/spulec/freezegun/issues/494
+        """
+
+        ts = TimeStamper(fmt="%Y-%m-%d %H:%M:%S %Z")
+        d = ts(None, None, {})
+
+        assert "1980-03-25 16:00:00 UTC" == d["timestamp"]
+
+    @freeze_time("1980-03-25 16:00:00")
+    def test_inserts_formatted_local(self):
+        """
+        The fmt string in local timezone works.
+
+        The exact hours calculated here maybe incorrect because of freezegun bugs:
+        https://github.com/spulec/freezegun/issues/348
+        https://github.com/spulec/freezegun/issues/494
+        """
+        local_tz = datetime.datetime.now().astimezone().tzname()
+        ts = TimeStamper(fmt="%Y-%m-%d %H:%M:%S %Z", utc=False)
+        d = ts(None, None, {})
+
+        assert f"1980-03-25 16:00:00 {local_tz}" == d["timestamp"]
+
+    @freeze_time("1980-03-25 16:00:00")
     def test_tz_aware(self):
         """
         The timestamp that is used for formatting is timezone-aware.
