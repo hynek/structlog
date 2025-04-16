@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/25.2.0...HEAD)
 
+- `structlog.tracebacks` handles exception groups.
+  `structlog.tracebacks.Stack` has two new fields, `is_group: bool` and `exceptions: list[Trace]`.
+  This works similarly to what Rich v14.0.0 does.
+  [#720](https://github.com/hynek/structlog/pull/720)
+
 
 ## [25.2.0](https://github.com/hynek/structlog/compare/25.1.0...25.2.0) - 2025-03-11
 
