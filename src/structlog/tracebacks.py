@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import os
 import os.path
+import sys
 
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
@@ -92,6 +93,8 @@ class Stack:
     syntax_error: SyntaxError_ | None = None
     is_cause: bool = False
     frames: list[Frame] = field(default_factory=list)
+    is_group: bool = False
+    exceptions: list[Trace] = field(default_factory=list)
 
 
 @dataclass
@@ -239,6 +242,24 @@ def extract(
             ],
             is_cause=is_cause,
         )
+
+        if sys.version_info >= (3, 11):
+            if isinstance(exc_value, (BaseExceptionGroup, ExceptionGroup)):  # noqa: F821
+                stack.is_group = True
+                for exception in exc_value.exceptions:
+                    stack.exceptions.append(
+                        extract(
+                            type(exception),
+                            exception,
+                            exception.__traceback__,
+                            show_locals=show_locals,
+                            locals_max_length=locals_max_length,
+                            locals_max_string=locals_max_string,
+                            locals_hide_dunder=locals_hide_dunder,
+                            locals_hide_sunder=locals_hide_sunder,
+                            use_rich=use_rich,
+                        )
+                    )
 
         if isinstance(exc_value, SyntaxError):
             stack.syntax_error = SyntaxError_(
@@ -451,13 +472,21 @@ class ExceptionDictTransformer:
                 *stack.frames[-half:],
             ]
 
-        stacks = [asdict(stack) for stack in trace.stacks]
-        for stack_dict in stacks:
+        return self._as_dict(trace)
+
+    def _as_dict(self, trace: Trace) -> list[dict[str, Any]]:
+        stack_dicts = []
+        for stack in trace.stacks:
+            stack_dict = asdict(stack)
             for frame_dict in stack_dict["frames"]:
                 if frame_dict["locals"] is None or any(
                     frame_dict["filename"].startswith(path)
                     for path in self.suppress
                 ):
                     del frame_dict["locals"]
-
-        return stacks
+            if stack.is_group:
+                stack_dict["exceptions"] = [
+                    self._as_dict(t) for t in stack.exceptions
+                ]
+            stack_dicts.append(stack_dict)
+        return stack_dicts
