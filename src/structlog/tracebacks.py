@@ -85,6 +85,8 @@ class Stack:
 
     .. versionchanged:: 25.2.0
        Added the *exc_notes* field.
+    .. versionchanged:: 25.3.0
+       Added the *is_group* and *exceptions* fields.
     """
 
     exc_type: str
@@ -228,6 +230,8 @@ def extract(
     .. versionchanged:: 24.3.0
        Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*
        and *use_rich* arguments.
+    .. versionchanged:: 25.3.0
+       Handle exception groups.
     """
 
     stacks: list[Stack] = []
@@ -398,6 +402,9 @@ class ExceptionDictTransformer:
     .. versionchanged:: 25.1.0
        *locals_max_length* and *locals_max_string* may be None to disable
        truncation.
+
+    .. versionchanged:: 25.3.0
+       Handle exception groups.
     """
 
     def __init__(
