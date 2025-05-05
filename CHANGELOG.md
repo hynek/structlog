@@ -23,6 +23,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.processors.TimeStamper` now again uses timestamps using UTC for custom format strings when `utc=True`.
   [#713](https://github.com/hynek/structlog/pull/713)
 
+### Added
+
+- [pretty-traceback](https://github.com/mbarkhau/pretty-traceback) is now supported as a pretty-printing library for tracebacks.
+
+### Changed
+
+- better-exceptions or pretty-traceback are preferred over rich traceback formatting if they available.
 
 ## [25.2.0](https://github.com/hynek/structlog/compare/25.1.0...25.2.0) - 2025-03-11
 

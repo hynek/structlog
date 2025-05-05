@@ -33,7 +33,7 @@ Our {doc}`console-output`'s {class}`structlog.dev.ConsoleRenderer` takes an *exc
 
 {func}`structlog.dev.plain_traceback`
 
-: Is the default if neither [Rich] nor [*better-exceptions*] are installed.
+: Is the default if neither [Rich] nor [*better-exceptions*] nor [*pretty-traceback*] are installed.
   As the name suggests, it renders a plain traceback.
 
 {func}`structlog.dev.better_traceback`
@@ -52,4 +52,5 @@ Our {doc}`console-output`'s {class}`structlog.dev.ConsoleRenderer` takes an *exc
 :::
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions
+[*pretty-traceback*]: https://github.com/mbarkhau/pretty-traceback
 [Rich]: https://github.com/Textualize/rich
