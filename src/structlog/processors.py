@@ -553,12 +553,18 @@ def _make_stamper(
 
         return stamper_iso_local
 
-    def stamper_fmt(event_dict: EventDict) -> EventDict:
+    def stamper_fmt_local(event_dict: EventDict) -> EventDict:
         event_dict[key] = now().astimezone().strftime(fmt)
-
         return event_dict
 
-    return stamper_fmt
+    def stamper_fmt_utc(event_dict: EventDict) -> EventDict:
+        event_dict[key] = now().strftime(fmt)
+        return event_dict
+
+    if utc:
+        return stamper_fmt_utc
+
+    return stamper_fmt_local
 
 
 class MaybeTimeStamper:
