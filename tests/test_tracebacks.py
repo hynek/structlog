@@ -579,7 +579,7 @@ def test_exception_groups() -> None:
     lineno = get_next_lineno()
 
     async def t1() -> None:
-        1 // 0
+        1 / 0
 
     async def t2() -> None:
         raise ValueError("Blam!")
@@ -605,7 +605,7 @@ def test_exception_groups() -> None:
             stacks=[
                 tracebacks.Stack(
                     exc_type="ZeroDivisionError",
-                    exc_value="integer division or modulo by zero",
+                    exc_value="division by zero",
                     exc_notes=[],
                     syntax_error=None,
                     is_cause=False,
@@ -941,7 +941,7 @@ def test_json_exception_groups() -> None:
     lineno = get_next_lineno()
 
     async def t1() -> None:
-        1 // 0
+        1 / 0
 
     async def t2() -> None:
         raise ValueError("Blam!")
@@ -963,7 +963,7 @@ def test_json_exception_groups() -> None:
         [
             {
                 "exc_type": "ZeroDivisionError",
-                "exc_value": "integer division or modulo by zero",
+                "exc_value": "division by zero",
                 "exc_notes": [],
                 "syntax_error": None,
                 "is_cause": False,
