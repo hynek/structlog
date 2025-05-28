@@ -13,7 +13,19 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 <!-- changelog follows -->
 
 
-## [Unreleased](https://github.com/hynek/structlog/compare/25.2.0...HEAD)
+## [Unreleased](https://github.com/hynek/structlog/compare/25.3.0...HEAD)
+
+### Added
+
+- Support for Python 3.14.
+
+
+## [25.3.0](https://github.com/hynek/structlog/compare/25.2.0...25.3.0) - 2025-04-25
+
+### Fixed
+
+- `structlog.processors.TimeStamper` now again uses timestamps using UTC for custom format strings when `utc=True`.
+  [#713](https://github.com/hynek/structlog/pull/713)
 
 - `structlog.tracebacks` handles exception groups.
   `structlog.tracebacks.Stack` has two new fields, `is_group: bool` and `exceptions: list[Trace]`.

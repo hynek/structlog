@@ -759,8 +759,8 @@ class ConsoleRenderer:
         home-grown :func:`~structlog.stdlib.add_log_level` you could do::
 
             my_styles = ConsoleRenderer.get_default_level_styles()
-            my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"] renderer
-            = ConsoleRenderer(level_styles=my_styles)
+            my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
+            renderer = ConsoleRenderer(level_styles=my_styles)
 
         Args:
             colors:

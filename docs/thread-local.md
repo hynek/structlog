@@ -5,7 +5,8 @@ The `structlog.threadlocal` module is deprecated as of *structlog* 22.1.0 in fav
 
 The standard library {mod}`contextvars` module provides a more feature-rich superset of the thread-local APIs and works with thread-local data, async code, and greenlets.
 
-Therefore, as of 22.1.0, the `structlog.threadlocal` module is frozen and will be removed after May 2023.
+The plan was to remove this module after 2023, however people are reporting [odd crashes with {doc}`contextvars`, that we can't reproduce](https://github.com/hynek/structlog/issues/591).
+Until we find a solution, this module will **not** be removed, since it's a viable workaround.
 :::
 
 ```{testsetup} *
