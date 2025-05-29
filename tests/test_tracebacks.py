@@ -934,8 +934,8 @@ def test_json_traceback_value_error(
 )
 def test_json_exception_groups() -> None:
     """
-    When rendered as JSON, the "Trace.stacks" is stripped, so "exceptions" is
-    a list of lists and not a list of objects (wht a single "stacks" attribute.
+    When rendered as JSON, the "Trace.stacks" is stripped, so "exceptions" is a
+    list of lists and not a list of objects (with a single "stacks" attribute.
     """
 
     lineno = get_next_lineno()
@@ -958,7 +958,7 @@ def test_json_exception_groups() -> None:
         result = format_json((type(e), e, e.__traceback__))
 
     assert "ExceptionGroup" == result[0]["exc_type"]
-    exceptptions = result[0]["exceptions"]
+    exceptions = result[0]["exceptions"]
     assert [
         [
             {
@@ -996,7 +996,7 @@ def test_json_exception_groups() -> None:
                 "exceptions": [],
             }
         ],
-    ] == exceptptions
+    ] == exceptions
 
 
 class TestLogException:
