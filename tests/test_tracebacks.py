@@ -599,7 +599,7 @@ def test_exception_groups() -> None:
         "unhandled errors in a TaskGroup (2 sub-exceptions)"
         == trace.stacks[0].exc_value
     )
-    exceptptions = trace.stacks[0].exceptions
+    exceptions = trace.stacks[0].exceptions
     assert [
         tracebacks.Trace(
             stacks=[
@@ -643,7 +643,7 @@ def test_exception_groups() -> None:
                 )
             ]
         ),
-    ] == exceptptions
+    ] == exceptions
 
 
 @pytest.mark.parametrize(
