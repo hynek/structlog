@@ -85,7 +85,8 @@ class Stack:
 
     .. versionchanged:: 25.2.0
        Added the *exc_notes* field.
-    .. versionchanged:: 25.3.0
+
+    .. versionchanged:: 25.4.0
        Added the *is_group* and *exceptions* fields.
     """
 
@@ -227,10 +228,12 @@ def extract(
         A Trace instance with structured information about all exceptions.
 
     .. versionadded:: 22.1.0
+
     .. versionchanged:: 24.3.0
        Added *locals_max_length*, *locals_hide_sunder*, *locals_hide_dunder*
        and *use_rich* arguments.
-    .. versionchanged:: 25.3.0
+
+    .. versionchanged:: 25.4.0
        Handle exception groups.
     """
 
@@ -403,7 +406,7 @@ class ExceptionDictTransformer:
        *locals_max_length* and *locals_max_string* may be None to disable
        truncation.
 
-    .. versionchanged:: 25.3.0
+    .. versionchanged:: 25.4.0
        Handle exception groups.
     """
 
