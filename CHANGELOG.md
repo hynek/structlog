@@ -20,6 +20,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - Support for Python 3.14 and Python 3.13.4.
   [#723](https://github.com/hynek/structlog/pull/723)
 
+- `structlog.tracebacks` now handles [exception groups](https://docs.python.org/3/library/exceptions.html#exception-groups).
+  `structlog.tracebacks.Stack` has two new fields, `is_group: bool` and `exceptions: list[Trace]`.
+  This works similarly to what Rich v14.0.0 does.
+  [#720](https://github.com/hynek/structlog/pull/720)
+
+
 ### Fixed
 
 - `structlog.processors.ExceptionPrettyPrinter` now respects the *exception_formatter* arguments instead of always using the default formatter.

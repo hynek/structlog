@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import inspect
 import json
 import sys
@@ -567,6 +568,84 @@ def test_recursive():
     ]
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
+def test_exception_groups() -> None:
+    """
+    Exception groups are detected and a list of Trace instances is added to
+    the exception group's Trace.
+    """
+    lineno = get_next_lineno()
+
+    async def t1() -> None:
+        1 / 0
+
+    async def t2() -> None:
+        raise ValueError("Blam!")
+
+    async def main():
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(t1())
+            tg.create_task(t2())
+
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        trace = tracebacks.extract(type(e), e, e.__traceback__)
+
+    assert "ExceptionGroup" == trace.stacks[0].exc_type
+    assert (
+        "unhandled errors in a TaskGroup (2 sub-exceptions)"
+        == trace.stacks[0].exc_value
+    )
+    exceptions = trace.stacks[0].exceptions
+    assert [
+        tracebacks.Trace(
+            stacks=[
+                tracebacks.Stack(
+                    exc_type="ZeroDivisionError",
+                    exc_value="division by zero",
+                    exc_notes=[],
+                    syntax_error=None,
+                    is_cause=False,
+                    frames=[
+                        tracebacks.Frame(
+                            filename=__file__,
+                            lineno=lineno + 2,
+                            name="t1",
+                            locals=None,
+                        )
+                    ],
+                    is_group=False,
+                    exceptions=[],
+                )
+            ]
+        ),
+        tracebacks.Trace(
+            stacks=[
+                tracebacks.Stack(
+                    exc_type="ValueError",
+                    exc_value="Blam!",
+                    exc_notes=[],
+                    syntax_error=None,
+                    is_cause=False,
+                    frames=[
+                        tracebacks.Frame(
+                            filename=__file__,
+                            lineno=lineno + 5,
+                            name="t2",
+                            locals=None,
+                        )
+                    ],
+                    is_group=False,
+                    exceptions=[],
+                )
+            ]
+        ),
+    ] == exceptions
+
+
 @pytest.mark.parametrize(
     ("kwargs", "local_variable"),
     [
@@ -623,6 +702,7 @@ def test_json_traceback():
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
             "exc_notes": [],
+            "exceptions": [],
             "frames": [
                 {
                     "filename": __file__,
@@ -631,6 +711,7 @@ def test_json_traceback():
                 }
             ],
             "is_cause": False,
+            "is_group": False,
             "syntax_error": None,
         },
     ] == result
@@ -657,6 +738,7 @@ def test_json_traceback_with_notes():
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
             "exc_notes": ["This is a note.", "This is another note."],
+            "exceptions": [],
             "frames": [
                 {
                     "filename": __file__,
@@ -665,6 +747,7 @@ def test_json_traceback_with_notes():
                 }
             ],
             "is_cause": False,
+            "is_group": False,
             "syntax_error": None,
         },
     ] == result
@@ -687,6 +770,7 @@ def test_json_traceback_locals_max_string():
             "exc_type": "ZeroDivisionError",
             "exc_value": "division by zero",
             "exc_notes": [],
+            "exceptions": [],
             "frames": [
                 {
                     "filename": __file__,
@@ -700,6 +784,7 @@ def test_json_traceback_locals_max_string():
                 }
             ],
             "is_cause": False,
+            "is_group": False,
             "syntax_error": None,
         },
     ] == result
@@ -842,6 +927,76 @@ def test_json_traceback_value_error(
         monkeypatch.setattr(kwargs["suppress"][0], "__file__", None)
     with pytest.raises(ValueError, match=next(iter(kwargs.keys()))):
         tracebacks.ExceptionDictTransformer(**kwargs)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
+def test_json_exception_groups() -> None:
+    """
+    When rendered as JSON, the "Trace.stacks" is stripped, so "exceptions" is a
+    list of lists and not a list of objects (with a single "stacks" attribute.
+    """
+
+    lineno = get_next_lineno()
+
+    async def t1() -> None:
+        1 / 0
+
+    async def t2() -> None:
+        raise ValueError("Blam!")
+
+    async def main():
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(t1())
+            tg.create_task(t2())
+
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        format_json = tracebacks.ExceptionDictTransformer(show_locals=False)
+        result = format_json((type(e), e, e.__traceback__))
+
+    assert "ExceptionGroup" == result[0]["exc_type"]
+    exceptions = result[0]["exceptions"]
+    assert [
+        [
+            {
+                "exc_type": "ZeroDivisionError",
+                "exc_value": "division by zero",
+                "exc_notes": [],
+                "syntax_error": None,
+                "is_cause": False,
+                "frames": [
+                    {
+                        "filename": __file__,
+                        "lineno": lineno + 2,
+                        "name": "t1",
+                    }
+                ],
+                "is_group": False,
+                "exceptions": [],
+            }
+        ],
+        [
+            {
+                "exc_type": "ValueError",
+                "exc_value": "Blam!",
+                "exc_notes": [],
+                "syntax_error": None,
+                "is_cause": False,
+                "frames": [
+                    {
+                        "filename": __file__,
+                        "lineno": lineno + 5,
+                        "name": "t2",
+                    }
+                ],
+                "is_group": False,
+                "exceptions": [],
+            }
+        ],
+    ] == exceptions
 
 
 class TestLogException:
