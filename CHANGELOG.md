@@ -18,6 +18,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 ### Added
 
 - Support for Python 3.14 and Python 3.13.4.
+
+  Python 3.14 has an backwards-incompatible change to `logging.Logger.isEnabledFor()` (it now always returns False if a log entry is in flight) that has been backported to 3.13.4 (expected on 2025-06-03).
+  It mainly affects `structlog.stdlib.filter_by_level()`.
   [#723](https://github.com/hynek/structlog/pull/723)
 
 - `structlog.tracebacks` now handles [exception groups](https://docs.python.org/3/library/exceptions.html#exception-groups).
