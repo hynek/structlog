@@ -626,16 +626,21 @@ def _figure_out_exc_info(v: Any) -> ExcInfo | None:
 
 class ExceptionPrettyPrinter:
     """
-    Pretty print exceptions and remove them from the ``event_dict``.
+    Pretty print exceptions rendered by *exception_formatter* and remove them
+    from the ``event_dict``.
 
     Args:
         file: Target file for output (default: ``sys.stdout``).
+        exception_formatter:
+            A callable that is used to format the exception from the
+            ``exc_info`` field into the ``exception`` field.
 
     This processor is mostly for development and testing so you can read
     exceptions properly formatted.
 
-    It behaves like `format_exc_info` except it removes the exception data from
-    the event dictionary after printing it.
+    It behaves like `format_exc_info`, except that it removes the exception data
+    from the event dictionary after printing it using the passed
+    *exception_formatter*, which defaults to Python's built-in traceback formatting.
 
     It's tolerant to having `format_exc_info` in front of itself in the
     processor chain but doesn't require it.  In other words, it handles both
@@ -645,6 +650,9 @@ class ExceptionPrettyPrinter:
 
     .. versionchanged:: 16.0.0
        Added support for passing exceptions as ``exc_info`` on Python 3.
+
+    .. versionchanged:: 25.4.0
+       Fixed *exception_formatter* so that it overrides the default if set.
     """
 
     def __init__(
@@ -652,6 +660,7 @@ class ExceptionPrettyPrinter:
         file: TextIO | None = None,
         exception_formatter: ExceptionTransformer = _format_exception,
     ) -> None:
+        self.format_exception = exception_formatter
         if file is not None:
             self._file = file
         else:
@@ -664,7 +673,7 @@ class ExceptionPrettyPrinter:
         if exc is None:
             exc_info = _figure_out_exc_info(event_dict.pop("exc_info", None))
             if exc_info:
-                exc = _format_exception(exc_info)
+                exc = self.format_exception(exc_info)
 
         if exc:
             print(exc, file=self._file)

@@ -39,7 +39,7 @@ Mastodon = "https://mastodon.social/@hynek"
 Bluesky = "https://bsky.app/profile/hynek.me"
 Twitter = "https://twitter.com/hynek"
 
-[project.optional-dependencies]
+[dependency-groups]
 tests = [
     "freezegun>=0.2.8",
     "pretend",
@@ -60,7 +60,10 @@ docs = [
     "sphinxext-opengraph",
     "twisted",
 ]
-dev = ["structlog[tests,typing]"]
+dev = [
+    {include-group = "tests"},
+    {include-group = "typing"},
+]
 
 
 [tool.hatch.version]
@@ -139,7 +142,6 @@ ignore = [
     "PLR0913", # leave complexity to me
     "PLR2004", # numbers are sometimes fine
     "PLW2901", # overwriting a loop var can be useful
-    "RUF001",  # leave my smart characters alone
     "RUF001",  # leave my smart characters alone
     "SLF001",  # private members are accessed by friendly functions
     "T201",    # prints are fine
