@@ -209,7 +209,7 @@ jobs:
       - uses: hynek/setup-cached-uv@v2
 
       - run: uv venv
-      - run: uv pip install -e .[dev]
+      - run: uv pip install -e . --group dev
 
       - run: .venv/bin/python -Ic 'import structlog; print(structlog.__version__)'
         if: runner.os != 'Windows'

@@ -76,7 +76,7 @@ test -d .venv || uv venv --python python$(cat .python-version-default)
 Change into the newly created directory and after activating a virtual environment, install an editable version of this project along with its tests requirements:
 
 ```console
-$ pip install -e .[dev]  # or `uv pip install -e .[dev]`
+$ pip install -e . --group dev  # or `uv pip install -e . --group dev`
 ```
 
 Now you can run the test suite:
