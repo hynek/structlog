@@ -21,7 +21,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#723](https://github.com/hynek/structlog/pull/723)
 
 ### Fixed
-- `structlog.processors.ExceptionPrettyPrinter` now uses *exception_formatter* instead of the default formatter if passed.
+
+- `structlog.processors.ExceptionPrettyPrinter` now respects the *exception_formatter* arguments instead of always using the default formatter.
 
 
 ## [25.3.0](https://github.com/hynek/structlog/compare/25.2.0...25.3.0) - 2025-04-25
