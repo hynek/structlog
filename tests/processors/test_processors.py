@@ -36,7 +36,7 @@ from structlog.processors import (
     format_exc_info,
 )
 from structlog.stdlib import ProcessorFormatter
-from structlog.typing import EventDict
+from structlog.typing import EventDict, ExcInfo
 
 from ..additional_frame import additional_frame
 
@@ -124,6 +124,26 @@ class TestExceptionPrettyPrinter:
 
         assert "test_prints_exception" in out
         assert "raise ValueError" in out
+
+    def test_uses_exception_formatter(self, sio):
+        """
+        If an `exception_formatter` is passed, use that to render the
+        exception rather than the default.
+        """
+
+        def formatter(exc_info: ExcInfo) -> str:
+            return f"error: {exc_info}"
+
+        epp = ExceptionPrettyPrinter(file=sio, exception_formatter=formatter)
+        try:
+            raise ValueError
+        except ValueError as e:
+            epp(None, None, {"exc_info": True})
+            formatted = formatter(e)
+
+        out = sio.getvalue()
+
+        assert formatted in out
 
     def test_removes_exception_after_printing(self, sio):
         """
