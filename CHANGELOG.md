@@ -28,6 +28,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This works similarly to what Rich v14.0.0 does.
   [#720](https://github.com/hynek/structlog/pull/720)
 
+- `structlog.dev.RichTracebackFormatter` now exposes the upstream *code_width* parameter.
+  Default *width* is now `None` for full terminal width.
+  Full terminal width is now handled by Rich itself, bringing support for reflow and `COLUMN` environment variable.
+  Passing `-1` for *width* is now deprecated and automatically replaced by `None`.
+  [#717](https://github.com/hynek/structlog/pull/717)
+
 
 ### Fixed
 
@@ -59,11 +65,6 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.processors.TimeStamper` now produces internally timezone-aware `datetime` objects.
   Default output hasn't changed, but you can now use `%z` in your *fmt* string.
   [#709](https://github.com/hynek/structlog/pull/709)
-- `structlog.dev.RichTracebackFormatter` now expose the upstream `code_width` parameter.
-  Default `width` is now `None` for full terminal width.
-  Full terminal width is now handled by `brich` itself, bringing support for reflow and `COLUMN` environment variable.
-  Using `-1` as width is now depreccated and automatically replaced by `None`.
-  [#717](https://github.com/hynek/structlog/pull/717)
 
 
 ### Fixed

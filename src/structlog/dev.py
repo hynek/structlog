@@ -347,15 +347,18 @@ class RichTracebackFormatter:
 
     See :class:`rich.traceback.Traceback` for details on the arguments.
 
-    If ``width`` is ``None``, the terminal width is used. If the width
-    can't be determined, fall back to 80.
+    If *width* is `None`, the terminal width is used. If the width can't be
+    determined, fall back to 80.
 
     .. versionadded:: 23.2.0
 
-    .. versionchanged:: 25.3.0
-        Default ``width`` is ``None`` to have full width and reflow support.
-        ``-1`` has width is deprecated, use ``None`` instead.
-        ``code_width`` is now exposed. ``word_wrap`` is enabled by default.
+    .. versionchanged:: 25.4.0
+        Default *width* is ``None`` to have full width and reflow support.
+        Passing ``-1`` as width is deprecated, use ``None`` instead.
+        *word_wrap* is now True by default.
+
+    .. versionadded:: 25.4.0
+        *code_width*
     """
 
     color_system: Literal[
