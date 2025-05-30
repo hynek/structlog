@@ -11,7 +11,6 @@ See also the narrative documentation in `console-output`.
 
 from __future__ import annotations
 
-import shutil
 import sys
 import warnings
 
@@ -348,10 +347,18 @@ class RichTracebackFormatter:
 
     See :class:`rich.traceback.Traceback` for details on the arguments.
 
-    If a *width* of -1 is passed, the terminal width is used. If the width
-    can't be determined, fall back to 80.
+    If *width* is `None`, the terminal width is used. If the width can't be
+    determined, fall back to 80.
 
     .. versionadded:: 23.2.0
+
+    .. versionchanged:: 25.4.0
+        Default *width* is ``None`` to have full width and reflow support.
+        Passing ``-1`` as width is deprecated, use ``None`` instead.
+        *word_wrap* is now True by default.
+
+    .. versionadded:: 25.4.0
+        *code_width*
     """
 
     color_system: Literal[
@@ -360,9 +367,10 @@ class RichTracebackFormatter:
     show_locals: bool = True
     max_frames: int = 100
     theme: str | None = None
-    word_wrap: bool = False
+    word_wrap: bool = True
     extra_lines: int = 3
-    width: int = 100
+    width: int | None = None
+    code_width: int | None = 88
     indent_guides: bool = True
     locals_max_length: int = 10
     locals_max_string: int = 80
@@ -372,29 +380,37 @@ class RichTracebackFormatter:
 
     def __call__(self, sio: TextIO, exc_info: ExcInfo) -> None:
         if self.width == -1:
-            self.width, _ = shutil.get_terminal_size((80, 0))
+            warnings.warn(
+                "Use None to use the terminal width instead of -1.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            self.width = None
 
         sio.write("\n")
 
-        Console(
+        console = Console(
             file=sio, color_system=self.color_system, width=self.width
-        ).print(
-            Traceback.from_exception(
-                *exc_info,
-                show_locals=self.show_locals,
-                max_frames=self.max_frames,
-                theme=self.theme,
-                word_wrap=self.word_wrap,
-                extra_lines=self.extra_lines,
-                width=self.width,
-                indent_guides=self.indent_guides,
-                locals_max_length=self.locals_max_length,
-                locals_max_string=self.locals_max_string,
-                locals_hide_dunder=self.locals_hide_dunder,
-                locals_hide_sunder=self.locals_hide_sunder,
-                suppress=self.suppress,
-            )
         )
+        tb = Traceback.from_exception(
+            *exc_info,
+            show_locals=self.show_locals,
+            max_frames=self.max_frames,
+            theme=self.theme,
+            word_wrap=self.word_wrap,
+            extra_lines=self.extra_lines,
+            width=self.width,
+            indent_guides=self.indent_guides,
+            locals_max_length=self.locals_max_length,
+            locals_max_string=self.locals_max_string,
+            locals_hide_dunder=self.locals_hide_dunder,
+            locals_hide_sunder=self.locals_hide_sunder,
+            suppress=self.suppress,
+        )
+        if hasattr(tb, "code_width"):
+            # `code_width` requires `rich>=13.8.0`
+            tb.code_width = self.code_width
+        console.print(tb)
 
 
 rich_traceback = RichTracebackFormatter()
