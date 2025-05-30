@@ -1157,7 +1157,7 @@ class ProcessorFormatter(logging.Formatter):
             record.stack_info = None
 
         for p in self.processors:
-            ed = p(logger, meth_name, cast(EventDict, ed))
+            ed = p(logger, meth_name, ed)  # type: ignore[arg-type]
 
         if not isinstance(ed, str):
             warnings.warn(
