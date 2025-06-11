@@ -22,7 +22,7 @@ import pytest
 import structlog
 
 from structlog import BoundLogger
-from structlog._utils import get_processname
+from structlog._utils import get_processname, get_taskname
 from structlog.processors import (
     CallsiteParameter,
     CallsiteParameterAdder,
@@ -301,6 +301,7 @@ class TestCallsiteParameterAdder:
         "thread_name",
         "process",
         "process_name",
+        "task_name",
     }
 
     _all_parameters = set(CallsiteParameter)
@@ -350,7 +351,7 @@ class TestCallsiteParameterAdder:
         logger_params = json.loads(string_io.getvalue())
 
         # These are different when running under async
-        for key in ["thread", "thread_name"]:
+        for key in ["thread", "thread_name", "task_name"]:
             callsite_params.pop(key)
             logger_params.pop(key)
 
@@ -627,6 +628,7 @@ class TestCallsiteParameterAdder:
             "thread_name": threading.current_thread().name,
             "process": os.getpid(),
             "process_name": get_processname(),
+            "task_name": get_taskname(),
         }
 
 
