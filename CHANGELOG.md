@@ -31,6 +31,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This works similarly to what Rich v14.0.0 does.
   [#720](https://github.com/hynek/structlog/pull/720)
 
+### Fixed
+- `structlog.tracebacks` Exceptions can now be re-raised from within an ExceptionGroup..
 
 ### Fixed
 
