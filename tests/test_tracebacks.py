@@ -1071,3 +1071,23 @@ class TestLogException:
         logger.exception("onoes")
 
         assert [{"event": "onoes", "log_level": "error"}] == cap_logs.entries
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
+def test_reraise_error_from_exception_group() -> None:
+    """
+    Test the behavior when re-throwing exceptions from ExceptionGroup,
+    especially whether it will cause recursive errors when used with the logger.
+    """
+    try:
+        try:
+            raise ExceptionGroup(  # noqa: F821
+                "Some error occurred",
+                [ValueError("value error")],
+            )
+        except ExceptionGroup as e:  # noqa: F821
+            raise e.exceptions[0]  # noqa: B904
+    except Exception as e:
+        tracebacks.extract(type(e), e, e.__traceback__)
