@@ -32,7 +32,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#720](https://github.com/hynek/structlog/pull/720)
 
 ### Fixed
-- `structlog.tracebacks` Exceptions can now be re-raised from within an ExceptionGroup..
+- `structlog.tracebacks` Exceptions can now be re-raised from within an ExceptionGroup.
 
 ### Fixed
 
