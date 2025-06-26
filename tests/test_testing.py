@@ -7,7 +7,7 @@ import pytest
 
 import structlog
 
-from structlog import get_config, get_logger, testing
+from structlog import contextvars, get_config, get_logger, testing
 from structlog.testing import (
     CapturedCall,
     CapturingLogger,
@@ -51,6 +51,24 @@ class TestCaptureLogs:
             modified_procs = self.get_active_procs()
             assert len(modified_procs) == 1
             assert isinstance(modified_procs[0], LogCapture)
+
+        restored_procs = self.get_active_procs()
+        assert orig_procs is restored_procs
+        assert len(restored_procs) > 1
+
+    def test_uses_processors_arg_and_restores_on_success(self):
+        """
+        Processors passed with `processors` arg are active only until context
+        exits.
+        """
+        orig_procs = self.get_active_procs()
+        assert len(orig_procs) > 1
+
+        with testing.capture_logs(processors=[contextvars.merge_contextvars]):
+            modified_procs = self.get_active_procs()
+            assert len(modified_procs) == 2
+            assert contextvars.merge_contextvars == modified_procs[0]
+            assert isinstance(modified_procs[1], LogCapture)
 
         restored_procs = self.get_active_procs()
         assert orig_procs is restored_procs
