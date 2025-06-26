@@ -15,6 +15,19 @@ If you need functionality similar to {meth}`unittest.TestCase.assertLogs`, or yo
 
 Note that inside the context manager all configured processors are disabled.
 
+If you want to capture logs after certain processors have been applied, they can be passed to the context manager.
+For example, to capture {doc}`contextvars`:
+
+```{doctest}
+>>> from structlog import contextvars, get_logger
+>>> from structlog.testing import capture_logs
+>>> with capture_logs(processors=[contextvars.merge_contextvars]) as cap_logs:
+...     _ = contextvars.bind_contextvars(x="y")
+...     get_logger().info("hello")
+>>> cap_logs
+[{'event': 'hello', 'x': 'y', 'log_level': 'info'}]
+```
+
 :::{note}
 `capture_logs()` relies on changing the configuration.
 If you have *cache_logger_on_first_use* enabled for {doc}`performance <performance>`, any cached loggers will not be affected, so it’s recommended you do not enable it during tests.

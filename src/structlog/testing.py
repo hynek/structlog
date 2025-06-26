@@ -14,12 +14,12 @@ See :doc:`testing`.
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Any, Generator, NamedTuple, NoReturn
+from typing import Any, Generator, Iterable, NamedTuple, NoReturn
 
 from ._config import configure, get_config
 from ._log_levels import map_method_name
 from .exceptions import DropEvent
-from .typing import EventDict, WrappedLogger
+from .typing import EventDict, Processor, WrappedLogger
 
 
 __all__ = [
@@ -63,7 +63,9 @@ class LogCapture:
 
 
 @contextmanager
-def capture_logs() -> Generator[list[EventDict], None, None]:
+def capture_logs(
+    processors: Iterable[Processor] = (),
+) -> Generator[list[EventDict], None, None]:
     """
     Context manager that appends all logging statements to its yielded list
     while it is active. Disables all configured processors for the duration
@@ -71,25 +73,30 @@ def capture_logs() -> Generator[list[EventDict], None, None]:
 
     Attention: this is **not** thread-safe!
 
+    Args:
+        processors: Processors to apply before the logs are captured
+
     .. versionadded:: 20.1.0
+    .. versionadded:: 25.5.0 *processors* parameter
     """
     cap = LogCapture()
     # Modify `_Configuration.default_processors` set via `configure` but always
     # keep the list instance intact to not break references held by bound
     # loggers.
-    processors = get_config()["processors"]
-    old_processors = processors.copy()
+    configured_processors = get_config()["processors"]
+    old_processors = configured_processors.copy()
     try:
         # clear processors list and use LogCapture for testing
-        processors.clear()
-        processors.append(cap)
-        configure(processors=processors)
+        configured_processors.clear()
+        configured_processors.extend(processors)
+        configured_processors.append(cap)
+        configure(processors=configured_processors)
         yield cap.entries
     finally:
         # remove LogCapture and restore original processors
-        processors.clear()
-        processors.extend(old_processors)
-        configure(processors=processors)
+        configured_processors.clear()
+        configured_processors.extend(old_processors)
+        configure(processors=configured_processors)
 
 
 class ReturnLogger:
