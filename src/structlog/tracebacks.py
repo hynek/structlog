@@ -239,8 +239,13 @@ def extract(
 
     stacks: list[Stack] = []
     is_cause = False
+    seen: set[int] = set()
 
     while True:
+        if id(exc_value) in seen:
+            break
+        seen.add(id(exc_value))
+
         stack = Stack(
             exc_type=safe_str(exc_type.__name__),
             exc_value=safe_str(exc_value),
