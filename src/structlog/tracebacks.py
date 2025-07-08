@@ -333,6 +333,11 @@ def extract(
             continue
 
         cause = exc_value.__context__
+        if sys.version_info >= (3, 11) and isinstance(
+            cause,
+            (BaseExceptionGroup, ExceptionGroup),  # noqa: F821
+        ):
+            break
         if (
             cause
             and cause.__traceback__
