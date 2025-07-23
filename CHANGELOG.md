@@ -17,7 +17,15 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
-- `structlog.testing.capture_logs()` now optionally accepts `processors` to apply before capture
+- `structlog.testing.capture_logs()` now optionally accepts *processors* to apply before capture.
+  [#728](https://github.com/hynek/structlog/pull/728)
+
+- `structlog.dev.RichTracebackFormatter` now exposes the upstream *code_width* parameter.
+  Default *width* is now `None` for full terminal width.
+  Full terminal width is now handled by Rich itself, bringing support for reflow and `COLUMN` environment variable.
+  Passing `-1` for *width* is now deprecated and automatically replaced by `None`.
+  [#717](https://github.com/hynek/structlog/pull/717)
+
 
 ## [25.4.0](https://github.com/hynek/structlog/compare/25.3.0...25.4.0) - 2025-06-02
 
@@ -33,12 +41,6 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   `structlog.tracebacks.Stack` has two new fields, `is_group: bool` and `exceptions: list[Trace]`.
   This works similarly to what Rich v14.0.0 does.
   [#720](https://github.com/hynek/structlog/pull/720)
-
-- `structlog.dev.RichTracebackFormatter` now exposes the upstream *code_width* parameter.
-  Default *width* is now `None` for full terminal width.
-  Full terminal width is now handled by Rich itself, bringing support for reflow and `COLUMN` environment variable.
-  Passing `-1` for *width* is now deprecated and automatically replaced by `None`.
-  [#717](https://github.com/hynek/structlog/pull/717)
 
 
 ### Fixed

@@ -357,8 +357,7 @@ class RichTracebackFormatter:
         Passing ``-1`` as width is deprecated, use ``None`` instead.
         *word_wrap* is now True by default.
 
-    .. versionadded:: 25.4.0
-        *code_width*
+    .. versionadded:: 25.4.0 *code_width*
     """
 
     color_system: Literal[

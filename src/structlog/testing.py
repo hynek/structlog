@@ -74,7 +74,7 @@ def capture_logs(
     Attention: this is **not** thread-safe!
 
     Args:
-        processors: Processors to apply before the logs are captured
+        processors: Processors to apply before the logs are captured.
 
     .. versionadded:: 20.1.0
     .. versionadded:: 25.5.0 *processors* parameter
