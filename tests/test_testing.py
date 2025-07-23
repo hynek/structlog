@@ -66,6 +66,10 @@ class TestCaptureLogs:
 
         with testing.capture_logs(processors=[contextvars.merge_contextvars]):
             modified_procs = self.get_active_procs()
+
+            assert len(modified_procs) == 2
+            assert contextvars.merge_contextvars == modified_procs[0]
+            assert isinstance(modified_procs[1], LogCapture)
             assert len(modified_procs) == 2
             assert contextvars.merge_contextvars == modified_procs[0]
             assert isinstance(modified_procs[1], LogCapture)
