@@ -139,8 +139,10 @@ ignore = [
     "N802",    # some names are non-pep8 due to stdlib logging / Twisted
     "N803",    # ditto
     "N806",    # ditto
+    "PLC0415", # sometimes, imports have to live elsewhere
     "PLR0913", # leave complexity to me
     "PLR2004", # numbers are sometimes fine
+    "PLW1641", # unhashable is often fine
     "PLW2901", # overwriting a loop var can be useful
     "RUF001",  # leave my smart characters alone
     "SLF001",  # private members are accessed by friendly functions
