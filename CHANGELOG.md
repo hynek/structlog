@@ -34,6 +34,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This works similarly to what Rich v14.0.0 does.
   [#720](https://github.com/hynek/structlog/pull/720)
 
+- `structlog.dev.RichTracebackFormatter` now exposes the upstream *code_width* parameter.
+  Default *width* is now `None` for full terminal width.
+  Full terminal width is now handled by Rich itself, bringing support for reflow and `COLUMN` environment variable.
+  Passing `-1` for *width* is now deprecated and automatically replaced by `None`.
+  [#717](https://github.com/hynek/structlog/pull/717)
+
 
 ### Fixed
 

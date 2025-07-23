@@ -671,17 +671,46 @@ class TestRichTracebackFormatter:
 
     def test_width_minus_one(self, sio):
         """
-        If width is -1, it's replaced by the terminal width on first use.
+        If width is -1, it raises a DeprecationWarning and is replaced by None to let `rich` handle it.
         """
         rtf = dev.RichTracebackFormatter(width=-1)
 
-        with mock.patch("shutil.get_terminal_size", return_value=(42, 0)):
+        with pytest.deprecated_call():
             try:
                 0 / 0
             except ZeroDivisionError:
                 rtf(sio, sys.exc_info())
 
-        assert 42 == rtf.width
+        assert rtf.width is None
+
+    @pytest.mark.parametrize("code_width_support", [True, False])
+    def test_code_width_support(self, sio, code_width_support):
+        """
+        If rich does not support code_width, it should not fail
+        """
+        from rich.traceback import Trace
+
+        tb = mock.Mock(
+            spec=[
+                attr
+                for attr in dir(dev.Traceback(Trace([])))
+                if (code_width_support or attr != "code_width")
+            ]
+        )
+        tb.__rich_console__.return_value = "for Python 3.8 compatibility"
+
+        with mock.patch.object(
+            dev.Traceback, "from_exception", return_value=tb
+        ) as factory:
+            try:
+                0 / 0
+            except ZeroDivisionError:
+                dev.rich_traceback(sio, sys.exc_info())
+
+        assert "code_width" not in factory.call_args.kwargs
+
+        if code_width_support:
+            assert tb.code_width == 88
 
 
 @pytest.mark.skipif(
