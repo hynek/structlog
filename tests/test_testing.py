@@ -75,6 +75,7 @@ class TestCaptureLogs:
             assert isinstance(modified_procs[1], LogCapture)
 
         restored_procs = self.get_active_procs()
+
         assert orig_procs is restored_procs
         assert len(restored_procs) > 1
 
