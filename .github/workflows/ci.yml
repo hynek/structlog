@@ -150,7 +150,7 @@ jobs:
 
 
   pyright:
-    name: Pyright Codebase
+    name: Pyright API
     runs-on: ubuntu-latest
     needs: build-package
     steps:
