@@ -62,6 +62,7 @@ class TestCaptureLogs:
         exits.
         """
         orig_procs = self.get_active_procs()
+
         assert len(orig_procs) > 1
 
         with testing.capture_logs(processors=[contextvars.merge_contextvars]):
