@@ -671,7 +671,7 @@ class TestRichTracebackFormatter:
 
     def test_width_minus_one(self, sio):
         """
-        If width is -1, it raise a DeprecationWarning and replaced by None to let `rich` handle it.
+        If width is -1, it raises a DeprecationWarning and is replaced by None to let `rich` handle it.
         """
         rtf = dev.RichTracebackFormatter(width=-1)
 
