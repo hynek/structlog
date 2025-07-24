@@ -378,6 +378,12 @@ class RichTracebackFormatter:
     suppress: Sequence[str | ModuleType] = ()
 
     def __call__(self, sio: TextIO, exc_info: ExcInfo) -> None:
+        if rich is None:
+            raise ModuleNotFoundError(
+                "RichTracebackFormatter requires Rich to be installed.",
+                name="rich",
+            )
+
         if self.width == -1:
             warnings.warn(
                 "Use None to use the terminal width instead of -1.",
