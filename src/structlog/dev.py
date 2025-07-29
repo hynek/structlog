@@ -378,12 +378,6 @@ class RichTracebackFormatter:
     suppress: Sequence[str | ModuleType] = ()
 
     def __call__(self, sio: TextIO, exc_info: ExcInfo) -> None:
-        if rich is None:
-            raise ModuleNotFoundError(
-                "RichTracebackFormatter requires Rich to be installed.",
-                name="rich",
-            )
-
         if self.width == -1:
             warnings.warn(
                 "Use None to use the terminal width instead of -1.",
@@ -418,17 +412,26 @@ class RichTracebackFormatter:
         console.print(tb)
 
 
-rich_traceback = RichTracebackFormatter()
-"""
-Pretty-print *exc_info* to *sio* using the Rich package.
+if rich is None:
 
-To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+    def rich_traceback(*args, **kw):
+        raise ModuleNotFoundError(
+            "RichTracebackFormatter requires Rich to be installed.",
+            name="rich",
+        )
 
-This is a `RichTracebackFormatter` with default arguments and used by default
-if Rich is installed.
+else:
+    rich_traceback = RichTracebackFormatter()
+    """
+    Pretty-print *exc_info* to *sio* using the Rich package.
 
-.. versionadded:: 21.2.0
-"""
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    This is a `RichTracebackFormatter` with default arguments and used by default
+    if Rich is installed.
+
+    .. versionadded:: 21.2.0
+    """
 
 
 def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:

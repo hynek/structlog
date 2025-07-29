@@ -659,7 +659,7 @@ def test_rich_traceback_formatter_no_rich():
         ModuleNotFoundError,
         match="RichTracebackFormatter requires Rich to be installed.",
     ):
-        dev.RichTracebackFormatter(None, "")(StringIO(), sys.exc_info())
+        dev.rich_traceback(StringIO(), sys.exc_info())
 
 
 @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
