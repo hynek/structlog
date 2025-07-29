@@ -27,6 +27,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#717](https://github.com/hynek/structlog/pull/717)
 
 
+### Changed
+
+- `structlog.dev.rich_traceback()` now throws a more helpful error when Rich is missing.
+  [#735](https://github.com/hynek/structlog/pull/735)
+
+
 ## [25.4.0](https://github.com/hynek/structlog/compare/25.3.0...25.4.0) - 2025-06-02
 
 ### Added
