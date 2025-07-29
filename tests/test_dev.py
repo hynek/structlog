@@ -649,6 +649,19 @@ class TestSetExcInfo:
         assert {"exc_info": True} == dev.set_exc_info(None, "exception", {})
 
 
+@pytest.mark.skipif(dev.rich is not None, reason="Needs missing Rich.")
+def test_rich_traceback_formatter_no_rich():
+    """
+    Trying to use RichTracebackFormatter without Rich should raise an helpful
+    error.
+    """
+    with pytest.raises(
+        ModuleNotFoundError,
+        match="RichTracebackFormatter requires Rich to be installed.",
+    ):
+        dev.rich_traceback(StringIO(), sys.exc_info())
+
+
 @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
 class TestRichTracebackFormatter:
     def test_default(self):
