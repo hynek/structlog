@@ -63,7 +63,7 @@ layout python python$(cat .python-version-default)
 or, if you like [*uv*](https://github.com/astral-sh/uv):
 
 ```bash
-test -d .venv || uv venv --python python$(cat .python-version-default)
+test -d .venv || (uv venv --python $(cat .python-version-default) && uv pip install -e . --group dev)
 . .venv/bin/activate
 ```
 
