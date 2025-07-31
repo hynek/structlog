@@ -2,9 +2,17 @@ import contextvars
 
 from collections.abc import Mapping
 from contextlib import ContextDecorator
+from types import FrameType
 from typing import Any
 
 from structlog.typing import BindableLogger, EventDict, WrappedLogger
+
+STRUCTLOG_KEY_PREFIX: str
+STRUCTLOG_KEY_PREFIX_LEN: int
+
+_ASYNC_CALLING_STACK: contextvars.ContextVar[FrameType]
+
+_CONTEXT_VARS: dict[str, contextvars.ContextVar[Any]]
 
 def get_contextvars() -> dict[str, Any]: ...
 def get_merged_contextvars(bound_logger: BindableLogger) -> dict[str, Any]: ...
