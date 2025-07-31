@@ -573,8 +573,8 @@ class AsyncBoundLogger:
     def _context(self) -> Context:
         return self.sync_bl._context
 
-    def bind(self, **new_values: Any) -> AsyncBoundLogger:
-        return AsyncBoundLogger(
+    def bind(self, **new_values: Any) -> Self:
+        return self.__class__(
             # logger, processors and context are within sync_bl. These
             # arguments are ignored if _sync_bl is passed. *vroom vroom* over
             # purity.
@@ -585,8 +585,8 @@ class AsyncBoundLogger:
             _loop=self._loop,
         )
 
-    def new(self, **new_values: Any) -> AsyncBoundLogger:
-        return AsyncBoundLogger(
+    def new(self, **new_values: Any) -> Self:
+        return self.__class__(
             # c.f. comment in bind
             logger=None,  # type: ignore[arg-type]
             processors=(),
@@ -595,8 +595,8 @@ class AsyncBoundLogger:
             _loop=self._loop,
         )
 
-    def unbind(self, *keys: str) -> AsyncBoundLogger:
-        return AsyncBoundLogger(
+    def unbind(self, *keys: str) -> Self:
+        return self.__class__(
             # c.f. comment in bind
             logger=None,  # type: ignore[arg-type]
             processors=(),
@@ -605,8 +605,8 @@ class AsyncBoundLogger:
             _loop=self._loop,
         )
 
-    def try_unbind(self, *keys: str) -> AsyncBoundLogger:
-        return AsyncBoundLogger(
+    def try_unbind(self, *keys: str) -> Self:
+        return self.__class__(
             # c.f. comment in bind
             logger=None,  # type: ignore[arg-type]
             processors=(),
