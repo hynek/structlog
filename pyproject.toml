@@ -45,6 +45,7 @@ tests = [
     "pretend",
     "pytest-asyncio>=0.17",
     "pytest>=6.0",
+    "mypy>=1.4",
     "simplejson",
 ]
 # Need Twisted & Rich for stubs.
