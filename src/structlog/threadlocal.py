@@ -127,7 +127,7 @@ def as_immutable(logger: TLLogger) -> TLLogger:
             processors=logger._processors,  # type: ignore[attr-defined]
             context={},
         )
-        bl._context = ctx
+        bl._context = ctx  # type: ignore[misc]
 
         return bl
     except AttributeError:

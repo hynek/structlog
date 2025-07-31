@@ -136,7 +136,8 @@ class BindableLogger(Protocol):
     .. versionadded:: 20.2.0
     """
 
-    _context: Context
+    @property
+    def _context(self) -> Context: ...
 
     def bind(self, **new_values: Any) -> Self: ...
 
