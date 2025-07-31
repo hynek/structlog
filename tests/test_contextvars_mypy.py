@@ -19,7 +19,6 @@ class TestBoundContextHint:
     @bound_contextvars(a=2)
     def decorator_usage(self):
         """Example usage of bound_contextvars as a decorator."""
-        ...
 
     def test_bound_contextvars(self):
         """Test that bound_contextvars can be used as a context manager and a decorator."""
