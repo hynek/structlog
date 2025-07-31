@@ -12,13 +12,17 @@ structlog.configure(
 
 class TestBoundContextHint:
     def context_manager_usage(self):
+        """Example usage of bound_contextvars as a context manager."""
         with bound_contextvars(a=1):
             ...
 
     @bound_contextvars(a=2)
-    def decorator_usage(self): ...
+    def decorator_usage(self):
+        """Example usage of bound_contextvars as a decorator."""
+        ...
 
     def test_bound_contextvars(self):
+        """Test that bound_contextvars can be used as a context manager and a decorator."""
         MYPY_ARGS = [
             "--config-file",
             "pyproject.toml",
