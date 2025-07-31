@@ -358,3 +358,12 @@ fbl.info("Hello %s! The answer is %d.", "World", 42, x=1)
 level: int = fbl.get_effective_level()
 is_active: bool = fbl.is_enabled_for(logging.INFO)
 is_active = fbl.is_enabled_for(20)
+
+
+# contextvars
+
+
+@structlog.contextvars.bound_contextvars(x=42)
+def f() -> None:
+    with structlog.contextvars.bound_contextvars(y=23):
+        pass
