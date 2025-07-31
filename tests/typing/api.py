@@ -78,13 +78,14 @@ formatter = structlog.stdlib.ProcessorFormatter(
     processors=[
         structlog.processors.CallsiteParameterAdder(),
         structlog.processors.CallsiteParameterAdder(
-            set(CallsiteParameter), ["threading"]
+            {CallsiteParameter.FILENAME}, ["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
-            set(CallsiteParameter), additional_ignores=["threading"]
+            {CallsiteParameter.LINENO}, additional_ignores=["threading"]
         ),
         structlog.processors.CallsiteParameterAdder(
-            parameters=set(CallsiteParameter), additional_ignores=["threading"]
+            parameters={CallsiteParameter.FUNC_NAME},
+            additional_ignores=["threading"],
         ),
         structlog.processors.CallsiteParameterAdder(
             [
