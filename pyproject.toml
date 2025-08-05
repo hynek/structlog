@@ -92,22 +92,6 @@ source = ["src", ".tox/py*/**/site-packages"]
 show_missing = true
 skip_covered = true
 omit = ["src/structlog/_greenlets.py"]
-exclude_lines = [
-    # a more strict default pragma
-    "\\# pragma: no cover\\b",
-
-    # allow defensive code
-    "^\\s*raise AssertionError\\b",
-    "^\\s*raise NotImplementedError\\b",
-    "^\\s*return NotImplemented\\b",
-    "^\\s*raise$",
-
-    # typing-related code
-    "^if (False|TYPE_CHECKING):",
-    ": \\.\\.\\.(\\s*#.*)?$",
-    "^ +\\.\\.\\.$",
-    "-> ['\"]?NoReturn['\"]?:",
-]
 
 
 [tool.interrogate]
