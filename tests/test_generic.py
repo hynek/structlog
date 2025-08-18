@@ -6,8 +6,7 @@
 import pickle
 
 import pytest
-
-from freezegun import freeze_time
+import time_machine
 
 from structlog._config import _CONFIG
 from structlog._generic import BoundLogger
@@ -40,7 +39,7 @@ class TestGenericBoundLogger:
         assert "msg" in b.__dict__
 
     @pytest.mark.parametrize("proto", range(3, pickle.HIGHEST_PROTOCOL + 1))
-    @freeze_time("2023-05-22 17:00")
+    @time_machine.travel("2023-05-22 17:00", tick=False)
     def test_pickle(self, proto):
         """
         Can be pickled and unpickled.

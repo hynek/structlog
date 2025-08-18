@@ -41,7 +41,7 @@ Twitter = "https://twitter.com/hynek"
 
 [dependency-groups]
 tests = [
-    "freezegun>=0.2.8",
+    "time-machine>=2.14.1",
     "pretend",
     "pytest-asyncio>=0.17",
     "pytest>=6.0",

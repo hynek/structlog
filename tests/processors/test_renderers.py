@@ -10,8 +10,7 @@ import json
 import pickle
 
 import pytest
-
-from freezegun import freeze_time
+import time_machine
 
 from structlog.processors import (
     ExceptionRenderer,
@@ -390,10 +389,9 @@ class TestTimeStamper:
         ts = TimeStamper()
         d = ts(None, None, {})
 
-        # freezegun doesn't work with time.time. :(
         assert isinstance(d["timestamp"], float)
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel("1980-03-25 16:00:00")
     def test_local(self):
         """
         Timestamp in local timezone work. Due to historic reasons, the default
@@ -404,7 +402,7 @@ class TestTimeStamper:
 
         assert "1980-03-25T16:00:00" == d["timestamp"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel("1980-03-25 16:00:00")
     def test_formats(self):
         """
         The fmt string is respected.
@@ -414,14 +412,12 @@ class TestTimeStamper:
 
         assert "1980" == d["timestamp"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel(
+        datetime.datetime(1980, 3, 25, 16, 0, 0, tzinfo=datetime.timezone.utc)
+    )
     def test_inserts_formatted_utc(self):
         """
         The fmt string in UTC timezone works.
-
-        The exact hours calculated here maybe incorrect because of freezegun bugs:
-        https://github.com/spulec/freezegun/issues/348
-        https://github.com/spulec/freezegun/issues/494
         """
 
         ts = TimeStamper(fmt="%Y-%m-%d %H:%M:%S %Z")
@@ -429,14 +425,10 @@ class TestTimeStamper:
 
         assert "1980-03-25 16:00:00 UTC" == d["timestamp"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel("1980-03-25 16:00:00")
     def test_inserts_formatted_local(self):
         """
         The fmt string in local timezone works.
-
-        The exact hours calculated here maybe incorrect because of freezegun bugs:
-        https://github.com/spulec/freezegun/issues/348
-        https://github.com/spulec/freezegun/issues/494
         """
         local_tz = datetime.datetime.now().astimezone().tzname()
         ts = TimeStamper(fmt="%Y-%m-%d %H:%M:%S %Z", utc=False)
@@ -444,7 +436,7 @@ class TestTimeStamper:
 
         assert f"1980-03-25 16:00:00 {local_tz}" == d["timestamp"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel("1980-03-25 16:00:00")
     def test_tz_aware(self):
         """
         The timestamp that is used for formatting is timezone-aware.
@@ -455,7 +447,9 @@ class TestTimeStamper:
         assert "" == datetime.datetime.now().strftime("%z")  # noqa: DTZ005
         assert "" != d["timestamp"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel(
+        datetime.datetime(1980, 3, 25, 16, 0, 0, tzinfo=datetime.timezone.utc)
+    )
     def test_adds_Z_to_iso(self):
         """
         stdlib's isoformat is buggy, so we fix it.
@@ -465,7 +459,7 @@ class TestTimeStamper:
 
         assert "1980-03-25T16:00:00Z" == d["timestamp"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel("1980-03-25 16:00:00")
     def test_key_can_be_specified(self):
         """
         Timestamp is stored with the specified key.
@@ -475,7 +469,7 @@ class TestTimeStamper:
 
         assert "03" == d["month"]
 
-    @freeze_time("1980-03-25 16:00:00")
+    @time_machine.travel("1980-03-25 16:00:00", tick=False)
     @pytest.mark.parametrize("fmt", [None, "%Y"])
     @pytest.mark.parametrize("utc", [True, False])
     @pytest.mark.parametrize("key", [None, "other-key"])
@@ -494,13 +488,15 @@ class TestTimeStamper:
             None, None, {}
         )
 
-    def test_apply_freezegun_after_instantiation(self):
+    def test_apply_time_machine_after_instantiation(self):
         """
         Freezing time after instantiation of TimeStamper works.
         """
         ts = TimeStamper(fmt="iso", utc=False)
 
-        with freeze_time("1980-03-25 16:00:00", tz_offset=1):
+        # Simulate a different local time by traveling to a different timestamp
+        # after the stamper was created.
+        with time_machine.travel("1980-03-25 17:00:00"):
             d = ts(None, None, {})
 
             assert "1980-03-25T17:00:00" == d["timestamp"]
