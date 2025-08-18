@@ -13,8 +13,8 @@ Each processors receives three positional arguments:
 
 **logger**
 
-: Your wrapped logger object.
-  For example {class}`logging.Logger` or {class}`structlog.typing.FilteringBoundLogger` (default).
+: Your wrapped logger object that is called with the final processor return value.
+  For example {class}`logging.Logger` or {class}`structlog.PrintLogger` (default).
 
 **method_name**
 
