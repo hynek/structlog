@@ -646,6 +646,49 @@ def test_exception_groups() -> None:
     ] == exceptions
 
 
+def test_exception_cycle():
+    """Self-referential causes don't lock extract() in an infinite loop."""
+
+    try:
+        try:
+            exc = ValueError("onoes")
+            inner_lineno = get_next_lineno()
+            raise exc
+        except Exception as exc:
+            lineno = get_next_lineno()
+            raise exc from exc  # type: ignore[misc]
+    except Exception as e:
+        trace = tracebacks.extract(type(e), e, e.__traceback__)
+
+    assert len(trace.stacks) == 1
+    assert trace.stacks[0].frames[0].lineno == lineno
+    assert (
+        tracebacks.Stack(
+            exc_type="ValueError",
+            exc_value="onoes",
+            syntax_error=None,
+            is_cause=False,
+            frames=[
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=lineno,
+                    name="test_exception_cycle",
+                    locals=None,
+                ),
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=inner_lineno,
+                    name="test_exception_cycle",
+                    locals=None,
+                ),
+            ],
+            is_group=False,
+            exceptions=[],
+        )
+        == trace.stacks[0]
+    )
+
+
 @pytest.mark.parametrize(
     ("kwargs", "local_variable"),
     [
