@@ -567,7 +567,7 @@ class ConsoleRenderer:
     .. versionadded:: 24.2.0 *pad_level*
     """
 
-    def __init__(  # noqa: PLR0912, PLR0915
+    def __init__(
         self,
         pad_event: int = _EVENT_WIDTH,
         colors: bool = _has_colors,
@@ -630,29 +630,7 @@ class ConsoleRenderer:
             return
 
         # Create default columns configuration.
-        styles: Styles
-        if colors:
-            if _IS_WINDOWS:  # pragma: no cover
-                # On Windows, we can't do colorful output without colorama.
-                if colorama is None:
-                    classname = self.__class__.__name__
-                    raise SystemError(
-                        _MISSING.format(
-                            who=classname + " with `colors=True`",
-                            package="colorama",
-                        )
-                    )
-                # Colorama must be init'd on Windows, but must NOT be
-                # init'd on other OSes, because it can break colors.
-                if force_colors:
-                    colorama.deinit()
-                    colorama.init(strip=False)
-                else:
-                    colorama.init()
-
-            styles = _ColorfulStyles
-        else:
-            styles = _PlainStyles
+        styles = self.configure_styles(colors, force_colors)
 
         self._styles = styles
 
@@ -718,6 +696,50 @@ class ConsoleRenderer:
             Column("logger", logger_name_formatter),
             Column("logger_name", logger_name_formatter),
         ]
+
+    @classmethod
+    def configure_styles(
+        cls, colors: bool = _has_colors, force_colors: bool = False
+    ) -> type[_Styles]:
+        """
+        Configure and return the appropriate styles class for console output.
+
+        This method handles the setup of colorful or plain styles, including
+        proper colorama initialization on Windows systems when colors are enabled.
+
+        Args:
+            colors: Whether to use colorful output styles.
+            force_colors:
+                Force colorful output even in non-interactive environments.
+                Only relevant on Windows with colorama.
+
+        Returns:
+            The configured styles class (_ColorfulStyles or _PlainStyles).
+
+        Raises:
+            SystemError: On Windows when colors=True but colorama is not installed.
+        """
+        if not colors:
+            return _PlainStyles
+
+        if _IS_WINDOWS:  # pragma: no cover
+            # On Windows, we can't do colorful output without colorama.
+            if colorama is None:
+                raise SystemError(
+                    _MISSING.format(
+                        who=cls.__name__ + " with `colors=True`",
+                        package="colorama",
+                    )
+                )
+            # Colorama must be init'd on Windows, but must NOT be
+            # init'd on other OSes, because it can break colors.
+            if force_colors:
+                colorama.deinit()
+                colorama.init(strip=False)
+            else:
+                colorama.init()
+
+        return _ColorfulStyles
 
     def _repr(self, val: Any) -> str:
         """
