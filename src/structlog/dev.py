@@ -630,7 +630,7 @@ class ConsoleRenderer:
             return
 
         # Create default columns configuration.
-        styles = self.configure_styles(colors, force_colors)
+        styles = self.get_default_column_styles(colors, force_colors)
 
         self._styles = styles
 
@@ -698,7 +698,7 @@ class ConsoleRenderer:
         ]
 
     @classmethod
-    def configure_styles(
+    def get_default_column_styles(
         cls, colors: bool = _has_colors, force_colors: bool = False
     ) -> type[_Styles]:
         """
