@@ -718,6 +718,8 @@ class ConsoleRenderer:
 
         Raises:
             SystemError: On Windows when colors=True but colorama is not installed.
+
+        .. versionadded:: 25.5.0
         """
         if not colors:
             return _PlainStyles
