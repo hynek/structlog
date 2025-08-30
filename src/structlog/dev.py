@@ -700,7 +700,7 @@ class ConsoleRenderer:
     @classmethod
     def get_default_column_styles(
         cls, colors: bool = _has_colors, force_colors: bool = False
-    ) -> type[_Styles]:
+    ) -> type[Styles]:
         """
         Configure and return the appropriate styles class for console output.
 
