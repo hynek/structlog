@@ -175,6 +175,64 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
+    def test_returns_colorful_styles_when_colors_true(self):
+        """
+        When colors=True, returns _ColorfulStyles class.
+        """
+        styles = dev.ConsoleRenderer.get_default_column_styles(colors=True)
+
+        assert styles is dev._ColorfulStyles
+        assert hasattr(styles, "reset")
+        assert hasattr(styles, "bright")
+        assert hasattr(styles, "level_critical")
+        assert hasattr(styles, "kv_key")
+        assert hasattr(styles, "kv_value")
+
+    def test_returns_plain_styles_when_colors_false(self):
+        """
+        When colors=False, returns _PlainStyles class.
+        """
+        styles = dev.ConsoleRenderer.get_default_column_styles(colors=False)
+
+        assert styles is dev._PlainStyles
+        assert styles.reset == ""
+        assert styles.bright == ""
+        assert styles.level_critical == ""
+        assert styles.kv_key == ""
+        assert styles.kv_value == ""
+
+    @pytest.mark.skipif(
+        not dev._IS_WINDOWS or dev.colorama is not None,
+        reason="Only relevant on Windows without colorama",
+    )
+    def test_raises_system_error_on_windows_without_colorama(self):
+        """
+        On Windows without colorama, raises SystemError when colors=True.
+        """
+        with pytest.raises(SystemError, match="requires the colorama package"):
+            dev.ConsoleRenderer.get_default_column_styles(colors=True)
+
+    @pytest.mark.skipif(
+        not dev._IS_WINDOWS or dev.colorama is None,
+        reason="Only relevant on Windows with colorama",
+    )
+    def test_initializes_colorama_on_windows_with_force_colors(self):
+        """
+        On Windows with colorama, force_colors=True reinitializes colorama.
+        """
+        with mock.patch.object(
+            dev.colorama, "init"
+        ) as mock_init, mock.patch.object(
+            dev.colorama, "deinit"
+        ) as mock_deinit:
+            styles = dev.ConsoleRenderer.get_default_column_styles(
+                colors=True, force_colors=True
+            )
+
+            assert styles is dev._ColorfulStyles
+            mock_deinit.assert_called_once()
+            mock_init.assert_called_once_with(strip=False)
+
     def test_logger_name(self, cr, styles, padded):
         """
         Logger names are appended after the event.
