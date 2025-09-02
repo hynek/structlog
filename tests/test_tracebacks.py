@@ -1071,3 +1071,121 @@ class TestLogException:
         logger.exception("onoes")
 
         assert [{"event": "onoes", "log_level": "error"}] == cap_logs.entries
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
+)
+def test_reraise_error_from_exception_group() -> None:
+    """
+    There should be no RecursionError when building the traceback for an
+    exception that has been re-raised from an ExceptionGroup.
+    """
+    inner_lineno = None
+    lineno = None
+
+    try:
+        try:
+            inner_lineno = get_next_lineno()
+            raise ExceptionGroup(  # noqa: F821
+                "Some error occurred",
+                [ValueError("value error")],
+            )
+        except ExceptionGroup as e:  # noqa: F821
+            lineno = get_next_lineno()
+            raise e.exceptions[0]  # noqa: B904
+    except Exception as e:
+        trace = tracebacks.extract(type(e), e, e.__traceback__)
+
+    assert lineno is not None
+    assert inner_lineno is not None
+    assert len(trace.stacks) == 2
+    assert trace.stacks[0].frames[0].lineno == lineno
+    assert (
+        tracebacks.Stack(
+            exc_type="ValueError",
+            exc_value="value error",
+            syntax_error=None,
+            is_cause=False,
+            frames=[
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=lineno,
+                    name="test_reraise_error_from_exception_group",
+                    locals=None,
+                )
+            ],
+            is_group=False,
+            exceptions=[],
+        )
+        == trace.stacks[0]
+    )
+    assert (
+        tracebacks.Stack(
+            exc_type="ExceptionGroup",
+            exc_value="Some error occurred (1 sub-exception)",
+            syntax_error=None,
+            is_cause=False,
+            frames=[
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=inner_lineno,
+                    name="test_reraise_error_from_exception_group",
+                    locals=None,
+                ),
+            ],
+            is_group=True,
+            exceptions=[tracebacks.Trace(stacks=[])],
+        )
+        == trace.stacks[1]
+    )
+
+
+def test_exception_cycle():
+    """
+    There should be no RecursionError when building the traceback for an
+    exception that has itself in its cause chain.
+    """
+    inner_lineno = None
+    lineno = None
+
+    try:
+        try:
+            exc = ValueError("onoes")
+            inner_lineno = get_next_lineno()
+            raise exc
+        except Exception as exc:
+            lineno = get_next_lineno()
+            raise exc from exc  # type: ignore[misc]
+    except Exception as e:
+        trace = tracebacks.extract(type(e), e, e.__traceback__)
+
+    assert lineno is not None
+    assert inner_lineno is not None
+    assert len(trace.stacks) == 1
+    assert trace.stacks[0].frames[0].lineno == lineno
+    assert (
+        tracebacks.Stack(
+            exc_type="ValueError",
+            exc_value="onoes",
+            syntax_error=None,
+            is_cause=False,
+            frames=[
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=lineno,
+                    name="test_exception_cycle",
+                    locals=None,
+                ),
+                tracebacks.Frame(
+                    filename=__file__,
+                    lineno=inner_lineno,
+                    name="test_exception_cycle",
+                    locals=None,
+                ),
+            ],
+            is_group=False,
+            exceptions=[],
+        )
+        == trace.stacks[0]
+    )

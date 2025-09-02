@@ -190,6 +190,7 @@ def extract(
     locals_hide_dunder: bool = True,
     locals_hide_sunder: bool = False,
     use_rich: bool = True,
+    _seen: set[int] | None = None,
 ) -> Trace:
     """
     Extract traceback information.
@@ -235,12 +236,23 @@ def extract(
 
     .. versionchanged:: 25.4.0
        Handle exception groups.
+
+    .. versionchanged:: 25.5.0
+       Handle loops in exception cause chain.
     """
 
     stacks: list[Stack] = []
     is_cause = False
 
+    if _seen is None:
+        _seen = set()
+
     while True:
+        exc_id = id(exc_value)
+        if exc_id in _seen:
+            break
+        _seen.add(exc_id)
+
         stack = Stack(
             exc_type=safe_str(exc_type.__name__),
             exc_value=safe_str(exc_value),
@@ -265,6 +277,7 @@ def extract(
                             locals_hide_dunder=locals_hide_dunder,
                             locals_hide_sunder=locals_hide_sunder,
                             use_rich=use_rich,
+                            _seen=_seen,
                         )
                     )
 
