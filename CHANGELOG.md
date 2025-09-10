@@ -32,6 +32,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.dev.rich_traceback()` now throws a more helpful error when Rich is missing.
   [#735](https://github.com/hynek/structlog/pull/735)
 
+### Fixed
+
+- `structlog.processors.MaybeTimeStamper` now respects the *key* argument when determining whether to overwrite the timestamp field.
+  [#747](https://github.com/hynek/structlog/pull/747)
+
 
 ## [25.4.0](https://github.com/hynek/structlog/compare/25.3.0...25.4.0) - 2025-06-02
 
