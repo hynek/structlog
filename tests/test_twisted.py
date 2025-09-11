@@ -105,7 +105,7 @@ class TestExtractStuffAndWhy:
         """
         with pytest.raises(
             ValueError,
-            match="Both _stuff and event contain an Exception/Failure.",
+            match="Both _stuff and event contain an Exception/Failure",
         ):
             _extractStuffAndWhy(
                 {
@@ -119,7 +119,7 @@ class TestExtractStuffAndWhy:
         Raise ValueError if both _why and event are in the event_dict.
         """
         with pytest.raises(
-            ValueError, match="Both `_why` and `event` supplied."
+            ValueError, match="Both `_why` and `event` supplied"
         ):
             _extractStuffAndWhy({"_why": "foo", "event": "bar"})
 
@@ -222,7 +222,7 @@ class TestEventAdapter:
         la = EventAdapter(_render_repr)
 
         with pytest.raises(
-            ValueError, match="Both `_why` and `event` supplied."
+            ValueError, match="Both `_why` and `event` supplied"
         ):
             la(None, "err", {"event": "someEvent", "_why": "someReason"})
 

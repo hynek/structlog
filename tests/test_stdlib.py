@@ -117,7 +117,7 @@ class TestLoggerFactory:
         """
         logger = _FixedFindCallerLogger("test")
 
-        file_name, line_number, func_name = logger.findCaller()[:3]
+        file_name, _line_number, func_name = logger.findCaller()[:3]
 
         assert file_name == os.path.realpath(__file__)
         assert func_name == "test_deduces_correct_caller"
@@ -127,7 +127,7 @@ class TestLoggerFactory:
         If we ask for stack_info, it will returned.
         """
         logger = _FixedFindCallerLogger("test")
-        testing, is_, fun, stack_info = logger.findCaller(stack_info=True)
+        testing, is_, fun, stack_info = logger.findCaller(stack_info=True)  # noqa: RUF059
 
         assert "testing, is_, fun" in stack_info
 
@@ -136,7 +136,7 @@ class TestLoggerFactory:
         If we don't ask for stack_info, it won't be returned.
         """
         logger = _FixedFindCallerLogger("test")
-        testing, is_, fun, stack_info = logger.findCaller()
+        testing, is_, fun, stack_info = logger.findCaller()  # noqa: RUF059
 
         assert None is stack_info
 
@@ -230,7 +230,7 @@ class TestBoundLogger:
         Positional arguments supplied are proxied as kwarg.
         """
         bl = BoundLogger(ReturnLogger(), [], {})
-        args, kwargs = bl.debug("event", "foo", bar="baz")
+        _args, kwargs = bl.debug("event", "foo", bar="baz")
 
         assert "baz" == kwargs.get("bar")
         assert ("foo",) == kwargs.get("positional_args")

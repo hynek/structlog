@@ -130,7 +130,7 @@ class _FixedFindCallerLogger(logging.Logger):
         This logger gets set as the default one when using LoggerFactory.
         """
         sinfo: str | None
-        f, name = _find_first_app_frame_and_name(["logging"])
+        f, _name = _find_first_app_frame_and_name(["logging"])
         sinfo = _format_stack(f) if stack_info else None
 
         return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
