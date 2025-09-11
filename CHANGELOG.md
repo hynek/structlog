@@ -37,9 +37,6 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.processors.MaybeTimeStamper` now respects the *key* argument when determining whether to overwrite the timestamp field.
   [#747](https://github.com/hynek/structlog/pull/747)
 
-
-### Fixed
-
 - `structlog.tracebacks.extract()` no longer raises a *RecursionError* when the cause chain of an exception contains itself.
   [#739](https://github.com/hynek/structlog/pull/739)
 

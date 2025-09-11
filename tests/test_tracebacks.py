@@ -1076,10 +1076,10 @@ class TestLogException:
 @pytest.mark.skipif(
     sys.version_info < (3, 11), reason="Requires Python 3.11 or higher"
 )
-def test_reraise_error_from_exception_group() -> None:
+def test_reraise_error_from_exception_group():
     """
-    There should be no RecursionError when building the traceback for an
-    exception that has been re-raised from an ExceptionGroup.
+    There is no RecursionError when building the traceback for an exception
+    that has been re-raised from an ExceptionGroup.
     """
     inner_lineno = None
     lineno = None
@@ -1099,8 +1099,8 @@ def test_reraise_error_from_exception_group() -> None:
 
     assert lineno is not None
     assert inner_lineno is not None
-    assert len(trace.stacks) == 2
-    assert trace.stacks[0].frames[0].lineno == lineno
+    assert 2 == len(trace.stacks)
+    assert lineno == trace.stacks[0].frames[0].lineno
     assert (
         tracebacks.Stack(
             exc_type="ValueError",
@@ -1143,8 +1143,8 @@ def test_reraise_error_from_exception_group() -> None:
 
 def test_exception_cycle():
     """
-    There should be no RecursionError when building the traceback for an
-    exception that has itself in its cause chain.
+    There is no RecursionError when building the traceback for an exception
+    that has itself in its cause chain.
     """
     inner_lineno = None
     lineno = None
@@ -1156,14 +1156,14 @@ def test_exception_cycle():
             raise exc
         except Exception as exc:
             lineno = get_next_lineno()
-            raise exc from exc  # type: ignore[misc]
+            raise exc from exc
     except Exception as e:
         trace = tracebacks.extract(type(e), e, e.__traceback__)
 
     assert lineno is not None
     assert inner_lineno is not None
-    assert len(trace.stacks) == 1
-    assert trace.stacks[0].frames[0].lineno == lineno
+    assert 1 == len(trace.stacks)
+    assert lineno == trace.stacks[0].frames[0].lineno
     assert (
         tracebacks.Stack(
             exc_type="ValueError",
