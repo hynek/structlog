@@ -26,6 +26,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   Passing `-1` for *width* is now deprecated and automatically replaced by `None`.
   [#717](https://github.com/hynek/structlog/pull/717)
 
+- Native loggers now allow the passing of a dictionary for dictionary-based interpolation `log.info("hello %(name)s!", {"name": "world"})`.
+
 
 ### Changed
 

@@ -100,6 +100,7 @@ If you call `log.info("Hello, %s!", "world", number=42)` now, the following happ
    For example, if you wanted JSON logs, you just have to replace the last processor with {class}`structlog.processors.JSONRenderer`.
 
 [^interpolation]: String interpolation only takes place if you pass positional arguments.
+  If the first and only argument is a mapping, it will be used for dict-based interpolation.
 
 (filtering)=
 

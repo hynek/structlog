@@ -161,6 +161,10 @@ class FilteringBoundLogger(BindableLogger, Protocol):
     .. versionchanged:: 22.3.0
        String interpolation is only attempted if positional arguments are
        passed.
+    .. versionadded:: 25.5.0
+       String interpolation using dictionary-based arguments if the first and
+       only argument is a mapping.
+
     """
 
     def bind(self, **new_values: Any) -> FilteringBoundLogger:
