@@ -72,10 +72,14 @@ raw-options = { local_scheme = "no-local-version" }
 
 
 [tool.pytest.ini_options]
-addopts = ["-ra", "--strict-markers", "--strict-config"]
+addopts = ["--strict-markers", "--strict-config", "--import-mode=importlib"]
 testpaths = "tests"
 xfail_strict = true
-filterwarnings = ["once::Warning"]
+filterwarnings = [
+    "once::Warning",
+    # Probably <https://github.com/pytest-dev/pytest-asyncio/issues/724>
+    "ignore:unclosed event loop:ResourceWarning",
+]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
