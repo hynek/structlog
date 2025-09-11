@@ -377,9 +377,7 @@ class TestTimeStamper:
         A asking for a UNIX timestamp with a timezone that's not UTC raises a
         ValueError.
         """
-        with pytest.raises(
-            ValueError, match="UNIX timestamps are always UTC."
-        ):
+        with pytest.raises(ValueError, match="UNIX timestamps are always UTC"):
             TimeStamper(utc=False)
 
     def test_inserts_utc_unix_timestamp_by_default(self):
