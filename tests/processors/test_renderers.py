@@ -511,6 +511,14 @@ class TestMaybeTimeStamper:
 
         assert {"timestamp": 42} == mts(None, None, {"timestamp": 42})
 
+    def test_overwrite_custom_key(self):
+        """
+        If there is a timestamp with a custom key, leave it.
+        """
+        mts = MaybeTimeStamper(key="timestamp2")
+
+        assert {"timestamp2": 42} == mts(None, None, {"timestamp2": 42})
+
     def test_none(self):
         """
         If there is no timestamp, add one.
