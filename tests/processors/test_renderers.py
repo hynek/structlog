@@ -377,9 +377,7 @@ class TestTimeStamper:
         A asking for a UNIX timestamp with a timezone that's not UTC raises a
         ValueError.
         """
-        with pytest.raises(
-            ValueError, match="UNIX timestamps are always UTC."
-        ):
+        with pytest.raises(ValueError, match="UNIX timestamps are always UTC"):
             TimeStamper(utc=False)
 
     def test_inserts_utc_unix_timestamp_by_default(self):
@@ -510,6 +508,14 @@ class TestMaybeTimeStamper:
         mts = MaybeTimeStamper()
 
         assert {"timestamp": 42} == mts(None, None, {"timestamp": 42})
+
+    def test_overwrite_custom_key(self):
+        """
+        If there is a timestamp with a custom key, leave it.
+        """
+        mts = MaybeTimeStamper(key="timestamp2")
+
+        assert {"timestamp2": 42} == mts(None, None, {"timestamp2": 42})
 
     def test_none(self):
         """

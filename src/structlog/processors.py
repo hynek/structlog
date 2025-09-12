@@ -592,7 +592,7 @@ class MaybeTimeStamper:
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> EventDict:
-        if "timestamp" not in event_dict:
+        if self.stamper.key not in event_dict:
             return self.stamper(logger, name, event_dict)
 
         return event_dict

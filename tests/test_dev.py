@@ -660,7 +660,7 @@ class TestConsoleRenderer:
 
         with pytest.raises(
             ValueError,
-            match="Only one default column formatter allowed.",
+            match="Only one default column formatter allowed",
         ):
             dev.ConsoleRenderer(
                 columns=[
@@ -715,7 +715,7 @@ def test_rich_traceback_formatter_no_rich():
     """
     with pytest.raises(
         ModuleNotFoundError,
-        match="RichTracebackFormatter requires Rich to be installed.",
+        match="RichTracebackFormatter requires Rich to be installed",
     ):
         dev.rich_traceback(StringIO(), sys.exc_info())
 
