@@ -83,6 +83,7 @@ nitpick_ignore = [
     ("py:class", "PlainFileObserver"),
     ("py:class", "Processor"),
     ("py:class", "Styles"),
+    ("py:class", "structlog.dev._Styles"),
     ("py:class", "WrappedLogger"),
     ("py:class", "structlog.threadlocal.TLLogger"),
     ("py:class", "structlog.typing.EventDict"),
