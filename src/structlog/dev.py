@@ -840,6 +840,8 @@ def set_exc_info(
     Set ``event_dict["exc_info"] = True`` if *method_name* is ``"exception"``.
 
     Do nothing if the name is different or ``exc_info`` is already set.
+
+    .. versionadded:: 19.2.0
     """
     if (
         method_name != "exception"
