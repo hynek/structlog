@@ -42,6 +42,14 @@ You can still use string interpolation using positional arguments:
 2022-10-10 07:19:25 [info     ] Hello, world!
 ```
 
+Dictionary-based interpolation works too:
+
+```pycon
+>>> log.info("Hello, %(name)s!", {"name": "world"})
+2025-09-11 13:00:42 [info     ] Hello, world!
+```
+
+
 ### Data binding
 
 Since log entries are dictionaries, you can start binding and re-binding key-value pairs to your loggers to ensure they are present in every following logging call:

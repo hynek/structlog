@@ -10,6 +10,7 @@ structlog's native high-performance loggers.
 from __future__ import annotations
 
 import asyncio
+import collections
 import contextvars
 import sys
 
@@ -123,6 +124,26 @@ def make_filtering_bound_logger(
     return LEVEL_TO_FILTERING_LOGGER[min_level]
 
 
+def _maybe_interpolate(event: str, args: tuple[Any, ...]) -> str:
+    """
+    Interpolate the event string with the given arguments.
+
+    If there's exactly one argument and it's a mapping, use it for dict-based
+    interpolation. Otherwise, use the arguments for positional interpolation.
+    """
+    if not args:
+        return event
+
+    if (
+        len(args) == 1
+        and isinstance(args[0], collections.abc.Mapping)
+        and args[0]
+    ):
+        return event % args[0]
+
+    return event % args
+
+
 def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     """
     Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
@@ -140,18 +161,16 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         name = LEVEL_TO_NAME[level]
 
         def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
-            if not args:
-                return self._proxy_to_logger(name, event, **kw)
-
-            return self._proxy_to_logger(name, event % args, **kw)
+            return self._proxy_to_logger(
+                name, _maybe_interpolate(event, args), **kw
+            )
 
         async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
             """
             .. versionchanged:: 23.3.0
                Callsite parameters are now also collected under asyncio.
             """
-            if args:
-                event = event % args
+            event = _maybe_interpolate(event, args)
 
             scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
             ctx = contextvars.copy_context()
@@ -175,10 +194,9 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             return None
         name = LEVEL_TO_NAME[level]
 
-        if not args:
-            return self._proxy_to_logger(name, event, **kw)
-
-        return self._proxy_to_logger(name, event % args, **kw)
+        return self._proxy_to_logger(
+            name, _maybe_interpolate(event, args), **kw
+        )
 
     async def alog(
         self: Any, level: int, event: str, *args: Any, **kw: Any
@@ -190,8 +208,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         if level < min_level:
             return None
         name = LEVEL_TO_NAME[level]
-        if args:
-            event = event % args
+        event = _maybe_interpolate(event, args)
 
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
         ctx = contextvars.copy_context()
