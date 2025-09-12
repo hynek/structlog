@@ -16,3 +16,20 @@ class DropEvent(BaseException):
 
     Derives from BaseException because it's technically not an error.
     """
+
+
+class NoConsoleRendererConfiguredError(Exception):
+    """
+    A user asked for the current `structlog.dev.ConsoleRenderer` but none is
+    configured.
+
+    .. versionadded:: 25.5.0
+    """
+
+
+class MultipleConsoleRenderersConfiguredError(Exception):
+    """
+    A user asked for the current `structlog.dev.ConsoleRenderer` and more than one is configured.
+
+    .. versionadded:: 25.5.0
+    """

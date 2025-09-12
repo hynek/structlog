@@ -30,6 +30,10 @@ from typing import (
 )
 
 from ._frames import _format_exception
+from .exceptions import (
+    MultipleConsoleRenderersConfiguredError,
+    NoConsoleRendererConfiguredError,
+)
 from .processors import _figure_out_exc_info
 from .typing import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
 
@@ -852,3 +856,35 @@ def set_exc_info(
     event_dict["exc_info"] = True
 
     return event_dict
+
+
+def get_active_console_renderer() -> ConsoleRenderer:
+    """
+    If *structlog* is configured to use `ConsoleRenderer`, it's returned.
+
+    It does not have to be the last processor.
+
+    Raises:
+        NoConsoleRendererConfiguredError:
+            If no ConsoleRenderer is found in the current configuration.
+
+        MultipleConsoleRenderersConfiguredError:
+            If more than one is found in the current configuration. This is
+            almost certainly a bug.
+
+    .. versionadded:: 25.5.0
+    """
+    from ._config import get_config
+
+    cr = None
+    for p in get_config()["processors"]:
+        if isinstance(p, ConsoleRenderer):
+            if cr is not None:
+                raise MultipleConsoleRenderersConfiguredError
+
+            cr = p
+
+    if cr is None:
+        raise NoConsoleRendererConfiguredError
+
+    return cr
