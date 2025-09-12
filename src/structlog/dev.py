@@ -700,7 +700,7 @@ class ConsoleRenderer:
     @classmethod
     def get_default_column_styles(
         cls, colors: bool = _has_colors, force_colors: bool = False
-    ) -> type[Styles]:
+    ) -> Styles:
         """
         Configure and return the appropriate styles class for console output.
 
@@ -709,6 +709,7 @@ class ConsoleRenderer:
 
         Args:
             colors: Whether to use colorful output styles.
+
             force_colors:
                 Force colorful output even in non-interactive environments.
                 Only relevant on Windows with colorama.
