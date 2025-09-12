@@ -17,6 +17,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
+- Added `structlog.dev.ConsoleRenderer.get_default_column_styles` for reuse the default column styles.
+  [#741](https://github.com/hynek/structlog/pull/741)
+
 - `structlog.testing.capture_logs()` now optionally accepts *processors* to apply before capture.
   [#728](https://github.com/hynek/structlog/pull/728)
 
