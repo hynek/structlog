@@ -17,6 +17,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
+- Added `structlog.dev.get_active_console_renderer()` that returns the currently active `structlog.dev.ConsoleRenderer()`.
+  [#749](https://github.com/hynek/structlog/pull/749)
+
 - Added `structlog.dev.ConsoleRenderer.get_default_column_styles` for reuse the default column styles.
   [#741](https://github.com/hynek/structlog/pull/741)
 
