@@ -158,11 +158,27 @@ class TestNativeFilteringLogger:
 
         assert "answer is 42." == cl.calls[0][2]["event"]
 
+    def test_log_interp_dict(self, bl, cl):
+        """
+        Dict-based interpolation happens if a mapping is passed.
+        """
+        bl.log(logging.INFO, "answer is %(answer)d.", {"answer": 42})
+
+        assert "answer is 42." == cl.calls[0][2]["event"]
+
     async def test_alog_interp(self, bl, cl):
         """
         Interpolation happens if args are passed.
         """
         await bl.alog(logging.INFO, "answer is %d.", 42)
+
+        assert "answer is 42." == cl.calls[0][2]["event"]
+
+    async def test_alog_interp_dict(self, bl, cl):
+        """
+        Dict-based interpolation happens if a mapping is passed.
+        """
+        await bl.alog(logging.INFO, "answer is %(answer)d.", {"answer": 42})
 
         assert "answer is 42." == cl.calls[0][2]["event"]
 
@@ -222,11 +238,35 @@ class TestNativeFilteringLogger:
             ("error", (), {"event": "boom bastic", "exc_info": True})
         ] == cl.calls
 
+    def test_exception_dict_args(self, bl, cl):
+        """
+        exception allows for dict-based args
+        """
+        bl.exception(
+            "%(action)s %(what)s", {"action": "boom", "what": "bastic"}
+        )
+
+        assert [
+            ("error", (), {"event": "boom bastic", "exc_info": True})
+        ] == cl.calls
+
     async def test_aexception_positional_args(self, bl, cl):
         """
         aexception allows for positional args
         """
         await bl.aexception("%s %s", "boom", "bastic")
+
+        assert 1 == len(cl.calls)
+        assert "boom bastic" == cl.calls[0][2]["event"]
+
+    async def test_aexception_dict_args(self, bl, cl):
+        """
+        aexception allows for dict-based args
+        """
+        await bl.aexception(
+            "%(action)s %(what)s", {"action": "boom", "what": "bastic"}
+        )
+
         assert 1 == len(cl.calls)
         assert "boom bastic" == cl.calls[0][2]["event"]
 
