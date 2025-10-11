@@ -12,6 +12,8 @@ Rich takes precedence over *better-exceptions*, but you can configure it by pass
 The following output is rendered using Rich:
 
 ```{figure} _static/console_renderer.png
+:alt: Screenshot of colorful console output by ConsoleRenderer.
+
 Colorful console output by ConsoleRenderer.
 ```
 

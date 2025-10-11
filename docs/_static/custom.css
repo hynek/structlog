@@ -3,18 +3,8 @@
 
 
 :root {
-  font-feature-settings: 'liga' 1, 'calt' 1;
-  /* fix for Chrome */
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    font-family: 'Atkinson Hyperlegible', sans-serif;
-  }
-}
-
-
-/* Hide ToC caption text within the main body (but leave them in the side-bar). */
-#furo-main-content span.caption-text {
-  display: none;
+  font-feature-settings: 'liga' 1, 'calt' 1;  /* fix for Chrome */
+  --pst-font-family-base: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --pst-font-family-heading: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --pst-font-family-monospace: BerkeleyMono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }

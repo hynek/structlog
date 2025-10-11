@@ -31,7 +31,7 @@ Thanks to its flexible design, *you* choose whether you want *structlog* to take
 
 The output format is just as flexible and *structlog* comes with support for JSON, [*logfmt*](https://brandur.org/logfmt), as well as pretty console output out-of-the-box:
 
-[![image](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)
+[![Screenshot of colorful structlog output with ConsoleRenderer](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)](https://github.com/hynek/structlog/blob/main/docs/_static/console_renderer.png?raw=true)
 
 
 ## Sponsors

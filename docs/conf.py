@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinxcontrib.mermaid",
     "sphinxext.opengraph",
+    "sphinx_copybutton",
 ]
 
 myst_enable_extensions = [
@@ -99,15 +100,8 @@ autodoc_typehints_description_target = "documented"
 
 # -- Options for HTML output --------------------------------------------------
 
-html_theme = "furo"
-html_theme_options = {
-    "top_of_page_buttons": [],
-    "light_css_variables": {
-        "font-stack": "Atkinson Hyperlegible, sans-serif",
-        "font-stack--monospace": "BerkeleyMono, MonoLisa, ui-monospace, "
-        "SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace",
-    },
-}
+html_theme = "sphinx_book_theme"
+html_theme_options = {}
 html_logo = "_static/structlog_logo.svg"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
