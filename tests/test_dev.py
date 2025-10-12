@@ -684,6 +684,18 @@ class TestConsoleRenderer:
 
         assert copy == styles
 
+    def test_exception_formatter_property(self, cr):
+        """
+        The exception formatter can be set and retrieved without
+        re-instantiating ConsoleRenderer.
+        """
+        sentinel = object()
+
+        cr.exception_formatter = sentinel
+
+        assert sentinel is cr.exception_formatter
+        assert sentinel is cr._exception_formatter
+
 
 class TestSetExcInfo:
     def test_wrong_name(self):

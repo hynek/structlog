@@ -467,6 +467,13 @@ class ConsoleRenderer:
     *after* the log line. If Rich_ or better-exceptions_ are present, in colors
     and with extra context.
 
+    Tip:
+        Since `ConsoleRenderer` is mainly a development helper, it is less
+        strict about immutability than the rest of *structlog* for better
+        ergonomics. Notably, the currently active instance can be obtained by
+        calling `get_active_console_renderer()` and it offers properties to
+        configure its behavior after instantiation.
+
     Args:
         columns:
             A list of `Column` objects defining both the order and format of
@@ -832,6 +839,22 @@ class ConsoleRenderer:
             "debug": styles.level_debug,
             "notset": styles.level_notset,
         }
+
+    @property
+    def exception_formatter(self) -> ExceptionRenderer:
+        """
+        The exception formatter used by this console renderer.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._exception_formatter
+
+    @exception_formatter.setter
+    def exception_formatter(self, value: ExceptionRenderer) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._exception_formatter = value
 
 
 _SENTINEL = object()

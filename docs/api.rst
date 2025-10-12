@@ -76,7 +76,11 @@ API Reference
 .. automodule:: structlog.dev
 
 .. autoclass:: ConsoleRenderer
-   :members: get_default_level_styles, get_default_column_styles
+   :members: get_default_level_styles, get_default_column_styles, exception_formatter
+
+.. autofunction:: get_active_console_renderer
+.. autoexception:: NoConsoleRendererConfiguredError
+.. autoexception:: MultipleConsoleRenderersConfiguredError
 
 .. autoclass:: Column
 .. autoclass:: ColumnFormatter(typing.Protocol)
