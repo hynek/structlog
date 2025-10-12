@@ -592,7 +592,7 @@ class ConsoleRenderer:
         columns: list[Column] | None = None,
         pad_level: bool = True,
     ):
-        self._exception_formatter = exception_formatter
+        self.exception_formatter = exception_formatter
         self._sort_keys = sort_keys
 
         if columns is not None:
