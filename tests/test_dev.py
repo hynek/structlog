@@ -696,6 +696,22 @@ class TestConsoleRenderer:
         assert sentinel is cr.exception_formatter
         assert sentinel is cr._exception_formatter
 
+    def test_sort_keys_property(self, cr):
+        """
+        The sort_keys setting can be set and retrieved without re-instantiating
+        ConsoleRenderer.
+        """
+        assert cr.sort_keys is True
+        assert cr._sort_keys is True
+
+        cr.sort_keys = False
+        assert cr.sort_keys is False
+        assert cr._sort_keys is False
+
+        cr.sort_keys = True
+        assert cr.sort_keys is True
+        assert cr._sort_keys is True
+
 
 class TestSetExcInfo:
     def test_wrong_name(self):

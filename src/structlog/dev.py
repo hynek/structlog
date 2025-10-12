@@ -856,6 +856,22 @@ class ConsoleRenderer:
         """
         self._exception_formatter = value
 
+    @property
+    def sort_keys(self) -> bool:
+        """
+        Whether to sort keys when formatting.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._sort_keys
+
+    @sort_keys.setter
+    def sort_keys(self, value: bool) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._sort_keys = value
+
 
 _SENTINEL = object()
 
