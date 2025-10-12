@@ -111,9 +111,9 @@ _use_colors = _has_colors
 
 
 @dataclass(frozen=True)
-class Styles:
+class ColumnStyles:
     """
-    Style settings for console rendering.
+    Column styles settings for console rendering.
 
     These are console ANSI codes that are printed before the respective fields.
     This allows for a certain amount of customization if you don't want to
@@ -140,7 +140,7 @@ class Styles:
     kv_value: str
 
 
-_colorful_styles = Styles(
+_colorful_styles = ColumnStyles(
     reset=RESET_ALL,
     bright=BRIGHT,
     level_critical=RED,
@@ -156,7 +156,7 @@ _colorful_styles = Styles(
     kv_value=MAGENTA,
 )
 
-_plain_styles = Styles(
+_plain_styles = ColumnStyles(
     reset="",
     bright="",
     level_critical="",
@@ -651,21 +651,89 @@ class ConsoleRenderer:
 
         styles = self.get_default_column_styles(colors, force_colors)
 
-        self._styles = styles
+        self._repr_native_str = repr_native_str
 
-        level_to_color = (
-            self.get_default_level_styles(colors)
+        self._configure_columns(
+            styles=styles,
+            level_styles=self.get_default_level_styles(colors)
             if level_styles is None
-            else level_styles
-        ).copy()
+            else level_styles,
+            pad_level=pad_level,
+            timestamp_key=timestamp_key,
+            event_key=event_key,
+            pad_event=pad_event,
+        )
+
+    @classmethod
+    def get_default_column_styles(
+        cls, colors: bool, force_colors: bool = False
+    ) -> ColumnStyles:
+        """
+        Configure and return the appropriate styles class for console output.
+
+        This method handles the setup of colorful or plain styles, including
+        proper colorama initialization on Windows systems when colors are
+        enabled.
+
+        Args:
+            colors: Whether to use colorful output styles.
+
+            force_colors:
+                Force colorful output even in non-interactive environments.
+                Only relevant on Windows with colorama.
+
+        Returns:
+            The configured styles.
+
+        Raises:
+            SystemError:
+                On Windows when colors=True but colorama is not installed.
+
+        .. versionadded:: 25.5.0
+        """
+        if not colors:
+            return _plain_styles
+
+        if _IS_WINDOWS:  # pragma: no cover
+            # On Windows, we can't do colorful output without colorama.
+            if colorama is None:
+                raise SystemError(
+                    _MISSING.format(
+                        who=cls.__name__ + " with `colors=True`",
+                        package="colorama",
+                    )
+                )
+            # Colorama must be init'd on Windows, but must NOT be
+            # init'd on other OSes, because it can break colors.
+            if force_colors:
+                colorama.deinit()
+                colorama.init(strip=False)
+            else:
+                colorama.init()
+
+        return _colorful_styles
+
+    def _configure_columns(
+        self,
+        *,
+        styles: ColumnStyles,
+        level_styles: dict[str, str],
+        pad_level: bool,
+        timestamp_key: str,
+        event_key: str,
+        pad_event: int,
+    ) -> None:
+        """
+        Re-configures columns according to the given styles and parameters.
+        """
+        self._styles = styles
+        level_to_color = level_styles.copy()
 
         for key in level_to_color:
             level_to_color[key] += styles.bright
         self._longest_level = len(
             max(level_to_color.keys(), key=lambda e: len(e))
         )
-
-        self._repr_native_str = repr_native_str
 
         self._default_column_formatter = KeyValueColumnFormatter(
             styles.kv_key,
@@ -715,55 +783,6 @@ class ConsoleRenderer:
             Column("logger", logger_name_formatter),
             Column("logger_name", logger_name_formatter),
         ]
-
-    @classmethod
-    def get_default_column_styles(
-        cls, colors: bool, force_colors: bool = False
-    ) -> Styles:
-        """
-        Configure and return the appropriate styles class for console output.
-
-        This method handles the setup of colorful or plain styles, including
-        proper colorama initialization on Windows systems when colors are
-        enabled.
-
-        Args:
-            colors: Whether to use colorful output styles.
-
-            force_colors:
-                Force colorful output even in non-interactive environments.
-                Only relevant on Windows with colorama.
-
-        Returns:
-            The configured styles.
-
-        Raises:
-            SystemError:
-                On Windows when colors=True but colorama is not installed.
-
-        .. versionadded:: 25.5.0
-        """
-        if not colors:
-            return _plain_styles
-
-        if _IS_WINDOWS:  # pragma: no cover
-            # On Windows, we can't do colorful output without colorama.
-            if colorama is None:
-                raise SystemError(
-                    _MISSING.format(
-                        who=cls.__name__ + " with `colors=True`",
-                        package="colorama",
-                    )
-                )
-            # Colorama must be init'd on Windows, but must NOT be
-            # init'd on other OSes, because it can break colors.
-            if force_colors:
-                colorama.deinit()
-                colorama.init(strip=False)
-            else:
-                colorama.init()
-
-        return _colorful_styles
 
     def _repr(self, val: Any) -> str:
         """
@@ -837,7 +856,7 @@ class ConsoleRenderer:
                 Whether to use colorful styles. This must match the *colors*
                 parameter to `ConsoleRenderer`. Default: `True`.
         """
-        styles: Styles
+        styles: ColumnStyles
         styles = _colorful_styles if colors else _plain_styles
         return {
             "critical": styles.level_critical,
