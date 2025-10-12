@@ -705,10 +705,12 @@ class TestConsoleRenderer:
         assert cr._sort_keys is True
 
         cr.sort_keys = False
+
         assert cr.sort_keys is False
         assert cr._sort_keys is False
 
         cr.sort_keys = True
+
         assert cr.sort_keys is True
         assert cr._sort_keys is True
 
