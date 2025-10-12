@@ -22,7 +22,7 @@ This context is safe to be used both in threaded as well as asynchronous code.
 :::{warning}
 Since the storage mechanics of your context variables is different for each concurrency method, they are _isolated_ from each other.
 
-This can be a problem in hybrid applications like those based on [*starlette*](https://www.starlette.io) (this [includes FastAPI](https://github.com/tiangolo/fastapi/discussions/5999)) where context variables set in a synchronous context don't appear in logs from an async context and vice versa.
+This can be a problem in hybrid applications like those based on [Starlette](https://www.starlette.io) (this [includes FastAPI](https://github.com/tiangolo/fastapi/discussions/5999)) where context variables set in a synchronous context don't appear in logs from an async context and vice versa.
 :::
 
 The general flow is:
