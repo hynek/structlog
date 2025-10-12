@@ -640,7 +640,6 @@ class ConsoleRenderer:
 
             return
 
-        # Create default columns configuration.
         styles = self.get_default_column_styles(colors, force_colors)
 
         self._styles = styles
@@ -710,13 +709,14 @@ class ConsoleRenderer:
 
     @classmethod
     def get_default_column_styles(
-        cls, colors: bool = _has_colors, force_colors: bool = False
+        cls, colors: bool, force_colors: bool = False
     ) -> Styles:
         """
         Configure and return the appropriate styles class for console output.
 
         This method handles the setup of colorful or plain styles, including
-        proper colorama initialization on Windows systems when colors are enabled.
+        proper colorama initialization on Windows systems when colors are
+        enabled.
 
         Args:
             colors: Whether to use colorful output styles.
@@ -729,7 +729,8 @@ class ConsoleRenderer:
             The configured styles class (_ColorfulStyles or _PlainStyles).
 
         Raises:
-            SystemError: On Windows when colors=True but colorama is not installed.
+            SystemError:
+                On Windows when colors=True but colorama is not installed.
 
         .. versionadded:: 25.5.0
         """

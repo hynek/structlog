@@ -184,11 +184,6 @@ class TestConsoleRenderer:
         styles = dev.ConsoleRenderer.get_default_column_styles(colors=True)
 
         assert styles is dev._ColorfulStyles
-        assert hasattr(styles, "reset")
-        assert hasattr(styles, "bright")
-        assert hasattr(styles, "level_critical")
-        assert hasattr(styles, "kv_key")
-        assert hasattr(styles, "kv_value")
 
     def test_returns_plain_styles_when_colors_false(self):
         """
