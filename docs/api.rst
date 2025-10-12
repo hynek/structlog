@@ -76,7 +76,7 @@ API Reference
 .. automodule:: structlog.dev
 
 .. autoclass:: ConsoleRenderer
-   :members: get_default_level_styles, get_default_column_styles, exception_formatter, sort_keys
+   :members: get_default_level_styles, get_default_column_styles, exception_formatter, sort_keys, columns
 
 .. autoclass:: ColumnStyles
 

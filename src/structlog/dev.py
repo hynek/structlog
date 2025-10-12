@@ -587,6 +587,8 @@ class ConsoleRenderer:
     .. versionadded:: 24.2.0 *pad_level*
     """
 
+    _default_column_formatter: ColumnFormatter
+
     def __init__(
         self,
         pad_event: int = _EVENT_WIDTH,
@@ -636,16 +638,7 @@ class ConsoleRenderer:
             for w in to_warn:
                 warnings.warn(w, stacklevel=2)
 
-            defaults = [col for col in columns if col.key == ""]
-            if not defaults:
-                raise ValueError(
-                    "Must pass a default column formatter (a column with `key=''`)."
-                )
-            if len(defaults) > 1:
-                raise ValueError("Only one default column formatter allowed.")
-
-            self._default_column_formatter = defaults[0].formatter
-            self._columns = [col for col in columns if col.key]
+            self.columns = columns
 
             return
 
@@ -808,7 +801,7 @@ class ConsoleRenderer:
 
         kvs = [
             col.formatter(col.key, val)
-            for col in self._columns
+            for col in self.columns
             if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
         ] + [
             self._default_column_formatter(key, event_dict[key])
@@ -900,6 +893,46 @@ class ConsoleRenderer:
         .. versionadded:: 25.5.0
         """
         self._sort_keys = value
+
+    @property
+    def columns(self) -> list[Column]:
+        """
+        The columns configuration for this console renderer.
+
+        Warning:
+            Just like with passing *columns* argument, many of the other
+            arguments you may have passed are ignored.
+
+        Args:
+            value:
+                A list of `Column` objects defining both the order and format
+                of the key-value pairs in the output.
+
+                **Must** contain a column with ``key=''`` that defines the
+                default formatter.
+
+        Raises:
+            ValueError: If there's not exactly one default column formatter.
+
+        .. versionadded:: 25.5.0
+        """
+        return [Column("", self._default_column_formatter), *self._columns]
+
+    @columns.setter
+    def columns(self, value: list[Column]) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        defaults = [col for col in value if col.key == ""]
+        if not defaults:
+            raise ValueError(
+                "Must pass a default column formatter (a column with `key=''`)."
+            )
+        if len(defaults) > 1:
+            raise ValueError("Only one default column formatter allowed.")
+
+        self._default_column_formatter = defaults[0].formatter
+        self._columns = [col for col in value if col.key]
 
 
 _SENTINEL = object()
