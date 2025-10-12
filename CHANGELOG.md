@@ -30,6 +30,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   ```
   [#749](https://github.com/hynek/structlog/pull/749)
 
+- Same for *sort_keys*.
+
 - Added `structlog.dev.ConsoleRenderer.get_default_column_styles` for reuse the default column styles.
   [#741](https://github.com/hynek/structlog/pull/741)
 
