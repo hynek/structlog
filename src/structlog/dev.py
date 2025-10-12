@@ -24,8 +24,6 @@ from typing import (
     Protocol,
     Sequence,
     TextIO,
-    Type,
-    Union,
     cast,
 )
 
@@ -112,9 +110,22 @@ _has_colors = not _IS_WINDOWS or colorama is not None
 _use_colors = _has_colors
 
 
-class _Styles(Protocol):
+@dataclass(frozen=True)
+class Styles:
+    """
+    Style settings for console rendering.
+
+    These are console ANSI codes that are printed before the respective fields.
+    This allows for a certain amount of customization if you don't want to
+    configure your columns.
+
+    .. versionadded:: 25.5.0
+       It was handled by private structures before.
+    """
+
     reset: str
     bright: str
+
     level_critical: str
     level_exception: str
     level_error: str
@@ -129,43 +140,41 @@ class _Styles(Protocol):
     kv_value: str
 
 
-Styles = Union[_Styles, Type[_Styles]]
+_colorful_styles = Styles(
+    reset=RESET_ALL,
+    bright=BRIGHT,
+    level_critical=RED,
+    level_exception=RED,
+    level_error=RED,
+    level_warn=YELLOW,
+    level_info=GREEN,
+    level_debug=GREEN,
+    level_notset=RED_BACK,
+    timestamp=DIM,
+    logger_name=BLUE,
+    kv_key=CYAN,
+    kv_value=MAGENTA,
+)
 
+_plain_styles = Styles(
+    reset="",
+    bright="",
+    level_critical="",
+    level_exception="",
+    level_error="",
+    level_warn="",
+    level_info="",
+    level_debug="",
+    level_notset="",
+    timestamp="",
+    logger_name="",
+    kv_key="",
+    kv_value="",
+)
 
-class _ColorfulStyles:
-    reset = RESET_ALL
-    bright = BRIGHT
-
-    level_critical = RED
-    level_exception = RED
-    level_error = RED
-    level_warn = YELLOW
-    level_info = GREEN
-    level_debug = GREEN
-    level_notset = RED_BACK
-
-    timestamp = DIM
-    logger_name = BLUE
-    kv_key = CYAN
-    kv_value = MAGENTA
-
-
-class _PlainStyles:
-    reset = ""
-    bright = ""
-
-    level_critical = ""
-    level_exception = ""
-    level_error = ""
-    level_warn = ""
-    level_info = ""
-    level_debug = ""
-    level_notset = ""
-
-    timestamp = ""
-    logger_name = ""
-    kv_key = ""
-    kv_value = ""
+# Backward compatibility aliases
+_ColorfulStyles = _colorful_styles
+_PlainStyles = _plain_styles
 
 
 class ColumnFormatter(Protocol):
@@ -726,7 +735,7 @@ class ConsoleRenderer:
                 Only relevant on Windows with colorama.
 
         Returns:
-            The configured styles class (_ColorfulStyles or _PlainStyles).
+            The configured styles.
 
         Raises:
             SystemError:
@@ -735,7 +744,7 @@ class ConsoleRenderer:
         .. versionadded:: 25.5.0
         """
         if not colors:
-            return _PlainStyles
+            return _plain_styles
 
         if _IS_WINDOWS:  # pragma: no cover
             # On Windows, we can't do colorful output without colorama.
@@ -754,7 +763,7 @@ class ConsoleRenderer:
             else:
                 colorama.init()
 
-        return _ColorfulStyles
+        return _colorful_styles
 
     def _repr(self, val: Any) -> str:
         """
@@ -829,7 +838,7 @@ class ConsoleRenderer:
                 parameter to `ConsoleRenderer`. Default: `True`.
         """
         styles: Styles
-        styles = _ColorfulStyles if colors else _PlainStyles
+        styles = _colorful_styles if colors else _plain_styles
         return {
             "critical": styles.level_critical,
             "exception": styles.level_exception,

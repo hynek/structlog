@@ -78,6 +78,8 @@ API Reference
 .. autoclass:: ConsoleRenderer
    :members: get_default_level_styles, get_default_column_styles, exception_formatter, sort_keys
 
+.. autoclass:: Styles
+
 .. autofunction:: get_active_console_renderer
 .. autoexception:: NoConsoleRendererConfiguredError
 .. autoexception:: MultipleConsoleRenderersConfiguredError

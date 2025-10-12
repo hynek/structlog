@@ -179,19 +179,19 @@ class TestConsoleRenderer:
 
     def test_returns_colorful_styles_when_colors_true(self):
         """
-        When colors=True, returns _ColorfulStyles class.
+        When colors=True, returns _colorful_styles instance.
         """
         styles = dev.ConsoleRenderer.get_default_column_styles(colors=True)
 
-        assert styles is dev._ColorfulStyles
+        assert styles is dev._colorful_styles
 
     def test_returns_plain_styles_when_colors_false(self):
         """
-        When colors=False, returns _PlainStyles class.
+        When colors=False, returns _plain_styles instance.
         """
         styles = dev.ConsoleRenderer.get_default_column_styles(colors=False)
 
-        assert styles is dev._PlainStyles
+        assert styles is dev._plain_styles
         assert styles.reset == ""
         assert styles.bright == ""
         assert styles.level_critical == ""
@@ -226,7 +226,7 @@ class TestConsoleRenderer:
                 colors=True, force_colors=True
             )
 
-            assert styles is dev._ColorfulStyles
+            assert styles is dev._colorful_styles
             mock_deinit.assert_called_once()
             mock_init.assert_called_once_with(strip=False)
 
@@ -529,7 +529,7 @@ class TestConsoleRenderer:
             None, None, {"event": "event", "level": "info", "foo": "bar"}
         )
 
-        assert dev._PlainStyles is plain_cr._styles
+        assert dev._plain_styles is plain_cr._styles
         assert "[info     ] event                          foo=bar" == rv
 
     def test_colorama_force_colors(self, styles, padded):
@@ -562,7 +562,7 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-        assert not dev._has_colors or dev._ColorfulStyles is cr._styles
+        assert not dev._has_colors or dev._colorful_styles is cr._styles
 
     @pytest.mark.parametrize("rns", [True, False])
     def test_repr_native_str(self, rns):
@@ -613,7 +613,7 @@ class TestConsoleRenderer:
             colors=not dev._has_colors,
             force_colors=True,
             repr_native_str=True,
-            level_styles=dev._PlainStyles,
+            level_styles=dev._plain_styles,
             event_key="not event",
             timestamp_key="not timestamp",
         )
