@@ -30,6 +30,10 @@ from typing import (
 )
 
 from ._frames import _format_exception
+from .exceptions import (
+    MultipleConsoleRenderersConfiguredError,
+    NoConsoleRendererConfiguredError,
+)
 from .processors import _figure_out_exc_info
 from .typing import EventDict, ExceptionRenderer, ExcInfo, WrappedLogger
 
@@ -463,6 +467,13 @@ class ConsoleRenderer:
     *after* the log line. If Rich_ or better-exceptions_ are present, in colors
     and with extra context.
 
+    Tip:
+        Since `ConsoleRenderer` is mainly a development helper, it is less
+        strict about immutability than the rest of *structlog* for better
+        ergonomics. Notably, the currently active instance can be obtained by
+        calling `get_active_console_renderer()` and it offers properties to
+        configure its behavior after instantiation.
+
     Args:
         columns:
             A list of `Column` objects defining both the order and format of
@@ -829,6 +840,22 @@ class ConsoleRenderer:
             "notset": styles.level_notset,
         }
 
+    @property
+    def exception_formatter(self) -> ExceptionRenderer:
+        """
+        The exception formatter used by this console renderer.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._exception_formatter
+
+    @exception_formatter.setter
+    def exception_formatter(self, value: ExceptionRenderer) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._exception_formatter = value
+
 
 _SENTINEL = object()
 
@@ -852,3 +879,35 @@ def set_exc_info(
     event_dict["exc_info"] = True
 
     return event_dict
+
+
+def get_active_console_renderer() -> ConsoleRenderer:
+    """
+    If *structlog* is configured to use `ConsoleRenderer`, it's returned.
+
+    It does not have to be the last processor.
+
+    Raises:
+        NoConsoleRendererConfiguredError:
+            If no ConsoleRenderer is found in the current configuration.
+
+        MultipleConsoleRenderersConfiguredError:
+            If more than one is found in the current configuration. This is
+            almost certainly a bug.
+
+    .. versionadded:: 25.5.0
+    """
+    from ._config import get_config
+
+    cr = None
+    for p in get_config()["processors"]:
+        if isinstance(p, ConsoleRenderer):
+            if cr is not None:
+                raise MultipleConsoleRenderersConfiguredError
+
+            cr = p
+
+    if cr is None:
+        raise NoConsoleRendererConfiguredError
+
+    return cr

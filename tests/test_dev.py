@@ -11,6 +11,8 @@ from unittest import mock
 
 import pytest
 
+import structlog
+
 from structlog import dev
 
 
@@ -682,6 +684,18 @@ class TestConsoleRenderer:
 
         assert copy == styles
 
+    def test_exception_formatter_property(self, cr):
+        """
+        The exception formatter can be set and retrieved without
+        re-instantiating ConsoleRenderer.
+        """
+        sentinel = object()
+
+        cr.exception_formatter = sentinel
+
+        assert sentinel is cr.exception_formatter
+        assert sentinel is cr._exception_formatter
+
 
 class TestSetExcInfo:
     def test_wrong_name(self):
@@ -820,3 +834,40 @@ class TestLogLevelColumnFormatter:
         assert "[critical]" == dev.LogLevelColumnFormatter(None, "foo")(
             "", "critical"
         )
+
+
+class TestGetActiveConsoleRenderer:
+    def test_ok(self):
+        """
+        If there's an active ConsoleRenderer, it's returned.
+        """
+        assert (
+            structlog.get_config()["processors"][-1]
+            is dev.get_active_console_renderer()
+        )
+
+    def test_no_console_renderer(self):
+        """
+        If no ConsoleRenderer is configured, raise
+        NoConsoleRendererConfiguredError.
+        """
+        structlog.configure(processors=[])
+
+        with pytest.raises(
+            structlog.exceptions.NoConsoleRendererConfiguredError
+        ):
+            dev.get_active_console_renderer()
+
+    def test_multiple_console_renderers(self):
+        """
+        If multiple ConsoleRenderers are configured, raise
+        MultipleConsoleRenderersConfiguredError because it's most likely a bug.
+        """
+        structlog.configure(
+            processors=[dev.ConsoleRenderer(), dev.ConsoleRenderer()]
+        )
+
+        with pytest.raises(
+            structlog.exceptions.MultipleConsoleRenderersConfiguredError
+        ):
+            dev.get_active_console_renderer()

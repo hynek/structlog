@@ -121,4 +121,11 @@ It's possible to override this behavior by setting two standard environment vari
 
 ## Disabling exception pretty-printing
 
-If you prefer the default terse Exception rendering, but still want Rich installed, you can disable the pretty-printing by instantiating {class}`structlog.dev.ConsoleRenderer()` yourself and passing `exception_formatter=structlog.dev.plain_traceback`.
+If you prefer the default terse Exception rendering, but still want Rich installed, you can disable the auto-enabled pretty-printing by configuring your {class}`~structlog.dev.ConsoleRenderer` to use {class}`structlog.dev.plain_traceback`.
+
+You can either instantiate {class}`structlog.dev.ConsoleRenderer()` yourself and pass `exception_formatter=structlog.dev.plain_traceback`, or set the `exception_formatter` attribute of the active console renderer to it:
+
+```python
+cr = structlog.dev.get_active_console_renderer()
+cr.exception_formatter = structlog.dev.plain_traceback
+```
