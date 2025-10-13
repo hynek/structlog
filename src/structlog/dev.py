@@ -1037,6 +1037,31 @@ class ConsoleRenderer:
 
         return cr
 
+    @property
+    def level_styles(self) -> dict[str, str]:
+        """
+        The level styles mapping for this console renderer.
+
+        Setting this property will reset to defaults if set to None, otherwise
+        it applies the provided mapping. In all cases, columns are rebuilt to
+        reflect the change.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._level_styles
+
+    @level_styles.setter
+    def level_styles(self, value: dict[str, str] | None) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._level_styles = (
+            self.get_default_level_styles(self._colors)
+            if value is None
+            else value
+        )
+        self._configure_columns()
+
 
 _SENTINEL = object()
 

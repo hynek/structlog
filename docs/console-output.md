@@ -43,7 +43,17 @@ strict about immutability than the rest of *structlog* for better
 ergonomics.
 Notably, the currently active instance can be obtained by calling {meth}`ConsoleRenderer.get_active() <structlog.dev.ConsoleRenderer.get_active>` and it offers properties to configure its behavior after instantiation.
 
-Roughly speaking, there are two ways to configure the console output.
+
+:::{important}
+Roughly speaking, there are two ways to configure console output.
+
+1. Using our defaults and tweak some settings.
+2. Explicit columns configuration.
+
+You have to pick one and not mix the two.
+For example, if you pass *columns* to {class}`~structlog.dev.ConsoleRenderer`, all other output-related parameters are ignored, but if you set one of the properties, the columns will be reconfigured accordingly and your columns settings will be lost.
+:::
+
 
 
 ### Defaults plus tweaking

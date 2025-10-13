@@ -864,6 +864,36 @@ class TestLogLevelColumnFormatter:
         )
 
 
+class TestConsoleRendererLevelStylesProperty:
+    def test_getter_setter_roundtrip(self):
+        """
+        The level_styles property can be set and retrieved without
+        re-instantiating ConsoleRenderer.
+        """
+        cr = dev.ConsoleRenderer(colors=True)
+        custom = {"info": "X", "error": "Y"}
+
+        cr.level_styles = custom
+
+        assert cr.level_styles is custom
+        assert cr._level_styles is custom
+
+    @pytest.mark.parametrize("colors", [True, False])
+    def test_set_none_resets_to_defaults(self, colors):
+        """
+        Setting level_styles to None resets to defaults.
+        """
+        cr = dev.ConsoleRenderer(colors=colors)
+        cr.level_styles = {"info": "X"}
+
+        cr.level_styles = None
+
+        assert (
+            dev.ConsoleRenderer.get_default_level_styles(colors=colors)
+            == cr._level_styles
+        )
+
+
 class TestGetActiveConsoleRenderer:
     def test_ok(self):
         """
