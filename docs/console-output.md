@@ -38,21 +38,38 @@ For the console and beyond.
 
 ## Console output configuration
 
-:::{versionadded} 23.3.0
-:::
+Since {class}`~structlog.dev.ConsoleRenderer` is mainly a development helper, it is less
+strict about immutability than the rest of *structlog* for better
+ergonomics.
+Notably, the currently active instance can be obtained by calling {func}`structlog.dev.get_active_console_renderer()` and it offers properties to configure its behavior after instantiation.
 
-You can freely configure how the key-value pairs are formatted: colors, order, and how values are stringified.
+Roughly speaking, there are two ways to configure the console output.
+
+
+### Defaults plus tweaking
+
+The easier way where you're mostly using our defaults and just tweak a few things here and there by passing arguments or setting properties (as of 25.5.0).
+
+For example, you can easily change the colors of the the log levels by passing the *level_styles* parameter or switch *colors* on and off completely.
+
+When the API talks about "styles", it means ANSI control strings.
+You can find them, for example, in [Colorama](https://github.com/tartley/colorama).
+
+
+### Explicit columns configuration
+
+The more flexible way is to configure *everything* by explicitly defining the columns:
+Colors, order, and how values are stringified.
+This is the way *structlog* represents the output configuration internally, too.
 
 For that {class}`~structlog.dev.ConsoleRenderer` accepts the *columns* parameter that takes a list of {class}`~structlog.dev.Column`s.
+Once you pass the *columns* parameter, all other output-related parameters are ignored.
+
 It allows you to assign a formatter to each key and a default formatter for the rest (by passing an empty key name).
 The order of the column definitions is the order in which the columns are rendered;
 the rest is -- depending on the *sort_keys* argument to {class}`~structlog.dev.ConsoleRenderer` -- either sorted alphabetically or in the order of the keys in the event dictionary.
 
 You can use a column definition to drop a key-value pair from the output by returning an empty string from the formatter.
-
-When the API talks about "styles", it means ANSI control strings.
-You can find them, for example, in [Colorama](https://github.com/tartley/colorama).
-
 
 It's best demonstrated by an example:
 
