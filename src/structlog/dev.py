@@ -480,7 +480,7 @@ class ConsoleRenderer:
         Since `ConsoleRenderer` is mainly a development helper, it is less
         strict about immutability than the rest of *structlog* for better
         ergonomics. Notably, the currently active instance can be obtained by
-        calling `get_active_console_renderer()` and it offers properties to
+        calling `ConsoleRenderer.get_active()` and it offers properties to
         configure its behavior after instantiation.
 
     Args:
@@ -934,6 +934,38 @@ class ConsoleRenderer:
         self._default_column_formatter = defaults[0].formatter
         self._columns = [col for col in value if col.key]
 
+    @classmethod
+    def get_active(cls) -> ConsoleRenderer:
+        """
+        If *structlog* is configured to use `ConsoleRenderer`, it's returned.
+
+        It does not have to be the last processor.
+
+        Raises:
+            NoConsoleRendererConfiguredError:
+                If no ConsoleRenderer is found in the current configuration.
+
+            MultipleConsoleRenderersConfiguredError:
+                If more than one is found in the current configuration. This is
+                almost certainly a bug.
+
+        .. versionadded:: 25.5.0
+        """
+        from ._config import get_config
+
+        cr = None
+        for p in get_config()["processors"]:
+            if isinstance(p, ConsoleRenderer):
+                if cr is not None:
+                    raise MultipleConsoleRenderersConfiguredError
+
+                cr = p
+
+        if cr is None:
+            raise NoConsoleRendererConfiguredError
+
+        return cr
+
 
 _SENTINEL = object()
 
@@ -957,35 +989,3 @@ def set_exc_info(
     event_dict["exc_info"] = True
 
     return event_dict
-
-
-def get_active_console_renderer() -> ConsoleRenderer:
-    """
-    If *structlog* is configured to use `ConsoleRenderer`, it's returned.
-
-    It does not have to be the last processor.
-
-    Raises:
-        NoConsoleRendererConfiguredError:
-            If no ConsoleRenderer is found in the current configuration.
-
-        MultipleConsoleRenderersConfiguredError:
-            If more than one is found in the current configuration. This is
-            almost certainly a bug.
-
-    .. versionadded:: 25.5.0
-    """
-    from ._config import get_config
-
-    cr = None
-    for p in get_config()["processors"]:
-        if isinstance(p, ConsoleRenderer):
-            if cr is not None:
-                raise MultipleConsoleRenderersConfiguredError
-
-            cr = p
-
-    if cr is None:
-        raise NoConsoleRendererConfiguredError
-
-    return cr

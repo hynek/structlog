@@ -17,7 +17,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Added
 
-- Added `structlog.dev.get_active_console_renderer()` that returns the currently active `structlog.dev.ConsoleRenderer()`.
+- Added `structlog.dev.ConsoleRenderer.get_active()` that returns the currently active `structlog.dev.ConsoleRenderer()`.
   [#749](https://github.com/hynek/structlog/pull/749)
 
 - `structlog.dev.ConsoleRenderer()` now supports setting the `exception_formatter` attribute.
@@ -25,7 +25,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   You can now disable the pretty-printing of exceptions by setting it to `structlog.dev.plain_traceback`:
 
   ```python
-  cr = structlog.dev.get_active_console_renderer()
+  cr = structlog.dev.ConsoleRenderer.get_active()
   cr.exception_formatter = structlog.dev.plain_traceback
   ```
   [#749](https://github.com/hynek/structlog/pull/749)

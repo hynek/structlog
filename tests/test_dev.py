@@ -871,7 +871,7 @@ class TestGetActiveConsoleRenderer:
         """
         assert (
             structlog.get_config()["processors"][-1]
-            is dev.get_active_console_renderer()
+            is dev.ConsoleRenderer.get_active()
         )
 
     def test_no_console_renderer(self):
@@ -884,7 +884,7 @@ class TestGetActiveConsoleRenderer:
         with pytest.raises(
             structlog.exceptions.NoConsoleRendererConfiguredError
         ):
-            dev.get_active_console_renderer()
+            dev.ConsoleRenderer.get_active()
 
     def test_multiple_console_renderers(self):
         """
@@ -898,4 +898,4 @@ class TestGetActiveConsoleRenderer:
         with pytest.raises(
             structlog.exceptions.MultipleConsoleRenderersConfiguredError
         ):
-            dev.get_active_console_renderer()
+            dev.ConsoleRenderer.get_active()

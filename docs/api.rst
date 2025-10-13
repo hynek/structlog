@@ -76,11 +76,10 @@ API Reference
 .. automodule:: structlog.dev
 
 .. autoclass:: ConsoleRenderer
-   :members: get_default_level_styles, get_default_column_styles, exception_formatter, sort_keys, columns
+   :members: get_default_level_styles, get_default_column_styles, exception_formatter, sort_keys, columns, get_active
 
 .. autoclass:: ColumnStyles
 
-.. autofunction:: get_active_console_renderer
 .. autoexception:: NoConsoleRendererConfiguredError
 .. autoexception:: MultipleConsoleRenderersConfiguredError
 

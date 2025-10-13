@@ -41,7 +41,7 @@ For the console and beyond.
 Since {class}`~structlog.dev.ConsoleRenderer` is mainly a development helper, it is less
 strict about immutability than the rest of *structlog* for better
 ergonomics.
-Notably, the currently active instance can be obtained by calling {func}`structlog.dev.get_active_console_renderer()` and it offers properties to configure its behavior after instantiation.
+Notably, the currently active instance can be obtained by calling {meth}`ConsoleRenderer.get_active() <structlog.dev.ConsoleRenderer.get_active>` and it offers properties to configure its behavior after instantiation.
 
 Roughly speaking, there are two ways to configure the console output.
 
@@ -119,7 +119,7 @@ structlog.configure(processors=structlog.get_config()["processors"][:-1]+[cr])
 You can also access and configure the columns of the active console renderer:
 
 ```python
-cr = structlog.dev.get_active_console_renderer()
+cr = structlog.dev.ConsoleRenderer.get_active()
 cr.columns = [
     ...
 ]
@@ -144,6 +144,6 @@ If you prefer the default terse Exception rendering, but still want Rich install
 You can either instantiate {class}`structlog.dev.ConsoleRenderer()` yourself and pass `exception_formatter=structlog.dev.plain_traceback`, or set the `exception_formatter` attribute of the active console renderer to it:
 
 ```python
-cr = structlog.dev.get_active_console_renderer()
+cr = structlog.dev.ConsoleRenderer.get_active()
 cr.exception_formatter = structlog.dev.plain_traceback
 ```
