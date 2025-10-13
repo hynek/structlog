@@ -709,6 +709,21 @@ class TestConsoleRenderer:
         assert cr.sort_keys is True
         assert cr._sort_keys is True
 
+    def test_columns_property(self, cr):
+        """
+        The columns property can be set and retrieved without re-instantiating
+        ConsoleRenderer.
+
+        The property also fakes the default column formatter.
+        """
+        cols = [dev.Column("", lambda k, v: "")]
+
+        cr.columns = cols
+
+        assert cols == cr.columns
+        assert [] == cr._columns
+        assert cols[0].formatter == cr._default_column_formatter
+
 
 class TestSetExcInfo:
     def test_wrong_name(self):

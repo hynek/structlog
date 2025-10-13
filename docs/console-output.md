@@ -99,13 +99,14 @@ cr = structlog.dev.ConsoleRenderer(
 structlog.configure(processors=structlog.get_config()["processors"][:-1]+[cr])
 ```
 
-:::{hint}
-You can replace only the last processor using:
+You can also access and configure the columns of the active console renderer:
 
 ```python
-structlog.configure(processors=structlog.get_config()["processors"][:-1]+[cr])
+cr = structlog.dev.get_active_console_renderer()
+cr.columns = [
+    ...
+]
 ```
-:::
 
 
 ## Standard environment variables
