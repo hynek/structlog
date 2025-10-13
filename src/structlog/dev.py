@@ -913,6 +913,7 @@ class ConsoleRenderer:
         """
         .. versionadded:: 25.5.0
         """
+        # _sort_keys is a format-time setting, so we can just set it directly.
         self._sort_keys = value
 
     @property

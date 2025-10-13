@@ -50,20 +50,22 @@ Roughly speaking, there are two ways to configure console output.
 1. Using our defaults and tweak some settings.
 2. Explicit columns configuration.
 
-You have to pick one and not mix the two.
-For example, if you pass *columns* to {class}`~structlog.dev.ConsoleRenderer`, all other output-related parameters are ignored, but if you set one of the properties, the columns will be reconfigured accordingly and your columns settings will be lost.
+You should pick one and not mix the two.
+For example, if you pass *columns* to {class}`~structlog.dev.ConsoleRenderer`, all other output-related parameters are stored but otherwise ignored.
+But if you set one of the non-*columns* properties, the columns will be reconfigured accordingly and *your* columns settings will be lost.
 :::
-
 
 
 ### Defaults plus tweaking
 
 The easier way where you're mostly using our defaults and just tweak a few things here and there by passing arguments or setting properties (as of 25.5.0).
 
-For example, you can easily change the colors of the the log levels by passing the *level_styles* parameter or switch *colors* on and off completely.
+For example, you can easily change the colors of the the log levels by passing the *level_styles*[^styles] parameter or switch *colors* on and off completely.
 
-When the API talks about "styles", it means ANSI control strings.
+[^styles]: When the API talks about "styles", it means ANSI control strings.
 You can find them, for example, in [Colorama](https://github.com/tartley/colorama).
+
+You can find the relevant arguments and properties in the {class}`~structlog.dev.ConsoleRenderer` documentation.
 
 
 ### Explicit columns configuration
