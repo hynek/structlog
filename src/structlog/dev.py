@@ -642,49 +642,12 @@ class ConsoleRenderer:
         columns: list[Column] | None = None,
         pad_level: bool = True,
     ):
+        # Store all settings in case the user later switches from columns to
+        # defaults.
         self.exception_formatter = exception_formatter
         self._sort_keys = sort_keys
-
-        if columns is not None:
-            to_warn = []
-
-            def add_meaningless_arg(arg: str) -> None:
-                to_warn.append(
-                    f"The `{arg}` argument is ignored when passing `columns`.",
-                )
-
-            if pad_event != _EVENT_WIDTH:
-                add_meaningless_arg("pad_event")
-
-            if colors != _has_colors:
-                add_meaningless_arg("colors")
-
-            if force_colors is not False:
-                add_meaningless_arg("force_colors")
-
-            if repr_native_str is not False:
-                add_meaningless_arg("repr_native_str")
-
-            if level_styles is not None:
-                add_meaningless_arg("level_styles")
-
-            if event_key != "event":
-                add_meaningless_arg("event_key")
-
-            if timestamp_key != "timestamp":
-                add_meaningless_arg("timestamp_key")
-
-            for w in to_warn:
-                warnings.warn(w, stacklevel=2)
-
-            self.columns = columns
-
-            return
-
-        styles = self.get_default_column_styles(colors, force_colors)
-
         self._repr_native_str = repr_native_str
-        self._styles = styles
+        self._styles = self.get_default_column_styles(colors, force_colors)
         self._level_styles = (
             self.get_default_level_styles(colors)
             if level_styles is None
@@ -695,7 +658,42 @@ class ConsoleRenderer:
         self._event_key = event_key
         self._pad_level = pad_level
 
-        self._configure_columns()
+        if columns is None:
+            self._configure_columns()
+            return
+
+        self.columns = columns
+
+        to_warn = []
+
+        def add_meaningless_arg(arg: str) -> None:
+            to_warn.append(
+                f"The `{arg}` argument is ignored when passing `columns`.",
+            )
+
+        if pad_event != _EVENT_WIDTH:
+            add_meaningless_arg("pad_event")
+
+        if colors != _has_colors:
+            add_meaningless_arg("colors")
+
+        if force_colors is not False:
+            add_meaningless_arg("force_colors")
+
+        if repr_native_str is not False:
+            add_meaningless_arg("repr_native_str")
+
+        if level_styles is not None:
+            add_meaningless_arg("level_styles")
+
+        if event_key != "event":
+            add_meaningless_arg("event_key")
+
+        if timestamp_key != "timestamp":
+            add_meaningless_arg("timestamp_key")
+
+        for w in to_warn:
+            warnings.warn(w, stacklevel=2)
 
     @classmethod
     def get_default_column_styles(
