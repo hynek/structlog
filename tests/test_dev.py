@@ -899,3 +899,146 @@ class TestGetActiveConsoleRenderer:
             structlog.exceptions.MultipleConsoleRenderersConfiguredError
         ):
             dev.ConsoleRenderer.get_active()
+
+
+class TestConsoleRendererColorsProperty:
+    def test_reset(self, cr):
+        """
+        Setting colors to the same value resets the level styles to the
+        defaults.
+        """
+        val = cr.colors
+        cr._level_styles = {"info": "X", "error": "Y"}
+
+        cr.colors = cr.colors
+
+        assert val is cr.colors
+        assert (
+            cr._level_styles
+            == dev.ConsoleRenderer.get_default_level_styles(colors=val)
+        )
+
+    @pytest.mark.skipif(
+        dev._IS_WINDOWS and dev.colorama is None,
+        reason="Toggling colors=True requires colorama on Windows",
+    )
+    def test_toggle_colors_updates_styles_and_levels(self):
+        """
+        Toggling colors updates the styles and level styles to colorful styles.
+        """
+        cr = dev.ConsoleRenderer(colors=False)
+
+        assert cr.colors is False
+        assert cr._colors is False
+        assert cr._styles is dev._plain_styles
+        assert (
+            cr._level_styles
+            == dev.ConsoleRenderer.get_default_level_styles(colors=False)
+        )
+
+        cr.colors = True
+
+        assert cr.colors is True
+        assert cr._colors is True
+        assert cr._styles is dev._colorful_styles
+        assert (
+            cr._level_styles
+            == dev.ConsoleRenderer.get_default_level_styles(colors=True)
+        )
+
+    @pytest.mark.skipif(
+        dev._IS_WINDOWS and dev.colorama is None,
+        reason="Toggling colors=True requires colorama on Windows",
+    )
+    def test_toggle_resets_custom_level_styles(self):
+        """
+        Toggling colors resets the level styles to the defaults for the new
+        color setting.
+        """
+        custom = {"info": "X", "error": "Y"}
+        cr = dev.ConsoleRenderer(colors=False, level_styles=custom)
+
+        assert custom == cr._level_styles
+
+        cr.colors = True
+        assert (
+            dev.ConsoleRenderer.get_default_level_styles(colors=True)
+            == cr._level_styles
+        )
+
+        # And switching back follows defaults for the new setting again
+        cr.colors = False
+        assert (
+            dev.ConsoleRenderer.get_default_level_styles(colors=False)
+            == cr._level_styles
+        )
+
+
+class TestConsoleRendererForceColorsProperty:
+    def test_reset(self, cr):
+        """
+        Setting force_colors to the same value resets the level styles to the
+        defaults.
+        """
+        val = cr.force_colors
+
+        cr._level_styles = {"info": "X", "error": "Y"}
+
+        cr.force_colors = cr.force_colors
+
+        assert val is cr.force_colors
+        assert (
+            cr._level_styles
+            == dev.ConsoleRenderer.get_default_level_styles(colors=cr.colors)
+        )
+
+    def test_toggle_force_colors_updates_styles_and_levels(self):
+        """
+        Setting force_colors to the same value resets the level styles to the
+        defaults.
+        """
+        cr = dev.ConsoleRenderer(colors=True, force_colors=False)
+
+        assert cr.force_colors is False
+        assert cr._force_colors is False
+        assert cr._styles is dev.ConsoleRenderer.get_default_column_styles(
+            colors=True, force_colors=False
+        )
+        assert (
+            cr._level_styles
+            == dev.ConsoleRenderer.get_default_level_styles(colors=True)
+        )
+
+        cr.force_colors = True
+
+        assert cr.force_colors is True
+        assert cr._force_colors is True
+        assert cr._styles is dev.ConsoleRenderer.get_default_column_styles(
+            colors=True, force_colors=True
+        )
+        assert (
+            cr._level_styles
+            == dev.ConsoleRenderer.get_default_level_styles(colors=True)
+        )
+
+    def test_toggle_resets_custom_level_styles(self):
+        """
+        Toggling force_colors resets the level styles to the defaults for the
+        new force_colors setting.
+        """
+        custom = {"info": "X", "error": "Y"}
+        cr = dev.ConsoleRenderer(colors=True, level_styles=custom)
+
+        assert custom == cr._level_styles
+
+        cr.force_colors = True
+        assert (
+            dev.ConsoleRenderer.get_default_level_styles(colors=True)
+            == cr._level_styles
+        )
+
+        cr.force_colors = False
+        assert (
+            dev.ConsoleRenderer.get_default_level_styles(colors=True)
+            == cr._level_styles
+        )

@@ -648,6 +648,8 @@ class ConsoleRenderer:
         self._sort_keys = sort_keys
         self._repr_native_str = repr_native_str
         self._styles = self.get_default_column_styles(colors, force_colors)
+        self._colors = colors
+        self._force_colors = force_colors
         self._level_styles = (
             self.get_default_level_styles(colors)
             if level_styles is None
@@ -952,6 +954,56 @@ class ConsoleRenderer:
 
         self._default_column_formatter = defaults[0].formatter
         self._columns = [col for col in value if col.key]
+
+    @property
+    def colors(self) -> bool:
+        """
+        Whether to use colorful output styles.
+
+        Setting this will update the renderer's styles immediately and reset
+        level styles to the defaults according to the new color setting -- even
+        if the color value is the same.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._colors
+
+    @colors.setter
+    def colors(self, value: bool) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._colors = value
+        self._styles = self.get_default_column_styles(
+            value, self._force_colors
+        )
+        self._level_styles = self.get_default_level_styles(value)
+
+        self._configure_columns()
+
+    @property
+    def force_colors(self) -> bool:
+        """
+        Force colorful output even in non-interactive environments.
+
+        Setting this will update the renderer's styles immediately and reset
+        level styles to the defaults according to the current color setting --
+        even if the value is the same.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._force_colors
+
+    @force_colors.setter
+    def force_colors(self, value: bool) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._force_colors = value
+        self._styles = self.get_default_column_styles(self._colors, value)
+        self._level_styles = self.get_default_level_styles(self._colors)
+
+        self._configure_columns()
 
     @classmethod
     def get_active(cls) -> ConsoleRenderer:

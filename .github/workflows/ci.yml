@@ -212,7 +212,7 @@ jobs:
       # Exercise the terminal initialization that we don't test otherwise.
       - run: uv pip install colorama
         if: runner.os == 'Windows'
-      - run: .\.venv\Scripts\python.exe -Ic 'import structlog; structlog.get_logger().info("test")'
+      - run: .\.venv\Scripts\python.exe -Ic 'import structlog; log = structlog.get_logger(); log.info("colors"); structlog.dev.ConsoleRenderer.get_active().colors = False; log.info("bw")'
         if: runner.os == 'Windows'
 
   required-checks-pass:
