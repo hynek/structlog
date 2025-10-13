@@ -684,17 +684,18 @@ class ConsoleRenderer:
         styles = self.get_default_column_styles(colors, force_colors)
 
         self._repr_native_str = repr_native_str
-
-        self._configure_columns(
-            styles=styles,
-            level_styles=self.get_default_level_styles(colors)
+        self._styles = styles
+        self._level_styles = (
+            self.get_default_level_styles(colors)
             if level_styles is None
-            else level_styles,
-            pad_level=pad_level,
-            timestamp_key=timestamp_key,
-            event_key=event_key,
-            pad_event=pad_event,
+            else level_styles
         )
+        self._pad_event = pad_event
+        self._timestamp_key = timestamp_key
+        self._event_key = event_key
+        self._pad_level = pad_level
+
+        self._configure_columns()
 
     @classmethod
     def get_default_column_styles(
@@ -730,71 +731,67 @@ class ConsoleRenderer:
 
         return _colorful_styles
 
-    def _configure_columns(
-        self,
-        *,
-        styles: ColumnStyles,
-        level_styles: dict[str, str],
-        pad_level: bool,
-        timestamp_key: str,
-        event_key: str,
-        pad_event: int,
-    ) -> None:
+    def _configure_columns(self) -> None:
         """
-        Re-configures columns according to the given styles and parameters.
+        Re-configure self._columns and self._default_column_formatter
+        according to our current settings.
+
+        Overwrite existing columns settings, regardless of whether they were
+        explicitly passed by the user or derived by us.
         """
-        self._styles = styles
-        level_to_color = level_styles.copy()
+        level_to_color = self._level_styles.copy()
 
         for key in level_to_color:
-            level_to_color[key] += styles.bright
+            level_to_color[key] += self._styles.bright
         self._longest_level = len(
             max(level_to_color.keys(), key=lambda e: len(e))
         )
 
         self._default_column_formatter = KeyValueColumnFormatter(
-            styles.kv_key,
-            styles.kv_value,
-            styles.reset,
+            self._styles.kv_key,
+            self._styles.kv_value,
+            self._styles.reset,
             value_repr=self._repr,
             width=0,
         )
 
         logger_name_formatter = KeyValueColumnFormatter(
             key_style=None,
-            value_style=styles.bright + styles.logger_name,
-            reset_style=styles.reset,
+            value_style=self._styles.bright + self._styles.logger_name,
+            reset_style=self._styles.reset,
             value_repr=str,
             prefix="[",
             postfix="]",
         )
 
-        level_width = 0 if not pad_level else None
+        level_width = 0 if not self._pad_level else None
 
         self._columns = [
             Column(
-                timestamp_key,
+                self._timestamp_key,
                 KeyValueColumnFormatter(
                     key_style=None,
-                    value_style=styles.timestamp,
-                    reset_style=styles.reset,
+                    value_style=self._styles.timestamp,
+                    reset_style=self._styles.reset,
                     value_repr=str,
                 ),
             ),
             Column(
                 "level",
                 LogLevelColumnFormatter(
-                    level_to_color, reset_style=styles.reset, width=level_width
+                    level_to_color,
+                    reset_style=self._styles.reset,
+                    width=level_width,
                 ),
             ),
             Column(
-                event_key,
+                self._event_key,
                 KeyValueColumnFormatter(
                     key_style=None,
-                    value_style=styles.bright,
-                    reset_style=styles.reset,
+                    value_style=self._styles.bright,
+                    reset_style=self._styles.reset,
                     value_repr=str,
-                    width=pad_event,
+                    width=self._pad_event,
                 ),
             ),
             Column("logger", logger_name_formatter),
