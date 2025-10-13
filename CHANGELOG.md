@@ -65,6 +65,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.tracebacks.extract()` no longer raises a *RecursionError* when the cause chain of an exception contains itself.
   [#739](https://github.com/hynek/structlog/pull/739)
 
+- Default config now respects `FORCE_COLOR` on Windows.
+  [#758](https://github.com/hynek/structlog/pull/758)
+
 
 ## [25.4.0](https://github.com/hynek/structlog/compare/25.3.0...25.4.0) - 2025-06-02
 

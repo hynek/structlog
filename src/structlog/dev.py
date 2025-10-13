@@ -68,6 +68,45 @@ _MISSING = "{who} requires the {package} package installed.  "
 _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 
+if _IS_WINDOWS:  # pragma: no cover
+
+    def _init_terminal(who: str, force_colors: bool) -> None:
+        """
+        Initialize colorama on Windows systems for colorful console output.
+
+        Args:
+            who: The name of the caller for error messages.
+
+            force_colors:
+                Force colorful output even in non-interactive environments.
+
+        Raises:
+            SystemError:
+                When colorama is not installed.
+        """
+        # On Windows, we can't do colorful output without colorama.
+        if colorama is None:
+            raise SystemError(
+                _MISSING.format(
+                    who=who + " with `colors=True` on Windows",
+                    package="colorama",
+                )
+            )
+        # Colorama must be init'd on Windows, but must NOT be
+        # init'd on other OSes, because it can break colors.
+        if force_colors:
+            colorama.deinit()
+            colorama.init(strip=False)
+        else:
+            colorama.init()
+else:
+
+    def _init_terminal(who: str, force_colors: bool) -> None:
+        """
+        Currently, nothing to be done on non-Windows systems.
+        """
+
+
 def _pad(s: str, length: int) -> str:
     """
     Pads *s* to length *length*.
@@ -687,22 +726,7 @@ class ConsoleRenderer:
         if not colors:
             return _plain_styles
 
-        if _IS_WINDOWS:  # pragma: no cover
-            # On Windows, we can't do colorful output without colorama.
-            if colorama is None:
-                raise SystemError(
-                    _MISSING.format(
-                        who=cls.__name__ + " with `colors=True`",
-                        package="colorama",
-                    )
-                )
-            # Colorama must be init'd on Windows, but must NOT be
-            # init'd on other OSes, because it can break colors.
-            if force_colors:
-                colorama.deinit()
-                colorama.init(strip=False)
-            else:
-                colorama.init()
+        _init_terminal(cls.__name__, force_colors)
 
         return _colorful_styles
 

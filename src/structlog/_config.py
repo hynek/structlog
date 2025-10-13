@@ -29,6 +29,10 @@ Any changes to these defaults must be reflected in:
 - `getting-started`.
 - structlog.stdlib.recreate_defaults()'s docstring.
 """
+
+_no_colors = os.environ.get("NO_COLOR", "") != ""
+_force_colors = os.environ.get("FORCE_COLOR", "") != ""
+
 _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     merge_contextvars,
     add_log_level,
@@ -36,16 +40,17 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
     set_exc_info,
     TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
     ConsoleRenderer(
-        colors=os.environ.get("NO_COLOR", "") == ""
+        colors=not _no_colors
         and (
-            os.environ.get("FORCE_COLOR", "") != ""
+            _force_colors
             or (
                 _has_colors
                 and sys.stdout is not None
                 and hasattr(sys.stdout, "isatty")
                 and sys.stdout.isatty()
             )
-        )
+        ),
+        force_colors=_force_colors,
     ),
 ]
 _BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)
