@@ -70,7 +70,7 @@ _EVENT_WIDTH = 30  # pad the event name to so many characters
 
 if _IS_WINDOWS:  # pragma: no cover
 
-    def _init_terminal(who: str, force_colors: bool = False) -> None:
+    def _init_terminal(who: str, force_colors: bool) -> None:
         """
         Initialize colorama on Windows systems for colorful console output.
 
@@ -101,7 +101,7 @@ if _IS_WINDOWS:  # pragma: no cover
             colorama.init()
 else:
 
-    def _init_terminal(who: str, force_colors: bool = False) -> None:
+    def _init_terminal(who: str, force_colors: bool) -> None:
         """
         Currently, nothing to be done on non-Windows systems.
         """
