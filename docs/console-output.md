@@ -128,7 +128,7 @@ cr.columns = [
 
 ## Standard environment variables
 
-*structlog*'s default configuration uses colors if standard out is a TTY (that is, an interactive session).
+*structlog*'s default configuration uses colors if standard out is a TTY (that is, an interactive session) and is able to do so (that is, Colorama is installed on Windows).
 
 It's possible to override this behavior by setting two standard environment variables to any value except an empty string:
 
