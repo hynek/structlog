@@ -14,7 +14,6 @@ env:
 
 permissions: {}
 
-
 jobs:
   build-package:
     name: Build & verify package
@@ -33,7 +32,6 @@ jobs:
       # Used to define the matrix for tests below. The value is based on
       # packaging metadata (trove classifiers).
       python-versions: ${{ steps.baipp.outputs.supported_python_classifiers_json_array }}
-
 
   tests:
     name: Tests & Mypy API on ${{ matrix.python-version }}
@@ -84,7 +82,6 @@ jobs:
           --installpkg dist/*.whl
           -e py${PYTHON//./}-mypy
 
-
   coverage:
     name: Ensure 100% test coverage
     runs-on: ubuntu-latest
@@ -126,7 +123,6 @@ jobs:
           path: htmlcov
         if: ${{ failure() }}
 
-
   mypy-pkg:
     name: Mypy Codebase
     runs-on: ubuntu-latest
@@ -148,7 +144,6 @@ jobs:
           uvx --with tox-uv
           tox run -e mypy-pkg
 
-
   pyright:
     name: Pyright API
     runs-on: ubuntu-latest
@@ -168,7 +163,6 @@ jobs:
       - run: >
           uvx --with tox-uv
           tox run -e pyright
-
 
   docs:
     name: Run doctests
@@ -190,7 +184,6 @@ jobs:
       - run: >
           uvx --with tox-uv
           tox run -e docs-doctests
-
 
   install-dev:
     name: Verify dev env
@@ -216,6 +209,11 @@ jobs:
       - run: .\.venv\Scripts\python.exe -Ic 'import structlog; print(structlog.__version__)'
         if: runner.os == 'Windows'
 
+      # Exercise the terminal initialization that we don't test otherwise.
+      - run: uv pip install colorama
+        if: runner.os == 'Windows'
+      - run: .\.venv\Scripts\python.exe -Ic 'import structlog; structlog.get_logger().info("test")'
+        if: runner.os == 'Windows'
 
   required-checks-pass:
     name: Ensure everything required is passing for branch protection
@@ -232,10 +230,9 @@ jobs:
 
     steps:
       - name: Decide whether the needed jobs succeeded or failed
-        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe  # v1.2.2
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}
-
 
   colors:
     name: Visual check for color settings using env variables
