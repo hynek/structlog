@@ -323,8 +323,6 @@ class TestCallsiteParameterAdder:
         }
         assert self.parameter_strings == self.get_callsite_parameters().keys()
 
-    # Removed CLASS_NAME support; QUAL_NAME supersedes it.
-
     @pytest.mark.skipif(
         sys.version_info < (3, 11), reason="QUAL_NAME requires Python 3.11+"
     )
