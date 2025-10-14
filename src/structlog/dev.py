@@ -1063,6 +1063,26 @@ class ConsoleRenderer:
         )
         self._configure_columns()
 
+    @property
+    def pad_level(self) -> bool:
+        """
+        Whether to pad log level with blanks to the longest amongst all
+        level labels.
+
+        Setting this will rebuild columns to reflect the change.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._pad_level
+
+    @pad_level.setter
+    def pad_level(self, value: bool) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._pad_level = value
+        self._configure_columns()
+
 
 _SENTINEL = object()
 

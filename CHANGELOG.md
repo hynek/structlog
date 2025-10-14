@@ -30,7 +30,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   ```
   [#749](https://github.com/hynek/structlog/pull/749)
 
-- Same for *sort_keys*, *columns*, *colors*, *force_colors*, and *level_styles*.
+- Same for *sort_keys*, *columns*, *colors*, *force_colors*, *level_styles*, and *pad_level*.
   [#756](https://github.com/hynek/structlog/pull/756)
   [#757](https://github.com/hynek/structlog/pull/757)
   [#759](https://github.com/hynek/structlog/pull/759)

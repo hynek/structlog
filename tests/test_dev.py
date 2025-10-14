@@ -864,36 +864,6 @@ class TestLogLevelColumnFormatter:
         )
 
 
-class TestConsoleRendererLevelStylesProperty:
-    def test_getter_setter_roundtrip(self):
-        """
-        The level_styles property can be set and retrieved without
-        re-instantiating ConsoleRenderer.
-        """
-        cr = dev.ConsoleRenderer(colors=True)
-        custom = {"info": "X", "error": "Y"}
-
-        cr.level_styles = custom
-
-        assert cr.level_styles is custom
-        assert cr._level_styles is custom
-
-    @pytest.mark.parametrize("colors", [True, False])
-    def test_set_none_resets_to_defaults(self, colors):
-        """
-        Setting level_styles to None resets to defaults.
-        """
-        cr = dev.ConsoleRenderer(colors=colors)
-        cr.level_styles = {"info": "X"}
-
-        cr.level_styles = None
-
-        assert (
-            dev.ConsoleRenderer.get_default_level_styles(colors=colors)
-            == cr._level_styles
-        )
-
-
 class TestGetActiveConsoleRenderer:
     def test_ok(self):
         """
@@ -931,8 +901,54 @@ class TestGetActiveConsoleRenderer:
             dev.ConsoleRenderer.get_active()
 
 
-class TestConsoleRendererColorsProperty:
-    def test_reset(self, cr):
+class TestConsoleRendererProperties:
+    def test_level_styles_roundtrip(self):
+        """
+        The level_styles property can be set and retrieved.
+        """
+        cr = dev.ConsoleRenderer(colors=True)
+        custom = {"info": "X", "error": "Y"}
+
+        cr.level_styles = custom
+
+        assert cr.level_styles is custom
+        assert cr._level_styles is custom
+
+    @pytest.mark.parametrize("colors", [True, False])
+    def test_set_level_styles_none_resets_to_defaults(self, colors):
+        """
+        Setting level_styles to None resets to defaults.
+        """
+        cr = dev.ConsoleRenderer(colors=colors)
+        cr.level_styles = {"info": "X"}
+
+        cr.level_styles = None
+
+        assert (
+            dev.ConsoleRenderer.get_default_level_styles(colors=colors)
+            == cr._level_styles
+        )
+
+    def test_roundtrip_pad_level(self):
+        """
+        The pad_level property can be set and retrieved.
+        """
+        cr = dev.ConsoleRenderer(pad_level=True)
+
+        assert cr.pad_level is True
+        assert cr._pad_level is True
+
+        cr.pad_level = False
+
+        assert cr.pad_level is False
+        assert cr._pad_level is False
+
+        cr.pad_level = True
+
+        assert cr.pad_level is True
+        assert cr._pad_level is True
+
+    def test_same_value_resets_level_styles(self, cr):
         """
         Setting colors to the same value resets the level styles to the
         defaults.
@@ -980,7 +996,7 @@ class TestConsoleRendererColorsProperty:
         dev._IS_WINDOWS and dev.colorama is None,
         reason="Toggling colors=True requires colorama on Windows",
     )
-    def test_toggle_resets_custom_level_styles(self):
+    def test_toggle_colors_resets_custom_level_styles(self):
         """
         Toggling colors resets the level styles to the defaults for the new
         color setting.
@@ -1003,9 +1019,7 @@ class TestConsoleRendererColorsProperty:
             == cr._level_styles
         )
 
-
-class TestConsoleRendererForceColorsProperty:
-    def test_reset(self, cr):
+    def test_same_force_colors_value_resets_level_styles(self, cr):
         """
         Setting force_colors to the same value resets the level styles to the
         defaults.
@@ -1051,7 +1065,7 @@ class TestConsoleRendererForceColorsProperty:
             == dev.ConsoleRenderer.get_default_level_styles(colors=True)
         )
 
-    def test_toggle_resets_custom_level_styles(self):
+    def test_toggle_force_colors_resets_custom_level_styles(self):
         """
         Toggling force_colors resets the level styles to the defaults for the
         new force_colors setting.
