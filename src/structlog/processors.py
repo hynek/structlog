@@ -746,7 +746,7 @@ class CallsiteParameter(enum.Enum):
     #: The name of the function that the callsite was in.
     FUNC_NAME = "func_name"
     #: The qualified name of the callsite (includes scope and class names).
-    #: No-op on Python <3.11.
+    #: Only works on Python >=3.11.
     QUAL_NAME = "qual_name"
     #: The line number of the callsite.
     LINENO = "lineno"
@@ -783,10 +783,7 @@ def _get_callsite_qual_name(module: str, frame: FrameType) -> Any:
     Uses frame.f_code.co_qualname which is available on Python 3.11+.
     If unavailable, return None.
     """
-    if sys.version_info >= (3, 11):
-        return frame.f_code.co_qualname
-
-    return None
+    return frame.f_code.co_qualname
 
 
 def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
