@@ -57,6 +57,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - Native loggers now allow the passing of a dictionary for dictionary-based interpolation `log.info("hello %(name)s!", {"name": "world"})`.
   [#748](https://github.com/hynek/structlog/pull/748)
 
+- On Python 3.11+, `structlog.processors.CallsiteParameterAdder` now supports `CallsiteParameter.QUAL_NAME` that adds the qualified name of the callsite, including scope and class names.
+  This is only available for *structlog*-originated events since the standard library has no equivalent.
+
 
 ### Changed
 
