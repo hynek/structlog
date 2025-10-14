@@ -182,6 +182,12 @@ ignore_errors = true
 module = "tests.typing.*"
 ignore_errors = false
 
+[tool.ty.src]
+include = ["tests/typing"]
+
+[tool.pyrefly]
+project-includes = ["tests/typing"]
+
 
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
 content-type = "text/markdown"
