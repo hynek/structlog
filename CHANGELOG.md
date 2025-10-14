@@ -17,7 +17,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Deprecated
 
-- `structlog.dev.ConsoleRenderer()` *pad_event* argument has been renamed to *pad_event_to* to differentiate it from the boolean *pad_level* argument.
+- `structlog.dev.ConsoleRenderer()`'s *pad_event* argument has been renamed to *pad_event_to* to differentiate it from the boolean *pad_level* argument.
   *pad_event* is now deprecated.
 
 
