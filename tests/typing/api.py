@@ -368,3 +368,31 @@ is_active = fbl.is_enabled_for(20)
 def f() -> None:
     with structlog.contextvars.bound_contextvars(y=23):
         pass
+
+
+# ConsoleRenderer properties
+
+cr = structlog.dev.ConsoleRenderer.get_active()
+
+cr.exception_formatter
+cr.exception_formatter = structlog.dev.plain_traceback
+cr.exception_formatter = structlog.dev.better_traceback
+
+cr.columns
+cr.columns = [
+    structlog.dev.Column(
+        "", structlog.dev.KeyValueColumnFormatter("", "", "", repr, 0)
+    )
+]
+
+cr.colors
+cr.colors = False
+
+cr.force_colors
+cr.force_colors = False
+
+cr.level_styles
+cr.level_styles = {"info": "foo"}
+
+cr.sort_keys
+cr.sort_keys = True
