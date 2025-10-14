@@ -1004,6 +1004,23 @@ class TestConsoleRendererProperties:
         assert cr.pad_event_to == 20
         assert cr._pad_event_to == 20
 
+    def test_repr_native_str_property(self, cr):
+        """
+        The repr_native_str property can be set and retrieved, and affects formatting.
+        """
+        cr = dev.ConsoleRenderer(colors=False, repr_native_str=False)
+
+        assert False is cr.repr_native_str
+        assert "event                          key=plain" == cr(
+            None, None, {"event": "event", "key": "plain"}
+        )
+
+        cr.repr_native_str = True
+
+        assert "event                          key='plain'" == cr(
+            None, None, {"event": "event", "key": "plain"}
+        )
+
     def test_pad_event_deprecation_warning(self, recwarn):
         """
         Using pad_event argument raises a deprecation warning.

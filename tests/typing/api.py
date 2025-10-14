@@ -408,3 +408,6 @@ cr.timestamp_key = "ts"
 
 cr.event_key
 cr.event_key = "le event"
+
+cr.repr_native_str
+cr.repr_native_str = True

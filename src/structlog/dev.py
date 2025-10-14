@@ -711,6 +711,38 @@ class ConsoleRenderer:
             warnings.warn(w, stacklevel=2)
 
     @classmethod
+    def get_active(cls) -> ConsoleRenderer:
+        """
+        If *structlog* is configured to use `ConsoleRenderer`, it's returned.
+
+        It does not have to be the last processor.
+
+        Raises:
+            NoConsoleRendererConfiguredError:
+                If no ConsoleRenderer is found in the current configuration.
+
+            MultipleConsoleRenderersConfiguredError:
+                If more than one is found in the current configuration. This is
+                almost certainly a bug.
+
+        .. versionadded:: 25.5.0
+        """
+        from ._config import get_config
+
+        cr = None
+        for p in get_config()["processors"]:
+            if isinstance(p, ConsoleRenderer):
+                if cr is not None:
+                    raise MultipleConsoleRenderersConfiguredError
+
+                cr = p
+
+        if cr is None:
+            raise NoConsoleRendererConfiguredError
+
+        return cr
+
+    @classmethod
     def get_default_column_styles(
         cls, colors: bool, force_colors: bool = False
     ) -> ColumnStyles:
@@ -743,6 +775,37 @@ class ConsoleRenderer:
         _init_terminal(cls.__name__, force_colors)
 
         return _colorful_styles
+
+    @staticmethod
+    def get_default_level_styles(colors: bool = True) -> dict[str, str]:
+        """
+        Get the default styles for log levels
+
+        This is intended to be used with `ConsoleRenderer`'s ``level_styles``
+        parameter.  For example, if you are adding custom levels in your
+        home-grown :func:`~structlog.stdlib.add_log_level` you could do::
+
+            my_styles = ConsoleRenderer.get_default_level_styles()
+            my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
+            renderer = ConsoleRenderer(level_styles=my_styles)
+
+        Args:
+            colors:
+                Whether to use colorful styles. This must match the *colors*
+                parameter to `ConsoleRenderer`. Default: `True`.
+        """
+        styles: ColumnStyles
+        styles = _colorful_styles if colors else _plain_styles
+        return {
+            "critical": styles.level_critical,
+            "exception": styles.level_exception,
+            "error": styles.level_error,
+            "warn": styles.level_warn,
+            "warning": styles.level_warn,
+            "info": styles.level_info,
+            "debug": styles.level_debug,
+            "notset": styles.level_notset,
+        }
 
     def _configure_columns(self) -> None:
         """
@@ -864,37 +927,6 @@ class ConsoleRenderer:
             sio.write("\n" + exc)
 
         return sio.getvalue()
-
-    @staticmethod
-    def get_default_level_styles(colors: bool = True) -> dict[str, str]:
-        """
-        Get the default styles for log levels
-
-        This is intended to be used with `ConsoleRenderer`'s ``level_styles``
-        parameter.  For example, if you are adding custom levels in your
-        home-grown :func:`~structlog.stdlib.add_log_level` you could do::
-
-            my_styles = ConsoleRenderer.get_default_level_styles()
-            my_styles["EVERYTHING_IS_ON_FIRE"] = my_styles["critical"]
-            renderer = ConsoleRenderer(level_styles=my_styles)
-
-        Args:
-            colors:
-                Whether to use colorful styles. This must match the *colors*
-                parameter to `ConsoleRenderer`. Default: `True`.
-        """
-        styles: ColumnStyles
-        styles = _colorful_styles if colors else _plain_styles
-        return {
-            "critical": styles.level_critical,
-            "exception": styles.level_exception,
-            "error": styles.level_error,
-            "warn": styles.level_warn,
-            "warning": styles.level_warn,
-            "info": styles.level_info,
-            "debug": styles.level_debug,
-            "notset": styles.level_notset,
-        }
 
     @property
     def exception_formatter(self) -> ExceptionRenderer:
@@ -1019,38 +1051,6 @@ class ConsoleRenderer:
 
         self._configure_columns()
 
-    @classmethod
-    def get_active(cls) -> ConsoleRenderer:
-        """
-        If *structlog* is configured to use `ConsoleRenderer`, it's returned.
-
-        It does not have to be the last processor.
-
-        Raises:
-            NoConsoleRendererConfiguredError:
-                If no ConsoleRenderer is found in the current configuration.
-
-            MultipleConsoleRenderersConfiguredError:
-                If more than one is found in the current configuration. This is
-                almost certainly a bug.
-
-        .. versionadded:: 25.5.0
-        """
-        from ._config import get_config
-
-        cr = None
-        for p in get_config()["processors"]:
-            if isinstance(p, ConsoleRenderer):
-                if cr is not None:
-                    raise MultipleConsoleRenderersConfiguredError
-
-                cr = p
-
-        if cr is None:
-            raise NoConsoleRendererConfiguredError
-
-        return cr
-
     @property
     def level_styles(self) -> dict[str, str]:
         """
@@ -1152,6 +1152,22 @@ class ConsoleRenderer:
         """
         self._timestamp_key = value
         self._configure_columns()
+
+    @property
+    def repr_native_str(self) -> bool:
+        """
+        Whether native strings are passed through repr() in non-event values.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._repr_native_str
+
+    @repr_native_str.setter
+    def repr_native_str(self, value: bool) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._repr_native_str = value
 
 
 _SENTINEL = object()
