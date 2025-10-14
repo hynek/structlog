@@ -15,6 +15,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/25.4.0...HEAD)
 
+### Deprecated
+
+- `structlog.dev.ConsoleRenderer()` *pad_event* argument has been renamed to *pad_event_to* to differentiate it from the boolean *pad_level* argument.
+  *pad_event* is now deprecated.
+
+
 ### Added
 
 - Added `structlog.dev.ConsoleRenderer.get_active()` that returns the currently active `structlog.dev.ConsoleRenderer()`.
@@ -30,7 +36,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   ```
   [#749](https://github.com/hynek/structlog/pull/749)
 
-- Same for *sort_keys*, *columns*, *colors*, *force_colors*, *level_styles*, and *pad_level*.
+- Same for *sort_keys*, *columns*, *colors*, *force_colors*, *level_styles*, *pad_event_to*, and *pad_level*.
   [#756](https://github.com/hynek/structlog/pull/756)
   [#757](https://github.com/hynek/structlog/pull/757)
   [#759](https://github.com/hynek/structlog/pull/759)
@@ -55,6 +61,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.dev.rich_traceback()` now throws a more helpful error when Rich is missing.
   [#735](https://github.com/hynek/structlog/pull/735)
+
 
 ### Fixed
 

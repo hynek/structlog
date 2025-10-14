@@ -533,7 +533,7 @@ class ConsoleRenderer:
 
             .. seealso:: `columns-config`
 
-        pad_event:
+        pad_event_to:
             Pad the event to this many characters. Ignored if *columns* are
             passed.
 
