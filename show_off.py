@@ -25,9 +25,12 @@ log.info("informative!", some_key="some_value")
 log.warning("uh-uh!")
 log.error("omg", a_dict={"a": 42, "b": "foo"})
 log.critical("wtf", what=SomeClass(x=1, y="z"))
-structlog.dev.ConsoleRenderer.get_active().colors = False
+
+# Demonstrate writable properties
+cr = structlog.dev.ConsoleRenderer.get_active()
+cr.colors = False
 log.info("where are the colors!?", colors="gone")
-structlog.dev.ConsoleRenderer.get_active().colors = True
+cr.colors = True
 log.info("there they are!", colors="back")
 
 
