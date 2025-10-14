@@ -402,3 +402,9 @@ cr.pad_level = True
 
 cr.pad_event_to
 cr.pad_event_to = 42
+
+cr.timestamp_key
+cr.timestamp_key = "ts"
+
+cr.event_key
+cr.event_key = "le event"

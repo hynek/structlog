@@ -116,6 +116,43 @@ class TestConsoleRenderer:
             ).rstrip()
         )
 
+    def test_event_key_property(self):
+        """
+        The event_key property can be set and retrieved.
+        """
+        cr = dev.ConsoleRenderer(colors=False)
+
+        assert cr.event_key == "event"
+
+        cr.event_key = "msg"
+
+        assert cr.event_key == "msg"
+        assert "new event name                 event='something custom'" == cr(
+            None,
+            None,
+            {"msg": "new event name", "event": "something custom"},
+        )
+
+    def test_timestamp_key_property(self):
+        """
+        The timestamp_key property can be set and retrieved.
+        """
+        cr = dev.ConsoleRenderer(colors=False)
+
+        assert cr.timestamp_key == "timestamp"
+
+        cr.timestamp_key = "ts"
+
+        assert cr.timestamp_key == "ts"
+        assert (
+            "2023-09-07 le event"
+            == cr(
+                None,
+                None,
+                {"ts": "2023-09-07", "event": "le event"},
+            ).rstrip()
+        )
+
     def test_level(self, cr, styles, padded):
         """
         Levels are rendered aligned, in square brackets, and color-coded.

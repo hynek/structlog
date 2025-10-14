@@ -1115,6 +1115,44 @@ class ConsoleRenderer:
         self._pad_event_to = value
         self._configure_columns()
 
+    @property
+    def event_key(self) -> str:
+        """
+        The key to look for the main log message.
+
+        Setting this will rebuild columns to reflect the change.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._event_key
+
+    @event_key.setter
+    def event_key(self, value: str) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._event_key = value
+        self._configure_columns()
+
+    @property
+    def timestamp_key(self) -> str:
+        """
+        The key to look for the timestamp of the log message.
+
+        Setting this will rebuild columns to reflect the change.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._timestamp_key
+
+    @timestamp_key.setter
+    def timestamp_key(self, value: str) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._timestamp_key = value
+        self._configure_columns()
+
 
 _SENTINEL = object()
 
