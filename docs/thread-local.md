@@ -46,7 +46,7 @@ These functions map 1:1 to the {doc}`contextvars` APIs, so please use those inst
 
 ## Thread-local contexts
 
-*structlog* also provides thread-local context storage in a form that you may already know from [*Flask*](https://flask.palletsprojects.com/en/latest/design/#thread-locals) and that makes the *entire context* global to your thread or greenlet.
+*structlog* also provides thread-local context storage in a form that you may already know from Flask and that makes the *entire context* global to your thread or greenlet.
 
 This makes its behavior more difficult to reason about which is why we generally recommend to use the {func}`~structlog.contextvars.merge_contextvars` route.
 Therefore, there are currently no plans to re-implement this behavior on top of context variables.
