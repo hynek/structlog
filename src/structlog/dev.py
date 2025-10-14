@@ -630,7 +630,7 @@ class ConsoleRenderer:
 
     def __init__(
         self,
-        pad_event: int = _EVENT_WIDTH,
+        pad_event_to: int = _EVENT_WIDTH,
         colors: bool = _has_colors,
         force_colors: bool = False,
         repr_native_str: bool = False,
@@ -641,7 +641,20 @@ class ConsoleRenderer:
         timestamp_key: str = "timestamp",
         columns: list[Column] | None = None,
         pad_level: bool = True,
+        pad_event: int | None = None,
     ):
+        if pad_event is not None:
+            if pad_event_to != _EVENT_WIDTH:
+                raise ValueError(
+                    "Cannot set both `pad_event` and `pad_event_to`."
+                )
+            warnings.warn(
+                "The `pad_event` argument is deprecated. Use `pad_event_to` instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            pad_event_to = pad_event
+
         # Store all settings in case the user later switches from columns to
         # defaults.
         self.exception_formatter = exception_formatter
@@ -655,7 +668,7 @@ class ConsoleRenderer:
             if level_styles is None
             else level_styles
         )
-        self._pad_event = pad_event
+        self._pad_event_to = pad_event_to
         self._timestamp_key = timestamp_key
         self._event_key = event_key
         self._pad_level = pad_level
@@ -673,8 +686,8 @@ class ConsoleRenderer:
                 f"The `{arg}` argument is ignored when passing `columns`.",
             )
 
-        if pad_event != _EVENT_WIDTH:
-            add_meaningless_arg("pad_event")
+        if pad_event_to != _EVENT_WIDTH:
+            add_meaningless_arg("pad_event_to")
 
         if colors != _has_colors:
             add_meaningless_arg("colors")
@@ -791,7 +804,7 @@ class ConsoleRenderer:
                     value_style=self._styles.bright,
                     reset_style=self._styles.reset,
                     value_repr=str,
-                    width=self._pad_event,
+                    width=self._pad_event_to,
                 ),
             ),
             Column("logger", logger_name_formatter),
@@ -1081,6 +1094,25 @@ class ConsoleRenderer:
         .. versionadded:: 25.5.0
         """
         self._pad_level = value
+        self._configure_columns()
+
+    @property
+    def pad_event_to(self) -> int:
+        """
+        The number of characters to pad the event to.
+
+        Setting this will rebuild columns to reflect the change.
+
+        .. versionadded:: 25.5.0
+        """
+        return self._pad_event_to
+
+    @pad_event_to.setter
+    def pad_event_to(self, value: int) -> None:
+        """
+        .. versionadded:: 25.5.0
+        """
+        self._pad_event_to = value
         self._configure_columns()
 
 

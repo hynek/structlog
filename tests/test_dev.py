@@ -409,9 +409,9 @@ class TestConsoleRenderer:
 
         assert (f"{padded}\n" + exc) == rv
 
-    def test_pad_event_param(self, styles):
+    def test_pad_event_to_param(self, styles):
         """
-        `pad_event` parameter works.
+        `pad_event_to` parameter works.
         """
         rv = dev.ConsoleRenderer(42, dev._has_colors)(
             None, None, {"event": "test", "foo": "bar"}
@@ -609,7 +609,7 @@ class TestConsoleRenderer:
         """
         dev.ConsoleRenderer(
             columns=[dev.Column("", lambda k, v: "")],
-            pad_event=42,
+            pad_event_to=42,
             colors=not dev._has_colors,
             force_colors=True,
             repr_native_str=True,
@@ -621,7 +621,7 @@ class TestConsoleRenderer:
         assert {
             f"The `{arg}` argument is ignored when passing `columns`."
             for arg in (
-                "pad_event",
+                "pad_event_to",
                 "colors",
                 "force_colors",
                 "repr_native_str",
@@ -947,6 +947,44 @@ class TestConsoleRendererProperties:
 
         assert cr.pad_level is True
         assert cr._pad_level is True
+
+    def test_roundtrip_pad_event_to(self):
+        """
+        The pad_event_to property can be set and retrieved.
+        """
+        cr = dev.ConsoleRenderer()
+
+        assert cr.pad_event_to == dev._EVENT_WIDTH
+        assert cr._pad_event_to == dev._EVENT_WIDTH
+
+        cr.pad_event_to = 50
+
+        assert cr.pad_event_to == 50
+        assert cr._pad_event_to == 50
+
+        cr.pad_event_to = 20
+
+        assert cr.pad_event_to == 20
+        assert cr._pad_event_to == 20
+
+    def test_pad_event_deprecation_warning(self, recwarn):
+        """
+        Using pad_event argument raises a deprecation warning.
+        """
+        dev.ConsoleRenderer(pad_event=42)
+
+        (w,) = recwarn.list
+        assert (
+            "The `pad_event` argument is deprecated. Use `pad_event_to` instead."
+        ) == w.message.args[0]
+        assert w.category is DeprecationWarning
+
+    def test_pad_event_to_param_raises_value_error(self):
+        """
+        Using pad_event_to and pad_event raises a ValueError.
+        """
+        with pytest.raises(ValueError):  # noqa: PT011
+            dev.ConsoleRenderer(pad_event_to=42, pad_event=42)
 
     def test_same_value_resets_level_styles(self, cr):
         """

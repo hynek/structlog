@@ -396,3 +396,9 @@ cr.level_styles = {"info": "foo"}
 
 cr.sort_keys
 cr.sort_keys = True
+
+cr.pad_level
+cr.pad_level = True
+
+cr.pad_event_to
+cr.pad_event_to = 42
