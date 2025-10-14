@@ -35,7 +35,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   cr.exception_formatter = structlog.dev.plain_traceback
   ```
 
-  Same goes for *sort_keys*, *columns*, *colors*, *force_colors*, *level_styles*, *pad_event_to*, *event_key*, and *timestamp_key*.
+  Same goes for *sort_keys*, *columns*, *colors*, *force_colors*, *level_styles*, *pad_event_to*, *event_key*, *timestamp_key*, and *repr_native_str*.
 
   [#749](https://github.com/hynek/structlog/pull/749)
   [#756](https://github.com/hynek/structlog/pull/756)
