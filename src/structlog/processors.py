@@ -777,13 +777,7 @@ def _get_callsite_func_name(module: str, frame: FrameType) -> Any:
 
 
 def _get_callsite_qual_name(module: str, frame: FrameType) -> Any:
-    """
-    Return the qualified name for the given frame if available.
-
-    Uses frame.f_code.co_qualname which is available on Python 3.11+.
-    If unavailable, return None.
-    """
-    return frame.f_code.co_qualname
+    return frame.f_code.co_qualname  # will crash on Python <3.11
 
 
 def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
