@@ -908,7 +908,8 @@ class CallsiteParameterAdder:
         self, logger: logging.Logger, name: str, event_dict: EventDict
     ) -> EventDict:
         record: logging.LogRecord | None = event_dict.get("_record")
-        from_structlog: bool | None = event_dict.get("_from_structlog")
+        from_structlog: bool = event_dict.get("_from_structlog", False)
+
         # If the event dictionary has a record, but it comes from structlog,
         # then the callsite parameters of the record will not be correct.
         if record is not None and not from_structlog:
@@ -916,12 +917,15 @@ class CallsiteParameterAdder:
                 event_dict[mapping.event_dict_key] = record.__dict__[
                     mapping.record_attribute
                 ]
-        else:
-            frame, module = _find_first_app_frame_and_name(
-                additional_ignores=self._additional_ignores
-            )
-            for parameter, handler in self._active_handlers:
-                event_dict[parameter.value] = handler(module, frame)
+
+            return event_dict
+
+        frame, module = _find_first_app_frame_and_name(
+            additional_ignores=self._additional_ignores
+        )
+        for parameter, handler in self._active_handlers:
+            event_dict[parameter.value] = handler(module, frame)
+
         return event_dict
 
 
