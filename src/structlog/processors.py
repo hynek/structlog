@@ -746,7 +746,7 @@ class CallsiteParameter(enum.Enum):
     #: The name of the function that the callsite was in.
     FUNC_NAME = "func_name"
     #: The qualified name of the callsite (includes scope and class names).
-    #: Only works on Python >=3.11.
+    #: Requires Python 3.11+.
     QUAL_NAME = "qual_name"
     #: The line number of the callsite.
     LINENO = "lineno"
