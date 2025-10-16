@@ -303,7 +303,13 @@ class TestCallsiteParameterAdder:
         "process_name",
     }
 
-    _all_parameters = set(CallsiteParameter)
+    # Exclude QUAL_NAME from the general set to keep parity with stdlib
+    # LogRecord-derived parameters. QUAL_NAME is tested separately.
+    _all_parameters = {
+        p
+        for p in set(CallsiteParameter)
+        if p is not CallsiteParameter.QUAL_NAME
+    }
 
     def test_all_parameters(self) -> None:
         """
@@ -316,6 +322,50 @@ class TestCallsiteParameterAdder:
             member.value for member in self._all_parameters
         }
         assert self.parameter_strings == self.get_callsite_parameters().keys()
+
+    @pytest.mark.skipif(
+        sys.version_info < (3, 11), reason="QUAL_NAME requires Python 3.11+"
+    )
+    def test_qual_name_structlog(self) -> None:
+        """
+        QUAL_NAME is added for structlog-originated events on Python 3.11+.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.QUAL_NAME}
+        )
+        event_dict: EventDict = {"event": "msg"}
+        actual = processor(None, None, event_dict)
+
+        assert actual["qual_name"].endswith(
+            f"{self.__class__.__name__}.test_qual_name_structlog"
+        )
+
+    def test_qual_name_logging_origin_absent(self) -> None:
+        """
+        QUAL_NAME is not sourced from stdlib LogRecord and remains absent
+        (because it doesn't exist).
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.QUAL_NAME}
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            __file__,
+            0,
+            "message",
+            None,
+            None,
+            "func",
+        )
+        event_dict: EventDict = {
+            "event": "message",
+            "_record": record,
+            "_from_structlog": False,
+        }
+        actual = processor(None, None, event_dict)
+
+        assert "qual_name" not in actual
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -550,7 +600,8 @@ class TestCallsiteParameterAdder:
         """
         if parameter_strings is None:
             return CallsiteParameterAdder(
-                additional_ignores=additional_ignores
+                parameters=cls._all_parameters,
+                additional_ignores=additional_ignores,
             )
 
         parameters = cls.filter_parameters(parameter_strings)

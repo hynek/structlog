@@ -729,6 +729,9 @@ class CallsiteParameter(enum.Enum):
     the callsite parameters in the event dictionary.
 
     .. versionadded:: 21.5.0
+
+    .. versionadded:: 25.5.0
+       `QUAL_NAME` parameter.
     """
 
     #: The full path to the python source file of the callsite.
@@ -742,6 +745,9 @@ class CallsiteParameter(enum.Enum):
     MODULE = "module"
     #: The name of the function that the callsite was in.
     FUNC_NAME = "func_name"
+    #: The qualified name of the callsite (includes scope and class names).
+    #: Requires Python 3.11+.
+    QUAL_NAME = "qual_name"
     #: The line number of the callsite.
     LINENO = "lineno"
     #: The ID of the thread the callsite was executed in.
@@ -768,6 +774,10 @@ def _get_callsite_module(module: str, frame: FrameType) -> Any:
 
 def _get_callsite_func_name(module: str, frame: FrameType) -> Any:
     return frame.f_code.co_name
+
+
+def _get_callsite_qual_name(module: str, frame: FrameType) -> Any:
+    return frame.f_code.co_qualname  # will crash on Python <3.11
 
 
 def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
@@ -837,6 +847,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.FILENAME: _get_callsite_filename,
         CallsiteParameter.MODULE: _get_callsite_module,
         CallsiteParameter.FUNC_NAME: _get_callsite_func_name,
+        CallsiteParameter.QUAL_NAME: _get_callsite_qual_name,
         CallsiteParameter.LINENO: _get_callsite_lineno,
         CallsiteParameter.THREAD: _get_callsite_thread,
         CallsiteParameter.THREAD_NAME: _get_callsite_thread_name,
@@ -882,12 +893,15 @@ class CallsiteParameterAdder:
             self._active_handlers.append(
                 (parameter, self._handlers[parameter])
             )
-            self._record_mappings.append(
-                self._RecordMapping(
-                    parameter.value,
-                    self._record_attribute_map[parameter],
+            if (
+                record_attr := self._record_attribute_map.get(parameter)
+            ) is not None:
+                self._record_mappings.append(
+                    self._RecordMapping(
+                        parameter.value,
+                        record_attr,
+                    )
                 )
-            )
 
     def __call__(
         self, logger: logging.Logger, name: str, event_dict: EventDict
