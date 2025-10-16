@@ -843,6 +843,7 @@ class CallsiteParameterAdder:
     _handlers: ClassVar[
         dict[CallsiteParameter, Callable[[str, FrameType], Any]]
     ] = {
+        # We can't use lambda functions here because they are not pickleable.
         CallsiteParameter.PATHNAME: _get_callsite_pathname,
         CallsiteParameter.FILENAME: _get_callsite_filename,
         CallsiteParameter.MODULE: _get_callsite_module,
