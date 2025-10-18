@@ -42,6 +42,40 @@ class TestFindFirstAppFrameAndName:
 
         assert (f1, "test") == (f, n)
 
+    def test_stacklevel(self):
+        """
+        stacklevel is respected.
+        """
+        f0 = stub(
+            f_globals={"__name__": "test"},
+            f_back=stub(f_globals={"__name__": "too far"}, f_back=None),
+        )
+        f1 = stub(f_globals={"__name__": "skipped"}, f_back=f0)
+        f2 = stub(f_globals={"__name__": "ignored.bar"}, f_back=f1)
+        f3 = stub(f_globals={"__name__": "structlog.blubb"}, f_back=f2)
+
+        f, n = _find_first_app_frame_and_name(
+            additional_ignores=["ignored"], stacklevel=1, _getframe=lambda: f3
+        )
+
+        assert (f0, "test") == (f, n)
+
+    def test_stacklevel_capped(self):
+        """
+        stacklevel is capped at the number of frames.
+        """
+        f0 = stub(f_globals={"__name__": "test"}, f_back=None)
+        f1 = stub(f_globals={"__name__": "skipped"}, f_back=f0)
+        f2 = stub(f_globals={"__name__": "ignored.bar"}, f_back=f1)
+        f3 = stub(f_globals={"__name__": "structlog.blubb"}, f_back=f2)
+
+        f, n = _find_first_app_frame_and_name(
+            additional_ignores=["ignored"],
+            stacklevel=100,
+            _getframe=lambda: f3,
+        )
+        assert (f0, "test") == (f, n)
+
     def test_tolerates_missing_name(self):
         """
         Use ``?`` if `f_globals` lacks a `__name__` key
