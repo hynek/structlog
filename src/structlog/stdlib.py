@@ -131,8 +131,10 @@ class _FixedFindCallerLogger(logging.Logger):
         """
         sinfo: str | None
         # stdlib logging passes stacklevel=1 from log methods like .warning(),
-        # but we've already skipped those frames by ignoring "logging", so
-        # we need to adjust stacklevel down by 1.
+        # but we've already skipped those frames by ignoring "logging", so we
+        # need to adjust stacklevel down by 1. We need to manually drop
+        # logging frames, because there's cases where we call logging methods
+        # from within structlog and the stacklevel offsets don't work anymore.
         adjusted_stacklevel = max(0, stacklevel - 1) if stacklevel else None
         f, _name = _find_first_app_frame_and_name(
             ["logging"], stacklevel=adjusted_stacklevel
