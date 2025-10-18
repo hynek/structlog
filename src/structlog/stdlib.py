@@ -334,10 +334,10 @@ class BoundLogger(BoundLoggerBase):
         """
         Calls :meth:`logging.Logger.findCaller` with unmodified arguments.
         """
+        # No need for stacklevel-adjustments since we're within structlog and
+        # our frames are ignored unconditionally.
         return self._logger.findCaller(
-            # Adjust for our own frame.
-            stack_info=stack_info,
-            stacklevel=stacklevel - 1,
+            stack_info=stack_info, stacklevel=stacklevel
         )
 
     def makeRecord(
