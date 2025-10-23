@@ -8,3 +8,9 @@
   --pst-font-family-heading: "Atkinson Hyperlegible", system-ui, sans-serif;
   --pst-font-family-monospace: BerkeleyMono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
+
+/* Override theme's font-size-base with higher specificity */
+html[data-theme=light],
+html[data-theme=dark] {
+  --pst-font-size-base: 1.1rem;
+}
