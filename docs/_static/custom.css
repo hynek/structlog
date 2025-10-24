@@ -12,5 +12,5 @@
 /* Override theme's font-size-base with higher specificity */
 html[data-theme=light],
 html[data-theme=dark] {
-  --pst-font-size-base: 1.1rem;
+  --pst-font-size-base: 1.15rem;
 }
