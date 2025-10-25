@@ -36,6 +36,7 @@ def _format_exception(exc_info: ExcInfo) -> str:
 def _find_first_app_frame_and_name(
     additional_ignores: list[str] | None = None,
     *,
+    stacklevel: int | None = None,
     _getframe: Callable[[], FrameType] = sys._getframe,
 ) -> tuple[FrameType, str]:
     """
@@ -45,6 +46,9 @@ def _find_first_app_frame_and_name(
         additional_ignores:
             Additional names with which the first frame must not start.
 
+        stacklevel:
+            After getting out of structlog, skip this many frames.
+
         _getframe:
             Callable to find current frame. Only for testing to avoid
             monkeypatching of sys._getframe.
@@ -52,15 +56,24 @@ def _find_first_app_frame_and_name(
     Returns:
         tuple of (frame, name)
     """
-    ignores = tuple(["structlog"] + (additional_ignores or []))
+    ignores = ("structlog", *tuple(additional_ignores or ()))
     f = _ASYNC_CALLING_STACK.get(_getframe())
     name = f.f_globals.get("__name__") or "?"
+
     while name.startswith(ignores):
         if f.f_back is None:
             name = "?"
             break
         f = f.f_back
         name = f.f_globals.get("__name__") or "?"
+
+    if stacklevel is not None:
+        for _ in range(stacklevel):
+            if f.f_back is None:
+                break
+            f = f.f_back
+            name = f.f_globals.get("__name__") or "?"
+
     return f, name
 
 

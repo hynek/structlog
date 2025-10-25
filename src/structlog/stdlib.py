@@ -130,7 +130,15 @@ class _FixedFindCallerLogger(logging.Logger):
         This logger gets set as the default one when using LoggerFactory.
         """
         sinfo: str | None
-        f, _name = _find_first_app_frame_and_name(["logging"])
+        # stdlib logging passes stacklevel=1 from log methods like .warning(),
+        # but we've already skipped those frames by ignoring "logging", so we
+        # need to adjust stacklevel down by 1. We need to manually drop
+        # logging frames, because there's cases where we call logging methods
+        # from within structlog and the stacklevel offsets don't work anymore.
+        adjusted_stacklevel = max(0, stacklevel - 1) if stacklevel else None
+        f, _name = _find_first_app_frame_and_name(
+            ["logging"], stacklevel=adjusted_stacklevel
+        )
         sinfo = _format_stack(f) if stack_info else None
 
         return f.f_code.co_filename, f.f_lineno, f.f_code.co_name, sinfo
@@ -323,12 +331,16 @@ class BoundLogger(BoundLoggerBase):
         self._logger.setLevel(level)
 
     def findCaller(
-        self, stack_info: bool = False
+        self, stack_info: bool = False, stacklevel: int = 1
     ) -> tuple[str, int, str, str | None]:
         """
         Calls :meth:`logging.Logger.findCaller` with unmodified arguments.
         """
-        return self._logger.findCaller(stack_info=stack_info)
+        # No need for stacklevel-adjustments since we're within structlog and
+        # our frames are ignored unconditionally.
+        return self._logger.findCaller(
+            stack_info=stack_info, stacklevel=stacklevel
+        )
 
     def makeRecord(
         self,

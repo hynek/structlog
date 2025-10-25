@@ -60,6 +60,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - On Python 3.11+, `structlog.processors.CallsiteParameterAdder` now supports `CallsiteParameter.QUAL_NAME` that adds the qualified name of the callsite, including scope and class names.
   This is only available for *structlog*-originated events since the standard library has no equivalent.
 
+- `structlog.stdlib.LoggerFactory` now supports the *stacklevel* parameter.
+  [#763](https://github.com/hynek/structlog/pull/763)
+
 
 ### Changed
 
