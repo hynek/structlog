@@ -1,11 +1,9 @@
 @import url(https://fonts.bunny.net/css?family=atkinson-hyperlegible:400,400i,700,700i);
 @import url('https://assets.hynek.me/css/bm.css');
 
-
 :root {
-  font-feature-settings: 'liga' 1, 'calt' 1;  /* fix for Chrome */
-  --pst-font-family-base: "Atkinson Hyperlegible", system-ui, sans-serif;
-  --pst-font-family-heading: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --pst-font-family-base: system-ui, sans-serif;
+  --pst-font-family-heading: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium', 'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
   --pst-font-family-monospace: BerkeleyMono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
 
