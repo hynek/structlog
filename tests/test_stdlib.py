@@ -11,8 +11,9 @@ import logging.config
 import os
 import sys
 
+from collections.abc import Collection
 from io import StringIO
-from typing import Any, Callable, Collection, Dict
+from typing import Any, Callable
 from unittest.mock import patch
 
 import pytest
@@ -1409,9 +1410,7 @@ class TestProcessorFormatter:
         # handlers will receive LogRecord objects that come from both structlog
         # and non-structlog loggers.
 
-        records: Dict[  # noqa: UP006 - dict isn't generic until Python 3.9
-            str, logging.LogRecord
-        ] = {}
+        records: dict[str, logging.LogRecord] = {}
 
         class DummyHandler(logging.Handler):
             def emit(self, record):

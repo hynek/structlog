@@ -94,9 +94,11 @@ class TestTmpBind:
         """
         log = log.bind(y=23)
 
-        with pytest.raises(  # noqa: PT012
-            CustomError
-        ), pytest.deprecated_call(), tmp_bind(log, x=42, y="foo") as tmp_log:
+        with (  # noqa: PT012
+            pytest.raises(CustomError),
+            pytest.deprecated_call(),
+            tmp_bind(log, x=42, y="foo") as tmp_log,
+        ):
             assert (
                 {"y": "foo", "x": 42}
                 == tmp_log._context._dict

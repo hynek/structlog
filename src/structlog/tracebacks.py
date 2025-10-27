@@ -18,10 +18,11 @@ import os
 import os.path
 import sys
 
+from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import ModuleType, TracebackType
-from typing import Any, Iterable, Sequence, Tuple, Union
+from typing import Any, Union
 
 
 try:
@@ -50,7 +51,7 @@ LOCALS_MAX_LENGTH = 10
 LOCALS_MAX_STRING = 80
 MAX_FRAMES = 50
 
-OptExcInfo = Union[ExcInfo, Tuple[None, None, None]]
+OptExcInfo = Union[ExcInfo, tuple[None, None, None]]
 
 
 @dataclass

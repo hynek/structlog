@@ -20,7 +20,8 @@ import threading
 import uuid
 import warnings
 
-from typing import Any, Generator, Iterator, TypeVar
+from collections.abc import Generator, Iterator
+from typing import Any, TypeVar
 
 import structlog
 

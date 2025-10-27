@@ -14,6 +14,7 @@ from __future__ import annotations
 import sys
 import warnings
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from io import StringIO
 from types import ModuleType
@@ -22,7 +23,6 @@ from typing import (
     Callable,
     Literal,
     Protocol,
-    Sequence,
     TextIO,
     cast,
 )

@@ -22,8 +22,9 @@ from __future__ import annotations
 import contextlib
 import contextvars
 
+from collections.abc import Generator, Mapping
 from types import FrameType
-from typing import Any, Generator, Mapping
+from typing import Any
 
 import structlog
 
