@@ -41,10 +41,11 @@ Twitter = "https://twitter.com/hynek"
 
 [dependency-groups]
 tests = [
-    "time-machine>=2.14.1",
     "pytest-asyncio>=0.17",
+    "pytest-randomly",
     "pytest>=6.0",
     "simplejson",
+    "time-machine>=2.14.1",
 ]
 # Need Twisted & Rich for stubs.
 # Otherwise mypy fails in tox.

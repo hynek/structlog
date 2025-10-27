@@ -29,10 +29,12 @@ def _ensure_logging_framework_not_altered():
     Prevents 'ValueError: I/O operation on closed file.' errors.
     """
     before_handlers = list(LOGGER.handlers)
+    before_level = LOGGER.level
 
     yield
 
     LOGGER.handlers = before_handlers
+    LOGGER.setLevel(before_level)
 
 
 @pytest.fixture(name="sio")
