@@ -373,6 +373,12 @@ flowchart TD
 
    For that, `ProcessorFormatter` wraps a processor chain that is responsible for rendering your log entries to strings.
 
+:::{warning}
+When using {class}`~structlog.stdlib.ProcessorFormatter`, you **must not** use {func}`~structlog.stdlib.render_to_log_kwargs` or {func}`~structlog.stdlib.render_to_log_args_and_kwargs` in your processor chain.
+
+You _**must**_ use {func}`structlog.stdlib.ProcessorFormatter.wrap_for_formatter()` -- otherwise you _**will**_ get puzzling errors from the standard library.
+:::
+
 Thus, the simplest possible configuration looks like the following:
 
 ```python
