@@ -30,19 +30,19 @@ class TestPad:
         assert len("test") == len(dev._pad("test", 2))
 
 
-@pytest.fixture(name="cr", scope="session")
+@pytest.fixture(name="cr")
 def _cr():
     return dev.ConsoleRenderer(
         colors=dev._has_colors, exception_formatter=dev.plain_traceback
     )
 
 
-@pytest.fixture(name="styles", scope="session")
+@pytest.fixture(name="styles")
 def _styles(cr):
     return cr._styles
 
 
-@pytest.fixture(name="padded", scope="session")
+@pytest.fixture(name="padded")
 def _padded(styles):
     return styles.bright + dev._pad("test", dev._EVENT_WIDTH) + styles.reset
 
