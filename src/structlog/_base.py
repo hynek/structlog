@@ -11,7 +11,8 @@ from __future__ import annotations
 
 import sys
 
-from typing import Any, Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
+from typing import Any
 
 from structlog.exceptions import DropEvent
 

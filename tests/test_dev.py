@@ -254,11 +254,10 @@ class TestConsoleRenderer:
         """
         On Windows with colorama, force_colors=True reinitializes colorama.
         """
-        with mock.patch.object(
-            dev.colorama, "init"
-        ) as mock_init, mock.patch.object(
-            dev.colorama, "deinit"
-        ) as mock_deinit:
+        with (
+            mock.patch.object(dev.colorama, "init") as mock_init,
+            mock.patch.object(dev.colorama, "deinit") as mock_deinit,
+        ):
             styles = dev.ConsoleRenderer.get_default_column_styles(
                 colors=True, force_colors=True
             )

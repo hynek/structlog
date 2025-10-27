@@ -18,8 +18,9 @@ import logging
 import sys
 import warnings
 
+from collections.abc import Collection, Iterable, Sequence
 from functools import partial
-from typing import Any, Callable, Collection, Dict, Iterable, Sequence, cast
+from typing import Any, Callable, cast
 
 
 if sys.version_info >= (3, 11):
@@ -1121,7 +1122,7 @@ class ProcessorFormatter(logging.Formatter):
             # We need to copy because it's possible that the same record gets
             # processed by multiple logging formatters. LogRecord.getMessage
             # would transform our dict into a str.
-            ed = cast(Dict[str, Any], record.msg).copy()
+            ed = cast(dict[str, Any], record.msg).copy()
             ed["_record"] = record
             ed["_from_structlog"] = True
         else:

@@ -13,7 +13,8 @@ import os
 import sys
 import warnings
 
-from typing import Any, Callable, Iterable, Sequence, Type, cast
+from collections.abc import Iterable, Sequence
+from typing import Any, Callable, cast
 
 from ._native import make_filtering_bound_logger
 from ._output import PrintLoggerFactory
@@ -53,7 +54,7 @@ _BUILTIN_DEFAULT_PROCESSORS: Sequence[Processor] = [
         force_colors=_force_colors,
     ),
 ]
-_BUILTIN_DEFAULT_CONTEXT_CLASS = cast(Type[Context], dict)
+_BUILTIN_DEFAULT_CONTEXT_CLASS = cast(type[Context], dict)
 _BUILTIN_DEFAULT_WRAPPER_CLASS = make_filtering_bound_logger(0)
 _BUILTIN_DEFAULT_LOGGER_FACTORY = PrintLoggerFactory()
 _BUILTIN_CACHE_LOGGER_ON_FIRST_USE = False

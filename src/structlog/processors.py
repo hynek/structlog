@@ -19,14 +19,13 @@ import sys
 import threading
 import time
 
+from collections.abc import Collection, Sequence
 from types import FrameType, TracebackType
 from typing import (
     Any,
     Callable,
     ClassVar,
-    Collection,
     NamedTuple,
-    Sequence,
     TextIO,
     cast,
 )
