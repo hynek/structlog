@@ -7,13 +7,13 @@ import sys
 
 import pytest
 
-from pretend import stub
-
 from structlog._frames import (
     _find_first_app_frame_and_name,
     _format_exception,
     _format_stack,
 )
+
+from .helpers import stub
 
 
 class TestFindFirstAppFrameAndName:

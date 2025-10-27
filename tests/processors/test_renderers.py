@@ -24,7 +24,7 @@ from structlog.processors import (
 )
 from structlog.threadlocal import wrap_dict
 
-from ..utils import CustomError
+from ..helpers import CustomError
 
 
 try:

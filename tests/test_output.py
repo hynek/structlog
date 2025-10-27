@@ -20,7 +20,7 @@ from structlog import (
 )
 from structlog._output import WRITE_LOCKS, stderr, stdout
 
-from .utils import stdlib_log_methods
+from .helpers import stdlib_log_methods
 
 
 class TestLoggers:
