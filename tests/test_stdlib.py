@@ -18,8 +18,6 @@ from unittest.mock import patch
 import pytest
 import pytest_asyncio
 
-from pretend import call_recorder, stub
-
 from structlog import (
     PrintLogger,
     ReturnLogger,
@@ -53,6 +51,7 @@ from structlog.testing import CapturedCall
 from structlog.typing import BindableLogger, EventDict
 
 from .additional_frame import additional_frame
+from .helpers import call_recorder, stub
 
 
 def build_bl(logger=None, processors=None, context=None):
@@ -1100,7 +1099,7 @@ class TestProcessorFormatter:
         positional_args = {"foo": "bar"}
         logging.getLogger().info("okay %(foo)s", positional_args)
 
-        event_dict = test_processor.calls[0].args[2]
+        event_dict = test_processor.call_args_list[0].args[2]
 
         assert "positional_args" in event_dict
         assert positional_args == event_dict["positional_args"]
@@ -1181,7 +1180,7 @@ class TestProcessorFormatter:
         except Exception:
             logging.getLogger().exception("okay")
 
-        event_dict = test_processor.calls[0].args[2]
+        event_dict = test_processor.call_args_list[0].args[2]
 
         assert "exc_info" in event_dict
         assert isinstance(event_dict["exc_info"], tuple)
@@ -1209,7 +1208,7 @@ class TestProcessorFormatter:
         except Exception:
             logging.getLogger().error("okay")
 
-        event_dict = test_processor.calls[0].args[2]
+        event_dict = test_processor.call_args_list[0].args[2]
 
         assert MyError is event_dict["exc_info"][0]
 
@@ -1232,9 +1231,9 @@ class TestProcessorFormatter:
 
         logger.info("meh")
 
-        assert 1 == len(handler2.handle.calls)
+        assert 1 == len(handler2.handle.call_args_list)
 
-        handler2_record = handler2.handle.calls[0].args[0]
+        handler2_record = handler2.handle.call_args_list[0].args[0]
 
         assert "meh" == handler2_record.msg
 

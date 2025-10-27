@@ -28,7 +28,8 @@ from structlog.threadlocal import (
     unbind_threadlocal,
     wrap_dict,
 )
-from tests.utils import CustomError
+
+from .helpers import CustomError
 
 
 try:

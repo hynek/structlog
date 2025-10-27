@@ -7,9 +7,9 @@ import abc
 import pickle
 import warnings
 
-import pytest
+from unittest.mock import call
 
-from pretend import call, call_recorder, stub
+import pytest
 
 import structlog
 
@@ -27,6 +27,8 @@ from structlog._config import (
     wrap_logger,
 )
 from structlog.typing import BindableLogger
+
+from .helpers import call_recorder, stub
 
 
 @pytest.fixture(name="proxy")
@@ -463,4 +465,4 @@ class TestFunctions:
 
         get_logger("test").bind(x=42)
 
-        assert [call("test")] == factory.calls
+        assert [call("test")] == factory.call_args_list
