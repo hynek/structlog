@@ -960,7 +960,7 @@ class EventRenamer:
     def __call__(
         self, logger: logging.Logger, name: str, event_dict: EventDict
     ) -> EventDict:
-        event = event_dict.pop("event")
+        event = event_dict.pop("event", None)
         event_dict[self.to] = event
 
         if self.replace_by is not None:
