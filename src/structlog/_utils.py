@@ -31,7 +31,7 @@ def get_processname() -> str:
     return processname
 
 
-def get_taskname() -> Optional[str]:  # noqa: UP007
+def get_taskname() -> Optional[str]:
     """
     Get the current asynchronous task if applicable.
 
