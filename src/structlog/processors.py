@@ -36,7 +36,7 @@ from ._frames import (
     _format_stack,
 )
 from ._log_levels import NAME_TO_LEVEL, add_log_level
-from ._utils import get_processname
+from ._utils import get_processname, get_taskname
 from .tracebacks import ExceptionDictTransformer
 from .typing import (
     EventDict,
@@ -757,6 +757,8 @@ class CallsiteParameter(enum.Enum):
     PROCESS = "process"
     #: The name of the process the callsite was executed in.
     PROCESS_NAME = "process_name"
+    #: The name of the asynchronous task the callsite was executed in.
+    TASK_NAME = "task_name"
 
 
 def _get_callsite_pathname(module: str, frame: FrameType) -> Any:
@@ -797,6 +799,10 @@ def _get_callsite_process(module: str, frame: FrameType) -> Any:
 
 def _get_callsite_process_name(module: str, frame: FrameType) -> Any:
     return get_processname()
+
+
+def _get_callsite_task_name(module: str, frame: FrameType) -> Any:
+    return get_taskname()
 
 
 class CallsiteParameterAdder:
@@ -853,6 +859,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.THREAD_NAME: _get_callsite_thread_name,
         CallsiteParameter.PROCESS: _get_callsite_process,
         CallsiteParameter.PROCESS_NAME: _get_callsite_process_name,
+        CallsiteParameter.TASK_NAME: _get_callsite_task_name,
     }
     _record_attribute_map: ClassVar[dict[CallsiteParameter, str]] = {
         CallsiteParameter.PATHNAME: "pathname",
@@ -864,6 +871,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.THREAD_NAME: "threadName",
         CallsiteParameter.PROCESS: "process",
         CallsiteParameter.PROCESS_NAME: "processName",
+        CallsiteParameter.TASK_NAME: "taskName",
     }
 
     _all_parameters: ClassVar[set[CallsiteParameter]] = set(CallsiteParameter)
@@ -913,9 +921,12 @@ class CallsiteParameterAdder:
         # then the callsite parameters of the record will not be correct.
         if record is not None and not from_structlog:
             for mapping in self._record_mappings:
-                event_dict[mapping.event_dict_key] = record.__dict__[
+                # Careful since log record attribute taskName is only
+                # supported as of python 3.12
+                # https://docs.python.org/3.12/library/logging.html#logrecord-attributes
+                event_dict[mapping.event_dict_key] = record.__dict__.get(
                     mapping.record_attribute
-                ]
+                )
 
             return event_dict
 
