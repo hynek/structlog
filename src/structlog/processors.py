@@ -1014,7 +1014,6 @@ def _compile_sensitive_pattern(
 #:
 
 
-
 class SensitiveDataRedactor:
     """
     Redact sensitive fields from event dictionaries.
