@@ -1465,6 +1465,57 @@ class TestSensitiveDataRedactor:
             None, None, {"password": "secret"}
         )
 
+    def test_pickleable_case_insensitive_exact(self):
+        """
+        An instance with case-insensitive exact matches can be pickled.
+        """
+        redactor = SensitiveDataRedactor(
+            sensitive_fields=["PASSWORD"],
+            case_insensitive=True,
+        )
+
+        pickled = pickle.dumps(redactor)
+        unpickled = pickle.loads(pickled)
+
+        assert {"password": "[REDACTED]"} == unpickled(
+            None, None, {"password": "secret"}
+        )
+
+    def test_redacts_nested_lists_deeply(self):
+        """
+        Redacts sensitive fields deeply nested within lists of lists.
+        """
+        redactor = SensitiveDataRedactor(["password"])
+        event = {
+            "users": [
+                [{"name": "alice", "password": "secret"}],
+                {"data": [{"password": "secret"}]}
+            ]
+        }
+        redactor(None, None, event)
+        assert event["users"][0][0]["password"] == "[REDACTED]"
+        assert event["users"][1]["data"][0]["password"] == "[REDACTED]"
+
+    def test_redacts_mixed_list_types(self):
+        """
+        Handles lists containing a mix of dicts, lists, and primitives.
+        Ensures all branches in _redact_list are covered.
+        """
+        redactor = SensitiveDataRedactor(["password"])
+        event = {
+            "data": [
+                "string",  # Primitive (elif False -> loop)
+                123,       # Primitive (elif False -> loop)
+                {"password": "secret"},  # Dict (if True)
+                ["nested", {"password": "secret"}],  # List (elif True)
+            ]
+        }
+        redactor(None, None, event)
+        assert event["data"][2]["password"] == "[REDACTED]"
+        assert event["data"][3][1]["password"] == "[REDACTED]"
+        assert event["data"][0] == "string"
+        assert event["data"][1] == 123
+
 
 class TestSensitiveDataRedactorIntegration:
     """Integration tests for SensitiveDataRedactor with full processor chains."""
