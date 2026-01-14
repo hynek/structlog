@@ -19,7 +19,12 @@ import sys
 import threading
 import time
 
-from collections.abc import Collection, MutableMapping, MutableSequence, Sequence
+from collections.abc import (
+    Collection,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from types import FrameType, TracebackType
 from typing import (
     Any,
@@ -1438,7 +1443,9 @@ class SensitiveDataRedactor:
                 d[key] = self._redact_list(value, current_path)
         return d
 
-    def _redact_list(self, lst: MutableSequence[Any], parent_path: str) -> MutableSequence[Any]:
+    def _redact_list(
+        self, lst: MutableSequence[Any], parent_path: str
+    ) -> MutableSequence[Any]:
         """
         Recursively redact sensitive fields from items in a list.
 
