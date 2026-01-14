@@ -712,7 +712,6 @@ class TestRenameKey:
         )
 
 
-
 def _test_pickle_redactor(field_name, value, path):
     return "***"
 
