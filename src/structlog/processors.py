@@ -1487,10 +1487,28 @@ class SensitiveDataRedactor:
         Args:
             state: The state dictionary from ``__getstate__``.
         """
-        self.__init__(
-            sensitive_fields=state["sensitive_fields"],
-            placeholder=state["placeholder"],
-            case_insensitive=state["case_insensitive"],
-            redaction_callback=state.get("redaction_callback"),
-            audit_callback=state.get("audit_callback"),
-        )
+        sensitive_fields = state["sensitive_fields"]
+        case_insensitive = state["case_insensitive"]
+
+        self._placeholder = state["placeholder"]
+        self._case_insensitive = case_insensitive
+        self._redaction_callback = state.get("redaction_callback")
+        self._audit_callback = state.get("audit_callback")
+        self._sensitive_fields = tuple(sensitive_fields)
+
+        # Rebuild exact fields and pattern matchers
+        exact_fields: list[str] = []
+        pattern_matchers: list[Callable[[str], bool]] = []
+
+        for field in sensitive_fields:
+            if "*" in field or "?" in field:
+                pattern_matchers.append(
+                    _compile_sensitive_pattern(field, case_insensitive)
+                )
+            elif case_insensitive:
+                exact_fields.append(field.lower())
+            else:
+                exact_fields.append(field)
+
+        self._exact_fields = frozenset(exact_fields)
+        self._pattern_matchers = tuple(pattern_matchers)

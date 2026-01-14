@@ -712,6 +712,30 @@ class TestRenameKey:
         )
 
 
+
+def _test_pickle_redactor(field_name, value, path):
+    return "***"
+
+
+def _test_pickle_audit(field_name, value, path):
+    pass
+
+
+def _extract_extra(logger, log_method, event_dict):
+    """
+    Extracts extra attributes from LogRecord to event_dict for testing.
+    """
+    record = event_dict.get("_record")
+    if record:
+        if hasattr(record, "password"):
+            event_dict["password"] = record.password
+        if hasattr(record, "api_key"):
+            event_dict["api_key"] = record.api_key
+        if hasattr(record, "user"):
+            event_dict["user"] = record.user
+    return event_dict
+
+
 class TestSensitiveDataRedactor:
     def test_redacts_sensitive_field(self):
         """
@@ -1429,17 +1453,10 @@ class TestSensitiveDataRedactor:
         """
         An instance with callbacks can be pickled (callbacks are preserved).
         """
-
-        def custom_redactor(field_name, value, path):
-            return "***"
-
-        def audit(field_name, value, path):
-            pass
-
         redactor = SensitiveDataRedactor(
             sensitive_fields=["password"],
-            redaction_callback=custom_redactor,
-            audit_callback=audit,
+            redaction_callback=_test_pickle_redactor,
+            audit_callback=_test_pickle_audit,
         )
 
         pickled = pickle.dumps(redactor)
@@ -1984,10 +2001,16 @@ class TestSensitiveDataRedactorIntegration:
 
         handler.setFormatter(
             ProcessorFormatter(
-                processor=structlog.processors.JSONRenderer(),
+                # Use foreign_pre_chain for basic setup
                 foreign_pre_chain=[
                     structlog.stdlib.add_log_level,
+                ],
+                # Use main processors list for redaction to ensure it runs
+                # after extra attributes are merged (which happens in ProcessorFormatter)
+                processors=[
+                    _extract_extra,
                     redactor,
+                    structlog.processors.JSONRenderer(),
                 ],
             )
         )
