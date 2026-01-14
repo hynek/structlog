@@ -1489,7 +1489,7 @@ class TestSensitiveDataRedactor:
         event = {
             "users": [
                 [{"name": "alice", "password": "secret"}],
-                {"data": [{"password": "secret"}]}
+                {"data": [{"password": "secret"}]},
             ]
         }
         redactor(None, None, event)
@@ -1505,7 +1505,7 @@ class TestSensitiveDataRedactor:
         event = {
             "data": [
                 "string",  # Primitive (elif False -> loop)
-                123,       # Primitive (elif False -> loop)
+                123,  # Primitive (elif False -> loop)
                 {"password": "secret"},  # Dict (if True)
                 ["nested", {"password": "secret"}],  # List (elif True)
             ]
