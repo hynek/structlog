@@ -226,6 +226,8 @@ API Reference
       >>> LogfmtRenderer(key_order=["b", "a"], bool_as_flag=False)(None, "", event_dict)
       'b="[1, 2, 3]" a=42 flag=true'
 
+.. autoclass:: SensitiveDataRedactor
+
 .. autoclass:: EventRenamer
 
 .. autofunction:: add_log_level
