@@ -1012,27 +1012,7 @@ def _compile_sensitive_pattern(
 
 #: Type alias for the redaction callback function.
 #:
-#: The callback signature is ``(field_name, original_value, field_path) -> redacted_value``:
-#:
-#: - ``field_name`` (str): The name of the field being redacted.
-#: - ``original_value`` (Any): The original value before redaction.
-#: - ``field_path`` (str): Dot-separated path to the field (e.g., ``"user.credentials.password"``).
-#:
-#: Returns:
-#:     The value to use as the replacement (can be any type).
-RedactionCallback = Callable[[str, Any, str], Any]
 
-#: Type alias for the audit callback function.
-#:
-#: The callback signature is ``(field_name, original_value, field_path) -> None``:
-#:
-#: - ``field_name`` (str): The name of the field being redacted.
-#: - ``original_value`` (Any): The original value before redaction.
-#: - ``field_path`` (str): Dot-separated path to the field (e.g., ``"user.credentials.password"``).
-#:
-#: The callback is invoked *before* redaction occurs, allowing you to log or
-#: record the original value for audit purposes.
-AuditCallback = Callable[[str, Any, str], None]
 
 
 class SensitiveDataRedactor:
@@ -1164,9 +1144,7 @@ class SensitiveDataRedactor:
         This class uses ``__slots__`` for memory efficiency and does not expose
         public attributes. Use the constructor parameters to configure behavior.
 
-    Raises:
-        This processor does not raise exceptions during normal operation. Invalid
-        patterns or field names will simply not match any fields.
+
 
     Examples:
         **Basic usage**::
@@ -1304,16 +1282,16 @@ class SensitiveDataRedactor:
     _placeholder: str
     _case_insensitive: bool
     _sensitive_fields: tuple[str, ...]
-    _redaction_callback: RedactionCallback | None
-    _audit_callback: AuditCallback | None
+    _redaction_callback: Callable[[str, Any, str], Any] | None
+    _audit_callback: Callable[[str, Any, str], None] | None
 
     def __init__(
         self,
         sensitive_fields: Collection[str],
         placeholder: str = "[REDACTED]",
         case_insensitive: bool = False,
-        redaction_callback: RedactionCallback | None = None,
-        audit_callback: AuditCallback | None = None,
+        redaction_callback: Callable[[str, Any, str], Any] | None = None,
+        audit_callback: Callable[[str, Any, str], None] | None = None,
     ) -> None:
         """
         Initialize the SensitiveDataRedactor processor.
