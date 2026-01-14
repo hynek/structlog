@@ -1367,11 +1367,7 @@ class SensitiveDataRedactor:
             return True
 
         # Check patterns (slower path - iterate through compiled patterns)
-        for matcher in self._pattern_matchers:
-            if matcher(key):
-                return True
-
-        return False
+        return any(matcher(key) for matcher in self._pattern_matchers)
 
     def _get_redacted_value(self, key: str, value: Any, path: str) -> Any:
         """
