@@ -765,7 +765,9 @@ class TestSensitiveDataRedactor:
         """
         redactor = SensitiveDataRedactor(sensitive_fields=["api_key"])
 
-        assert {"config": {"api_key": "[REDACTED]", "timeout": 30}} == redactor(
+        assert {
+            "config": {"api_key": "[REDACTED]", "timeout": 30}
+        } == redactor(
             None, None, {"config": {"api_key": "abc123", "timeout": 30}}
         )
 
@@ -811,9 +813,7 @@ class TestSensitiveDataRedactor:
         """
         redactor = SensitiveDataRedactor(sensitive_fields=["token"])
 
-        assert {
-            "data": [[{"token": "[REDACTED]"}]]
-        } == redactor(
+        assert {"data": [[{"token": "[REDACTED]"}]]} == redactor(
             None,
             None,
             {"data": [[{"token": "secret_token"}]]},
@@ -1262,7 +1262,9 @@ class TestSensitiveDataRedactor:
         audit_log = []
 
         def audit(field_name, value, path):
-            audit_log.append({"field": field_name, "value": value, "path": path})
+            audit_log.append(
+                {"field": field_name, "value": value, "path": path}
+            )
 
         redactor = SensitiveDataRedactor(
             sensitive_fields=["password"],
@@ -1487,7 +1489,9 @@ class TestSensitiveDataRedactorIntegration:
         """
         SensitiveDataRedactor handles nested structures with JSONRenderer.
         """
-        redactor = SensitiveDataRedactor(sensitive_fields=["*password*", "*token*"])
+        redactor = SensitiveDataRedactor(
+            sensitive_fields=["*password*", "*token*"]
+        )
         renderer = JSONRenderer()
 
         event_dict = {
@@ -1770,8 +1774,14 @@ class TestSensitiveDataRedactorIntegration:
         output = renderer(None, None, redacted)
         result = json.loads(output)
 
-        assert result["level1"]["level2"]["level3"]["level4"]["secret"] == "[REDACTED]"
-        assert result["level1"]["level2"]["level3"]["level4"]["public"] == "visible"
+        assert (
+            result["level1"]["level2"]["level3"]["level4"]["secret"]
+            == "[REDACTED]"
+        )
+        assert (
+            result["level1"]["level2"]["level3"]["level4"]["public"]
+            == "visible"
+        )
 
     def test_empty_event_dict_with_renderer(self):
         """
@@ -1837,7 +1847,9 @@ class TestSensitiveDataRedactorIntegration:
         """
         from structlog.dev import ConsoleRenderer
 
-        redactor = SensitiveDataRedactor(sensitive_fields=["password", "api_key"])
+        redactor = SensitiveDataRedactor(
+            sensitive_fields=["password", "api_key"]
+        )
         renderer = ConsoleRenderer(colors=False)
 
         event_dict = {
@@ -1903,8 +1915,9 @@ class TestSensitiveDataRedactorIntegration:
         """
         SensitiveDataRedactor works in a full structlog configuration.
         """
-        import structlog
         from io import StringIO
+
+        import structlog
 
         output = StringIO()
 
@@ -1951,9 +1964,11 @@ class TestSensitiveDataRedactorIntegration:
         SensitiveDataRedactor works with stdlib logging integration.
         """
         import logging
+
         from io import StringIO
 
         import structlog
+
         from structlog.stdlib import ProcessorFormatter
 
         # Create a string stream to capture output
@@ -2001,16 +2016,22 @@ class TestSensitiveDataRedactorIntegration:
         audit_events = []
 
         def gdpr_audit(field_name, value, path):
-            audit_events.append({
-                "field": field_name,
-                "path": path,
-                "value_type": type(value).__name__,
-            })
+            audit_events.append(
+                {
+                    "field": field_name,
+                    "path": path,
+                    "value_type": type(value).__name__,
+                }
+            )
 
         gdpr_redactor = SensitiveDataRedactor(
             sensitive_fields=[
-                "*email*", "*phone*", "*address*",
-                "*name*", "*ssn*", "*birth*",
+                "*email*",
+                "*phone*",
+                "*address*",
+                "*name*",
+                "*ssn*",
+                "*birth*",
             ],
             case_insensitive=True,
             audit_callback=gdpr_audit,

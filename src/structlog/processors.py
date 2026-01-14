@@ -1285,13 +1285,13 @@ class SensitiveDataRedactor:
     """
 
     __slots__ = (
+        "_audit_callback",
+        "_case_insensitive",
         "_exact_fields",
         "_pattern_matchers",
         "_placeholder",
-        "_case_insensitive",
-        "_sensitive_fields",
         "_redaction_callback",
-        "_audit_callback",
+        "_sensitive_fields",
     )
 
     _exact_fields: frozenset[str]
@@ -1337,12 +1337,11 @@ class SensitiveDataRedactor:
                 pattern_matchers.append(
                     _compile_sensitive_pattern(field, case_insensitive)
                 )
+            # Exact match - normalize case if needed
+            elif case_insensitive:
+                exact_fields.append(field.lower())
             else:
-                # Exact match - normalize case if needed
-                if case_insensitive:
-                    exact_fields.append(field.lower())
-                else:
-                    exact_fields.append(field)
+                exact_fields.append(field)
 
         self._exact_fields = frozenset(exact_fields)
         self._pattern_matchers = tuple(pattern_matchers)
@@ -1420,7 +1419,9 @@ class SensitiveDataRedactor:
         """
         return self._redact_dict(event_dict, "")
 
-    def _redact_dict(self, d: dict[str, Any], parent_path: str) -> dict[str, Any]:
+    def _redact_dict(
+        self, d: dict[str, Any], parent_path: str
+    ) -> dict[str, Any]:
         """
         Recursively redact sensitive fields from a dictionary.
 
