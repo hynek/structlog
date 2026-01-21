@@ -52,7 +52,7 @@ typing = ["mypy>=1.4", "rich", "twisted"]
 docs = [
     "cogapp",
     "myst-parser",
-    "sphinx",
+    "sphinx<9",
     "sphinx-design",
     "sphinx-copybutton",
     "sphinx-book-theme",
