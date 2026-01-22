@@ -127,6 +127,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#684](https://github.com/hynek/structlog/pull/684)
 
 
+### Added
+
+- `structlog.processors.CallsiteParameter.TASK_NAME` now available as callsite parameter.
+  [#693](https://github.com/hynek/structlog/issues/693)
+
+
 ### Changed
 
 - `structlog.stdlib.BoundLogger`'s binding-related methods now also return `Self`.
