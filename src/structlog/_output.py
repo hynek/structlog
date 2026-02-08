@@ -256,12 +256,16 @@ class BytesLogger:
     .. versionadded:: 20.2.0
     """
 
-    __slots__ = ("_file", "_flush", "_lock", "_write")
+    __slots__ = ("_file", "_flush", "_lock", "_write", "name")
 
-    def __init__(self, file: BinaryIO | None = None):
+    def __init__(
+        self, file: BinaryIO | None = None, *, name: str | None = None
+    ):
         self._file = file or sys.stdout.buffer
         self._write = self._file.write
         self._flush = self._file.flush
+
+        self.name = name
 
         self._lock = _get_lock_for_file(self._file)
 
@@ -345,4 +349,6 @@ class BytesLoggerFactory:
         self._file = file
 
     def __call__(self, *args: Any) -> BytesLogger:
-        return BytesLogger(self._file)
+        return BytesLogger(
+            self._file, name=args[0] if args else None
+        )
