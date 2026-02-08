@@ -349,6 +349,4 @@ class BytesLoggerFactory:
         self._file = file
 
     def __call__(self, *args: Any) -> BytesLogger:
-        return BytesLogger(
-            self._file, name=args[0] if args else None
-        )
+        return BytesLogger(self._file, name=args[0] if args else None)
