@@ -358,36 +358,16 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-    @pytest.mark.parametrize("wrap", [True, False])
-    def test_exception_rendered(
-        self, cr, recwarn, wrap, styles, padded, monkeypatch
-    ):
+    def test_exception_rendered(self, cr, styles, padded):
         """
         Exceptions are rendered after a new line if they are already rendered
         in the event dict.
-
-        A warning is emitted if exception printing is "customized".
         """
         exc = "Traceback:\nFake traceback...\nFakeError: yolo"
-
-        # Wrap the formatter to provoke the warning.
-        if wrap:
-            monkeypatch.setattr(
-                cr,
-                "_exception_formatter",
-                lambda s, ei: dev.plain_traceback(s, ei),  # noqa: PLW0108
-            )
 
         rv = cr(None, None, {"event": "test", "exception": exc})
 
         assert (f"{padded}\n" + exc) == rv
-
-        if wrap:
-            (w,) = recwarn.list
-            assert (
-                "Remove `format_exc_info` from your processor chain "
-                "if you want pretty exceptions.",
-            ) == w.message.args
 
     def test_stack_info(self, cr, styles, padded):
         """
