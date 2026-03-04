@@ -915,13 +915,6 @@ class ConsoleRenderer:
         if exc_info:
             self._exception_formatter(sio, exc_info)
         elif exc is not None:
-            if self._exception_formatter is not plain_traceback:
-                warnings.warn(
-                    "Remove `format_exc_info` from your processor chain "
-                    "if you want pretty exceptions.",
-                    stacklevel=2,
-                )
-
             sio.write("\n" + exc)
 
         return sio.getvalue()

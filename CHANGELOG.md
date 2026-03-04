@@ -19,6 +19,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - Python 3.8 support.
 
+### Changed
+
+- `structlog.dev.ConsoleRenderer` does not warn anymore when the `exception` key has a rendered value despite having a fancy formatter configured.
+  [#790](https://github.com/hynek/structlog/pull/790)
+
 
 ## [25.5.0](https://github.com/hynek/structlog/compare/25.4.0...25.5.0) - 2025-10-27
 
