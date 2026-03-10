@@ -295,6 +295,22 @@ class TestBytesLogger:
         assert "hello\n" == out
         assert "" == err
 
+    def test_name_attribute(self):
+        """
+        BytesLogger accepts a name keyword argument.
+        """
+        bl = BytesLogger(name="test_logger")
+
+        assert "test_logger" == bl.name
+
+    def test_name_defaults_to_none(self):
+        """
+        BytesLogger name defaults to None when not provided.
+        """
+        bl = BytesLogger()
+
+        assert bl.name is None
+
     def test_deepcopy_no_stdout(self, tmp_path):
         """
         Only BytesLoggers that log to stdout or stderr can be deepcopy-ed.
@@ -327,9 +343,27 @@ class TestBytesLoggerFactory:
 
         assert stderr is pl._file
 
-    def test_ignores_args(self):
+    def test_passes_name_from_args(self):
         """
-        BytesLogger doesn't take positional arguments.  If any are passed to
-        the factory, they are not passed to the logger.
+        The first positional argument is used as the logger name.
         """
-        BytesLoggerFactory()(1, 2, 3)
+        bl = BytesLoggerFactory()("my_logger")
+
+        assert "my_logger" == bl.name
+
+    def test_name_defaults_to_none(self):
+        """
+        If no positional arguments are passed to the factory, the logger
+        name defaults to None.
+        """
+        bl = BytesLoggerFactory()()
+
+        assert bl.name is None
+
+    def test_extra_args_ignored(self):
+        """
+        Positional arguments beyond the first are silently ignored.
+        """
+        bl = BytesLoggerFactory()("my_logger", 2, 3)
+
+        assert "my_logger" == bl.name

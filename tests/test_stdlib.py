@@ -569,6 +569,29 @@ class TestAddLoggerName:
 
         assert name == event_dict["logger"]
 
+    def test_logger_name_added_with_bytes_logger(self):
+        """
+        add_logger_name works with BytesLogger that has a name attribute.
+        """
+        from structlog import BytesLogger
+
+        name = "sample-name"
+        logger = BytesLogger(name=name)
+        event_dict = add_logger_name(logger, None, {})
+
+        assert name == event_dict["logger"]
+
+    def test_logger_name_none_with_unnamed_bytes_logger(self):
+        """
+        add_logger_name works with BytesLogger without a name, returning None.
+        """
+        from structlog import BytesLogger
+
+        logger = BytesLogger()
+        event_dict = add_logger_name(logger, None, {})
+
+        assert event_dict["logger"] is None
+
 
 def extra_dict() -> dict[str, Any]:
     """
