@@ -173,7 +173,7 @@ def to_repr(
                 obj_repr = repr(obj)
                 if max_string is not None and len(obj_repr) > max_string:
                     truncated = len(obj_repr) - max_string
-                    obj_repr = f"{obj_repr[:max_string]!r}+{truncated}"
+                    obj_repr = f"{obj_repr[:max_string]}+{truncated}"
         except Exception as error:  # noqa: BLE001
             obj_repr = f"<repr-error {str(error)!r}>"
 
