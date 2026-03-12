@@ -399,12 +399,45 @@ class TestCallsiteParameterAdder:
         await getattr(logger, method_name)("baz")
         logger_params = json.loads(string_io.getvalue())
 
-        # These are different when running under async
-        for key in ["thread", "thread_name"]:
-            callsite_params.pop(key)
-            logger_params.pop(key)
-
         assert {"event": "baz", **callsite_params} == logger_params
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        ("wrapper_class", "method_name"),
+        [
+            (structlog.stdlib.BoundLogger, "ainfo"),
+            (structlog.stdlib.AsyncBoundLogger, "info"),
+        ],
+    )
+    async def test_async_thread_name(self, wrapper_class, method_name) -> None:
+        """
+        Regression test for https://github.com/hynek/structlog/issues/710.
+
+        Thread name and thread ID in async log calls must reflect the
+        calling thread, not the executor thread.
+        """
+        string_io = StringIO()
+
+        class StringIOLogger(structlog.PrintLogger):
+            def __init__(self):
+                super().__init__(file=string_io)
+
+        processor = self.make_processor(
+            {"thread", "thread_name"}, ["concurrent", "threading"]
+        )
+        structlog.configure(
+            processors=[processor, JSONRenderer()],
+            logger_factory=StringIOLogger,
+            wrapper_class=wrapper_class,
+            cache_logger_on_first_use=True,
+        )
+
+        logger = structlog.stdlib.get_logger()
+        await getattr(logger, method_name)("test")
+        logger_params = json.loads(string_io.getvalue())
+
+        assert logger_params["thread"] == threading.get_ident()
+        assert logger_params["thread_name"] == threading.current_thread().name
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """

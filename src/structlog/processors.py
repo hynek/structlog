@@ -37,6 +37,7 @@ from ._frames import (
 )
 from ._log_levels import NAME_TO_LEVEL, add_log_level
 from ._utils import get_processname
+from .contextvars import _ASYNC_CALLING_THREAD
 from .tracebacks import ExceptionDictTransformer
 from .typing import (
     EventDict,
@@ -784,11 +785,17 @@ def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
 
 
 def _get_callsite_thread(module: str, frame: FrameType) -> Any:
-    return threading.get_ident()
+    try:
+        return _ASYNC_CALLING_THREAD.get().ident
+    except LookupError:
+        return threading.get_ident()
 
 
 def _get_callsite_thread_name(module: str, frame: FrameType) -> Any:
-    return threading.current_thread().name
+    try:
+        return _ASYNC_CALLING_THREAD.get().name
+    except LookupError:
+        return threading.current_thread().name
 
 
 def _get_callsite_process(module: str, frame: FrameType) -> Any:

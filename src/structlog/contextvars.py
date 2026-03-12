@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import contextlib
 import contextvars
+import threading
 
 from collections.abc import Generator, Mapping
 from types import FrameType
@@ -36,6 +37,9 @@ STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
 
 _ASYNC_CALLING_STACK: contextvars.ContextVar[FrameType] = (
     contextvars.ContextVar("_ASYNC_CALLING_STACK")
+)
+_ASYNC_CALLING_THREAD: contextvars.ContextVar[threading.Thread] = (
+    contextvars.ContextVar("_ASYNC_CALLING_THREAD")
 )
 
 # For proper isolation, we have to use a dict of ContextVars instead of a

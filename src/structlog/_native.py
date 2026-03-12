@@ -13,6 +13,7 @@ import asyncio
 import collections
 import contextvars
 import sys
+import threading
 
 from typing import Any, Callable
 
@@ -27,7 +28,7 @@ from ._log_levels import (
     NOTSET,
     WARNING,
 )
-from .contextvars import _ASYNC_CALLING_STACK
+from .contextvars import _ASYNC_CALLING_STACK, _ASYNC_CALLING_THREAD
 from .typing import FilteringBoundLogger
 
 
@@ -60,6 +61,7 @@ async def aexception(
         kw["exc_info"] = sys.exc_info()
 
     scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
+    thr_token = _ASYNC_CALLING_THREAD.set(threading.current_thread())
     ctx = contextvars.copy_context()
     try:
         runner = await asyncio.get_running_loop().run_in_executor(
@@ -68,6 +70,7 @@ async def aexception(
         )
     finally:
         _ASYNC_CALLING_STACK.reset(scs_token)
+        _ASYNC_CALLING_THREAD.reset(thr_token)
 
     return runner
 
@@ -173,6 +176,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             event = _maybe_interpolate(event, args)
 
             scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
+            thr_token = _ASYNC_CALLING_THREAD.set(threading.current_thread())
             ctx = contextvars.copy_context()
             try:
                 await asyncio.get_running_loop().run_in_executor(
@@ -183,6 +187,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
                 )
             finally:
                 _ASYNC_CALLING_STACK.reset(scs_token)
+                _ASYNC_CALLING_THREAD.reset(thr_token)
 
         meth.__name__ = name
         ameth.__name__ = f"a{name}"
@@ -211,6 +216,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         event = _maybe_interpolate(event, args)
 
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
+        thr_token = _ASYNC_CALLING_THREAD.set(threading.current_thread())
         ctx = contextvars.copy_context()
         try:
             runner = await asyncio.get_running_loop().run_in_executor(
@@ -221,6 +227,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             )
         finally:
             _ASYNC_CALLING_STACK.reset(scs_token)
+            _ASYNC_CALLING_THREAD.reset(thr_token)
         return runner
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
