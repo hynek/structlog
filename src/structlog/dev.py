@@ -412,9 +412,9 @@ class RichTracebackFormatter:
     .. versionadded:: 25.4.0 *code_width*
     """
 
-    color_system: Literal[
-        "auto", "standard", "256", "truecolor", "windows"
-    ] = "truecolor"
+    color_system: (
+        Literal["auto", "standard", "256", "truecolor", "windows"] | None
+    ) = "truecolor"
     show_locals: bool = True
     max_frames: int = 100
     theme: str | None = None
