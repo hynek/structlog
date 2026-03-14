@@ -695,6 +695,11 @@ class ConsoleRenderer:
         if force_colors is not False:
             add_meaningless_arg("force_colors")
 
+        if not colors and exception_formatter is rich_traceback:
+            cast(
+                RichTracebackFormatter, exception_formatter
+            ).color_system = None
+
         if repr_native_str is not False:
             add_meaningless_arg("repr_native_str")
 
@@ -1015,6 +1020,10 @@ class ConsoleRenderer:
             value, self._force_colors
         )
         self._level_styles = self.get_default_level_styles(value)
+        if self.exception_formatter is rich_traceback:
+            cast(
+                RichTracebackFormatter, self.exception_formatter
+            ).color_system = "truecolor" if value else None
 
         self._configure_columns()
 
