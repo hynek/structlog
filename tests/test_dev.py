@@ -1167,3 +1167,7 @@ class TestConsoleRendererProperties:
         cr = dev.ConsoleRenderer(colors=False)
 
         assert cr.exception_formatter.color_system is None
+
+        cr.colors = True
+
+        assert cr.exception_formatter.color_system == "truecolor"
