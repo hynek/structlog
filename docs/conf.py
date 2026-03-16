@@ -40,7 +40,7 @@ myst_enable_extensions = [
     "smartquotes",
     "deflist",
 ]
-mermaid_init_js = "mermaid.initialize({startOnLoad:true,theme:'neutral'});"
+mermaid_init_js = "mermaid.initialize({startOnLoad:true,theme:document.documentElement.dataset.theme==='dark'||(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'neutral'});"
 
 ogp_image = "_static/structlog_logo.png"
 
