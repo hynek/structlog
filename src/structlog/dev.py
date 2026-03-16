@@ -472,6 +472,8 @@ if rich is None:
             name="rich",
         )
 
+    rich_monochrome_traceback = rich_traceback
+
 else:
     rich_traceback = RichTracebackFormatter()
     """
@@ -483,6 +485,18 @@ else:
     if Rich is installed.
 
     .. versionadded:: 21.2.0
+    """
+
+    rich_monochrome_traceback = RichTracebackFormatter(color_system=None)
+    """
+    Pretty-print *exc_info* to *sio* using the Rich package w/o colors.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    This is a `RichTracebackFormatter` with default arguments and used by default
+    if Rich is installed.
+
+    .. versionadded:: TODO
     """
 
 
@@ -501,10 +515,15 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
 if rich is not None:
     default_exception_formatter = rich_traceback
+    default_monochrome_exception_formatter = rich_monochrome_traceback
 elif better_exceptions is not None:
-    default_exception_formatter = better_traceback
+    default_exception_formatter = default_monochrome_exception_formatter = (
+        better_traceback
+    )
 else:
-    default_exception_formatter = plain_traceback
+    default_exception_formatter = default_monochrome_exception_formatter = (
+        plain_traceback
+    )
 
 
 class ConsoleRenderer:
@@ -672,6 +691,9 @@ class ConsoleRenderer:
         self._timestamp_key = timestamp_key
         self._event_key = event_key
         self._pad_level = pad_level
+
+        if exception_formatter is default_exception_formatter and not colors:
+            self.exception_formatter = default_monochrome_exception_formatter
 
         if columns is None:
             self._configure_columns()
@@ -1015,6 +1037,14 @@ class ConsoleRenderer:
             value, self._force_colors
         )
         self._level_styles = self.get_default_level_styles(value)
+        if self.exception_formatter in (
+            default_exception_formatter,
+            default_monochrome_exception_formatter,
+        ):
+            self.exception_formatter = (
+                default_monochrome_exception_formatter,
+                default_exception_formatter,
+            )[value]
 
         self._configure_columns()
 
