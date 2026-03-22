@@ -198,11 +198,25 @@ class FilteringBoundLogger(BindableLogger, Protocol):
         .. versionadded:: 25.1.0
         """
 
+    def isEnabledFor(self, level: int) -> bool:
+        """
+        Alias for :meth:`is_enabled_for`.
+
+        .. versionadded:: 25.2.0
+        """
+
     def get_effective_level(self) -> int:
         """
         Return the effective level of the logger.
 
         .. versionadded:: 25.1.0
+        """
+
+    def getEffectiveLevel(self) -> int:
+        """
+        Alias for :meth:`get_effective_level`.
+
+        .. versionadded:: 25.2.0
         """
 
     def debug(self, event: str, *args: Any, **kw: Any) -> Any:

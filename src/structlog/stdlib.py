@@ -394,18 +394,30 @@ class BoundLogger(BoundLoggerBase):
         """
         self._logger.callHandlers(record)
 
+    def isEnabledFor(self, level: int) -> bool:
+        """
+        Calls :meth:`logging.Logger.isEnabledFor` with unmodified arguments.
+        """
+        return self._logger.isEnabledFor(level)
+
+    def is_enabled_for(self, level: int) -> bool:
+        """
+        Alias for :meth:`isEnabledFor` for snake_case consistency.
+        """
+        return self.isEnabledFor(level)
+
+    def get_effective_level(self) -> int:
+        """
+        Alias for :meth:`getEffectiveLevel` for snake_case consistency.
+        """
+        return self.getEffectiveLevel()
+
     def getEffectiveLevel(self) -> int:
         """
         Calls :meth:`logging.Logger.getEffectiveLevel` with unmodified
         arguments.
         """
         return self._logger.getEffectiveLevel()
-
-    def isEnabledFor(self, level: int) -> bool:
-        """
-        Calls :meth:`logging.Logger.isEnabledFor` with unmodified arguments.
-        """
-        return self._logger.isEnabledFor(level)
 
     def getChild(self, suffix: str) -> logging.Logger:
         """
