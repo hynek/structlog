@@ -52,7 +52,11 @@ It's people like *you* who make this project such a great tool for everyone.
 
 ## Local development environment
 
-First, **fork** the repository on GitHub and **clone** it using one of the alternatives that you can copy-paste by pressing the big green button labeled `<> Code`.
+First, **fork** the repository on GitHub.
+Make sure to **uncheck** the `Copy the main branch only` radio button on the `Create a new fork` page.
+If you don't, our test suite will fail because we use Git tags for packaging.
+
+Finally, **clone** it using one of the alternatives that you can copy-paste by pressing the big green button labeled `<> Code`.
 
 You can (and should) run our test suite using [*tox*](https://tox.wiki/).
 However, you'll probably want a more traditional environment as well.
