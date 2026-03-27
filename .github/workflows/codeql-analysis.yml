@@ -4,22 +4,20 @@ name: CodeQL
 on:
   schedule:
     - cron: "41 3 * * 6"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      contents: read
-      security-events: write
+      security-events: write  # necessary according to docs
 
     strategy:
       fail-fast: false
