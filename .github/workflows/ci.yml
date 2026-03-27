@@ -64,7 +64,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
-      - uses: hynek/setup-cached-uv@0b9e52652c2d5d4fb6af4598efa3d14e60e934d1 # v2.4.0
+      - uses: hynek/setup-cached-uv@4300ec2180bc77d705e626a34e381b81a4772c51 # v2.5.0
 
       - name: Run tests
         run: >
@@ -99,7 +99,7 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version-file: .python-version-default
-      - uses: hynek/setup-cached-uv@0b9e52652c2d5d4fb6af4598efa3d14e60e934d1 # v2.4.0
+      - uses: hynek/setup-cached-uv@4300ec2180bc77d705e626a34e381b81a4772c51 # v2.5.0
 
       - name: Download coverage data
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -142,7 +142,7 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version-file: .python-version-default
-      - uses: hynek/setup-cached-uv@0b9e52652c2d5d4fb6af4598efa3d14e60e934d1 # v2.4.0
+      - uses: hynek/setup-cached-uv@4300ec2180bc77d705e626a34e381b81a4772c51 # v2.5.0
 
       - run: >
           uvx --with tox-uv
@@ -163,7 +163,7 @@ jobs:
         with:
           # Keep in sync with tox.ini/docs & .readthedocs.yaml
           python-version: "3.13"
-      - uses: hynek/setup-cached-uv@0b9e52652c2d5d4fb6af4598efa3d14e60e934d1 # v2.4.0
+      - uses: hynek/setup-cached-uv@4300ec2180bc77d705e626a34e381b81a4772c51 # v2.5.0
 
       - run: >
           uvx --with tox-uv
@@ -183,7 +183,7 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version-file: .python-version-default
-      - uses: hynek/setup-cached-uv@0b9e52652c2d5d4fb6af4598efa3d14e60e934d1 # v2.4.0
+      - uses: hynek/setup-cached-uv@4300ec2180bc77d705e626a34e381b81a4772c51 # v2.5.0
 
       - run: uv venv
       - run: uv pip install -e . --group dev
@@ -229,7 +229,7 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version-file: .python-version-default
-      - uses: hynek/setup-cached-uv@0b9e52652c2d5d4fb6af4598efa3d14e60e934d1 # v2.4.0
+      - uses: hynek/setup-cached-uv@4300ec2180bc77d705e626a34e381b81a4772c51 # v2.5.0
 
       - run: >
           uvx --with=tox-uv
