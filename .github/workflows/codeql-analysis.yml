@@ -4,6 +4,7 @@ name: CodeQL
 on:
   schedule:
     - cron: "41 3 * * 6"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}
