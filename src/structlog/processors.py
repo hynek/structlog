@@ -19,7 +19,12 @@ import sys
 import threading
 import time
 
-from collections.abc import Collection, Sequence
+from collections.abc import (
+    Collection,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from types import FrameType, TracebackType
 from typing import (
     Any,
@@ -55,6 +60,7 @@ __all__ = [
     "JSONRenderer",
     "KeyValueRenderer",
     "LogfmtRenderer",
+    "SensitiveDataRedactor",
     "StackInfoRenderer",
     "TimeStamper",
     "UnicodeDecoder",
@@ -969,3 +975,517 @@ class EventRenamer:
                 event_dict["event"] = replace_by
 
         return event_dict
+
+
+def _compile_sensitive_pattern(
+    pattern: str, case_insensitive: bool
+) -> Callable[[str], bool]:
+    """
+    Compile a glob-style pattern into a matcher function.
+
+    Args:
+        pattern: A glob-style pattern string containing ``*`` and/or ``?``.
+        case_insensitive: Whether matching should ignore case.
+
+    Returns:
+        A function that takes a string key and returns True if it matches
+        the pattern.
+
+    Note:
+        Uses :func:`fnmatch.translate` to convert glob patterns to regex.
+        ``*`` matches any sequence of characters (including empty).
+        ``?`` matches exactly one character.
+    """
+    import fnmatch
+    import re
+
+    # Convert glob pattern to regex
+    regex_pattern = fnmatch.translate(pattern)
+    flags = re.IGNORECASE if case_insensitive else 0
+    compiled = re.compile(regex_pattern, flags)
+
+    def matcher(key: str) -> bool:
+        return compiled.fullmatch(key) is not None
+
+    return matcher
+
+
+#: Type alias for the redaction callback function.
+#:
+
+
+class SensitiveDataRedactor:
+    """
+    Redact sensitive fields from event dictionaries.
+
+    This processor automatically identifies and redacts sensitive data from log
+    events before they are written to log destinations. It is designed to help
+    with data protection compliance (GDPR, HIPAA, PCI-DSS, etc.) by ensuring
+    that sensitive information like passwords, API keys, personal data, and
+    other confidential fields are not exposed in logs.
+
+    The processor supports:
+
+    - **Exact field matching**: Specify exact field names to redact.
+    - **Pattern matching**: Use glob-style patterns (``*`` and ``?``) to match
+      field names dynamically.
+    - **Case-insensitive matching**: Optionally ignore case when matching field
+      names.
+    - **Nested structures**: Automatically traverses nested dictionaries and
+      lists to find and redact sensitive fields at any depth.
+    - **Custom redaction**: Provide a callback function for custom redaction
+      logic (e.g., partial masking, hashing).
+    - **Audit logging**: Track redaction events for compliance auditing.
+
+    Args:
+        sensitive_fields:
+            A collection of field names or glob-style patterns to redact.
+
+            **Exact matches**: Simple strings match field names exactly::
+
+                ["password", "api_key", "ssn"]
+
+            **Glob patterns**: Use ``*`` to match any sequence of characters,
+            and ``?`` to match exactly one character::
+
+                ["*password*"]     # Matches: password, user_password, password_hash
+                ["api_*"]          # Matches: api_key, api_secret, api_token
+                ["*_token"]        # Matches: auth_token, refresh_token
+                ["key?"]           # Matches: key1, key2, keyA (but not key or key12)
+
+            Common sensitive field patterns for compliance:
+
+            - **Authentication**: ``*password*``, ``*secret*``, ``*token*``,
+              ``*credential*``, ``*api_key*``
+            - **Personal Data (GDPR)**: ``*email*``, ``*phone*``, ``*address*``,
+              ``*ssn*``, ``*birth*``, ``*name*``
+            - **Financial (PCI-DSS)**: ``*card*``, ``*cvv*``, ``*account*``,
+              ``*routing*``
+            - **Health (HIPAA)**: ``*diagnosis*``, ``*prescription*``,
+              ``*medical*``, ``*health*``
+
+        placeholder:
+            The string used to replace redacted values. Default is
+            ``"[REDACTED]"``. This parameter is ignored if *redaction_callback*
+            is provided.
+
+            Examples of common placeholders::
+
+                "[REDACTED]"           # Default, clear indication of redaction
+                "***"                  # Shorter placeholder
+                "<SENSITIVE>"          # Alternative marker
+                ""                     # Empty string (removes value)
+
+        case_insensitive:
+            When ``True``, field name matching ignores case. Default is
+            ``False``.
+
+            This is useful when field names may have inconsistent casing::
+
+                # With case_insensitive=True, matches: password, PASSWORD, Password
+                SensitiveDataRedactor(["password"], case_insensitive=True)
+
+        redaction_callback:
+            An optional callable for custom redaction logic. When provided,
+            this takes precedence over *placeholder*.
+
+            The callback receives three arguments:
+
+            - ``field_name`` (str): The name of the field being redacted.
+            - ``original_value`` (Any): The original value before redaction.
+            - ``field_path`` (str): The full path to the field in dot notation
+              (e.g., ``"config.database.password"`` or ``"users[0].ssn"``).
+
+            The callback should return the redacted value.
+
+            Example - Partial masking for debugging::
+
+                def partial_mask(field_name, value, path):
+                    if isinstance(value, str) and len(value) > 4:
+                        return value[:2] + "*" * (len(value) - 4) + value[-2:]
+                    return "[REDACTED]"
+
+            Example - Hash sensitive values for correlation::
+
+                import hashlib
+                def hash_value(field_name, value, path):
+                    h = hashlib.sha256(str(value).encode()).hexdigest()[:8]
+                    return f"[HASH:{h}]"
+
+        audit_callback:
+            An optional callable invoked for each redacted field, useful for
+            compliance auditing and monitoring.
+
+            The callback receives the same three arguments as *redaction_callback*
+            but returns nothing. It is called *before* the value is redacted,
+            so it receives the original value.
+
+            Example - Log redaction events::
+
+                import logging
+                audit_logger = logging.getLogger("security.audit")
+
+                def audit_redaction(field_name, value, path):
+                    audit_logger.info(
+                        "Redacted sensitive field",
+                        extra={"field": field_name, "path": path}
+                    )
+
+            Example - Count redactions for metrics::
+
+                from collections import Counter
+                redaction_counts = Counter()
+
+                def count_redactions(field_name, value, path):
+                    redaction_counts[field_name] += 1
+
+    Attributes:
+        This class uses ``__slots__`` for memory efficiency and does not expose
+        public attributes. Use the constructor parameters to configure behavior.
+
+
+
+    Examples:
+        **Basic usage**::
+
+            from structlog.processors import SensitiveDataRedactor
+
+            redactor = SensitiveDataRedactor(
+                sensitive_fields=["password", "api_key", "secret"]
+            )
+
+            # In structlog configuration
+            structlog.configure(
+                processors=[
+                    structlog.stdlib.add_log_level,
+                    redactor,  # Add before renderers
+                    structlog.processors.JSONRenderer(),
+                ]
+            )
+
+        **Nested dictionary handling**::
+
+            redactor = SensitiveDataRedactor(sensitive_fields=["password"])
+            event = {
+                "user": "alice",
+                "credentials": {
+                    "password": "secret123",
+                    "mfa_enabled": True
+                }
+            }
+            result = redactor(None, None, event)
+            # Result: {"user": "alice", "credentials": {"password": "[REDACTED]", "mfa_enabled": True}}
+
+        **Pattern matching for flexible redaction**::
+
+            redactor = SensitiveDataRedactor(
+                sensitive_fields=[
+                    "*password*",    # Any field containing "password"
+                    "api_*",         # Any field starting with "api_"
+                    "*_token",       # Any field ending with "_token"
+                ]
+            )
+
+        **Case-insensitive matching**::
+
+            redactor = SensitiveDataRedactor(
+                sensitive_fields=["password", "apikey"],
+                case_insensitive=True
+            )
+            # Matches: password, PASSWORD, Password, ApiKey, APIKEY, etc.
+
+        **Custom redaction with partial masking**::
+
+            def mask_email(field_name, value, path):
+                if field_name == "email" and "@" in str(value):
+                    local, domain = str(value).split("@")
+                    return f"{local[0]}***@{domain}"
+                return "[REDACTED]"
+
+            redactor = SensitiveDataRedactor(
+                sensitive_fields=["email", "password"],
+                redaction_callback=mask_email
+            )
+
+        **GDPR compliance with audit trail**::
+
+            import logging
+
+            # Separate audit logger for compliance records
+            audit_logger = logging.getLogger("gdpr.audit")
+
+            def gdpr_audit(field_name, value, path):
+                audit_logger.info(
+                    "PII field redacted for GDPR compliance",
+                    extra={
+                        "field_name": field_name,
+                        "field_path": path,
+                        "value_type": type(value).__name__,
+                    }
+                )
+
+            gdpr_redactor = SensitiveDataRedactor(
+                sensitive_fields=[
+                    "*email*", "*phone*", "*address*",
+                    "*name*", "*birth*", "*ssn*", "*passport*",
+                ],
+                case_insensitive=True,
+                audit_callback=gdpr_audit,
+            )
+
+        **PCI-DSS compliance for payment data**::
+
+            def mask_card_number(field_name, value, path):
+                if "card" in field_name.lower() and isinstance(value, str):
+                    if len(value) >= 4:
+                        return f"****-****-****-{value[-4:]}"
+                return "[REDACTED]"
+
+            pci_redactor = SensitiveDataRedactor(
+                sensitive_fields=[
+                    "*card*", "*cvv*", "*cvc*",
+                    "*account_number*", "*routing*",
+                ],
+                case_insensitive=True,
+                redaction_callback=mask_card_number,
+            )
+
+    Note:
+        - Place this processor **before** any renderers (like ``JSONRenderer``)
+          in your processor chain to ensure sensitive data is redacted before
+          being serialized.
+        - The processor modifies the event dictionary in place for efficiency.
+        - For performance-critical applications with many sensitive fields,
+          prefer exact matches over patterns where possible.
+        - The processor is pickleable, allowing it to be used with multiprocessing.
+
+    See Also:
+        - :doc:`/processors` for general information about processors.
+        - :class:`JSONRenderer` for rendering redacted logs as JSON.
+
+    .. versionadded:: 25.1.0
+    """
+
+    __slots__ = (
+        "_audit_callback",
+        "_case_insensitive",
+        "_exact_fields",
+        "_pattern_matchers",
+        "_placeholder",
+        "_redaction_callback",
+        "_sensitive_fields",
+    )
+
+    _exact_fields: frozenset[str]
+    _pattern_matchers: tuple[Callable[[str], bool], ...]
+    _placeholder: str
+    _case_insensitive: bool
+    _sensitive_fields: tuple[str, ...]
+    _redaction_callback: Callable[[str, Any, str], Any] | None
+    _audit_callback: Callable[[str, Any, str], None] | None
+
+    def __init__(
+        self,
+        sensitive_fields: Collection[str],
+        placeholder: str = "[REDACTED]",
+        case_insensitive: bool = False,
+        redaction_callback: Callable[[str, Any, str], Any] | None = None,
+        audit_callback: Callable[[str, Any, str], None] | None = None,
+    ) -> None:
+        """
+        Initialize the SensitiveDataRedactor processor.
+
+        Args:
+            sensitive_fields: Field names or patterns to redact.
+            placeholder: Replacement string for redacted values.
+            case_insensitive: Whether to ignore case when matching.
+            redaction_callback: Custom function for redaction logic.
+            audit_callback: Function called for each redaction event.
+        """
+        self._placeholder = placeholder
+        self._case_insensitive = case_insensitive
+        self._redaction_callback = redaction_callback
+        self._audit_callback = audit_callback
+        # Store original fields for pickling
+        self._sensitive_fields = tuple(sensitive_fields)
+
+        # Separate exact matches from patterns for optimized matching
+        exact_fields: list[str] = []
+        pattern_matchers: list[Callable[[str], bool]] = []
+
+        for field in sensitive_fields:
+            if "*" in field or "?" in field:
+                # It's a glob pattern - compile to regex matcher
+                pattern_matchers.append(
+                    _compile_sensitive_pattern(field, case_insensitive)
+                )
+            # Exact match - normalize case if needed
+            elif case_insensitive:
+                exact_fields.append(field.lower())
+            else:
+                exact_fields.append(field)
+
+        self._exact_fields = frozenset(exact_fields)
+        self._pattern_matchers = tuple(pattern_matchers)
+
+    def _is_sensitive(self, key: str) -> bool:
+        """
+        Check if a field key matches any sensitive field or pattern.
+
+        Args:
+            key: The field name to check.
+
+        Returns:
+            True if the key matches a sensitive field or pattern, False otherwise.
+
+        Note:
+            Exact matches are checked first (O(1) lookup) before falling back
+            to pattern matching for better performance.
+        """
+        check_key = key.lower() if self._case_insensitive else key
+
+        # Check exact matches first (fast path - O(1) frozenset lookup)
+        if check_key in self._exact_fields:
+            return True
+
+        # Check patterns (slower path - iterate through compiled patterns)
+        return any(matcher(key) for matcher in self._pattern_matchers)
+
+    def _get_redacted_value(self, key: str, value: Any, path: str) -> Any:
+        """
+        Compute the redacted value for a sensitive field.
+
+        This method first calls the audit callback (if configured), then
+        determines the replacement value using either the custom redaction
+        callback or the default placeholder.
+
+        Args:
+            key: The field name being redacted.
+            value: The original value to redact.
+            path: The full dot-separated path to the field.
+
+        Returns:
+            The redacted value to use as replacement.
+        """
+        # Call audit callback before redaction if provided
+        if self._audit_callback is not None:
+            self._audit_callback(key, value, path)
+
+        # Use custom callback if provided, otherwise use placeholder
+        if self._redaction_callback is not None:
+            return self._redaction_callback(key, value, path)
+        return self._placeholder
+
+    def __call__(
+        self, logger: WrappedLogger, name: str, event_dict: EventDict
+    ) -> EventDict:
+        """
+        Process an event dictionary, redacting sensitive fields.
+
+        This is the main entry point called by structlog's processor chain.
+
+        Args:
+            logger: The wrapped logger instance (unused by this processor).
+            name: The name of the log method called (unused by this processor).
+            event_dict: The event dictionary to process.
+
+        Returns:
+            The modified event dictionary with sensitive fields redacted.
+
+        Note:
+            The event dictionary is modified in place for efficiency.
+        """
+        return self._redact_dict(event_dict, "")
+
+    def _redact_dict(
+        self, d: MutableMapping[str, Any], parent_path: str
+    ) -> MutableMapping[str, Any]:
+        """
+        Recursively redact sensitive fields from a dictionary.
+
+        Args:
+            d: The dictionary to process.
+            parent_path: The dot-separated path to this dictionary's location.
+
+        Returns:
+            The same dictionary with sensitive fields redacted.
+        """
+        for key, value in d.items():
+            current_path = f"{parent_path}.{key}" if parent_path else key
+            if self._is_sensitive(key):
+                d[key] = self._get_redacted_value(key, value, current_path)
+            elif isinstance(value, dict):
+                d[key] = self._redact_dict(value, current_path)
+            elif isinstance(value, list):
+                d[key] = self._redact_list(value, current_path)
+        return d
+
+    def _redact_list(
+        self, lst: MutableSequence[Any], parent_path: str
+    ) -> MutableSequence[Any]:
+        """
+        Recursively redact sensitive fields from items in a list.
+
+        Args:
+            lst: The list to process.
+            parent_path: The dot-separated path to this list's location.
+
+        Returns:
+            The same list with sensitive fields in nested structures redacted.
+        """
+        for i, item in enumerate(lst):
+            current_path = f"{parent_path}[{i}]"
+            if isinstance(item, dict):
+                lst[i] = self._redact_dict(item, current_path)
+            elif isinstance(item, list):
+                lst[i] = self._redact_list(item, current_path)
+        return lst
+
+    def __getstate__(self) -> dict[str, Any]:
+        """
+        Get state for pickling.
+
+        Returns:
+            A dictionary containing all configuration needed to reconstruct
+            this processor instance.
+        """
+        return {
+            "sensitive_fields": self._sensitive_fields,
+            "placeholder": self._placeholder,
+            "case_insensitive": self._case_insensitive,
+            "redaction_callback": self._redaction_callback,
+            "audit_callback": self._audit_callback,
+        }
+
+    def __setstate__(self, state: dict[str, Any]) -> None:
+        """
+        Restore state after unpickling.
+
+        Args:
+            state: The state dictionary from ``__getstate__``.
+        """
+        sensitive_fields = state["sensitive_fields"]
+        case_insensitive = state["case_insensitive"]
+
+        self._placeholder = state["placeholder"]
+        self._case_insensitive = case_insensitive
+        self._redaction_callback = state.get("redaction_callback")
+        self._audit_callback = state.get("audit_callback")
+        self._sensitive_fields = tuple(sensitive_fields)
+
+        # Rebuild exact fields and pattern matchers
+        exact_fields: list[str] = []
+        pattern_matchers: list[Callable[[str], bool]] = []
+
+        for field in sensitive_fields:
+            if "*" in field or "?" in field:
+                pattern_matchers.append(
+                    _compile_sensitive_pattern(field, case_insensitive)
+                )
+            elif case_insensitive:
+                exact_fields.append(field.lower())
+            else:
+                exact_fields.append(field)
+
+        self._exact_fields = frozenset(exact_fields)
+        self._pattern_matchers = tuple(pattern_matchers)
