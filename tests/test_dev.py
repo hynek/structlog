@@ -1157,3 +1157,22 @@ class TestConsoleRendererProperties:
             dev.ConsoleRenderer.get_default_level_styles(colors=True)
             == cr._level_styles
         )
+
+    @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+    def test_no_color_selects_no_rich_color_system(self):
+        """
+        Selecting no color output is transitively configured for rich's
+        exception formatter.
+        """
+        cr = dev.ConsoleRenderer(colors=False)
+
+        assert (
+            cr.exception_formatter
+            is dev.default_monochrome_exception_formatter
+        )
+        assert cr.exception_formatter.color_system is None
+
+        cr.colors = True
+
+        assert cr.exception_formatter is dev.default_exception_formatter
+        assert cr.exception_formatter.color_system == "truecolor"
