@@ -494,7 +494,16 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
     Used by default if *better-exceptions* is installed and Rich is absent.
 
     .. versionadded:: 21.2.0
+    .. deprecated:: 26.1.0
+       *better-exceptions* support is deprecated and will be removed in a
+       future release. Use Rich instead.
     """
+    warnings.warn(
+        "better-exceptions support is deprecated and will be removed "
+        "in a future release. Use Rich instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     sio.write("\n" + "".join(better_exceptions.format_exception(*exc_info)))
 
 
@@ -502,6 +511,12 @@ if rich is not None:
     default_exception_formatter = rich_traceback
 elif better_exceptions is not None:
     default_exception_formatter = better_traceback
+    warnings.warn(
+        "better-exceptions support is deprecated and will be removed "
+        "in a future release. Use Rich instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 else:
     default_exception_formatter = plain_traceback
 
@@ -511,8 +526,8 @@ class ConsoleRenderer:
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
     If ``event_dict`` contains a true-ish ``exc_info`` key, it will be rendered
-    *after* the log line. If Rich_ or better-exceptions_ are present, in colors
-    and with extra context.
+    *after* the log line. If Rich_ is present, in colors and with extra
+    context.
 
     Tip:
         Since `ConsoleRenderer` is mainly a development helper, it is less
@@ -558,12 +573,10 @@ class ConsoleRenderer:
             are passed.
 
         exception_formatter:
-            A callable to render ``exc_infos``. If Rich_ or better-exceptions_
-            are installed, they are used for pretty-printing by default (rich_
-            taking precedence). You can also manually set it to
-            `plain_traceback`, `better_traceback`, an instance of
-            `RichTracebackFormatter` like `rich_traceback`, or implement your
-            own.
+            A callable to render ``exc_infos``. If Rich_ is installed, it is
+            used for pretty-printing by default. You can also manually set it
+            to `plain_traceback`, an instance of `RichTracebackFormatter` like
+            `rich_traceback`, or implement your own.
 
         sort_keys:
             Whether to sort keys when formatting. `True` by default. Ignored if
