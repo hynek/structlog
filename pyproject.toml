@@ -90,7 +90,7 @@ branch = true
 source = ["structlog"]
 
 [tool.coverage.paths]
-source = ["src", ".tox/py*/**/site-packages"]
+source = ["src", ".tox/3.*tests*/**/site-packages"]
 
 [tool.coverage.report]
 show_missing = true
