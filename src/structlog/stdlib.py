@@ -18,9 +18,9 @@ import logging
 import sys
 import warnings
 
-from collections.abc import Collection, Iterable, Sequence
+from collections.abc import Callable, Collection, Iterable, Sequence
 from functools import partial
-from typing import Any, Callable, cast
+from typing import Any, cast
 
 
 if sys.version_info >= (3, 11):

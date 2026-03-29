@@ -13,8 +13,8 @@ import os
 import sys
 import warnings
 
-from collections.abc import Iterable, Sequence
-from typing import Any, Callable, cast
+from collections.abc import Callable, Iterable, Sequence
+from typing import Any, cast
 
 from ._native import make_filtering_bound_logger
 from ._output import PrintLoggerFactory
