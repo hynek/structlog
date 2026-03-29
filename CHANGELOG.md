@@ -22,7 +22,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Deprecated
 
-- Support for better-exceptions is deprecated and will be removed within a year.
+- Support for *better-exceptions* is deprecated and will be removed within a year.
   Use our Rich integration or copy-paste the [one line of code you need](https://github.com/hynek/structlog/blob/2c059a0dc029d9370e1e4a6e9683063205bbb68f/src/structlog/dev.py#L488-L498).
   [#802](https://github.com/hynek/structlog/pull/802)
 
