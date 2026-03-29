@@ -17,7 +17,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Removed
 
-- Python 3.8 support.
+- Python 3.8 and 3.9 support.
+
 
 ### Changed
 

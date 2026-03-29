@@ -11,9 +11,9 @@ import logging.config
 import os
 import sys
 
-from collections.abc import Collection
+from collections.abc import Callable, Collection
 from io import StringIO
-from typing import Any, Callable
+from typing import Any
 from unittest.mock import patch
 
 import pytest

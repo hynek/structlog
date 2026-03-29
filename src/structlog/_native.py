@@ -14,7 +14,8 @@ import collections
 import contextvars
 import sys
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from ._base import BoundLoggerBase
 from ._log_levels import (
