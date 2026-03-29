@@ -44,7 +44,7 @@ the output of the log entries.
 """
 
 
-Context: TypeAlias = dict[str, Any] | dict[Any, Any]
+Context: TypeAlias = dict[Any, Any]
 """
 A dict-like context carrier.
 
