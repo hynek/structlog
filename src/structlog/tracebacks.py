@@ -22,7 +22,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass, field
 from traceback import walk_tb
 from types import ModuleType, TracebackType
-from typing import Any
+from typing import Any, TypeAlias
 
 
 try:
@@ -51,7 +51,7 @@ LOCALS_MAX_LENGTH = 10
 LOCALS_MAX_STRING = 80
 MAX_FRAMES = 50
 
-OptExcInfo = ExcInfo | tuple[None, None, None]
+OptExcInfo: TypeAlias = ExcInfo | tuple[None, None, None]
 
 
 @dataclass

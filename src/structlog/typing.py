@@ -44,7 +44,7 @@ the output of the log entries.
 """
 
 
-Context = dict[str, Any] | dict[Any, Any]
+Context: TypeAlias = dict[str, Any] | dict[Any, Any]
 """
 A dict-like context carrier.
 
@@ -52,7 +52,7 @@ A dict-like context carrier.
 """
 
 
-EventDict = MutableMapping[str, Any]
+EventDict: TypeAlias = MutableMapping[str, Any]
 """
 An event dictionary as it is passed into processors.
 
@@ -62,14 +62,16 @@ copy itself.
 .. versionadded:: 20.2.0
 """
 
-ProcessorReturnValue = (
+ProcessorReturnValue: TypeAlias = (
     Mapping[str, Any] | str | bytes | bytearray | tuple[Any, ...]
 )
 """
 A value returned by a processor.
 """
 
-Processor = Callable[[WrappedLogger, str, EventDict], ProcessorReturnValue]
+Processor: TypeAlias = Callable[
+    [WrappedLogger, str, EventDict], ProcessorReturnValue
+]
 """
 A callable that is part of the processor chain.
 
@@ -78,7 +80,9 @@ See :doc:`processors`.
 .. versionadded:: 20.2.0
 """
 
-ExcInfo = tuple[type[BaseException], BaseException, TracebackType | None]
+ExcInfo: TypeAlias = tuple[
+    type[BaseException], BaseException, TracebackType | None
+]
 """
 An exception info tuple as returned by `sys.exc_info`.
 
@@ -86,7 +90,7 @@ An exception info tuple as returned by `sys.exc_info`.
 """
 
 
-ExceptionRenderer = Callable[[TextIO, ExcInfo], None]
+ExceptionRenderer: TypeAlias = Callable[[TextIO, ExcInfo], None]
 """
 A callable that pretty-prints an `ExcInfo` into a file-like object.
 
