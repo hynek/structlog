@@ -93,7 +93,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
             format="%(message)s",
             stream=sys.stdout,
             level=log_level,
-            **kw,  # type: ignore[arg-type]
+            **kw,  # type: ignore[call-overload]
         )
 
     _config.reset_defaults()
