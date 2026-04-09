@@ -13,6 +13,7 @@ import asyncio
 import collections
 import contextvars
 import sys
+import threading
 
 from collections.abc import Callable
 from typing import Any
@@ -28,7 +29,7 @@ from ._log_levels import (
     NOTSET,
     WARNING,
 )
-from .contextvars import _ASYNC_CALLING_STACK
+from .contextvars import _ASYNC_CALLING_STACK, _ASYNC_CALLING_THREAD
 from .typing import FilteringBoundLogger
 
 
@@ -60,6 +61,11 @@ async def aexception(
     if kw.get("exc_info", True) is True:
         kw["exc_info"] = sys.exc_info()
 
+    # Capture thread info before passing to executor
+    thread_id = threading.get_ident()
+    thread_name = threading.current_thread().name
+    thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
+
     scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
     ctx = contextvars.copy_context()
     try:
@@ -69,6 +75,7 @@ async def aexception(
         )
     finally:
         _ASYNC_CALLING_STACK.reset(scs_token)
+        _ASYNC_CALLING_THREAD.reset(thread_token)
 
     return runner
 
@@ -173,6 +180,11 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             """
             event = _maybe_interpolate(event, args)
 
+            # Capture thread info before passing to executor
+            thread_id = threading.get_ident()
+            thread_name = threading.current_thread().name
+            thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
+
             scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
             ctx = contextvars.copy_context()
             try:
@@ -184,6 +196,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
                 )
             finally:
                 _ASYNC_CALLING_STACK.reset(scs_token)
+                _ASYNC_CALLING_THREAD.reset(thread_token)
 
         meth.__name__ = name
         ameth.__name__ = f"a{name}"
@@ -211,6 +224,11 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         name = LEVEL_TO_NAME[level]
         event = _maybe_interpolate(event, args)
 
+        # Capture thread info before passing to executor
+        thread_id = threading.get_ident()
+        thread_name = threading.current_thread().name
+        thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
+
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
         ctx = contextvars.copy_context()
         try:
@@ -222,6 +240,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             )
         finally:
             _ASYNC_CALLING_STACK.reset(scs_token)
+            _ASYNC_CALLING_THREAD.reset(thread_token)
         return runner
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
