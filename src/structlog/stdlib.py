@@ -16,6 +16,7 @@ import contextvars
 import functools
 import logging
 import sys
+import threading
 import warnings
 
 from collections.abc import Callable, Collection, Iterable, Sequence
@@ -33,7 +34,11 @@ from . import _config
 from ._base import BoundLoggerBase
 from ._frames import _find_first_app_frame_and_name, _format_stack
 from ._log_levels import LEVEL_TO_NAME, NAME_TO_LEVEL, add_log_level
-from .contextvars import _ASYNC_CALLING_STACK, merge_contextvars
+from .contextvars import (
+    _ASYNC_CALLING_STACK,
+    _ASYNC_CALLING_THREAD,
+    merge_contextvars,
+)
 from .exceptions import DropEvent
 from .processors import StackInfoRenderer
 from .typing import (
@@ -424,6 +429,11 @@ class BoundLogger(BoundLoggerBase):
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
+        # Capture thread info before passing to executor
+        thread_id = threading.get_ident()
+        thread_name = threading.current_thread().name
+        thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
+
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
@@ -434,6 +444,7 @@ class BoundLogger(BoundLoggerBase):
             )
         finally:
             _ASYNC_CALLING_STACK.reset(scs_token)
+            _ASYNC_CALLING_THREAD.reset(thread_token)
 
     async def adebug(self, event: str, *args: Any, **kw: Any) -> None:
         """
@@ -632,6 +643,11 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
+        # Capture thread info before passing to executor
+        thread_id = threading.get_ident()
+        thread_name = threading.current_thread().name
+        thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
+
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
@@ -642,6 +658,7 @@ class AsyncBoundLogger:
             )
         finally:
             _ASYNC_CALLING_STACK.reset(scs_token)
+            _ASYNC_CALLING_THREAD.reset(thread_token)
 
     async def debug(self, event: str, *args: Any, **kw: Any) -> None:
         await self._dispatch_to_sync(self.sync_bl.debug, event, args, kw)

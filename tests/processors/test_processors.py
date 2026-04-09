@@ -378,6 +378,7 @@ class TestCallsiteParameterAdder:
     async def test_async(self, wrapper_class, method_name) -> None:
         """
         Callsite information for async invocations are correct.
+        Thread information is now correctly captured before async bridge.
         """
         string_io = StringIO()
 
@@ -395,16 +396,61 @@ class TestCallsiteParameterAdder:
 
         logger = structlog.stdlib.get_logger()
 
+        # Capture thread info before async call
+        expected_thread = threading.get_ident()
+        expected_thread_name = threading.current_thread().name
+
         callsite_params = self.get_callsite_parameters()
         await getattr(logger, method_name)("baz")
         logger_params = json.loads(string_io.getvalue())
 
-        # These are different when running under async
+        # Thread info should now be correct (captured before async bridge)
+        assert logger_params["thread"] == expected_thread
+        assert logger_params["thread_name"] == expected_thread_name
+
+        # Remove thread info from comparison for remaining params
         for key in ["thread", "thread_name"]:
             callsite_params.pop(key)
             logger_params.pop(key)
 
         assert {"event": "baz", **callsite_params} == logger_params
+
+    @pytest.mark.asyncio
+    async def test_async_native_logger(self) -> None:
+        """
+        Callsite thread information for native async invocations is correct.
+        """
+        string_io = StringIO()
+
+        class StringIOLogger(structlog.PrintLogger):
+            def __init__(self):
+                super().__init__(file=string_io)
+
+        processor = CallsiteParameterAdder(
+            parameters=[
+                CallsiteParameter.THREAD,
+                CallsiteParameter.THREAD_NAME,
+            ]
+        )
+        structlog.configure(
+            processors=[processor, JSONRenderer()],
+            logger_factory=StringIOLogger,
+            wrapper_class=structlog._native.BoundLoggerFilteringAtInfo,
+            cache_logger_on_first_use=True,
+        )
+
+        logger = structlog.get_logger()
+
+        # Capture thread info before async call
+        expected_thread = threading.get_ident()
+        expected_thread_name = threading.current_thread().name
+
+        await logger.ainfo("test native async")
+        logger_params = json.loads(string_io.getvalue())
+
+        # Thread info should now be correct (captured before async bridge)
+        assert logger_params["thread"] == expected_thread
+        assert logger_params["thread_name"] == expected_thread_name
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
