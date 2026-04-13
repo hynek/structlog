@@ -15,6 +15,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/25.5.0...HEAD)
 
+### Added
+
+- `structlog.remove_file_from_lock()` to release the write lock that is implicitly registered for a file by `PrintLogger`, `WriteLogger`, and `BytesLogger`.
+  Useful when the underlying file is being closed.
+
+
 ### Removed
 
 - Python 3.8 and 3.9 support.

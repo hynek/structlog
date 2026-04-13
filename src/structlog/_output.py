@@ -30,8 +30,17 @@ def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
     return lock
 
 
-def remove_file_from_lock(file: IO[Any]):
-    del WRITE_LOCKS[file]
+def remove_file_from_lock(file: IO[Any]) -> None:
+    """
+    Remove the write lock associated with *file* from the registry.
+
+    Useful when *file* is being closed and you want to release the lock that
+    was implicitly created for it by `PrintLogger`, `WriteLogger`, or
+    `BytesLogger`. A no-op if no lock is registered for *file*.
+
+    .. versionadded:: 26.1.0
+    """
+    WRITE_LOCKS.pop(file, None)
 
 
 class PrintLogger:
