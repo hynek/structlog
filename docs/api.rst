@@ -64,6 +64,8 @@ API Reference
 
 .. autoclass:: BytesLoggerFactory
 
+.. autofunction:: remove_file_from_lock
+
 .. autoexception:: DropEvent
 
 .. autoclass:: BoundLoggerBase

@@ -9,6 +9,7 @@ Make sure our configuration examples actually pass the type checker.
 
 from __future__ import annotations
 
+import io
 import logging
 import logging.config
 
@@ -412,3 +413,7 @@ cr.event_key = "le event"
 
 cr.repr_native_str
 cr.repr_native_str = True
+
+_f = io.StringIO()
+structlog.PrintLogger(_f)
+structlog.remove_file_from_lock(_f)

@@ -37,6 +37,7 @@ from structlog._output import (
     PrintLoggerFactory,
     WriteLogger,
     WriteLoggerFactory,
+    remove_file_from_lock,
 )
 from structlog.exceptions import DropEvent
 from structlog.testing import ReturnLogger, ReturnLoggerFactory
@@ -79,6 +80,7 @@ __all__ = [
     "is_configured",
     "make_filtering_bound_logger",
     "processors",
+    "remove_file_from_lock",
     "reset_defaults",
     "stdlib",
     "testing",
