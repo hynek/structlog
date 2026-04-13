@@ -30,6 +30,10 @@ def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
     return lock
 
 
+def remove_file_from_lock(file: IO[Any]):
+    del WRITE_LOCKS[file]
+
+
 class PrintLogger:
     """
     Print events into a file.

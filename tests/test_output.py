@@ -17,6 +17,7 @@ from structlog import (
     PrintLoggerFactory,
     WriteLogger,
     WriteLoggerFactory,
+    remove_file_from_lock,
 )
 from structlog._output import WRITE_LOCKS, stderr, stdout
 
@@ -67,6 +68,17 @@ class TestLoggers:
         logger_cls(sio)
 
         assert sio in WRITE_LOCKS
+
+    def test_remove_file_from_lock(self, logger_cls, sio):
+        """
+        remove_file_from_lock removes the lock entry for the given file.
+        """
+        logger_cls(sio)
+        assert sio in WRITE_LOCKS
+
+        remove_file_from_lock(sio)
+
+        assert sio not in WRITE_LOCKS
 
     @pytest.mark.parametrize("method", stdlib_log_methods)
     def test_stdlib_methods_support(self, logger_cls, method, sio):
