@@ -27,6 +27,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   [#802](https://github.com/hynek/structlog/pull/802)
 
 
+### Fixed
+
+- `WRITE_LOCKS` now uses a `weakref.WeakKeyDictionary` instead of a plain `dict`.
+  File objects used as keys are now released automatically when all application references are dropped, preventing a memory leak in long-running processes that open many log files (e.g., task executors that create a per-task `BytesLogger` or `WriteLogger`).
+
+
 ### Changed
 
 - `structlog.dev.ConsoleRenderer` does not warn anymore when the `exception` key has a rendered value despite having a fancy formatter configured.
