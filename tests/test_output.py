@@ -4,6 +4,7 @@
 # repository for complete details.
 
 import copy
+import gc
 import pickle
 
 from io import BytesIO, StringIO
@@ -21,6 +22,35 @@ from structlog import (
 from structlog._output import WRITE_LOCKS, stderr, stdout
 
 from .helpers import stdlib_log_methods
+
+
+@pytest.mark.parametrize(
+    ("logger_cls", "mode"),
+    [(PrintLogger, "w"), (WriteLogger, "w"), (BytesLogger, "wb")],
+)
+def test_write_locks_released_on_gc(logger_cls, mode, tmp_path):
+    """
+    WRITE_LOCKS entry is removed automatically when the file object is GC'd.
+
+    Closing the file is not enough -- the entry persists until the file object
+    itself is collected.
+    """
+    gc.collect()
+    size_before = len(WRITE_LOCKS)
+    f = (tmp_path / "test.log").open(mode)
+    logger = logger_cls(f)
+
+    assert len(WRITE_LOCKS) == size_before + 1
+
+    # close() alone does not remove the entry
+    f.close()
+
+    assert len(WRITE_LOCKS) == size_before + 1
+
+    del logger, f
+    gc.collect()
+
+    assert len(WRITE_LOCKS) == size_before
 
 
 class TestLoggers:
