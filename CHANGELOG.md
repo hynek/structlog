@@ -29,8 +29,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Fixed
 
-- `WRITE_LOCKS` now uses a `weakref.WeakKeyDictionary` instead of a plain `dict`.
-  File objects used as keys are now released automatically when all application references are dropped, preventing a memory leak in long-running processes that open many log files (e.g., task executors that create a per-task `BytesLogger` or `WriteLogger`).
+- `structlog.BytesLogger`, `structlog.PrintLogger`, and `structlog.WriteLogger` now hold *weak* references to the files they use for output.
+  This prevents their leakage in long-running processes that open many logfiles, such as task executors that create a per-task `BytesLogger` or `WriteLogger`.
+  [#807](https://github.com/hynek/structlog/pull/807)
 
 
 ### Changed
