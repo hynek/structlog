@@ -12,13 +12,16 @@ from __future__ import annotations
 import copy
 import sys
 import threading
+import weakref
 
 from pickle import PicklingError
 from sys import stderr, stdout
 from typing import IO, Any, BinaryIO, TextIO
 
 
-WRITE_LOCKS: dict[IO[Any], threading.Lock] = {}
+WRITE_LOCKS: weakref.WeakKeyDictionary[IO[Any], threading.Lock] = (
+    weakref.WeakKeyDictionary()
+)
 
 
 def _get_lock_for_file(file: IO[Any]) -> threading.Lock:
