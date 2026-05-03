@@ -38,6 +38,12 @@ _ASYNC_CALLING_STACK: contextvars.ContextVar[FrameType] = (
     contextvars.ContextVar("_ASYNC_CALLING_STACK")
 )
 
+# Stores thread info captured at async call time.
+# Value is a tuple of (thread_id: int, thread_name: str)
+_ASYNC_CALLING_THREAD: contextvars.ContextVar[tuple[int, str]] = (
+    contextvars.ContextVar("_ASYNC_CALLING_THREAD")
+)
+
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
 # See https://github.com/hynek/structlog/pull/302 for details.
