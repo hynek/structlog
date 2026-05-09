@@ -1141,8 +1141,6 @@ class ProcessorFormatter(logging.Formatter):
             if self.pass_foreign_args:
                 ed["positional_args"] = record.args
 
-            record.args = ()
-
             # Add stack-related attributes to the event dict
             if record.exc_info:
                 ed["exc_info"] = record.exc_info
@@ -1176,6 +1174,12 @@ class ProcessorFormatter(logging.Formatter):
             )
             ed = cast(str, ed)
 
+        # Clear args after processors have run so user processors can access
+        # ``record.args`` via ``_record``. We render our log records before
+        # sending them back to logging, so ``LogRecord.args`` must be cleared,
+        # otherwise stdlib's formatter would raise ``TypeError: not all
+        # arguments converted during string formatting``.
+        record.args = ()
         record.msg = ed
 
         return super().format(record)

@@ -1105,6 +1105,23 @@ class TestProcessorFormatter:
         assert "positional_args" in event_dict
         assert positional_args == event_dict["positional_args"]
 
+    def test_record_args_accessible_in_processor(self):
+        """
+        Processors can access ``record.args`` via ``_record``: args are not
+        cleared on the record before the formatter's processors run.
+        """
+        seen = []
+
+        def capture_args(_, __, event_dict):
+            seen.append(event_dict["_record"].args)
+            return event_dict
+
+        configure_logging((capture_args,))
+
+        logging.getLogger().info("test a=%s b=%s", "a", "b")
+
+        assert [("a", "b")] == seen
+
     def test_log_dict(self, capsys):
         """
         dicts can be logged with std library loggers.

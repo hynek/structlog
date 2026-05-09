@@ -32,6 +32,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.BytesLogger`, `structlog.PrintLogger`, and `structlog.WriteLogger` now hold *weak* references to the files they use for output.
   This prevents their leakage in long-running processes that open many logfiles, such as task executors that create a per-task `BytesLogger` or `WriteLogger`.
   [#807](https://github.com/hynek/structlog/pull/807)
+- `structlog.stdlib.ProcessorFormatter` no longer clears `LogRecord.args` before running its processor chain, so processors that inspect `event_dict["_record"].args` can see the original positional arguments.
+  `args` is still cleared before the record is handed to the underlying `logging.Formatter`.
+  [#771](https://github.com/hynek/structlog/issues/771)
 
 
 ### Changed
