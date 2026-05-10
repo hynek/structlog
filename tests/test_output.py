@@ -300,6 +300,26 @@ class TestBytesLogger:
 
         assert pl._file is rv._file
         assert pl._lock is rv._lock
+        assert rv.name is None
+
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
+    def test_pickle_preserves_name(self, proto):
+        """
+        Pickled and unpickled BytesLoggers preserve their names.
+        """
+        rv = pickle.loads(pickle.dumps(BytesLogger(name="test_logger"), proto))
+
+        assert "test_logger" == rv.name
+
+    def test_unpickle_from_old_state_sets_name_to_none(self):
+        """
+        BytesLoggers from old pickles receive the default name.
+        """
+        logger = object.__new__(BytesLogger)
+
+        logger.__setstate__("stdout")
+
+        assert logger.name is None
 
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle_not_stdout_stderr(self, tmpdir, proto):
@@ -324,6 +344,14 @@ class TestBytesLogger:
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err
+
+    def test_deepcopy_preserves_name(self):
+        """
+        Deepcopied BytesLoggers preserve their names.
+        """
+        copied_logger = copy.deepcopy(BytesLogger(name="test_logger"))
+
+        assert "test_logger" == copied_logger.name
 
     def test_name_attribute(self):
         """

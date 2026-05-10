@@ -272,15 +272,15 @@ class BytesLogger:
 
         self._lock = _get_lock_for_file(self._file)
 
-    def __getstate__(self) -> str:
+    def __getstate__(self) -> tuple[str, str | None]:
         """
         Our __getattr__ magic makes this necessary.
         """
         if self._file is sys.stdout.buffer:
-            return "stdout"
+            return "stdout", self.name
 
         if self._file is sys.stderr.buffer:
-            return "stderr"
+            return "stderr", self.name
 
         raise PicklingError(
             "Only BytesLoggers to sys.stdout and sys.stderr can be pickled."
@@ -290,6 +290,11 @@ class BytesLogger:
         """
         Our __getattr__ magic makes this necessary.
         """
+        if isinstance(state, str):
+            name = None
+        else:
+            state, name = state
+
         if state == "stdout":
             self._file = sys.stdout.buffer
         else:
@@ -297,6 +302,7 @@ class BytesLogger:
 
         self._write = self._file.write
         self._flush = self._file.flush
+        self.name = name
         self._lock = _get_lock_for_file(self._file)
 
     def __deepcopy__(self, memodict: dict[str, object]) -> BytesLogger:
@@ -309,7 +315,7 @@ class BytesLogger:
                 "can be deepcopied."
             )
 
-        newself = self.__class__(self._file)
+        newself = self.__class__(self._file, name=self.name)
 
         newself._write = newself._file.write
         newself._flush = newself._file.flush
