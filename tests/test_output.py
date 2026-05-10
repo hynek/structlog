@@ -261,8 +261,11 @@ class TestBytesLogger:
 
     def test_repr(self):
         """
-        __repr__ makes sense.
+        __repr__ shows the name if set, otherwise it shows the file.
         """
+        assert repr(BytesLogger(name="test")).startswith(
+            "<BytesLogger(name='test', file="
+        )
         assert repr(BytesLogger()).startswith("<BytesLogger(file=")
 
     def test_lock(self, sio):

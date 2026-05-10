@@ -332,6 +332,9 @@ class BytesLogger:
         return newself
 
     def __repr__(self) -> str:
+        if self.name is None:
+            return f"<BytesLogger(file={self._file!r})>"
+
         return f"<BytesLogger(name={self.name!r}, file={self._file!r})>"
 
     def msg(self, message: bytes) -> None:
