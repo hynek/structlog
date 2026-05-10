@@ -261,8 +261,11 @@ class TestBytesLogger:
 
     def test_repr(self):
         """
-        __repr__ makes sense.
+        __repr__ shows the name if set, otherwise it shows the file.
         """
+        assert repr(BytesLogger(name="test")).startswith(
+            "<BytesLogger(name='test', file="
+        )
         assert repr(BytesLogger()).startswith("<BytesLogger(file=")
 
     def test_lock(self, sio):
@@ -300,6 +303,26 @@ class TestBytesLogger:
 
         assert pl._file is rv._file
         assert pl._lock is rv._lock
+        assert rv.name is None
+
+    @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
+    def test_pickle_preserves_name(self, proto):
+        """
+        Pickled and unpickled BytesLoggers preserve their names.
+        """
+        rv = pickle.loads(pickle.dumps(BytesLogger(name="test_logger"), proto))
+
+        assert "test_logger" == rv.name
+
+    def test_unpickle_from_old_state_sets_name_to_none(self):
+        """
+        BytesLoggers from old pickles receive the default name.
+        """
+        logger = object.__new__(BytesLogger)
+
+        logger.__setstate__("stdout")
+
+        assert logger.name is None
 
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
     def test_pickle_not_stdout_stderr(self, tmpdir, proto):
@@ -324,6 +347,30 @@ class TestBytesLogger:
         out, err = capsys.readouterr()
         assert "hello\n" == out
         assert "" == err
+
+    def test_deepcopy_preserves_name(self):
+        """
+        Deepcopied BytesLoggers preserve their names.
+        """
+        copied_logger = copy.deepcopy(BytesLogger(name="test_logger"))
+
+        assert "test_logger" == copied_logger.name
+
+    def test_name_attribute(self):
+        """
+        BytesLogger accepts a name keyword argument.
+        """
+        bl = BytesLogger(name="test_logger")
+
+        assert "test_logger" == bl.name
+
+    def test_name_defaults_to_none(self):
+        """
+        BytesLogger name defaults to None when not provided.
+        """
+        bl = BytesLogger()
+
+        assert bl.name is None
 
     def test_deepcopy_no_stdout(self, tmp_path):
         """
@@ -357,9 +404,27 @@ class TestBytesLoggerFactory:
 
         assert stderr is pl._file
 
-    def test_ignores_args(self):
+    def test_passes_name_from_args(self):
         """
-        BytesLogger doesn't take positional arguments.  If any are passed to
-        the factory, they are not passed to the logger.
+        The first positional argument is used as the logger name.
         """
-        BytesLoggerFactory()(1, 2, 3)
+        bl = BytesLoggerFactory()("my_logger")
+
+        assert "my_logger" == bl.name
+
+    def test_name_defaults_to_none(self):
+        """
+        If no positional arguments are passed to the factory, the logger
+        name defaults to None.
+        """
+        bl = BytesLoggerFactory()()
+
+        assert bl.name is None
+
+    def test_extra_args_ignored(self):
+        """
+        Positional arguments beyond the first are silently ignored.
+        """
+        bl = BytesLoggerFactory()("my_logger", 2, 3)
+
+        assert "my_logger" == bl.name

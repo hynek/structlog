@@ -32,6 +32,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.dev.rich_monochrome_traceback` for Rich-based monochrome exception rendering and add support for it throughout `structlog.dev.ConsoleRenderer` when the user asks for no colors.
   [#794](https://github.com/hynek/structlog/pull/794)
 
+- `structlog.BytesLogger` now has a `name` attribute which allows you to use it with the `structlog.stdlib.add_logger_name()` processor *without* using the standard library integration.
+  [#786](https://github.com/hynek/structlog/pull/786)
+
 
 ### Changed
 
