@@ -1214,4 +1214,4 @@ class TestConsoleRendererProperties:
 
         cr.colors = next_colors
 
-        assert id(custom_formatter) == id(cr.exception_formatter)
+        assert custom_formatter is cr.exception_formatter

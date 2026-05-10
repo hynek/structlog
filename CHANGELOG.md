@@ -19,6 +19,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - Python 3.8 support.
 
+
+### Added
+
+- `structlog.dev.rich_monochrome_traceback` for Rich-based monochrome exception rendering and add support for it throughout `structlog.dev.ConsoleRenderer` when the user asks for no colors.
+  [#794](https://github.com/hynek/structlog/pull/794)
+
+
 ### Changed
 
 - `structlog.dev.ConsoleRenderer` does not warn anymore when the `exception` key has a rendered value despite having a fancy formatter configured.

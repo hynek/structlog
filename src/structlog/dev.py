@@ -410,6 +410,9 @@ class RichTracebackFormatter:
         *word_wrap* is now True by default.
 
     .. versionadded:: 25.4.0 *code_width*
+
+    .. versionchanged:: 26.1.0
+       ``None`` is now valid for *color_system* and disables color output.
     """
 
     color_system: (
@@ -493,10 +496,11 @@ else:
 
     To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
 
-    This is a `RichTracebackFormatter` with default arguments and used by default
-    if Rich is installed.
+    This is a `RichTracebackFormatter` with default arguments except for
+    ``color_system=None``, and used by default if Rich is installed and colors
+    are disabled.
 
-    .. versionadded:: TODO
+    .. versionadded:: 26.1.0
     """
 
 
@@ -643,6 +647,8 @@ class ConsoleRenderer:
     .. versionadded:: 23.2.0 *timestamp_key*
     .. versionadded:: 23.3.0 *columns*
     .. versionadded:: 24.2.0 *pad_level*
+    .. versionchanged:: 26.1.0
+       The default exception formatter is now monochrome if colors are disabled.
     """
 
     _default_column_formatter: ColumnFormatter
@@ -1031,6 +1037,9 @@ class ConsoleRenderer:
     def colors(self, value: bool) -> None:
         """
         .. versionadded:: 25.5.0
+
+        .. versionchanged:: 26.1.0
+           Also switches to monochrome exception formatting if colors are disabled.
         """
         self._colors = value
         self._styles = self.get_default_column_styles(
@@ -1038,7 +1047,7 @@ class ConsoleRenderer:
         )
         self._level_styles = self.get_default_level_styles(value)
 
-        # Flip default exception formatted if configured to use one of the
+        # Flip default exception formatter if configured to use one of the
         # default ones.
         if self.exception_formatter is (
             default_exception_formatter
