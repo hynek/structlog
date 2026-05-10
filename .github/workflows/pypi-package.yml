@@ -10,6 +10,11 @@ on:
       - published
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   # Always build & lint package.
@@ -17,8 +22,8 @@ jobs:
     name: Build & verify package
     runs-on: ubuntu-latest
     permissions:
-      attestations: write
-      id-token: write
+      attestations: write  # necessary for GitHub attestations
+      id-token: write  # necessary for GitHub attestations
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -26,7 +31,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: hynek/build-and-inspect-python-package@f3d069d0f9a3c9169d1a483318bb0e09876a6fd6 # v2.15.0
+      - uses: hynek/build-and-inspect-python-package@fe0a0fb1925ca263d076ca4f2c13e93a6e92a33e # v2.17.0
         with:
           attest-build-provenance-github: 'true'
 
@@ -39,7 +44,7 @@ jobs:
     needs: build-package
 
     permissions:
-      id-token: write
+      id-token: write  # necessary for trusted publishing
 
     steps:
       - name: Download packages built by build-and-inspect-python-package
@@ -49,7 +54,7 @@ jobs:
           path: dist
 
       - name: Upload package to Test PyPI
-        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           repository-url: https://test.pypi.org/legacy/
 
@@ -62,7 +67,7 @@ jobs:
     needs: build-package
 
     permissions:
-      id-token: write
+      id-token: write  # necessary for trusted publishing
 
     steps:
       - name: Download packages built by build-and-inspect-python-package
@@ -72,4 +77,6 @@ jobs:
           path: dist
 
       - name: Upload package to PyPI
-        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+        with:
+          attestations: true
