@@ -36,6 +36,7 @@ from structlog.processors import (
     format_exc_info,
 )
 from structlog.stdlib import ProcessorFormatter
+from structlog.testing import CapturingLoggerFactory
 from structlog.typing import EventDict, ExcInfo
 
 from ..additional_frame import additional_frame
@@ -419,37 +420,32 @@ class TestCallsiteParameterAdder:
         """
         Callsite thread information for native async invocations is correct.
         """
-        string_io = StringIO()
-
-        class StringIOLogger(structlog.PrintLogger):
-            def __init__(self):
-                super().__init__(file=string_io)
-
-        processor = CallsiteParameterAdder(
-            parameters=[
-                CallsiteParameter.THREAD,
-                CallsiteParameter.THREAD_NAME,
-            ]
-        )
+        cf = CapturingLoggerFactory()
         structlog.configure(
-            processors=[processor, JSONRenderer()],
-            logger_factory=StringIOLogger,
+            processors=[
+                CallsiteParameterAdder(
+                    parameters=[
+                        CallsiteParameter.THREAD,
+                        CallsiteParameter.THREAD_NAME,
+                    ]
+                ),
+            ],
+            logger_factory=cf,
             wrapper_class=structlog._native.BoundLoggerFilteringAtInfo,
             cache_logger_on_first_use=True,
         )
 
         logger = structlog.get_logger()
 
-        # Capture thread info before async call
         expected_thread = threading.get_ident()
         expected_thread_name = threading.current_thread().name
 
         await logger.ainfo("test native async")
-        logger_params = json.loads(string_io.getvalue())
 
-        # Thread info should now be correct (captured before async bridge)
-        assert expected_thread == logger_params["thread"]
-        assert expected_thread_name == logger_params["thread_name"]
+        captured = cf.logger.calls[0].kwargs
+
+        assert expected_thread == captured["thread"]
+        assert expected_thread_name == captured["thread_name"]
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
