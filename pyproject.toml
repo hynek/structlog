@@ -180,8 +180,13 @@ ignore_errors = true
 module = "tests.typing.*"
 ignore_errors = false
 
-[tool.ty.src]
-include = ["tests/typing"]
+
+# Analyze everything for LSP, but only complain about typing examples.
+[[tool.ty.overrides]]
+include = ["src", "tests"]
+exclude = ["tests/typing/"]
+rules.all = "ignore"
+
 
 [tool.pyrefly]
 project-includes = ["tests/typing"]

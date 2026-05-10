@@ -409,11 +409,14 @@ class RichTracebackFormatter:
         *word_wrap* is now True by default.
 
     .. versionadded:: 25.4.0 *code_width*
+
+    .. versionchanged:: 26.1.0
+       ``None`` is now valid for *color_system* and disables color output.
     """
 
-    color_system: Literal[
-        "auto", "standard", "256", "truecolor", "windows"
-    ] = "truecolor"
+    color_system: (
+        Literal["auto", "standard", "256", "truecolor", "windows"] | None
+    ) = "truecolor"
     show_locals: bool = True
     max_frames: int = 100
     theme: str | None = None
@@ -471,6 +474,8 @@ if rich is None:
             name="rich",
         )
 
+    rich_monochrome_traceback = rich_traceback
+
 else:
     rich_traceback = RichTracebackFormatter()
     """
@@ -482,6 +487,19 @@ else:
     if Rich is installed.
 
     .. versionadded:: 21.2.0
+    """
+
+    rich_monochrome_traceback = RichTracebackFormatter(color_system=None)
+    """
+    Pretty-print *exc_info* to *sio* using the Rich package w/o colors.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    This is a `RichTracebackFormatter` with default arguments except for
+    ``color_system=None``, and used by default if Rich is installed and colors
+    are disabled.
+
+    .. versionadded:: 26.1.0
     """
 
 
@@ -509,8 +527,11 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
 
 if rich is not None:
     default_exception_formatter = rich_traceback
+    default_monochrome_exception_formatter = rich_monochrome_traceback
 elif better_exceptions is not None:
-    default_exception_formatter = better_traceback
+    default_exception_formatter = default_monochrome_exception_formatter = (
+        better_traceback
+    )
     warnings.warn(
         "better-exceptions support is deprecated and will be removed "
         "in a future release. Use Rich instead.",
@@ -518,7 +539,9 @@ elif better_exceptions is not None:
         stacklevel=2,
     )
 else:
-    default_exception_formatter = plain_traceback
+    default_exception_formatter = default_monochrome_exception_formatter = (
+        plain_traceback
+    )
 
 
 class ConsoleRenderer:
@@ -636,6 +659,8 @@ class ConsoleRenderer:
     .. versionadded:: 23.2.0 *timestamp_key*
     .. versionadded:: 23.3.0 *columns*
     .. versionadded:: 24.2.0 *pad_level*
+    .. versionchanged:: 26.1.0
+       The default exception formatter is now monochrome if colors are disabled.
     """
 
     _default_column_formatter: ColumnFormatter
@@ -684,6 +709,9 @@ class ConsoleRenderer:
         self._timestamp_key = timestamp_key
         self._event_key = event_key
         self._pad_level = pad_level
+
+        if exception_formatter is default_exception_formatter and not colors:
+            self.exception_formatter = default_monochrome_exception_formatter
 
         if columns is None:
             self._configure_columns()
@@ -1021,12 +1049,28 @@ class ConsoleRenderer:
     def colors(self, value: bool) -> None:
         """
         .. versionadded:: 25.5.0
+
+        .. versionchanged:: 26.1.0
+           Also switches to monochrome exception formatting if colors are disabled.
         """
         self._colors = value
         self._styles = self.get_default_column_styles(
             value, self._force_colors
         )
         self._level_styles = self.get_default_level_styles(value)
+
+        # Flip default exception formatter if configured to use one of the
+        # default ones.
+        if self.exception_formatter is (
+            default_exception_formatter
+        ) or self.exception_formatter is (
+            default_monochrome_exception_formatter
+        ):
+            self.exception_formatter = (
+                default_exception_formatter
+                if value
+                else default_monochrome_exception_formatter
+            )
 
         self._configure_columns()
 
