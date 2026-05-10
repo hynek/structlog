@@ -30,6 +30,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 ### Added
 
 - Python 3.15 support.
+  [#813](https://github.com/hynek/structlog/pull/813)
 
 - `structlog.dev.rich_monochrome_traceback` for Rich-based monochrome exception rendering and add support for it throughout `structlog.dev.ConsoleRenderer` when the user asks for no colors.
   [#794](https://github.com/hynek/structlog/pull/794)
