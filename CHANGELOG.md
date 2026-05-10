@@ -40,6 +40,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.processors.CallsiteParameterAdder` now supports `CallsiteParameter.QUAL_MODULE` that adds the qualified import name of the module of the callsite, or `__main__` if the module is the entry point.
   This is only available for *structlog*-originated events since the standard library has no equivalent (except for the convention of setting the logger's name to `__name__`).
+  [#812](https://github.com/hynek/structlog/pull/812)
 
 
 ### Changed
