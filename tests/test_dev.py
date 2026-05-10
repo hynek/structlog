@@ -1169,3 +1169,61 @@ class TestConsoleRendererProperties:
             dev.ConsoleRenderer.get_default_level_styles(colors=True)
             == cr._level_styles
         )
+
+    @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+    def test_no_color_selects_no_rich_color_system(self):
+        """
+        Selecting no color output is transitively configured for rich's
+        exception formatter. Switching to color output restores the default.
+        """
+        cr = dev.ConsoleRenderer(colors=False)
+
+        assert (
+            cr.exception_formatter
+            is dev.default_monochrome_exception_formatter
+        )
+        assert cr.exception_formatter.color_system is None
+
+        cr.colors = True
+
+        assert cr.exception_formatter is dev.default_exception_formatter
+        assert cr.exception_formatter.color_system == "truecolor"
+
+        cr.colors = False
+
+        assert (
+            cr.exception_formatter
+            is dev.default_monochrome_exception_formatter
+        )
+        assert cr.exception_formatter.color_system is None
+
+    @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+    @pytest.mark.parametrize(
+        ("initial_colors", "next_colors", "custom_formatter"),
+        [
+            (
+                False,
+                True,
+                dev.RichTracebackFormatter(color_system=None),
+            ),
+            (
+                True,
+                False,
+                dev.RichTracebackFormatter(),
+            ),
+        ],
+    )
+    def test_toggle_colors_preserves_custom_rich_traceback_formatter(
+        self, initial_colors, next_colors, custom_formatter
+    ):
+        """
+        Toggling colors preserves custom Rich traceback formatters that compare
+        equal to the default formatters.
+        """
+        cr = dev.ConsoleRenderer(
+            colors=initial_colors, exception_formatter=custom_formatter
+        )
+
+        cr.colors = next_colors
+
+        assert custom_formatter is cr.exception_formatter
