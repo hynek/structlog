@@ -125,17 +125,21 @@ class TestLoggers:
         assert pl._lock is rv._lock
 
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
-    def test_pickle_not_stdout_stderr(self, logger_cls, tmpdir, proto):
+    def test_pickle_not_stdout_stderr(self, logger_cls, tmp_path, proto):
         """
         Loggers with different files than stdout/stderr raise a
         PickingError.
         """
-        f = tmpdir.join("file.log")
-        f.write("")
-        pl = logger_cls(file=f.open())
+        f = tmp_path / "file.log"
+        f.write_text("")
 
-        with pytest.raises(pickle.PicklingError, match=r"Only (.+)Loggers to"):
-            pickle.dumps(pl, proto)
+        with f.open() as file:
+            pl = logger_cls(file=file)
+
+            with pytest.raises(
+                pickle.PicklingError, match=r"Only (.+)Loggers to"
+            ):
+                pickle.dumps(pl, proto)
 
     def test_deepcopy(self, logger_cls, capsys):
         """
@@ -336,10 +340,14 @@ class TestBytesLogger:
         """
         f = tmpdir.join("file.log")
         f.write("")
-        pl = BytesLogger(file=f.open())
 
-        with pytest.raises(pickle.PicklingError, match="Only BytesLoggers to"):
-            pickle.dumps(pl, proto)
+        with f.open("rb") as file:
+            pl = BytesLogger(file=file)
+
+            with pytest.raises(
+                pickle.PicklingError, match="Only BytesLoggers to"
+            ):
+                pickle.dumps(pl, proto)
 
     def test_deepcopy(self, capsys):
         """
