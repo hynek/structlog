@@ -48,6 +48,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This prevents their leakage in long-running processes that open many logfiles, such as task executors that create a per-task `BytesLogger` or `WriteLogger`.
   [#807](https://github.com/hynek/structlog/pull/807)
 
+- `structlog.WriteLogger` is usable after unpickling.
+  [#787](https://github.com/hynek/structlog/pull/787)
+
 
 ## [25.5.0](https://github.com/hynek/structlog/compare/25.4.0...25.5.0) - 2025-10-27
 

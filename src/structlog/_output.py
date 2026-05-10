@@ -189,6 +189,8 @@ class WriteLogger:
         else:
             self._file = stderr
 
+        self._write = self._file.write
+        self._flush = self._file.flush
         self._lock = _get_lock_for_file(self._file)
 
     def __deepcopy__(self, memodict: dict[str, object]) -> WriteLogger:
