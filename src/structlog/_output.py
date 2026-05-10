@@ -249,14 +249,22 @@ class BytesLogger:
     r"""
     Writes bytes into a file.
 
-    Args:
-        file: File to print to. (default: `sys.stdout`\ ``.buffer``)
-
     Useful if you follow `current logging best practices
     <logging-best-practices>` together with a formatter that returns bytes
     (e.g. `orjson <https://github.com/ijl/orjson>`_).
 
+    Args:
+        file: File to print to. (default: `sys.stdout`\ ``.buffer``)
+
+        name:
+            Optional name for the logger. If provided, it will be picked up
+            as the logger's name when used with
+            `structlog.stdlib.add_logger_name()` without using standard
+            library integration. ``BytesLogger`` itself does nothing with it.
+
     .. versionadded:: 20.2.0
+
+    .. versionadded:: 26.1.0 The ``name`` attribute.
     """
 
     __slots__ = ("_file", "_flush", "_lock", "_write", "name")
@@ -324,7 +332,7 @@ class BytesLogger:
         return newself
 
     def __repr__(self) -> str:
-        return f"<BytesLogger(file={self._file!r})>"
+        return f"<BytesLogger(name={self.name!r}, file={self._file!r})>"
 
     def msg(self, message: bytes) -> None:
         """
