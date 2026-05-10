@@ -429,11 +429,10 @@ class BoundLogger(BoundLoggerBase):
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        # Capture thread info before passing to executor
-        thread_id = threading.get_ident()
-        thread_name = threading.current_thread().name
-        thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
-
+        # Capture thread-specific info before handing off to the executor.
+        thread_token = _ASYNC_CALLING_THREAD.set(
+            (threading.get_ident(), threading.current_thread().name)
+        )
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 
@@ -643,11 +642,10 @@ class AsyncBoundLogger:
         """
         Merge contextvars and log using the sync logger in a thread pool.
         """
-        # Capture thread info before passing to executor
-        thread_id = threading.get_ident()
-        thread_name = threading.current_thread().name
-        thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
-
+        # Capture thread-specific info before handing off to the executor.
+        thread_token = _ASYNC_CALLING_THREAD.set(
+            (threading.get_ident(), threading.current_thread().name)
+        )
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back.f_back)  # type: ignore[union-attr, arg-type, unused-ignore]
         ctx = contextvars.copy_context()
 

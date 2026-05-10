@@ -404,9 +404,8 @@ class TestCallsiteParameterAdder:
         await getattr(logger, method_name)("baz")
         logger_params = json.loads(string_io.getvalue())
 
-        # Thread info should now be correct (captured before async bridge)
-        assert logger_params["thread"] == expected_thread
-        assert logger_params["thread_name"] == expected_thread_name
+        assert expected_thread == logger_params["thread"]
+        assert expected_thread_name == logger_params["thread_name"]
 
         # Remove thread info from comparison for remaining params
         for key in ["thread", "thread_name"]:
@@ -449,8 +448,8 @@ class TestCallsiteParameterAdder:
         logger_params = json.loads(string_io.getvalue())
 
         # Thread info should now be correct (captured before async bridge)
-        assert logger_params["thread"] == expected_thread
-        assert logger_params["thread_name"] == expected_thread_name
+        assert expected_thread == logger_params["thread"]
+        assert expected_thread_name == logger_params["thread_name"]
 
     def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """

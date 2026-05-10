@@ -784,21 +784,19 @@ def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
 
 
 def _get_callsite_thread(module: str, frame: FrameType) -> Any:
-    # Use captured thread info from async calls if available
-    try:
-        thread_info = _ASYNC_CALLING_THREAD.get()
-        return thread_info[0]
-    except LookupError:
+    thread_info = _ASYNC_CALLING_THREAD.get(None)
+    if thread_info is None:
         return threading.get_ident()
+
+    return thread_info[0]
 
 
 def _get_callsite_thread_name(module: str, frame: FrameType) -> Any:
-    # Use captured thread info from async calls if available
-    try:
-        thread_info = _ASYNC_CALLING_THREAD.get()
-        return thread_info[1]
-    except LookupError:
+    thread_info = _ASYNC_CALLING_THREAD.get(None)
+    if thread_info is None:
         return threading.current_thread().name
+
+    return thread_info[1]
 
 
 def _get_callsite_process(module: str, frame: FrameType) -> Any:

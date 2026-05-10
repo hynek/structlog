@@ -61,13 +61,13 @@ async def aexception(
     if kw.get("exc_info", True) is True:
         kw["exc_info"] = sys.exc_info()
 
-    # Capture thread info before passing to executor
-    thread_id = threading.get_ident()
-    thread_name = threading.current_thread().name
-    thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
-
+    # Capture thread-specific info before handing off to the executor.
+    thread_token = _ASYNC_CALLING_THREAD.set(
+        (threading.get_ident(), threading.current_thread().name)
+    )
     scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
     ctx = contextvars.copy_context()
+
     try:
         runner = await asyncio.get_running_loop().run_in_executor(
             None,
@@ -180,13 +180,13 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
             """
             event = _maybe_interpolate(event, args)
 
-            # Capture thread info before passing to executor
-            thread_id = threading.get_ident()
-            thread_name = threading.current_thread().name
-            thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
-
+            # Capture thread-specific info before handing off to the executor.
+            thread_token = _ASYNC_CALLING_THREAD.set(
+                (threading.get_ident(), threading.current_thread().name)
+            )
             scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
             ctx = contextvars.copy_context()
+
             try:
                 await asyncio.get_running_loop().run_in_executor(
                     None,
@@ -224,13 +224,13 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         name = LEVEL_TO_NAME[level]
         event = _maybe_interpolate(event, args)
 
-        # Capture thread info before passing to executor
-        thread_id = threading.get_ident()
-        thread_name = threading.current_thread().name
-        thread_token = _ASYNC_CALLING_THREAD.set((thread_id, thread_name))
-
+        # Capture thread-specific info before handing off to the executor.
+        thread_token = _ASYNC_CALLING_THREAD.set(
+            (threading.get_ident(), threading.current_thread().name)
+        )
         scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
         ctx = contextvars.copy_context()
+
         try:
             runner = await asyncio.get_running_loop().run_in_executor(
                 None,
@@ -241,6 +241,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
         finally:
             _ASYNC_CALLING_STACK.reset(scs_token)
             _ASYNC_CALLING_THREAD.reset(thread_token)
+
         return runner
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}

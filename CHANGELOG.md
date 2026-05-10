@@ -51,6 +51,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.WriteLogger` is usable after unpickling.
   [#787](https://github.com/hynek/structlog/pull/787)
 
+- `structlog.processors.CallsiteParameterAdder` now reports the calling thread's id and name for async log methods, instead of the thread from the executor pool that runs the underlying sync logger.
+  [#710](https://github.com/hynek/structlog/issues/710)
+  [#805](https://github.com/hynek/structlog/pull/805)
+
 
 ## [25.5.0](https://github.com/hynek/structlog/compare/25.4.0...25.5.0) - 2025-10-27
 
