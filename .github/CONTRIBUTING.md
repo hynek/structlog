@@ -1,8 +1,10 @@
 # How To Contribute
 
 > [!IMPORTANT]
-> We do not care how you write your code, but you're taking full responsibility for it by submitting a pull request.
-> Do not waste our time with LLM/"AI" slop that you don't understand yourself.
+> - This document is mainly to help you to get started by codifying tribal knowledge and expectations and make it more accessible to everyone.
+>   But don't be afraid to open half-finished PRs and ask questions if something is unclear!
+>
+> - If you use LLM / "AI" tools for your contributions, please read and follow our [_Generative AI / LLM Policy_][llm].
 
 
 ## Support
@@ -20,6 +22,12 @@ It's people like *you* who make this project such a great tool for everyone.
 
 - No contribution is too small!
   Please submit as many fixes for typos and grammar bloopers as you can!
+
+- **Only contribute code that you fully understand.**
+  See also our [AI policy][llm].
+
+- Very relatedly, our pull request check list is our mandatory [Van Halen test](https://en.wikipedia.org/wiki/Van_Halen_test).
+  Sadly, the current state of the world has forced us into being stricter about policies -- sorry fellow humans!
 
 - Try to limit each pull request to *one* change only (except for typos -- please group those).
 
@@ -47,9 +55,13 @@ It's people like *you* who make this project such a great tool for everyone.
 
 ## Local development environment
 
-First, **fork** the repository on GitHub and **clone** it using one of the alternatives that you can copy-paste by pressing the big green button labeled `<> Code`.
+First, **fork** the repository on GitHub.
+Make sure to **uncheck** the `Copy the main branch only` radio button on the `Create a new fork` page.
+If you don't, our test suite will fail because we use Git tags for packaging.
 
-You can (and should) run our test suite using [*tox*](https://tox.wiki/).
+Finally, **clone** it using one of the alternatives that you can copy-paste by pressing the big green button labeled `<> Code`.
+
+You can (and should) run our test suite using [*tox*](https://tox.wiki/) (and keep in mind that `tox run-parallel` is about 5x faster than `tox run`).
 However, you'll probably want a more traditional environment as well.
 
 We recommend using the Python version from the `.python-version-default` file in the project's root directory, because that's the one that is used in the CI by default, too.
@@ -122,9 +134,9 @@ $ tox run -e docs-doctests
           x: A very important argument.
 
           y:
-            Another very important argument, but its description is so long
-            that it doesn't fit on one line. So, we start the whole block on a
-            fresh new line to keep the block together.
+              Another very important argument, but its description is so long
+              that it doesn't fit on one line. So, we start the whole block on
+              a fresh new line to keep the block together.
 
       Returns:
           The result of doing something.
@@ -241,3 +253,4 @@ Please report any harm to [Hynek Schlawack](https://hynek.me/about/) in any way 
 
 
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
+[llm]: AI_POLICY.md

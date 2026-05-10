@@ -14,13 +14,12 @@ from __future__ import annotations
 import sys
 import warnings
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from io import StringIO
 from types import ModuleType
 from typing import (
     Any,
-    Callable,
     Literal,
     Protocol,
     TextIO,
@@ -356,7 +355,7 @@ class LogLevelColumnFormatter:
             self.width = (
                 0
                 if width == 0
-                else len(max(self.level_styles.keys(), key=lambda e: len(e)))
+                else len(max(self.level_styles.keys(), key=len))
             )
             self.reset_style = reset_style
         else:
@@ -410,11 +409,14 @@ class RichTracebackFormatter:
         *word_wrap* is now True by default.
 
     .. versionadded:: 25.4.0 *code_width*
+
+    .. versionchanged:: 26.1.0
+       ``None`` is now valid for *color_system* and disables color output.
     """
 
-    color_system: Literal[
-        "auto", "standard", "256", "truecolor", "windows"
-    ] = "truecolor"
+    color_system: (
+        Literal["auto", "standard", "256", "truecolor", "windows"] | None
+    ) = "truecolor"
     show_locals: bool = True
     max_frames: int = 100
     theme: str | None = None
@@ -472,6 +474,8 @@ if rich is None:
             name="rich",
         )
 
+    rich_monochrome_traceback = rich_traceback
+
 else:
     rich_traceback = RichTracebackFormatter()
     """
@@ -485,6 +489,19 @@ else:
     .. versionadded:: 21.2.0
     """
 
+    rich_monochrome_traceback = RichTracebackFormatter(color_system=None)
+    """
+    Pretty-print *exc_info* to *sio* using the Rich package w/o colors.
+
+    To be passed into `ConsoleRenderer`'s ``exception_formatter`` argument.
+
+    This is a `RichTracebackFormatter` with default arguments except for
+    ``color_system=None``, and used by default if Rich is installed and colors
+    are disabled.
+
+    .. versionadded:: 26.1.0
+    """
+
 
 def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
     """
@@ -495,16 +512,36 @@ def better_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
     Used by default if *better-exceptions* is installed and Rich is absent.
 
     .. versionadded:: 21.2.0
+    .. deprecated:: 26.1.0
+       *better-exceptions* support is deprecated and will be removed in a
+       future release. Use Rich instead.
     """
+    warnings.warn(
+        "better-exceptions support is deprecated and will be removed "
+        "in a future release. Use Rich instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     sio.write("\n" + "".join(better_exceptions.format_exception(*exc_info)))
 
 
 if rich is not None:
     default_exception_formatter = rich_traceback
+    default_monochrome_exception_formatter = rich_monochrome_traceback
 elif better_exceptions is not None:
-    default_exception_formatter = better_traceback
+    default_exception_formatter = default_monochrome_exception_formatter = (
+        better_traceback
+    )
+    warnings.warn(
+        "better-exceptions support is deprecated and will be removed "
+        "in a future release. Use Rich instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 else:
-    default_exception_formatter = plain_traceback
+    default_exception_formatter = default_monochrome_exception_formatter = (
+        plain_traceback
+    )
 
 
 class ConsoleRenderer:
@@ -512,8 +549,8 @@ class ConsoleRenderer:
     Render ``event_dict`` nicely aligned, possibly in colors, and ordered.
 
     If ``event_dict`` contains a true-ish ``exc_info`` key, it will be rendered
-    *after* the log line. If Rich_ or better-exceptions_ are present, in colors
-    and with extra context.
+    *after* the log line. If Rich_ is present, in colors and with extra
+    context.
 
     Tip:
         Since `ConsoleRenderer` is mainly a development helper, it is less
@@ -559,12 +596,10 @@ class ConsoleRenderer:
             are passed.
 
         exception_formatter:
-            A callable to render ``exc_infos``. If Rich_ or better-exceptions_
-            are installed, they are used for pretty-printing by default (rich_
-            taking precedence). You can also manually set it to
-            `plain_traceback`, `better_traceback`, an instance of
-            `RichTracebackFormatter` like `rich_traceback`, or implement your
-            own.
+            A callable to render ``exc_infos``. If Rich_ is installed, it is
+            used for pretty-printing by default. You can also manually set it
+            to `plain_traceback`, an instance of `RichTracebackFormatter` like
+            `rich_traceback`, or implement your own.
 
         sort_keys:
             Whether to sort keys when formatting. `True` by default. Ignored if
@@ -624,6 +659,8 @@ class ConsoleRenderer:
     .. versionadded:: 23.2.0 *timestamp_key*
     .. versionadded:: 23.3.0 *columns*
     .. versionadded:: 24.2.0 *pad_level*
+    .. versionchanged:: 26.1.0
+       The default exception formatter is now monochrome if colors are disabled.
     """
 
     _default_column_formatter: ColumnFormatter
@@ -672,6 +709,9 @@ class ConsoleRenderer:
         self._timestamp_key = timestamp_key
         self._event_key = event_key
         self._pad_level = pad_level
+
+        if exception_formatter is default_exception_formatter and not colors:
+            self.exception_formatter = default_monochrome_exception_formatter
 
         if columns is None:
             self._configure_columns()
@@ -819,9 +859,7 @@ class ConsoleRenderer:
 
         for key in level_to_color:
             level_to_color[key] += self._styles.bright
-        self._longest_level = len(
-            max(level_to_color.keys(), key=lambda e: len(e))
-        )
+        self._longest_level = len(max(level_to_color.keys(), key=len))
 
         self._default_column_formatter = KeyValueColumnFormatter(
             self._styles.kv_key,
@@ -917,13 +955,6 @@ class ConsoleRenderer:
         if exc_info:
             self._exception_formatter(sio, exc_info)
         elif exc is not None:
-            if self._exception_formatter is not plain_traceback:
-                warnings.warn(
-                    "Remove `format_exc_info` from your processor chain "
-                    "if you want pretty exceptions.",
-                    stacklevel=2,
-                )
-
             sio.write("\n" + exc)
 
         return sio.getvalue()
@@ -1018,12 +1049,28 @@ class ConsoleRenderer:
     def colors(self, value: bool) -> None:
         """
         .. versionadded:: 25.5.0
+
+        .. versionchanged:: 26.1.0
+           Also switches to monochrome exception formatting if colors are disabled.
         """
         self._colors = value
         self._styles = self.get_default_column_styles(
             value, self._force_colors
         )
         self._level_styles = self.get_default_level_styles(value)
+
+        # Flip default exception formatter if configured to use one of the
+        # default ones.
+        if self.exception_formatter is (
+            default_exception_formatter
+        ) or self.exception_formatter is (
+            default_monochrome_exception_formatter
+        ):
+            self.exception_formatter = (
+                default_exception_formatter
+                if value
+                else default_monochrome_exception_formatter
+            )
 
         self._configure_columns()
 

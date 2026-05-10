@@ -358,36 +358,16 @@ class TestConsoleRenderer:
             + styles.reset
         ) == rv
 
-    @pytest.mark.parametrize("wrap", [True, False])
-    def test_exception_rendered(
-        self, cr, recwarn, wrap, styles, padded, monkeypatch
-    ):
+    def test_exception_rendered(self, cr, styles, padded):
         """
         Exceptions are rendered after a new line if they are already rendered
         in the event dict.
-
-        A warning is emitted if exception printing is "customized".
         """
         exc = "Traceback:\nFake traceback...\nFakeError: yolo"
-
-        # Wrap the formatter to provoke the warning.
-        if wrap:
-            monkeypatch.setattr(
-                cr,
-                "_exception_formatter",
-                lambda s, ei: dev.plain_traceback(s, ei),
-            )
 
         rv = cr(None, None, {"event": "test", "exception": exc})
 
         assert (f"{padded}\n" + exc) == rv
-
-        if wrap:
-            (w,) = recwarn.list
-            assert (
-                "Remove `format_exc_info` from your processor chain "
-                "if you want pretty exceptions.",
-            ) == w.message.args
 
     def test_stack_info(self, cr, styles, padded):
         """
@@ -885,9 +865,21 @@ class TestBetterTraceback:
         try:
             0 / 0
         except ZeroDivisionError:
-            dev.better_traceback(sio, sys.exc_info())
+            with pytest.warns(DeprecationWarning, match="better-exceptions"):
+                dev.better_traceback(sio, sys.exc_info())
 
         assert sio.getvalue().startswith("\n")
+
+    def test_deprecation_warning(self):
+        """
+        better_traceback emits a DeprecationWarning.
+        """
+        sio = StringIO()
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            with pytest.warns(DeprecationWarning, match="better-exceptions"):
+                dev.better_traceback(sio, sys.exc_info())
 
 
 class TestLogLevelColumnFormatter:
@@ -1177,3 +1169,61 @@ class TestConsoleRendererProperties:
             dev.ConsoleRenderer.get_default_level_styles(colors=True)
             == cr._level_styles
         )
+
+    @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+    def test_no_color_selects_no_rich_color_system(self):
+        """
+        Selecting no color output is transitively configured for rich's
+        exception formatter. Switching to color output restores the default.
+        """
+        cr = dev.ConsoleRenderer(colors=False)
+
+        assert (
+            cr.exception_formatter
+            is dev.default_monochrome_exception_formatter
+        )
+        assert cr.exception_formatter.color_system is None
+
+        cr.colors = True
+
+        assert cr.exception_formatter is dev.default_exception_formatter
+        assert cr.exception_formatter.color_system == "truecolor"
+
+        cr.colors = False
+
+        assert (
+            cr.exception_formatter
+            is dev.default_monochrome_exception_formatter
+        )
+        assert cr.exception_formatter.color_system is None
+
+    @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+    @pytest.mark.parametrize(
+        ("initial_colors", "next_colors", "custom_formatter"),
+        [
+            (
+                False,
+                True,
+                dev.RichTracebackFormatter(color_system=None),
+            ),
+            (
+                True,
+                False,
+                dev.RichTracebackFormatter(),
+            ),
+        ],
+    )
+    def test_toggle_colors_preserves_custom_rich_traceback_formatter(
+        self, initial_colors, next_colors, custom_formatter
+    ):
+        """
+        Toggling colors preserves custom Rich traceback formatters that compare
+        equal to the default formatters.
+        """
+        cr = dev.ConsoleRenderer(
+            colors=initial_colors, exception_formatter=custom_formatter
+        )
+
+        cr.colors = next_colors
+
+        assert custom_formatter is cr.exception_formatter

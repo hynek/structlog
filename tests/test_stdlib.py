@@ -11,15 +11,16 @@ import logging.config
 import os
 import sys
 
-from collections.abc import Collection
+from collections.abc import Callable, Collection
 from io import StringIO
-from typing import Any, Callable
+from typing import Any
 from unittest.mock import patch
 
 import pytest
 import pytest_asyncio
 
 from structlog import (
+    BytesLogger,
     PrintLogger,
     ReturnLogger,
     configure,
@@ -568,6 +569,25 @@ class TestAddLoggerName:
         event_dict = add_logger_name(None, None, {"_record": record})
 
         assert name == event_dict["logger"]
+
+    def test_logger_name_added_with_bytes_logger(self):
+        """
+        add_logger_name works with BytesLogger that has a name attribute.
+        """
+        name = "sample-name"
+        logger = BytesLogger(name=name)
+        event_dict = add_logger_name(logger, None, {})
+
+        assert name == event_dict["logger"]
+
+    def test_logger_name_none_with_unnamed_bytes_logger(self):
+        """
+        add_logger_name works with BytesLogger without a name, returning None.
+        """
+        logger = BytesLogger()
+        event_dict = add_logger_name(logger, None, {})
+
+        assert event_dict["logger"] is None
 
 
 def extra_dict() -> dict[str, Any]:

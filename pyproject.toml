@@ -10,14 +10,13 @@ dynamic = ["readme", "version"]
 name = "structlog"
 description = "Structured Logging for Python"
 authors = [{ name = "Hynek Schlawack", email = "hs@ox.cx" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT OR Apache-2.0"
 keywords = ["logging", "structured", "structure", "log"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: Apache Software License",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -91,7 +90,7 @@ branch = true
 source = ["structlog"]
 
 [tool.coverage.paths]
-source = ["src", ".tox/py*/**/site-packages"]
+source = ["src", ".tox/3.*tests*/**/site-packages"]
 
 [tool.coverage.report]
 show_missing = true
@@ -181,8 +180,13 @@ ignore_errors = true
 module = "tests.typing.*"
 ignore_errors = false
 
-[tool.ty.src]
-include = ["tests/typing"]
+
+# Analyze everything for LSP, but only complain about typing examples.
+[[tool.ty.overrides]]
+include = ["src", "tests"]
+exclude = ["tests/typing/"]
+rules.all = "ignore"
+
 
 [tool.pyrefly]
 project-includes = ["tests/typing"]
@@ -261,6 +265,11 @@ img = "Kraken.svg"
 title = "Privacy Solutions"
 url = "https://privacy-solutions.org/"
 img = "Privacy-Solutions.svg"
+
+[[tool.sponcon.sponsors]]
+title = "Klaviyo"
+url = "https://klaviyo.com/"
+img = "Klaviyo.svg"
 
 [[tool.sponcon.sponsors]]
 title = "FilePreviews"

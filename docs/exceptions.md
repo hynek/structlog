@@ -33,13 +33,8 @@ Our {doc}`console-output`'s {class}`structlog.dev.ConsoleRenderer` takes an *exc
 
 {func}`structlog.dev.plain_traceback`
 
-: Is the default if neither [Rich] nor [*better-exceptions*] are installed.
+: Is the default if [Rich] is not installed.
   As the name suggests, it renders a plain traceback.
-
-{func}`structlog.dev.better_traceback`
-
-: Uses [*better-exceptions*] to render a colorful traceback.
-: It's the default if *better-exceptions* is installed and Rich is not.
 
 {class}`structlog.dev.RichTracebackFormatter`
 
@@ -49,6 +44,11 @@ Our {doc}`console-output`'s {class}`structlog.dev.ConsoleRenderer` takes an *exc
 
 :::{seealso}
 {doc}`console-output` for more information on *structlog*'s console features.
+:::
+
+:::{deprecated} 26.1.0
+Support for [*better-exceptions*] is deprecated and will be removed in a future release.
+Use [Rich] instead.
 :::
 
 [*better-exceptions*]: https://github.com/qix-/better-exceptions
