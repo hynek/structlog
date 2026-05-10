@@ -119,6 +119,8 @@ class TestLoggers:
 
         rv = pickle.loads(pickle.dumps(pl, proto))
 
+        rv.msg("hello")  # doesn't raise an error
+
         assert pl._file is rv._file
         assert pl._lock is rv._lock
 
@@ -300,6 +302,8 @@ class TestBytesLogger:
         pl = BytesLogger(file=file)
 
         rv = pickle.loads(pickle.dumps(pl, proto))
+
+        rv.msg(b"hello")  # doesn't raise an error
 
         assert pl._file is rv._file
         assert pl._lock is rv._lock
