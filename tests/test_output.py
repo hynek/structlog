@@ -333,13 +333,13 @@ class TestBytesLogger:
         assert logger.name is None
 
     @pytest.mark.parametrize("proto", range(pickle.HIGHEST_PROTOCOL + 1))
-    def test_pickle_not_stdout_stderr(self, tmpdir, proto):
+    def test_pickle_not_stdout_stderr(self, tmp_path, proto):
         """
         BytesLoggers with different files than stdout/stderr raise a
         PickingError.
         """
-        f = tmpdir.join("file.log")
-        f.write("")
+        f = tmp_path / "file.log"
+        f.write_text("")
 
         with f.open("rb") as file:
             pl = BytesLogger(file=file)
