@@ -18,9 +18,9 @@ import logging
 import sys
 import warnings
 
-from collections.abc import Collection, Iterable, Sequence
+from collections.abc import Callable, Collection, Iterable, Sequence
 from functools import partial
-from typing import Any, Callable, cast
+from typing import Any, cast
 
 
 if sys.version_info >= (3, 11):
@@ -93,7 +93,7 @@ def recreate_defaults(*, log_level: int | None = logging.NOTSET) -> None:
             format="%(message)s",
             stream=sys.stdout,
             level=log_level,
-            **kw,  # type: ignore[arg-type]
+            **kw,  # type: ignore[call-overload]
         )
 
     _config.reset_defaults()

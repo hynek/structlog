@@ -865,9 +865,21 @@ class TestBetterTraceback:
         try:
             0 / 0
         except ZeroDivisionError:
-            dev.better_traceback(sio, sys.exc_info())
+            with pytest.warns(DeprecationWarning, match="better-exceptions"):
+                dev.better_traceback(sio, sys.exc_info())
 
         assert sio.getvalue().startswith("\n")
+
+    def test_deprecation_warning(self):
+        """
+        better_traceback emits a DeprecationWarning.
+        """
+        sio = StringIO()
+        try:
+            0 / 0
+        except ZeroDivisionError:
+            with pytest.warns(DeprecationWarning, match="better-exceptions"):
+                dev.better_traceback(sio, sys.exc_info())
 
 
 class TestLogLevelColumnFormatter:

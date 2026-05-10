@@ -15,8 +15,8 @@ from __future__ import annotations
 import json
 import sys
 
-from collections.abc import Sequence
-from typing import Any, Callable, TextIO
+from collections.abc import Callable, Sequence
+from typing import Any, TextIO
 
 from twisted.python import log
 from twisted.python.failure import Failure
