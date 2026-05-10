@@ -1176,3 +1176,34 @@ class TestConsoleRendererProperties:
 
         assert cr.exception_formatter is dev.default_exception_formatter
         assert cr.exception_formatter.color_system == "truecolor"
+
+    @pytest.mark.skipif(dev.rich is None, reason="Needs Rich.")
+    @pytest.mark.parametrize(
+        ("initial_colors", "next_colors", "custom_formatter"),
+        [
+            (
+                False,
+                True,
+                dev.RichTracebackFormatter(color_system=None),
+            ),
+            (
+                True,
+                False,
+                dev.RichTracebackFormatter(),
+            ),
+        ],
+    )
+    def test_toggle_colors_preserves_custom_rich_traceback_formatter(
+        self, initial_colors, next_colors, custom_formatter
+    ):
+        """
+        Toggling colors preserves custom Rich traceback formatters that compare
+        equal to the default formatters.
+        """
+        cr = dev.ConsoleRenderer(
+            colors=initial_colors, exception_formatter=custom_formatter
+        )
+
+        cr.colors = next_colors
+
+        assert id(custom_formatter) == id(cr.exception_formatter)

@@ -1037,14 +1037,19 @@ class ConsoleRenderer:
             value, self._force_colors
         )
         self._level_styles = self.get_default_level_styles(value)
-        if self.exception_formatter in (
-            default_exception_formatter,
-            default_monochrome_exception_formatter,
+
+        # Flip default exception formatted if configured to use one of the
+        # default ones.
+        if self.exception_formatter is (
+            default_exception_formatter
+        ) or self.exception_formatter is (
+            default_monochrome_exception_formatter
         ):
             self.exception_formatter = (
-                default_monochrome_exception_formatter,
-                default_exception_formatter,
-            )[value]
+                default_exception_formatter
+                if value
+                else default_monochrome_exception_formatter
+            )
 
         self._configure_columns()
 
