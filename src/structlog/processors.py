@@ -20,6 +20,7 @@ import threading
 import time
 
 from collections.abc import (
+    Callable,
     Collection,
     MutableMapping,
     MutableSequence,
@@ -28,7 +29,6 @@ from collections.abc import (
 from types import FrameType, TracebackType
 from typing import (
     Any,
-    Callable,
     ClassVar,
     NamedTuple,
     TextIO,

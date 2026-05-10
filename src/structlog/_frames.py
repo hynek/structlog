@@ -8,9 +8,9 @@ from __future__ import annotations
 import sys
 import traceback
 
+from collections.abc import Callable
 from io import StringIO
 from types import FrameType
-from typing import Callable
 
 from .contextvars import _ASYNC_CALLING_STACK
 from .typing import ExcInfo

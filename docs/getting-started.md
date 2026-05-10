@@ -10,8 +10,8 @@ You can install *structlog* from [PyPI](https://pypi.org/project/structlog/) usi
 $ python -m pip install structlog
 ```
 
-If you want pretty exceptions in development (you know you do!), additionally install either [Rich] or [*better-exceptions*].
-Try both to find out which one you like better -- the screenshot in the README and docs homepage is rendered by Rich.
+If you want pretty exceptions in development (you know you do!), additionally install [Rich].
+The screenshot in the README and docs homepage is rendered by Rich.
 
 On **Windows**, you also have to install [Colorama](https://pypi.org/project/colorama/) if you want colorful output beside exceptions.
 
@@ -46,7 +46,7 @@ Here, *structlog* takes advantage of its default settings:
 
 - It's rendered in nice **{doc}`colors <console-output>`**.
 
-- If you have [Rich] or [*better-exceptions*] installed, **exceptions** will be rendered in **colors** and with additional **helpful information**.
+- If you have [Rich] installed, **exceptions** will be rendered in **colors** and with additional **helpful information**.
 
 Please note that even in most complex logging setups the example would still look just like that thanks to {doc}`configuration`.
 Using the defaults, as above, is equivalent to:
@@ -258,6 +258,5 @@ Now you're all set for the rest of the user's guide and can start reading about 
 :end-before: <!-- end tutorials -->
 ```
 
-[*better-exceptions*]: https://github.com/qix-/better-exceptions
 [recipe]: https://docs.python.org/3/howto/logging-cookbook.html#implementing-structured-logging
 [Rich]: https://github.com/Textualize/rich

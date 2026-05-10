@@ -10,6 +10,7 @@
    <a href="https://www.structlog.org/en/stable/?badge=stable"><img src="https://img.shields.io/badge/Docs-Read%20The%20Docs-black" alt="Documentation" /></a>
    <a href="https://github.com/hynek/structlog/blob/main/COPYRIGHT"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT / Apache 2.0" /></a>
    <a href="https://bestpractices.coreinfrastructure.org/projects/6560"><img src="https://bestpractices.coreinfrastructure.org/projects/6560/badge"></a>
+   <a href="https://github.com/hynek/structlog/blob/main/.github/AI_POLICY.md"><img src="https://img.shields.io/badge/no-slop-purple" alt="No AI slop inside."></a>
    <a href="https://doi.org/10.5281/zenodo.7353739"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7353739.svg" alt="DOI"></a>
    <a href="https://pypi.org/project/structlog/"><img src="https://img.shields.io/pypi/pyversions/structlog.svg" alt="Supported Python versions of the current PyPI release." /></a>
    <a href="https://pepy.tech/project/structlog"><img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" /></a>
@@ -53,8 +54,9 @@ for sponsor in tomllib.loads(pathlib.Path("pyproject.toml").read_text())["tool"]
 <a href="https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"><img title="Tidelift" src="docs/_static/sponsors/Tidelift.svg" width="190" /></a>
 <a href="https://kraken.tech/"><img title="Kraken Tech" src="docs/_static/sponsors/Kraken.svg" width="190" /></a>
 <a href="https://privacy-solutions.org/"><img title="Privacy Solutions" src="docs/_static/sponsors/Privacy-Solutions.svg" width="190" /></a>
+<a href="https://klaviyo.com/"><img title="Klaviyo" src="docs/_static/sponsors/Klaviyo.svg" width="190" /></a>
 <a href="https://filepreviews.io/"><img title="FilePreviews" src="docs/_static/sponsors/FilePreviews.svg" width="190" /></a>
-<a href="https://www.lambdatest.com/?utm_source=structlog&utm_medium=sponsor"><img title="LambdaTest" src="docs/_static/sponsors/LambdaTest.svg" width="190" /></a>
+<a href="https://www.testmuai.com/?utm_medium=sponsor&utm_source=structlog"><img title="TestMu AI" src="docs/_static/sponsors/TestMu-AI.svg" width="190" /></a>
 <a href="https://polar.sh/"><img title="Polar" src="docs/_static/sponsors/Polar.svg" width="190" /></a>
 <!-- [[[end]]] -->
 

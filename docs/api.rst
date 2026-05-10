@@ -92,6 +92,7 @@ API Reference
 .. autofunction:: plain_traceback
 .. autoclass:: RichTracebackFormatter
 .. autofunction:: rich_traceback
+.. autofunction:: rich_monochrome_traceback
 .. autofunction:: better_traceback
 
 .. autofunction:: set_exc_info

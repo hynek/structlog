@@ -17,7 +17,36 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ### Removed
 
-- Python 3.8 support.
+- Python 3.8 and 3.9 support.
+
+
+### Deprecated
+
+- Support for *better-exceptions* is deprecated and will be removed within a year.
+  Use our Rich integration or copy-paste the [one line of code you need](https://github.com/hynek/structlog/blob/2c059a0dc029d9370e1e4a6e9683063205bbb68f/src/structlog/dev.py#L488-L498).
+  [#802](https://github.com/hynek/structlog/pull/802)
+
+
+### Added
+
+- `structlog.dev.rich_monochrome_traceback` for Rich-based monochrome exception rendering and add support for it throughout `structlog.dev.ConsoleRenderer` when the user asks for no colors.
+  [#794](https://github.com/hynek/structlog/pull/794)
+
+- `structlog.BytesLogger` now has a `name` attribute which allows you to use it with the `structlog.stdlib.add_logger_name()` processor *without* using the standard library integration.
+  [#786](https://github.com/hynek/structlog/pull/786)
+
+
+### Changed
+
+- `structlog.dev.ConsoleRenderer` does not warn anymore when the `exception` key has a rendered value despite having a fancy formatter configured.
+  [#790](https://github.com/hynek/structlog/pull/790)
+
+
+### Fixed
+
+- `structlog.BytesLogger`, `structlog.PrintLogger`, and `structlog.WriteLogger` now hold *weak* references to the files they use for output.
+  This prevents their leakage in long-running processes that open many logfiles, such as task executors that create a per-task `BytesLogger` or `WriteLogger`.
+  [#807](https://github.com/hynek/structlog/pull/807)
 
 
 ## [25.5.0](https://github.com/hynek/structlog/compare/25.4.0...25.5.0) - 2025-10-27
