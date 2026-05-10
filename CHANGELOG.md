@@ -38,6 +38,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 - `structlog.BytesLogger` now has a `name` attribute which allows you to use it with the `structlog.stdlib.add_logger_name()` processor *without* using the standard library integration.
   [#786](https://github.com/hynek/structlog/pull/786)
 
+- `structlog.processors.CallsiteParameterAdder` now supports `CallsiteParameter.QUAL_MODULE` that adds the qualified import name of the module of the callsite, or `__main__` if the module is the entry point.
+  This is only available for *structlog*-originated events since the standard library has no equivalent (except for the convention of setting the logger's name to `__name__`).
+
 
 ### Changed
 

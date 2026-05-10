@@ -304,12 +304,14 @@ class TestCallsiteParameterAdder:
         "process_name",
     }
 
-    # Exclude QUAL_NAME from the general set to keep parity with stdlib
-    # LogRecord-derived parameters. QUAL_NAME is tested separately.
+    # Exclude QUAL_NAME and QUAL_MODULE from the general set to keep parity with
+    # stdlib LogRecord-derived parameters. QUAL_NAME and QUAL_MODULE are tested
+    # separately.
     _all_parameters = {
         p
         for p in set(CallsiteParameter)
-        if p is not CallsiteParameter.QUAL_NAME
+        if p
+        not in (CallsiteParameter.QUAL_NAME, CallsiteParameter.QUAL_MODULE)
     }
 
     def test_all_parameters(self) -> None:
@@ -340,6 +342,18 @@ class TestCallsiteParameterAdder:
         assert actual["qual_name"].endswith(
             f"{self.__class__.__name__}.test_qual_name_structlog"
         )
+
+    def test_qual_module_structlog(self) -> None:
+        """
+        QUAL_MODULE is added for structlog-originated events.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.QUAL_MODULE}
+        )
+        event_dict: EventDict = {"event": "msg"}
+        actual = processor(None, None, event_dict)
+
+        assert "tests.processors.test_processors" == actual["qual_module"]
 
     def test_qual_name_logging_origin_absent(self) -> None:
         """
