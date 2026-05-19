@@ -785,7 +785,7 @@ def _get_callsite_qual_name(module: str, frame: FrameType) -> Any:
 
 
 def _get_callsite_qual_module(module: str, frame: FrameType) -> Any:
-    return frame.f_globals.get("__name__", "__main__")
+    return module
 
 
 def _get_callsite_lineno(module: str, frame: FrameType) -> Any:
