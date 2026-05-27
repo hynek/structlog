@@ -151,7 +151,7 @@ This should give you enough power to use *structlog* with any logging system whi
 ### Examples
 
 The probably most useful formatter for string based loggers is {class}`structlog.processors.JSONRenderer`.
-Advanced log aggregation and analysis tools like [*Logstash*](https://www.elastic.co/logstash) offer features like telling them "this is JSON, deal with it" instead of fiddling with regular expressions.
+Advanced log aggregation and analysis tools like [Logstash](https://www.elastic.co/logstash) offer features like telling them "this is JSON, deal with it" instead of fiddling with regular expressions.
 
 For a list of shipped processors, check out the {ref}`API documentation <procs>`.
 
