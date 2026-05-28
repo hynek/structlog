@@ -141,6 +141,62 @@ These two methods and one attribute are all you need to write own *bound loggers
 [dry]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 
 
+(custom-dict-tracebacks)=
+
+## Custom Filtering of Dict Tracebacks
+
+Dict traceback printing via {class}`structlog.tracebacks.ExceptionDictTransformer` may expose values in logs which you do not want.
+For example, tokens and credentials are easily captured in locals and logged.
+
+As a simple control, you can set `show_locals=False`.
+For more extensive customization, subclass the transformer.
+
+{class}`ExceptionDictTransformer <structlog.tracebacks.ExceptionDictTransformer>`'s `__call__` is responsible for converting exception info into a list of dicts.
+Because this is only called during exception handling, it's an ideal point of control for potentially expensive filtering functionality.
+
+The following example customizes the transformer with a measure of string entropy, and redacts values in `locals` which exceed a threshold.
+
+```
+import math
+
+from structlog.tracebacks import ExceptionDictTransformer
+
+
+def is_high_entropy_string(data):
+    if not isinstance(data, str):
+        return False
+    charset = set(data)
+    entropy = 0
+    for c in charset:
+        p_x = data.count(c) / len(data)
+        entropy -= p_x * math.log2(p_x)
+    return entropy > 4.0
+
+
+def redact_locals(frame_locals):
+    redact_values = set()
+    for k, v in frame_locals.items():
+        if is_high_entropy_string(v):
+            redact_values.add(k)
+    return {
+        k: (v if k not in redact_values else "<REDACTED>")
+        for k, v in frame_locals.items()
+    }
+
+
+def redact_frames(exc_dict):
+    for frame in exc_dict["frames"]:
+        if "locals" in frame:
+            frame["locals"] = redact_locals(frame["locals"])
+    return exc_dict
+
+
+class RedactingExceptionDictTransformer(ExceptionDictTransformer):
+    def __call__(self, exc_info):
+        exceptions = super().__call__(exc_info)
+        return [redact_frames(exc) for exc in exceptions]
+```
+
 ## Passing context to worker threads
 
 Thread-local context data based on [context variables](contextvars.md) is -- as the name says -- local to the thread that binds it.
