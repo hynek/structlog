@@ -154,32 +154,15 @@ For more extensive customization, subclass the transformer.
 {class}`ExceptionDictTransformer <structlog.tracebacks.ExceptionDictTransformer>`'s `__call__` is responsible for converting exception info into a list of dicts.
 Because this is only called during exception handling, it's an ideal point of control for potentially expensive filtering functionality.
 
-The following example customizes the transformer with a measure of string entropy, and redacts values in `locals` which exceed a threshold.
+The following example customizes the transformer to redact values in `locals` named `"token"` or `"password"`.
 
 ```
-import math
-
 from structlog.tracebacks import ExceptionDictTransformer
 
 
-def is_high_entropy_string(data):
-    if not isinstance(data, str):
-        return False
-    charset = set(data)
-    entropy = 0
-    for c in charset:
-        p_x = data.count(c) / len(data)
-        entropy -= p_x * math.log2(p_x)
-    return entropy > 4.0
-
-
 def redact_locals(frame_locals):
-    redact_values = set()
-    for k, v in frame_locals.items():
-        if is_high_entropy_string(v):
-            redact_values.add(k)
     return {
-        k: (v if k not in redact_values else "<REDACTED>")
+        k: (v if k not in ("token", "password") else "<REDACTED>")
         for k, v in frame_locals.items()
     }
 
