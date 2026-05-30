@@ -180,6 +180,9 @@ class RedactingExceptionDictTransformer(ExceptionDictTransformer):
         return [redact_frames(exc) for exc in exceptions]
 ```
 
+Please remember that values may appear elsewhere in the dict traceback, for example in an exception string.
+If you remove data from `locals`, that does not guarantee that it is removed entirely from the log.
+
 ## Passing context to worker threads
 
 Thread-local context data based on [context variables](contextvars.md) is -- as the name says -- local to the thread that binds it.
