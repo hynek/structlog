@@ -141,6 +141,49 @@ These two methods and one attribute are all you need to write own *bound loggers
 [dry]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 
 
+(custom-dict-tracebacks)=
+
+## Custom Filtering of Dict Tracebacks
+
+Dict traceback printing via {class}`structlog.tracebacks.ExceptionDictTransformer` may expose values in logs which you do not want.
+For example, tokens and credentials are easily captured in locals and logged.
+
+As a simple control, you can set `show_locals=False`.
+For more extensive customization, subclass the transformer.
+
+{class}`ExceptionDictTransformer <structlog.tracebacks.ExceptionDictTransformer>`'s `__call__` is responsible for converting exception info into a list of dicts.
+Because this is only called during exception handling, it's an ideal point of control for potentially expensive filtering functionality.
+
+The following example customizes the transformer to redact values in `locals` named `"token"` or `"password"`.
+
+```
+from structlog.tracebacks import ExceptionDictTransformer
+
+
+def redact_locals(frame_locals):
+    return {
+        k: (v if k not in ("token", "password") else "<REDACTED>")
+        for k, v in frame_locals.items()
+    }
+
+
+def redact_frames(exc_dict):
+    for frame in exc_dict["frames"]:
+        if "locals" in frame:
+            frame["locals"] = redact_locals(frame["locals"])
+    return exc_dict
+
+
+class RedactingExceptionDictTransformer(ExceptionDictTransformer):
+    def __call__(self, exc_info):
+        exceptions = super().__call__(exc_info)
+        return [redact_frames(exc) for exc in exceptions]
+```
+
+Please remember that values may appear elsewhere in the dict traceback, for example in an exception string.
+If you remove data from `locals`, that does not guarantee that it is removed entirely from the log.
+
+
 ## Passing context to worker threads
 
 Thread-local context data based on [context variables](contextvars.md) is -- as the name says -- local to the thread that binds it.
