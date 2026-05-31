@@ -537,14 +537,9 @@ class AsyncBoundLogger:
     """
     Wraps a `BoundLogger` & exposes its logging methods as ``async`` versions.
 
-    Instead of blocking the program, they are run asynchronously in a thread
-    pool executor.
-
-    This means more computational overhead per log call. But it also means that
-    the processor chain (e.g. JSON serialization) and I/O won't block your
-    whole application.
-
-    Only available for Python 3.7 and later.
+    This approach has turned out to be a mistake and the class has been
+    deprecated in 23.1.0. Use the regular `BoundLogger` with its a-prefixed
+    methods instead.
 
     .. versionadded:: 20.2.0
     .. versionchanged:: 20.2.0 fix _dispatch_to_sync contextvars usage
