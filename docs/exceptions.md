@@ -26,10 +26,12 @@ The most common use-cases are already covered by the following processors:
 
 : Uses {class}`structlog.tracebacks.ExceptionDictTransformer` to give you a structured and JSON-serializable `exception` key.
 
+
 ### Customizing Dict Tracebacks
 
 {class}`structlog.tracebacks.ExceptionDictTransformer` can be customized with a number of parameters.
 If these prove insufficient, see {ref}`Custom Filtering of Dict Tracebacks <custom-dict-tracebacks>`.
+
 
 ## Console rendering
 
