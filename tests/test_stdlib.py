@@ -28,7 +28,7 @@ from structlog import (
     wrap_logger,
 )
 from structlog._config import _CONFIG
-from structlog._log_levels import CRITICAL, NAME_TO_LEVEL, WARN
+from structlog._log_levels import CRITICAL, DEBUG, NAME_TO_LEVEL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
 from structlog.processors import JSONRenderer, KeyValueRenderer
@@ -302,6 +302,30 @@ class TestBoundLogger:
                 bound_logger_method()
 
             assert called_stdlib_method[0] is True
+
+    def test_is_enabled_for(self):
+        """
+        is_enabled_for is a snake_case alias that delegates to the wrapped
+        logger's isEnabledFor, for compatibility with FilteringBoundLogger.
+        """
+        stdlib_logger = logging.getLogger("test_is_enabled_for")
+        stdlib_logger.setLevel(WARN)
+        bl = BoundLogger(stdlib_logger, [], {})
+
+        assert bl.is_enabled_for(WARN) is True
+        assert bl.is_enabled_for(DEBUG) is False
+
+    def test_get_effective_level(self):
+        """
+        get_effective_level is a snake_case alias that delegates to the wrapped
+        logger's getEffectiveLevel, for compatibility with
+        FilteringBoundLogger.
+        """
+        stdlib_logger = logging.getLogger("test_get_effective_level")
+        stdlib_logger.setLevel(WARN)
+        bl = BoundLogger(stdlib_logger, [], {})
+
+        assert WARN == bl.get_effective_level()
 
     def test_exception_exc_info(self):
         """

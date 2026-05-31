@@ -412,6 +412,24 @@ class BoundLogger(BoundLoggerBase):
         """
         return self._logger.isEnabledFor(level)
 
+    def is_enabled_for(self, level: int) -> bool:
+        """
+        A snake_case alias of `isEnabledFor` for compatibility with
+        `structlog.typing.FilteringBoundLogger`.
+
+        .. versionadded:: 26.1.0
+        """
+        return self._logger.isEnabledFor(level)
+
+    def get_effective_level(self) -> int:
+        """
+        A snake_case alias of `getEffectiveLevel` for compatibility with
+        `structlog.typing.FilteringBoundLogger`.
+
+        .. versionadded:: 26.1.0
+        """
+        return self._logger.getEffectiveLevel()
+
     def getChild(self, suffix: str) -> logging.Logger:
         """
         Calls :meth:`logging.Logger.getChild` with unmodified arguments.
