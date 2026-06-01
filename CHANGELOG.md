@@ -42,6 +42,10 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This is only available for *structlog*-originated events since the standard library has no equivalent (except for the convention of setting the logger's name to `__name__`).
   [#812](https://github.com/hynek/structlog/pull/812)
 
+- `structlog.stdlib.BoundLogger` now has `is_enabled_for()` and `get_effective_level()` methods that are snake_case aliases for its `isEnabledFor()` and `getEffectiveLevel()` methods.
+  This makes it more compatible with the native `structlog.typing.FilteringBoundLogger`, so you can swap configurations without changing your call sites.
+  [#818](https://github.com/hynek/structlog/pull/818)
+
 
 ### Changed
 
