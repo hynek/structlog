@@ -417,6 +417,13 @@ class BoundLogger(BoundLoggerBase):
         A snake_case alias of `isEnabledFor` for compatibility with
         `structlog.typing.FilteringBoundLogger`.
 
+        .. note::
+
+           This method is more complex than the native `is_enabled_for` since
+           it supports standard library-only features like
+           :attr:`logging.Logger.disabled` while the native one only compares
+           log levels.
+
         .. versionadded:: 26.1.0
         """
         return self._logger.isEnabledFor(level)
