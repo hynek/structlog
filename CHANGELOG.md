@@ -45,6 +45,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This is only available for *structlog*-originated events since the standard library has no equivalent (except for the convention of setting the logger's name to `__name__`).
   [#812](https://github.com/hynek/structlog/pull/812)
 
+- `structlog.processors.CallsiteParameterAdder` now takes an *always_walk_stack* argument.
+  When set to `True`, the callsite is always determined by walking the stack, even for foreign `logging.LogRecord` events that would otherwise have their callsite copied verbatim from the record.
+  As a side effect, *additional_ignores* then applies to foreign events too, so frames from third-party packages can be skipped and the callsite of *your* code is reported instead.
+  Defaults to `False` for backwards compatibility.
+  [#816](https://github.com/hynek/structlog/pull/816)
+
 - `structlog.stdlib.BoundLogger` now has `is_enabled_for()` and `get_effective_level()` methods that are snake_case aliases for its `isEnabledFor()` and `getEffectiveLevel()` methods.
   This makes it more compatible with the native `structlog.typing.FilteringBoundLogger`, so you can swap configurations without changing your call sites.
   [#818](https://github.com/hynek/structlog/pull/818)

@@ -824,12 +824,14 @@ class CallsiteParameterAdder:
     filename that an event dictionary originated from.
 
     If the event dictionary has an embedded `logging.LogRecord` object and did
-    not originate from *structlog* then the callsite information will be
-    determined from the `logging.LogRecord` object. For event dictionaries
-    without an embedded `logging.LogRecord` object the callsite will be
-    determined from the stack trace, ignoring all intra-structlog calls, calls
-    from the `logging` module, and stack frames from modules with names that
-    start with values in ``additional_ignores``, if it is specified.
+    not originate from *structlog* then the callsite information will, by
+    default, be determined from the `logging.LogRecord` object.
+
+    For event dictionaries without an embedded `logging.LogRecord` object the
+    callsite will be determined from the stack trace, ignoring all
+    intra-*structlog* calls, calls from the `logging` module, and stack frames
+    from modules with names that start with values in *additional_ignores*, if
+    it is specified.
 
     The keys used for callsite parameters in the event dictionary are the
     string values of `CallsiteParameter` enum members.
@@ -843,17 +845,34 @@ class CallsiteParameterAdder:
             Additional names with which a stack frame's module name must not
             start for it to be considered when determening the callsite.
 
+        always_walk_stack:
+            If ``True``, the callsite is always determined by walking the
+            stack, even for events that come from `logging` and carry
+            a `logging.LogRecord`. As a side effect, *additional_ignores* then
+            applies to foreign events too, so frames from third-party packages
+            can be skipped and the callsite of *your* code is reported instead
+            of the package's log invocation line.
+
+            Defaults to ``False``, in which case the callsite information of
+            foreign events is copied verbatim from the `logging.LogRecord`.
+
     .. note::
 
         When used with `structlog.stdlib.ProcessorFormatter` the most efficient
-        configuration is to either use this processor in ``foreign_pre_chain``
-        of `structlog.stdlib.ProcessorFormatter` and in ``processors`` of
-        `structlog.configure`, or to use it in ``processors`` of
-        `structlog.stdlib.ProcessorFormatter` without using it in
-        ``processors`` of `structlog.configure` and ``foreign_pre_chain`` of
-        `structlog.stdlib.ProcessorFormatter`.
+        configuration is to either:
+
+        - use this processor in *foreign_pre_chain* of
+          `structlog.stdlib.ProcessorFormatter` and in *processors* of
+          `structlog.configure`, or
+
+        - use it in *processors* of `structlog.stdlib.ProcessorFormatter`
+          without using it in *processors* of `structlog.configure` and
+          *foreign_pre_chain* of `structlog.stdlib.ProcessorFormatter`.
 
     .. versionadded:: 21.5.0
+
+    .. versionadded:: 26.1.0
+       *always_walk_stack* parameter.
     """
 
     _handlers: ClassVar[
@@ -890,12 +909,18 @@ class CallsiteParameterAdder:
         event_dict_key: str
         record_attribute: str
 
-    __slots__ = ("_active_handlers", "_additional_ignores", "_record_mappings")
+    __slots__ = (
+        "_active_handlers",
+        "_additional_ignores",
+        "_always_walk_stack",
+        "_record_mappings",
+    )
 
     def __init__(
         self,
         parameters: Collection[CallsiteParameter] = _all_parameters,
         additional_ignores: list[str] | None = None,
+        always_walk_stack: bool = False,
     ) -> None:
         if additional_ignores is None:
             additional_ignores = []
@@ -903,6 +928,7 @@ class CallsiteParameterAdder:
         # processor is used in ProcessorFormatter, and additionally the logging
         # module should not be logging using structlog.
         self._additional_ignores = ["logging", *additional_ignores]
+        self._always_walk_stack = always_walk_stack
         self._active_handlers: list[
             tuple[CallsiteParameter, Callable[[str, FrameType], Any]]
         ] = []
@@ -929,7 +955,13 @@ class CallsiteParameterAdder:
 
         # If the event dictionary has a record, but it comes from structlog,
         # then the callsite parameters of the record will not be correct.
-        if record is not None and not from_structlog:
+        # When always_walk_stack is set, also walk the stack for foreign
+        # records so that additional_ignores can hide library frames.
+        if (
+            record is not None
+            and not from_structlog
+            and not self._always_walk_stack
+        ):
             for mapping in self._record_mappings:
                 event_dict[mapping.event_dict_key] = record.__dict__[
                     mapping.record_attribute
