@@ -15,6 +15,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Changed
+
+- Logging is now slightly faster: `structlog.BoundLoggerBase._process_event` -- which runs on every log call -- no longer unpacks the event keyword arguments into a fresh keyword dict just to merge them into the event dict.
+  Passing the mapping positionally to `dict.update` is behavior-preserving and avoids that per-call overhead.
+  [#821](https://github.com/hynek/structlog/pull/821)
+
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
