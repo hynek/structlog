@@ -147,6 +147,8 @@ class LogfmtRenderer:
     .. versionadded:: 21.5.0
     """
 
+    bool_as_flag: bool
+
     def __init__(
         self,
         sort_keys: bool = False,
@@ -404,6 +406,8 @@ class ExceptionRenderer:
     .. versionadded:: 22.1.0
     """
 
+    format_exception: ExceptionTransformer
+
     def __init__(
         self,
         exception_formatter: ExceptionTransformer = _format_exception,
@@ -477,6 +481,10 @@ class TimeStamper:
     """
 
     __slots__ = ("_stamper", "fmt", "key", "utc")
+
+    fmt: str | None
+    utc: bool
+    key: str
 
     def __init__(
         self,
@@ -580,6 +588,8 @@ class MaybeTimeStamper:
 
     __slots__ = ("stamper",)
 
+    stamper: TimeStamper
+
     def __init__(
         self,
         fmt: str | None = None,
@@ -653,6 +663,8 @@ class ExceptionPrettyPrinter:
     .. versionchanged:: 25.4.0
        Fixed *exception_formatter* so that it overrides the default if set.
     """
+
+    format_exception: ExceptionTransformer
 
     def __init__(
         self,
@@ -970,6 +982,9 @@ class EventRenamer:
 
     See also the :ref:`rename-event` recipe.
     """
+
+    to: str
+    replace_by: str | None
 
     def __init__(self, to: str, replace_by: str | None = None):
         self.to = to
