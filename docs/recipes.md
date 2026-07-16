@@ -30,40 +30,12 @@ Sometimes, that can be a bit too coarse, though.
 
 You can achieve finer control by adding the {class}`~structlog.processors.CallsiteParameterAdder` processor and writing a simple processor that acts on the call site data added.
 
-Let's assume you have the following code:
-
-```python
-logger = structlog.get_logger()
-
-def f():
-    logger.info("f called")
-
-def g():
-    logger.info("g called")
-
-f()
-g()
-```
-
-And you don't want to see log entries from function `f`.
+Let's assume you have the following code and want to drop log entries from function `f`.
 You add {class}`~structlog.processors.CallsiteParameterAdder` to the processor chain and then look at the `func_name` field in the *event dict*:
 
-```python
-def filter_f(_, __, event_dict):
-    if event_dict.get("func_name") == "f":
-        raise structlog.DropEvent
-
-    return event_dict
-
-structlog.configure(
-    processors=[
-        structlog.processors.CallsiteParameterAdder(
-            [structlog.processors.CallsiteParameter.FUNC_NAME]
-        ),
-        filter_f,  # <-- your processor!
-        structlog.processors.KeyValueRenderer(),
-    ]
-)
+```{literalinclude} examples/recipes/fine_grained_filtering.py
+:language: python
+:start-at: logger = structlog.get_logger()
 ```
 
 Running this gives you:
@@ -156,28 +128,9 @@ Because this is only called during exception handling, it's an ideal point of co
 
 The following example customizes the transformer to redact values in `locals` named `"token"` or `"password"`.
 
-```
-from structlog.tracebacks import ExceptionDictTransformer
-
-
-def redact_locals(frame_locals):
-    return {
-        k: (v if k not in ("token", "password") else "<REDACTED>")
-        for k, v in frame_locals.items()
-    }
-
-
-def redact_frames(exc_dict):
-    for frame in exc_dict["frames"]:
-        if "locals" in frame:
-            frame["locals"] = redact_locals(frame["locals"])
-    return exc_dict
-
-
-class RedactingExceptionDictTransformer(ExceptionDictTransformer):
-    def __call__(self, exc_info):
-        exceptions = super().__call__(exc_info)
-        return [redact_frames(exc) for exc in exceptions]
+```{literalinclude} examples/recipes/redact_exception_dict_locals.py
+:language: python
+:start-at: from structlog.tracebacks import ExceptionDictTransformer
 ```
 
 Please remember that values may appear elsewhere in the dict traceback, for example in an exception string.
@@ -196,36 +149,9 @@ The context variables are retrieved and passed as the first argument to the part
 The pool invokes the partial function, once for each element of `workers`.
 Inside of `do_some_work`, the context vars are bound and a message about the great work being performed is logged -- including the `request_id` key / value pair.
 
-```
-from functools import partial
-
-import structlog
-
-from structlog.contextvars import bind_contextvars
-from pathos.threading import ThreadPool
-
-logger = structlog.get_logger(__name__)
-
-
-def do_some_work(ctx, this_worker):
-    bind_contextvars(**ctx)
-    logger.info("WorkerDidSomeWork", worker=this_worker)
-
-
-def structlog_with_threadpool(f):
-    ctx = structlog.contextvars.get_contextvars()
-    func = partial(f, ctx)
-    workers = ["1", "2", "3"]
-
-    with ThreadPool() as pool:
-        return list(pool.map(func, workers))
-
-
-def manager(request_id: str):
-    bind_contextvars(request_id=request_id)
-    logger.info("StartingWorkers")
-    structlog_with_threadpool(do_some_work)
-
+```{literalinclude} examples/recipes/pass_context_to_worker_threads.py
+:language: python
+:start-at: from functools import partial
 ```
 
 See the [issue 425](https://github.com/hynek/structlog/issues/425) for a more complete example.
