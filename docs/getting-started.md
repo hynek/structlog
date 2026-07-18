@@ -23,8 +23,8 @@ As a result, the simplest possible usage looks like this:
 
 ```{doctest}
 >>> import structlog
->>> log = structlog.get_logger()
->>> log.info("hello, %s!", "world", key="value!", more_than_strings=[1, 2, 3])  # doctest: +SKIP
+>>> logger = structlog.get_logger()
+>>> logger.info("hello, %s!", "world", key="value!", more_than_strings=[1, 2, 3])  # doctest: +SKIP
 2022-10-07 10:41:29 [info     ] hello, world!   key=value! more_than_strings=[1, 2, 3]
 ```
 
@@ -97,13 +97,13 @@ def view(request):
     user_agent = request.get("HTTP_USER_AGENT", "UNKNOWN")
     peer_ip = request.client_addr
     if something:
-        log.info("something", user_agent=user_agent, peer_ip=peer_ip)
+        logger.info("something", user_agent=user_agent, peer_ip=peer_ip)
         return "something"
     elif something_else:
-        log.info("something_else", user_agent=user_agent, peer_ip=peer_ip)
+        logger.info("something_else", user_agent=user_agent, peer_ip=peer_ip)
         return "something_else"
     else:
-        log.info("else", user_agent=user_agent, peer_ip=peer_ip)
+        logger.info("else", user_agent=user_agent, peer_ip=peer_ip)
         return "else"
 ```
 
@@ -114,7 +114,7 @@ At this point, you'll be tempted to write a closure like:
 
 ```python
 def log_closure(event):
-    log.info(event, user_agent=user_agent, peer_ip=peer_ip)
+    logger.info(event, user_agent=user_agent, peer_ip=peer_ip)
 ```
 
 inside of the view.
@@ -127,7 +127,7 @@ Let's have a look at a better approach:
 
 ```python
 def view(request):
-    log = log.bind(
+    log = logger.bind(
         user_agent=request.get("HTTP_USER_AGENT", "UNKNOWN"),
         peer_ip=request.client_addr,
     )

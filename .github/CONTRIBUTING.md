@@ -253,4 +253,4 @@ Please report any harm to [Hynek Schlawack](https://hynek.me/about/) in any way 
 
 
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
-[llm]: AI_POLICY.md
+[llm]: https://github.com/hynek/structlog/blob/main/.github/AI_POLICY.md

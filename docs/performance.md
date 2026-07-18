@@ -94,4 +94,4 @@ Therefore a log entry might look like this:
 If you need standard library support for external projects, you can either just use a JSON formatter like [*python-json-logger*](https://pypi.org/project/python-json-logger/), or pipe them through *structlog* as documented in {doc}`standard-library`.
 
 [*orjson*]: https://github.com/ijl/orjson
-[*msgspec*]: https://jcristharif.com/msgspec/
+[*msgspec*]: https://github.com/msgspec/msgspec
