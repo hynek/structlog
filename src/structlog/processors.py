@@ -24,6 +24,7 @@ from types import FrameType, TracebackType
 from typing import (
     Any,
     ClassVar,
+    Final,
     NamedTuple,
     TextIO,
     cast,
@@ -424,7 +425,7 @@ class ExceptionRenderer:
         return event_dict
 
 
-format_exc_info = ExceptionRenderer()
+format_exc_info: Final = ExceptionRenderer()
 """
 Replace an ``exc_info`` field with an ``exception`` string field using Python's
 built-in traceback formatting.
@@ -445,7 +446,7 @@ is analog to the one of the stdlib's logging.
     features.
 """
 
-dict_tracebacks = ExceptionRenderer(ExceptionDictTransformer())
+dict_tracebacks: Final = ExceptionRenderer(ExceptionDictTransformer())
 """
 Replace an ``exc_info`` field with an ``exception`` field containing structured
 tracebacks suitable for, e.g., JSON output.
