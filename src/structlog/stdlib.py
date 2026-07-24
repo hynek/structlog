@@ -883,7 +883,7 @@ def add_syslog_level(
     logger: logging.Logger, method_name: str, event_dict: EventDict
 ) -> EventDict:
     """
-    Add the syslog severity (0–7) to the event dict under ``syslog_level``.
+    Add the syslog severity (0-7) to the event dict under ``syslog_level``.
 
     Useful when feeding plain stdout/stderr to *systemd* with
     ``SyslogLevelPrefix=yes`` (see :manpage:`systemd.exec(5)` / *sd-daemon*),
