@@ -133,6 +133,8 @@ class ReprWrapper:
     Note the extra quotes in the unwrapped example.
     """
 
+    string: str
+
     def __init__(self, string: str) -> None:
         self.string = string
 

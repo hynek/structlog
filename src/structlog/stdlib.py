@@ -784,6 +784,8 @@ class PositionalArgumentsFormatter:
     removed from the event dict after formatting a message.
     """
 
+    remove_positional_args: bool
+
     def __init__(self, remove_positional_args: bool = True) -> None:
         self.remove_positional_args = remove_positional_args
 
@@ -1094,6 +1096,14 @@ class ProcessorFormatter(logging.Formatter):
     .. versionadded:: 23.3.0 *use_get_message*
     """
 
+    processors: Sequence[Processor]
+    foreign_pre_chain: Sequence[Processor] | None
+    keep_exc_info: bool
+    keep_stack_info: bool
+    logger: logging.Logger | None
+    pass_foreign_args: bool
+    use_get_message: bool
+
     def __init__(
         self,
         processor: Processor | None = None,
@@ -1117,7 +1127,6 @@ class ProcessorFormatter(logging.Formatter):
             )
             raise TypeError(msg)
 
-        self.processors: Sequence[Processor]
         if processor is not None:
             self.processors = (self.remove_processors_meta, processor)
         elif processors:

@@ -24,15 +24,15 @@ import contextvars
 
 from collections.abc import Generator, Mapping
 from types import FrameType
-from typing import Any
+from typing import Any, Final
 
 import structlog
 
 from .typing import BindableLogger, EventDict, WrappedLogger
 
 
-STRUCTLOG_KEY_PREFIX = "structlog_"
-STRUCTLOG_KEY_PREFIX_LEN = len(STRUCTLOG_KEY_PREFIX)
+STRUCTLOG_KEY_PREFIX: Final = "structlog_"
+STRUCTLOG_KEY_PREFIX_LEN: Final = len(STRUCTLOG_KEY_PREFIX)
 
 _ASYNC_CALLING_STACK: contextvars.ContextVar[FrameType] = (
     contextvars.ContextVar("_ASYNC_CALLING_STACK")

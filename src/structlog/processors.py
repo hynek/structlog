@@ -24,6 +24,7 @@ from types import FrameType, TracebackType
 from typing import (
     Any,
     ClassVar,
+    Final,
     NamedTuple,
     TextIO,
     cast,
@@ -146,6 +147,8 @@ class LogfmtRenderer:
 
     .. versionadded:: 21.5.0
     """
+
+    bool_as_flag: bool
 
     def __init__(
         self,
@@ -404,6 +407,8 @@ class ExceptionRenderer:
     .. versionadded:: 22.1.0
     """
 
+    format_exception: ExceptionTransformer
+
     def __init__(
         self,
         exception_formatter: ExceptionTransformer = _format_exception,
@@ -420,7 +425,7 @@ class ExceptionRenderer:
         return event_dict
 
 
-format_exc_info = ExceptionRenderer()
+format_exc_info: Final = ExceptionRenderer()
 """
 Replace an ``exc_info`` field with an ``exception`` string field using Python's
 built-in traceback formatting.
@@ -441,7 +446,7 @@ is analog to the one of the stdlib's logging.
     features.
 """
 
-dict_tracebacks = ExceptionRenderer(ExceptionDictTransformer())
+dict_tracebacks: Final = ExceptionRenderer(ExceptionDictTransformer())
 """
 Replace an ``exc_info`` field with an ``exception`` field containing structured
 tracebacks suitable for, e.g., JSON output.
@@ -477,6 +482,10 @@ class TimeStamper:
     """
 
     __slots__ = ("_stamper", "fmt", "key", "utc")
+
+    fmt: str | None
+    utc: bool
+    key: str
 
     def __init__(
         self,
@@ -580,6 +589,8 @@ class MaybeTimeStamper:
 
     __slots__ = ("stamper",)
 
+    stamper: TimeStamper
+
     def __init__(
         self,
         fmt: str | None = None,
@@ -653,6 +664,8 @@ class ExceptionPrettyPrinter:
     .. versionchanged:: 25.4.0
        Fixed *exception_formatter* so that it overrides the default if set.
     """
+
+    format_exception: ExceptionTransformer
 
     def __init__(
         self,
@@ -1002,6 +1015,9 @@ class EventRenamer:
 
     See also the :ref:`rename-event` recipe.
     """
+
+    to: str
+    replace_by: str | None
 
     def __init__(self, to: str, replace_by: str | None = None):
         self.to = to

@@ -468,7 +468,7 @@ class RichTracebackFormatter:
 
 if rich is None:
 
-    def rich_traceback(*args, **kw):
+    def rich_traceback(sio: TextIO, exc_info: ExcInfo) -> None:
         raise ModuleNotFoundError(
             "RichTracebackFormatter requires Rich to be installed.",
             name="rich",
