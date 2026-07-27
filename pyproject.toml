@@ -146,6 +146,13 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
+"docs/examples/*" = [
+    "INP001",  # examples are not packages
+    "D",       # recipe snippets
+    "T201",    # prints may appear in demos
+    "S",       # example code, not production
+    "E402",    # import order in snippets is free-form
+]
 "tests/*" = [
     "B018",    # "useless" expressions can be useful in tests
     "BLE",     # tests have different rules around exceptions
@@ -184,7 +191,7 @@ ignore_errors = false
 
 # Analyze everything for LSP, but only complain about typing examples.
 [[tool.ty.overrides]]
-include = ["src", "tests"]
+include = ["src", "tests", "docs/examples"]
 exclude = ["tests/typing/"]
 rules.all = "ignore"
 

@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Changed
+
+- Move non-doctest recipe examples into `docs/examples/` and include them with `literalinclude`, following the *svcs* pattern so example source can be verified independently.
+  [#819](https://github.com/hynek/structlog/issues/819)
+
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
