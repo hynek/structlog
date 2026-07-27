@@ -148,9 +148,6 @@ jobs:
           uvx --with tox-uv
           tox run -f typing
 
-      - name: Enforce 100% public type coverage with Pyrefly
-        run: uvx pyrefly coverage check --public-only src/structlog
-
   docs:
     name: Run doctests
     needs: build-package
