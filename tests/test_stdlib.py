@@ -518,8 +518,6 @@ class TestPositionalArgumentsFormatter:
 
         assert {} == formatter(None, None, {"positional_args": ()})
 
-
-
     def test_graceful_failure_on_formatting_error(self):
         """
         If positional arguments do not match the formatting placeholders
@@ -530,7 +528,7 @@ class TestPositionalArgumentsFormatter:
         Regression test for https://github.com/hynek/structlog/issues/258.
         """
         formatter = PositionalArgumentsFormatter()
-        
+
         # Mismatched placeholders (event has no %s but args are passed)
         event_dict = formatter(
             None,
