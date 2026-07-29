@@ -519,6 +519,29 @@ class TestPositionalArgumentsFormatter:
         assert {} == formatter(None, None, {"positional_args": ()})
 
 
+
+    def test_graceful_failure_on_formatting_error(self):
+        """
+        If positional arguments do not match the formatting placeholders
+        in the event string, PositionalArgumentsFormatter should not crash
+        with a TypeError or ValueError. It should leave the event string
+        unformatted.
+
+        Regression test for https://github.com/hynek/structlog/issues/258.
+        """
+        formatter = PositionalArgumentsFormatter()
+        
+        # Mismatched placeholders (event has no %s but args are passed)
+        event_dict = formatter(
+            None,
+            None,
+            {"event": "Info message", "positional_args": ("x",)},
+        )
+
+        assert "Info message" == event_dict["event"]
+        assert "positional_args" not in event_dict
+
+
 class TestAddLogLevelNumber:
     @pytest.mark.parametrize(("level", "number"), NAME_TO_LEVEL.items())
     def test_log_level_number_added(self, level, number):
