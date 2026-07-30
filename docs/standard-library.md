@@ -216,7 +216,7 @@ structlog.configure(
             }
         ),
         # Render the final event dict as JSON.
-        structlog.processors.JSONRenderer()
+        structlog.processors.JSONRenderer(),
     ],
     # `wrapper_class` is the bound logger that you get back from
     # get_logger(). This one imitates the API of `logging.Logger`.
@@ -433,7 +433,8 @@ shared_processors = [
 ]
 
 structlog.configure(
-    processors=shared_processors + [
+    processors=shared_processors
+    + [
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),

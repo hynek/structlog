@@ -424,6 +424,15 @@ class ExceptionDictTransformer:
        Handle exception groups.
     """
 
+    show_locals: bool
+    locals_max_length: int
+    locals_max_string: int
+    locals_hide_dunder: bool
+    locals_hide_sunder: bool
+    suppress: Sequence[str]
+    max_frames: int
+    use_rich: bool
+
     def __init__(
         self,
         *,
@@ -450,7 +459,7 @@ class ExceptionDictTransformer:
         self.locals_max_string = locals_max_string
         self.locals_hide_dunder = locals_hide_dunder
         self.locals_hide_sunder = locals_hide_sunder
-        self.suppress: Sequence[str] = []
+        self.suppress = []
         for suppress_entity in suppress:
             if not isinstance(suppress_entity, str):
                 if suppress_entity.__file__ is None:

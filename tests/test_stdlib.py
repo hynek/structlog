@@ -1186,8 +1186,10 @@ class TestProcessorFormatter:
 
         assert (
             "",
-            "foo                            [sample-name] [in test_foreign_pr"
-            "e_chain_add_logger_name]\n",
+            (
+                "foo                            [sample-name] [in test_foreign_pr"
+                "e_chain_add_logger_name]\n"
+            ),
         ) == capsys.readouterr()
 
     def test_foreign_chain_can_pass_dictionaries_without_excepting(
@@ -1208,8 +1210,10 @@ class TestProcessorFormatter:
 
         assert (
             "",
-            "{'foo': 'bar'} [in "
-            "test_foreign_chain_can_pass_dictionaries_without_excepting]\n",
+            (
+                "{'foo': 'bar'} [in "
+                "test_foreign_chain_can_pass_dictionaries_without_excepting]\n"
+            ),
         ) == capsys.readouterr()
 
     def test_foreign_pre_chain_gets_exc_info(self):

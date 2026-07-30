@@ -21,7 +21,7 @@ import uuid
 import warnings
 
 from collections.abc import Generator, Iterator
-from typing import Any, TypeVar
+from typing import Any, Final, TypeVar
 
 import structlog
 
@@ -44,7 +44,7 @@ def _determine_threadlocal() -> type[Any]:
     return GreenThreadLocal  # pragma: no cover
 
 
-ThreadLocal = _determine_threadlocal()
+ThreadLocal: Final[type] = _determine_threadlocal()
 
 
 def _deprecated() -> None:

@@ -34,8 +34,8 @@ In order to avoid that *structlog* disturbs your CamelCase harmony, it comes wit
 
   ```python
   def onError(fail):
-     failure = fail.trap(MoonExploded)
-     log.err(failure, _why="event-that-happened")
+      failure = fail.trap(MoonExploded)
+      log.err(failure, _why="event-that-happened")
   ```
 
   will still work as expected.
@@ -95,14 +95,14 @@ $ twistd -n --logger structlog.twisted.plainJSONStdOutLogger web
 import structlog
 
 structlog.configure(
-   processors=[
-       structlog.processors.StackInfoRenderer(),
-       structlog.twisted.JSONRenderer()
-   ],
-   context_class=dict,
-   logger_factory=structlog.twisted.LoggerFactory(),
-   wrapper_class=structlog.twisted.BoundLogger,
-   cache_logger_on_first_use=True,
+    processors=[
+        structlog.processors.StackInfoRenderer(),
+        structlog.twisted.JSONRenderer(),
+    ],
+    context_class=dict,
+    logger_factory=structlog.twisted.LoggerFactory(),
+    wrapper_class=structlog.twisted.BoundLogger,
+    cache_logger_on_first_use=True,
 )
 ```
 

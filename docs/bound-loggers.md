@@ -119,7 +119,9 @@ Here's an example:
 >>> logger.debug("hi!")
 2022-10-15 11:39:03 [debug    ] hi!
 >>> import logging
->>> structlog.configure(wrapper_class=structlog.make_filtering_bound_logger(logging.INFO))
+>>> structlog.configure(
+...     wrapper_class=structlog.make_filtering_bound_logger(logging.INFO)
+... )
 >>> logger.debug("hi!")
 # no output!
 ```

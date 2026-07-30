@@ -12,10 +12,12 @@ Here are a few hints how to get the best performance out of *structlog* in produ
 
   ```python
   logger = structlog.get_logger()
+
+
   def f():
       log = logger.bind()
       for i in range(1000000000):
-         log.info("iterated", i=i)
+          log.info("iterated", i=i)
   ```
 
   Since global scope lookups are expensive in Python, it's generally a good idea to copy frequently-used symbols into local scope.

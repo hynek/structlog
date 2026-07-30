@@ -271,6 +271,8 @@ class BytesLogger:
 
     __slots__ = ("_file", "_flush", "_lock", "_write", "name")
 
+    name: str | None
+
     def __init__(
         self, file: BinaryIO | None = None, *, name: str | None = None
     ):
