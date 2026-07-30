@@ -118,6 +118,7 @@ ignore = [
     "ARG",     # unused arguments are common w/ interfaces
     "C901",    # sometimes you trade complexity for performance
     "COM",     # Formatter takes care of our commas
+    "CPY",     # they expect a very specific shape of a copyright notice
     "D",       # We prefer our own docstring style.
     "E501",    # leave line-length enforcement to formatter
     "EM101",   # simple strings are fine
@@ -130,6 +131,7 @@ ignore = [
     "N806",    # ditto
     "PLC0415", # sometimes, imports have to live elsewhere
     "PLR0913", # leave complexity to me
+    "PLR0917", # leave complexity to me
     "PLR2004", # numbers are sometimes fine
     "PLW1641", # unhashable is often fine
     "PLW2901", # overwriting a loop var can be useful

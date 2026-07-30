@@ -93,6 +93,7 @@ def foo():
     _helper()
     log.info("a is restored!")  # a=1
 
+
 def _helper():
     tokens = bind_contextvars(a=2)
     log.info("a is overridden")  # a=2
@@ -118,6 +119,7 @@ import structlog
 
 logger = structlog.get_logger()
 app = flask.Flask(__name__)
+
 
 @app.route("/login", methods=["POST", "GET"])
 def some_route():
@@ -155,7 +157,6 @@ if __name__ == "__main__":
         logger_factory=structlog.stdlib.LoggerFactory(),
     )
     app.run()
-
 ```
 
 `some_module.py`:
@@ -164,6 +165,7 @@ if __name__ == "__main__":
 from structlog import get_logger
 
 logger = get_logger()
+
 
 def some_function():
     # ...

@@ -62,12 +62,12 @@ structlog.configure(
         structlog.processors.StackInfoRenderer(),
         structlog.dev.set_exc_info,
         structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
-        structlog.dev.ConsoleRenderer()
+        structlog.dev.ConsoleRenderer(),
     ],
     wrapper_class=structlog.make_filtering_bound_logger(logging.NOTSET),
     context_class=dict,
     logger_factory=structlog.PrintLoggerFactory(),
-    cache_logger_on_first_use=False
+    cache_logger_on_first_use=False,
 )
 log = structlog.get_logger()
 ```
@@ -144,7 +144,6 @@ def view(request):
     else:
         log.info("else")
         return "else"
-
 ```
 
 Suddenly your logger becomes your closure!
@@ -239,7 +238,6 @@ The default *bound logger* that you get back from {func}`structlog.get_logger()`
 >>> logger = structlog.get_logger()
 >>> async def f():
 ...     await logger.ainfo("async hi!")
-...
 >>> logger.info("Loop isn't running yet, but we can log!")
 2023-04-06 07:25:48 [info     ] Loop isn't running yet, but we can log!
 >>> asyncio.run(f())

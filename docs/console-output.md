@@ -125,16 +125,16 @@ cr = structlog.dev.ConsoleRenderer(
     ]
 )
 
-structlog.configure(processors=structlog.get_config()["processors"][:-1]+[cr])
+structlog.configure(
+    processors=structlog.get_config()["processors"][:-1] + [cr]
+)
 ```
 
 You can also access and configure the columns of the active console renderer:
 
 ```python
 cr = structlog.dev.ConsoleRenderer.get_active()
-cr.columns = [
-    ...
-]
+cr.columns = [...]
 ```
 
 

@@ -49,11 +49,19 @@ and call `log.info("some_event", y=23)`, it results in the following call chain:
 
 ```python
 wrapped_logger.info(
-   f3(wrapped_logger, "info",
-      f2(wrapped_logger, "info",
-         f1(wrapped_logger, "info", {"event": "some_event", "x": 42, "y": 23})
-      )
-   )
+    f3(
+        wrapped_logger,
+        "info",
+        f2(
+            wrapped_logger,
+            "info",
+            f1(
+                wrapped_logger,
+                "info",
+                {"event": "some_event", "x": 42, "y": 23},
+            ),
+        ),
+    )
 )
 ```
 
@@ -66,6 +74,7 @@ Parsing human-readable timestamps is tedious, not so [UNIX timestamps](https://e
 ```python
 import calendar
 import time
+
 
 def timestamper(logger, log_method, event_dict):
     event_dict["timestamp"] = calendar.timegm(time.gmtime())
@@ -87,6 +96,7 @@ Therefore, the following processor drops every entry:
 
 ```python
 from structlog import DropEvent
+
 
 def dropper(logger, method_name, event_dict):
     raise DropEvent
