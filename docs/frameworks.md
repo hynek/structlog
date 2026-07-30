@@ -23,9 +23,12 @@ If you want to automatically bind task metadata to your {doc}`contextvars`, you 
 ```python
 from celery import signals
 
+
 @signals.task_prerun.connect
 def on_task_prerun(sender, task_id, task, args, kwargs, **_):
-    structlog.contextvars.bind_contextvars(task_id=task_id, task_name=task.name)
+    structlog.contextvars.bind_contextvars(
+        task_id=task_id, task_name=task.name
+    )
 ```
 
 See [this issue](https://github.com/hynek/structlog/issues/287) for more details.
@@ -79,6 +82,7 @@ The [Python OpenTelemetry SDK](https://opentelemetry.io/docs/languages/python/) 
 ```python
 from opentelemetry import trace
 
+
 def add_open_telemetry_spans(_, __, event_dict):
     span = trace.get_current_span()
     if not span.is_recording():
@@ -91,7 +95,9 @@ def add_open_telemetry_spans(_, __, event_dict):
     event_dict["span"] = {
         "span_id": format(ctx.span_id, "016x"),
         "trace_id": format(ctx.trace_id, "032x"),
-        "parent_span_id": None if not parent else format(parent.span_id, "016x"),
+        "parent_span_id": None
+        if not parent
+        else format(parent.span_id, "016x"),
     }
 
     return event_dict

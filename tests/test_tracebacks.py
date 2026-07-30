@@ -1068,7 +1068,7 @@ class TestLogException:
 
         See: https://github.com/hynek/structlog/issues/634
         """
-        logger.exception("onoes")
+        logger.error("onoes")
 
         assert [{"event": "onoes", "log_level": "error"}] == cap_logs.entries
 

@@ -35,11 +35,14 @@ Let's assume you have the following code:
 ```python
 logger = structlog.get_logger()
 
+
 def f():
     logger.info("f called")
 
+
 def g():
     logger.info("g called")
+
 
 f()
 g()
@@ -54,6 +57,7 @@ def filter_f(_, __, event_dict):
         raise structlog.DropEvent
 
     return event_dict
+
 
 structlog.configure(
     processors=[
