@@ -28,6 +28,7 @@ from structlog._config import (
     reset_defaults,
     wrap_logger,
 )
+from structlog._custom_log_levels import register_log_level, reset_log_levels
 from structlog._generic import BoundLogger
 from structlog._native import make_filtering_bound_logger
 from structlog._output import (
@@ -79,7 +80,9 @@ __all__ = [
     "is_configured",
     "make_filtering_bound_logger",
     "processors",
+    "register_log_level",
     "reset_defaults",
+    "reset_log_levels",
     "stdlib",
     "testing",
     "threadlocal",
