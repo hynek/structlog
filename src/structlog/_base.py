@@ -166,7 +166,7 @@ class BoundLoggerBase:
         # We're typing it as Any, because processors can return more than an
         # EventDict.
         event_dict: Any = self._context.copy()
-        event_dict.update(**event_kw)
+        event_dict.update(event_kw)
 
         if event is not None:
             event_dict["event"] = event
