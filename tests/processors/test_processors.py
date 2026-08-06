@@ -480,6 +480,122 @@ class TestCallsiteParameterAdder:
 
         assert expected == actual
 
+    def test_always_walk_stack(self) -> None:
+        """
+        With ``always_walk_stack=True``, the callsite for a foreign
+        `logging.LogRecord` is determined by walking the stack rather than
+        copied from the record, so `additional_ignores` applies.
+        """
+        test_message = "test message"
+        processor = CallsiteParameterAdder(
+            parameters=self._all_parameters,
+            always_walk_stack=True,
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            "/some/library/path.py",
+            123,
+            test_message,
+            None,
+            None,
+            "library_func",
+        )
+        event_dict: EventDict = {
+            "event": test_message,
+            "_record": record,
+            "_from_structlog": False,
+        }
+
+        # Warning: the next two lines must appear exactly like this to make
+        # line numbers match.
+        callsite_params = self.get_callsite_parameters(1)
+        actual = processor(None, None, event_dict)
+
+        actual = {
+            key: value
+            for key, value in actual.items()
+            if not key.startswith("_")
+        }
+        expected = {"event": test_message, **callsite_params}
+
+        assert expected == actual
+
+    def test_always_walk_stack_skips_additional_ignores(self) -> None:
+        """
+        With ``always_walk_stack=True`` and ``additional_ignores`` set, frames
+        from the ignored module are skipped even when the event carries
+        a foreign `logging.LogRecord`.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={
+                CallsiteParameter.PATHNAME,
+                CallsiteParameter.FUNC_NAME,
+                CallsiteParameter.MODULE,
+            },
+            additional_ignores=["tests.additional_frame"],
+            always_walk_stack=True,
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            "/some/library/path.py",
+            123,
+            "msg",
+            None,
+            None,
+            "library_func",
+        )
+        event_dict: EventDict = {
+            "event": "msg",
+            "_record": record,
+            "_from_structlog": False,
+        }
+
+        actual = additional_frame(
+            lambda: processor(None, None, dict(event_dict))
+        )
+
+        # The record's values are ignored ...
+        assert "library_func" != actual["func_name"]
+        # ... and this test file is reported as the callsite.
+        assert __file__ == actual["pathname"]
+        assert "test_processors" == actual["module"]
+
+    def test_always_walk_stack_default_uses_record(self) -> None:
+        """
+        By default (``always_walk_stack=False``), the callsite information
+        for foreign records is copied straight from the `logging.LogRecord`.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={
+                CallsiteParameter.PATHNAME,
+                CallsiteParameter.LINENO,
+                CallsiteParameter.FUNC_NAME,
+            },
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            "/some/library/path.py",
+            123,
+            "msg",
+            None,
+            None,
+            "library_func",
+        )
+        event_dict: EventDict = {
+            "event": "msg",
+            "_record": record,
+            "_from_structlog": False,
+        }
+
+        actual = processor(None, None, event_dict)
+
+        assert "/some/library/path.py" == actual["pathname"]
+        assert 123 == actual["lineno"]
+        assert "library_func" == actual["func_name"]
+
     @pytest.mark.parametrize(
         ("origin", "parameter_strings"),
         itertools.product(
