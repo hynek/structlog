@@ -43,6 +43,7 @@ from structlog.stdlib import (
     add_log_level,
     add_log_level_number,
     add_logger_name,
+    add_syslog_level,
     filter_by_level,
     get_logger,
     recreate_defaults,
@@ -528,6 +529,29 @@ class TestAddLogLevelNumber:
         event_dict = add_log_level_number(None, level, {})
 
         assert number == event_dict["level_number"]
+
+
+class TestAddSyslogLevel:
+    @pytest.mark.parametrize(
+        ("level", "priority"),
+        [
+            ("critical", 2),
+            ("error", 3),
+            ("exception", 3),
+            ("warn", 4),
+            ("warning", 4),
+            ("info", 6),
+            ("debug", 7),
+            ("notset", 7),
+        ],
+    )
+    def test_syslog_level_added(self, level, priority):
+        """
+        The syslog severity (0-7) is added to the event dict (#249).
+        """
+        event_dict = add_syslog_level(None, level, {})
+
+        assert priority == event_dict["syslog_level"]
 
 
 class TestAddLogLevel:

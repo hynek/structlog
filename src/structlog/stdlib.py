@@ -60,6 +60,7 @@ __all__ = [
     "add_log_level",
     "add_log_level_number",
     "add_logger_name",
+    "add_syslog_level",
     "filter_by_level",
     "get_logger",
     "recreate_defaults",
@@ -862,6 +863,38 @@ def add_log_level_number(
     """
     event_dict["level_number"] = NAME_TO_LEVEL[method_name]
 
+    return event_dict
+
+
+# syslog(3) / logging.handlers.SysLogHandler priority values (0-7).
+_NAME_TO_SYSLOG_LEVEL = {
+    "critical": 2,  # LOG_CRIT
+    "error": 3,  # LOG_ERR
+    "exception": 3,  # LOG_ERR
+    "warn": 4,  # LOG_WARNING
+    "warning": 4,  # LOG_WARNING
+    "info": 6,  # LOG_INFO
+    "debug": 7,  # LOG_DEBUG
+    "notset": 7,  # LOG_DEBUG
+}
+
+
+def add_syslog_level(
+    logger: logging.Logger, method_name: str, event_dict: EventDict
+) -> EventDict:
+    """
+    Add the syslog severity (0-7) to the event dict under ``syslog_level``.
+
+    Useful when feeding plain stdout/stderr to *systemd* with
+    ``SyslogLevelPrefix=yes`` (see :manpage:`systemd.exec(5)` / *sd-daemon*),
+    or when writing processors that talk to the stdlib ``syslog`` module.
+
+    The mapping follows :class:`logging.handlers.SysLogHandler` and
+    :manpage:`syslog(3)`.
+
+    .. versionadded:: NEXT
+    """
+    event_dict["syslog_level"] = _NAME_TO_SYSLOG_LEVEL[method_name]
     return event_dict
 
 
