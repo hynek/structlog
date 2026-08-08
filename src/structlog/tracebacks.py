@@ -153,29 +153,37 @@ def to_repr(
        implementation.
     """
     if use_rich and rich is not None:
-        # Let rich render the repr if it is available.
-        # It produces much better results for containers and dataclasses/attrs.
-        obj_repr = rich.pretty.traverse(
-            obj, max_length=max_length, max_string=max_string
-        ).render()
-    else:
-        # Generate a (truncated) repr if rich is not available.
-        # Handle str/bytes differently to get better results for truncated
-        # representations.  Also catch all errors, similarly to "safe_str()".
         try:
-            if isinstance(obj, (str, bytes)):
-                if max_string is not None and len(obj) > max_string:
-                    truncated = len(obj) - max_string
-                    obj_repr = f"{obj[:max_string]!r}+{truncated}"
-                else:
-                    obj_repr = repr(obj)
+            # Let rich render the repr if it is available.
+            # It produces much better results for containers and
+            # dataclasses/attrs.
+            return rich.pretty.traverse(
+                obj, max_length=max_length, max_string=max_string
+            ).render()
+        except Exception:  # noqa: BLE001, S110
+            # Rich's introspection can raise on objects it doesn't expect
+            # (e.g. ones with unusual attribute access), which would
+            # otherwise break exception logging entirely. Fall back to the
+            # manual algorithm below instead.
+            pass
+
+    # Generate a (truncated) repr if rich is not available, or failed above.
+    # Handle str/bytes differently to get better results for truncated
+    # representations.  Also catch all errors, similarly to "safe_str()".
+    try:
+        if isinstance(obj, (str, bytes)):
+            if max_string is not None and len(obj) > max_string:
+                truncated = len(obj) - max_string
+                obj_repr = f"{obj[:max_string]!r}+{truncated}"
             else:
                 obj_repr = repr(obj)
-                if max_string is not None and len(obj_repr) > max_string:
-                    truncated = len(obj_repr) - max_string
-                    obj_repr = f"{obj_repr[:max_string]!r}+{truncated}"
-        except Exception as error:  # noqa: BLE001
-            obj_repr = f"<repr-error {str(error)!r}>"
+        else:
+            obj_repr = repr(obj)
+            if max_string is not None and len(obj_repr) > max_string:
+                truncated = len(obj_repr) - max_string
+                obj_repr = f"{obj_repr[:max_string]!r}+{truncated}"
+    except Exception as error:  # noqa: BLE001
+        obj_repr = f"<repr-error {str(error)!r}>"
 
     return obj_repr
 

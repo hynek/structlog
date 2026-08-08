@@ -133,6 +133,26 @@ def test_to_repr_error() -> None:
     assert "<repr-error 'BAAM!'>" == tracebacks.to_repr(Baam())
 
 
+def test_to_repr_rich_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """
+    "to_repr()" falls back to the non-Rich algorithm if Rich's own
+    introspection raises an exception instead of propagating it (#655).
+    """
+    try:
+        import rich
+        import rich.pretty
+    except ImportError:
+        pytest.skip(reason="rich not installed")
+
+    def boom(*args: Any, **kwargs: Any) -> Any:
+        raise AttributeError("'Baam' object has no attribute 'x'")
+
+    monkeypatch.setattr(tracebacks, "rich", rich)
+    monkeypatch.setattr(rich.pretty, "traverse", boom)
+
+    assert "'spam'" == tracebacks.to_repr("spam")
+
+
 def test_simple_exception():
     """
     Tracebacks are parsed for simple, single exceptions.
