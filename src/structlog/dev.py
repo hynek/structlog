@@ -455,7 +455,7 @@ class RichTracebackFormatter:
         console = Console(
             file=sio, color_system=self.color_system, width=self.width
         )
-        kwargs = {
+        kwargs: dict[str, Any] = {
             "show_locals": self.show_locals,
             "max_frames": self.max_frames,
             "theme": self.theme,
