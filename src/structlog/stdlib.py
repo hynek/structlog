@@ -283,7 +283,22 @@ class BoundLogger(BoundLoggerBase):
         if event_args:
             event_kw["positional_args"] = event_args
 
-        return super()._proxy_to_logger(method_name, event=event, **event_kw)
+        try:
+            args, kw = self._process_event(method_name, event, event_kw)
+
+            # If a processor already rendered the exception, suppress stdlib's automatic rendering.
+            is_rendered = kw.pop(
+                "_structlog_exception_already_rendered", False
+            ) or kw.get("extra", {}).pop(
+                "_structlog_exception_already_rendered", False
+            )
+
+            if method_name == "exception" and is_rendered:
+                kw["exc_info"] = False
+
+            return getattr(self._logger, method_name)(*args, **kw)
+        except DropEvent:
+            return None
 
     # Pass-through attributes and methods to mimic the stdlib's logger
     # interface.
