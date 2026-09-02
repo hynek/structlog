@@ -11,6 +11,7 @@ See also the narrative documentation in `console-output`.
 
 from __future__ import annotations
 
+import inspect
 import sys
 import warnings
 
@@ -52,6 +53,15 @@ try:
     from rich.traceback import Traceback
 except ImportError:
     rich = None  # type: ignore[assignment]
+else:
+    # Older versions of Rich don't support all keyword arguments we'd like to
+    # pass to Traceback.from_exception() (e.g., locals_hide_dunder /
+    # locals_hide_sunder were only added in Rich 13.1.0). Only pass the ones
+    # that are actually supported by the installed version so that structlog
+    # keeps working with a wide range of Rich versions.
+    _RICH_TRACEBACK_FROM_EXCEPTION_PARAMS = frozenset(
+        inspect.signature(Traceback.from_exception).parameters
+    )
 
 __all__ = [
     "ConsoleRenderer",
@@ -445,21 +455,28 @@ class RichTracebackFormatter:
         console = Console(
             file=sio, color_system=self.color_system, width=self.width
         )
-        tb = Traceback.from_exception(
-            *exc_info,
-            show_locals=self.show_locals,
-            max_frames=self.max_frames,
-            theme=self.theme,
-            word_wrap=self.word_wrap,
-            extra_lines=self.extra_lines,
-            width=self.width,
-            indent_guides=self.indent_guides,
-            locals_max_length=self.locals_max_length,
-            locals_max_string=self.locals_max_string,
-            locals_hide_dunder=self.locals_hide_dunder,
-            locals_hide_sunder=self.locals_hide_sunder,
-            suppress=self.suppress,
-        )
+        kwargs: dict[str, Any] = {
+            "show_locals": self.show_locals,
+            "max_frames": self.max_frames,
+            "theme": self.theme,
+            "word_wrap": self.word_wrap,
+            "extra_lines": self.extra_lines,
+            "width": self.width,
+            "indent_guides": self.indent_guides,
+            "locals_max_length": self.locals_max_length,
+            "locals_max_string": self.locals_max_string,
+            "locals_hide_dunder": self.locals_hide_dunder,
+            "locals_hide_sunder": self.locals_hide_sunder,
+            "suppress": self.suppress,
+        }
+        # Drop kwargs that the installed Rich version doesn't support yet
+        # (see _RICH_TRACEBACK_FROM_EXCEPTION_PARAMS above).
+        kwargs = {
+            k: v
+            for k, v in kwargs.items()
+            if k in _RICH_TRACEBACK_FROM_EXCEPTION_PARAMS
+        }
+        tb = Traceback.from_exception(*exc_info, **kwargs)
         if hasattr(tb, "code_width"):
             # `code_width` requires `rich>=13.8.0`
             tb.code_width = self.code_width

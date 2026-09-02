@@ -15,6 +15,14 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Fixed
+
+- `structlog.tracebacks.to_repr()` no longer lets exceptions raised by Rich's own object introspection propagate and break exception logging; it now falls back to the non-Rich algorithm instead.
+  [#655](https://github.com/hynek/structlog/issues/655)
+
+- `structlog.dev.RichTracebackFormatter` no longer crashes with a `TypeError` on older versions of Rich (before 13.1.0) that don't support the *locals_hide_dunder* / *locals_hide_sunder* arguments.
+  [#576](https://github.com/hynek/structlog/issues/576)
+
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
