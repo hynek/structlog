@@ -482,16 +482,18 @@ class TestCallsiteParameterAdder:
 
     @pytest.mark.parametrize(
         ("origin", "parameter_strings"),
-        itertools.product(
-            ["logging", "structlog"],
-            [
-                None,
-                *[{parameter} for parameter in parameter_strings],
-                set(),
-                parameter_strings,
-                {"pathname", "filename"},
-                {"module", "func_name"},
-            ],
+        list(
+            itertools.product(
+                ["logging", "structlog"],
+                [
+                    None,
+                    *[{parameter} for parameter in parameter_strings],
+                    set(),
+                    parameter_strings,
+                    {"pathname", "filename"},
+                    {"module", "func_name"},
+                ],
+            )
         ),
     )
     def test_processor(
@@ -542,17 +544,24 @@ class TestCallsiteParameterAdder:
 
     @pytest.mark.parametrize(
         ("setup", "origin", "parameter_strings"),
-        itertools.product(
-            ["common-without-pre", "common-with-pre", "shared", "everywhere"],
-            ["logging", "structlog"],
-            [
-                None,
-                *[{parameter} for parameter in parameter_strings],
-                set(),
-                parameter_strings,
-                {"pathname", "filename"},
-                {"module", "func_name"},
-            ],
+        list(
+            itertools.product(
+                [
+                    "common-without-pre",
+                    "common-with-pre",
+                    "shared",
+                    "everywhere",
+                ],
+                ["logging", "structlog"],
+                [
+                    None,
+                    *[{parameter} for parameter in parameter_strings],
+                    set(),
+                    parameter_strings,
+                    {"pathname", "filename"},
+                    {"module", "func_name"},
+                ],
+            )
         ),
     )
     def test_e2e(
