@@ -883,6 +883,14 @@ _LOG_RECORD_KEYS = logging.LogRecord(
     "name", 0, "pathname", 0, "msg", (), None
 ).__dict__.keys()
 
+# `Logger.makeRecord` raises `KeyError` for an `extra` key already on the
+# `LogRecord`: `_LOG_RECORD_KEYS`, plus "message"/"asctime" added later by
+# `Formatter.format()`. An event field named "filename" would crash.
+_RESERVED_LOG_RECORD_KEYS = frozenset(_LOG_RECORD_KEYS) | {
+    "message",
+    "asctime",
+}
+
 
 class ExtraAdder:
     """
@@ -960,9 +968,17 @@ def render_to_log_args_and_kwargs(
     arguments, keyword arguments are extracted from the *event_dict* and the
     rest of the *event_dict* is added as ``extra``.
 
+    Keys that collide with an attribute `logging.LogRecord` already carries
+    (for example ``filename`` or ``module``) are dropped instead of being
+    added to ``extra``, because the standard library rejects them there with
+    a `KeyError` at the point of logging.
+
     This allows you to defer formatting to `logging`.
 
     .. versionadded:: 25.1.0
+    .. versionchanged:: 26.2.0
+       Keys colliding with `logging.LogRecord` attributes are now dropped
+       from ``extra`` instead of crashing the standard library.
     """
     args = (event_dict.pop("event"), *event_dict.pop("positional_args", ()))
 
@@ -971,6 +987,8 @@ def render_to_log_args_and_kwargs(
         for kwarg_name in LOG_KWARG_NAMES
         if kwarg_name in event_dict
     }
+    for key in event_dict.keys() & _RESERVED_LOG_RECORD_KEYS:
+        del event_dict[key]
     if event_dict:
         kwargs["extra"] = event_dict
 
@@ -989,6 +1007,11 @@ def render_to_log_kwargs(
     extracted from the *event_dict* and the rest of the *event_dict* is added as
     ``extra``.
 
+    Keys that collide with an attribute `logging.LogRecord` already carries
+    (for example ``filename`` or ``module``) are dropped instead of being
+    added to ``extra``, because the standard library rejects them there with
+    a `KeyError` at the point of logging.
+
     This allows you to defer formatting to `logging`.
 
     .. versionadded:: 17.1.0
@@ -997,16 +1020,18 @@ def render_to_log_kwargs(
        kwargs and not put into ``extra``.
     .. versionchanged:: 24.2.0
        ``stackLevel`` corrected to ``stacklevel``.
+    .. versionchanged:: 26.2.0
+       Keys colliding with `logging.LogRecord` attributes are now dropped
+       from ``extra`` instead of crashing the standard library.
     """
-    return {
-        "msg": event_dict.pop("event"),
-        "extra": event_dict,
-        **{
-            kw: event_dict.pop(kw)
-            for kw in LOG_KWARG_NAMES
-            if kw in event_dict
-        },
+    msg = event_dict.pop("event")
+    kwargs = {
+        kw: event_dict.pop(kw) for kw in LOG_KWARG_NAMES if kw in event_dict
     }
+    for key in event_dict.keys() & _RESERVED_LOG_RECORD_KEYS:
+        del event_dict[key]
+
+    return {"msg": msg, "extra": event_dict, **kwargs}
 
 
 class ProcessorFormatter(logging.Formatter):
