@@ -10,15 +10,23 @@ import inspect
 import json
 import sys
 
+from collections.abc import Iterator
 from pathlib import Path
 from types import ModuleType
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 
 import structlog
 
 from structlog import tracebacks
+
+
+try:
+    import rich
+except ImportError:
+    rich = None
 
 
 class SecretStr(str):  # noqa: SLOT000
@@ -31,8 +39,9 @@ class SecretStr(str):  # noqa: SLOT000
 
 
 @pytest.fixture(autouse=True)
-def _unimport_rich(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(tracebacks, "rich", None)
+def _unimport_rich() -> Iterator[None]:
+    with patch.object(tracebacks, "rich", None):
+        yield
 
 
 def get_next_lineno() -> int:
@@ -82,6 +91,7 @@ def test_to_repr(data: Any, max_len: int | None, expected: str) -> None:
     assert expected == tracebacks.to_repr(data, max_string=max_len)
 
 
+@pytest.mark.skipif(rich is None, reason="rich not installed")
 @pytest.mark.parametrize(
     ("use_rich", "data", "max_len", "expected"),
     [
@@ -101,21 +111,17 @@ def test_to_repr_rich(
     data: Any,
     max_len: int | None,
     expected: str,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """
     "to_repr()" uses Rich to get a nice repr if it is installed and if
     "use_rich" is True.
     """
-    try:
-        import rich
-    except ImportError:
-        pytest.skip(reason="rich not installed")
+    with patch.object(tracebacks, "rich", rich):
+        actual = tracebacks.to_repr(
+            data, max_string=max_len, use_rich=use_rich
+        )
 
-    monkeypatch.setattr(tracebacks, "rich", rich)
-    assert expected == tracebacks.to_repr(
-        data, max_string=max_len, use_rich=use_rich
-    )
+    assert expected == actual
 
 
 def test_to_repr_error() -> None:
@@ -913,20 +919,27 @@ def test_json_tracebacks_skip_sunder_dunder(
         {"max_frames": -1},
         {"max_frames": 0},
         {"max_frames": 1},
-        {"suppress": (json,)},
     ],
 )
-def test_json_traceback_value_error(
-    kwargs: dict[str, Any], monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_json_traceback_value_error(kwargs: dict[str, Any]) -> None:
     """
     Wrong arguments to ExceptionDictTransformer raise a ValueError that
-    contains the name of the argument..
+    contains the name of the argument.
     """
-    if "suppress" in kwargs:
-        monkeypatch.setattr(kwargs["suppress"][0], "__file__", None)
     with pytest.raises(ValueError, match=next(iter(kwargs.keys()))):
         tracebacks.ExceptionDictTransformer(**kwargs)
+
+
+def test_json_traceback_suppress_without_file() -> None:
+    """
+    Suppressing a module without a __file__ raises a ValueError that contains
+    the name of the argument.
+    """
+    with (
+        patch.object(json, "__file__", None),
+        pytest.raises(ValueError, match="suppress"),
+    ):
+        tracebacks.ExceptionDictTransformer(suppress=(json,))
 
 
 @pytest.mark.skipif(

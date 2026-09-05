@@ -256,13 +256,13 @@ class TestBoundLogger:
         [
             ("addHandler", [None]),
             ("removeHandler", [None]),
-            ("hasHandlers", None),
+            ("hasHandlers", []),
             ("callHandlers", [None]),
             ("handle", [None]),
             ("setLevel", [None]),
-            ("getEffectiveLevel", None),
+            ("getEffectiveLevel", []),
             ("isEnabledFor", [None]),
-            ("findCaller", None),
+            ("findCaller", []),
             (
                 "makeRecord",
                 [
@@ -288,20 +288,12 @@ class TestBoundLogger:
             called_stdlib_method[0] = True
 
         stdlib_logger = logging.getLogger("Test")
-        stdlib_logger_method = getattr(stdlib_logger, method_name, None)
-        if stdlib_logger_method:
-            setattr(stdlib_logger, method_name, validate)
-            bl = BoundLogger(stdlib_logger, [], {})
-            bound_logger_method = getattr(bl, method_name)
+        bl = BoundLogger(stdlib_logger, [], {})
 
-            assert bound_logger_method is not None
+        with patch.object(stdlib_logger, method_name, validate):
+            getattr(bl, method_name)(*method_args)
 
-            if method_args:
-                bound_logger_method(*method_args)
-            else:
-                bound_logger_method()
-
-            assert called_stdlib_method[0] is True
+        assert called_stdlib_method[0] is True
 
     def test_is_enabled_for(self):
         """

@@ -6,8 +6,10 @@
 import copy
 import gc
 import pickle
+import sys
 
 from io import BytesIO, StringIO
+from unittest.mock import patch
 
 import pytest
 
@@ -172,18 +174,18 @@ class TestLoggers:
         """
         assert repr(logger_cls()).startswith(f"<{logger_cls.__name__}(file=")
 
-    def test_stdout_monkeypatch(self, monkeypatch, capsys):
+    def test_stdout_monkeypatch(self, capsys):
         """
         If stdout gets monkeypatched, the new instance receives the output.
         """
-        import sys
-
         p = PrintLogger()
         new_stdout = StringIO()
-        monkeypatch.setattr(sys, "stdout", new_stdout)
-        p.msg("hello")
+
+        with patch.object(sys, "stdout", new_stdout):
+            p.msg("hello")
 
         out, err = capsys.readouterr()
+
         assert "hello\n" == new_stdout.getvalue()
         assert "" == out
         assert "" == err

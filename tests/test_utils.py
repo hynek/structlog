@@ -6,7 +6,8 @@
 import multiprocessing
 import sys
 
-import pytest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from structlog._utils import get_processname
 
@@ -19,40 +20,33 @@ class TestGetProcessname:
         """
         assert get_processname() == multiprocessing.current_process().name
 
-    def test_changed(self, monkeypatch: pytest.MonkeyPatch):
+    def test_changed(self):
         """
         The returned process name matches the name of the current process from
         the `multiprocessing` module if it is not the default.
         """
         tmp_name = "fakename"
-        monkeypatch.setattr(
-            target=multiprocessing.current_process(),
-            name="name",
-            value=tmp_name,
-        )
 
-        assert get_processname() == tmp_name
+        with patch.object(
+            multiprocessing,
+            "current_process",
+            lambda: SimpleNamespace(name=tmp_name),
+        ):
+            actual = get_processname()
 
-    def test_no_multiprocessing(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        assert tmp_name == actual
+
+    def test_no_multiprocessing(self) -> None:
         """
         The returned process name is the default process name if the
         `multiprocessing` module is not available.
         """
-        tmp_name = "fakename"
-        monkeypatch.setattr(
-            target=multiprocessing.current_process(),
-            name="name",
-            value=tmp_name,
-        )
-        monkeypatch.setattr(
-            target=sys,
-            name="modules",
-            value={},
-        )
+        with patch.object(sys, "modules", {}):
+            actual = get_processname()
 
-        assert get_processname() == "n/a"
+        assert "n/a" == actual
 
-    def test_exception(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_exception(self) -> None:
         """
         The returned process name is the default process name when an exception
         is thrown when an attempt is made to retrieve the current process name
@@ -62,10 +56,9 @@ class TestGetProcessname:
         def _current_process() -> None:
             raise RuntimeError("test")
 
-        monkeypatch.setattr(
-            target=multiprocessing,
-            name="current_process",
-            value=_current_process,
-        )
+        with patch.object(
+            multiprocessing, "current_process", _current_process
+        ):
+            actual = get_processname()
 
-        assert get_processname() == "n/a"
+        assert "n/a" == actual

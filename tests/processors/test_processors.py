@@ -460,7 +460,7 @@ class TestCallsiteParameterAdder:
         assert expected_thread == captured["thread"]
         assert expected_thread_name == captured["thread_name"]
 
-    def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_additional_ignores(self) -> None:
         """
         Stack frames from modules with names that start with values in
         `additional_ignores` are ignored when determining the callsite.
