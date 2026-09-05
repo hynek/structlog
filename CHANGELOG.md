@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Fixed
+
+- `structlog.stdlib.render_to_log_kwargs()` and `structlog.stdlib.render_to_log_args_and_kwargs()` now drop event dict keys that collide with a `logging.LogRecord` attribute (for example `filename` or `module`) instead of crashing the standard library with `KeyError: "Attempt to overwrite '...' in LogRecord"`.
+  [#486](https://github.com/hynek/structlog/issues/486)
+
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
