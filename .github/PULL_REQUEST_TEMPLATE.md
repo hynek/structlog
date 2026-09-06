@@ -19,7 +19,7 @@ You may check boxes that don't apply to your pull request to indicate that there
 - [ ] This pull request is [**not** from my `main` branch](https://hynek.me/articles/pull-requests-branch/).
   - Consider granting [push permissions to the PR branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork), so maintainers can fix minor issues themselves without pestering you.
 - [ ] There's **tests** for all new and changed code.
-- [ ] **New APIs** are added to our typing tests in [`api.py`](https://github.com/hynek/structlog/blob/main/tests/typing/api.py).
+- [ ] **New APIs** are added to our typing tests in [`api.py`](https://github.com/hynek/structlog/blob/main/typing_tests/api.py).
 - [ ] Updated **documentation** for changed code.
     - [ ] New functions/classes have to be added to `docs/api.rst` by hand.
     - [ ] Changed/added classes/methods/functions have appropriate `versionadded`, `versionchanged`, or `deprecated` [directives](http://www.sphinx-doc.org/en/stable/markup/para.html#directive-versionadded).

@@ -4,6 +4,9 @@
 # repository for complete details.
 
 import sys
+import traceback
+
+from unittest.mock import patch
 
 import pytest
 
@@ -144,18 +147,17 @@ class TestFormatException:
             "Traceback (most recent call last):\n"
         )
 
-    def test_no_trailing_nl(self, exc_info, monkeypatch):
+    def test_no_trailing_nl(self, exc_info):
         """
         Trailing newlines are snipped off but if the string does not contain
         one nothing is removed.
         """
-        from structlog._frames import traceback
-
-        monkeypatch.setattr(
+        with patch.object(
             traceback, "print_exception", lambda *a: a[-1].write("foo")
-        )
+        ):
+            actual = _format_exception(exc_info)
 
-        assert "foo" == _format_exception(exc_info)
+        assert "foo" == actual
 
 
 class TestFormatStack:
@@ -173,15 +175,14 @@ class TestFormatStack:
             "Stack (most recent call last):\n"
         )
 
-    def test_no_trailing_nl(self, monkeypatch):
+    def test_no_trailing_nl(self):
         """
         Trailing newlines are snipped off but if the string does not contain
         one nothing is removed.
         """
-        from structlog._frames import traceback
-
-        monkeypatch.setattr(
+        with patch.object(
             traceback, "print_stack", lambda frame, file: file.write("foo")
-        )
+        ):
+            actual = _format_stack(sys._getframe())
 
-        assert _format_stack(sys._getframe()).endswith("foo")
+        assert actual.endswith("foo")

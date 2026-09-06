@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import functools
 import inspect
-import itertools
 import json
 import logging
 import os
@@ -461,7 +460,7 @@ class TestCallsiteParameterAdder:
         assert expected_thread == captured["thread"]
         assert expected_thread_name == captured["thread_name"]
 
-    def test_additional_ignores(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_additional_ignores(self) -> None:
         """
         Stack frames from modules with names that start with values in
         `additional_ignores` are ignored when determining the callsite.
@@ -480,19 +479,17 @@ class TestCallsiteParameterAdder:
 
         assert expected == actual
 
+    @pytest.mark.parametrize("origin", ["logging", "structlog"])
     @pytest.mark.parametrize(
-        ("origin", "parameter_strings"),
-        itertools.product(
-            ["logging", "structlog"],
-            [
-                None,
-                *[{parameter} for parameter in parameter_strings],
-                set(),
-                parameter_strings,
-                {"pathname", "filename"},
-                {"module", "func_name"},
-            ],
-        ),
+        "parameter_strings",
+        [
+            None,
+            *[{parameter} for parameter in parameter_strings],
+            set(),
+            parameter_strings,
+            {"pathname", "filename"},
+            {"module", "func_name"},
+        ],
     )
     def test_processor(
         self,
@@ -541,19 +538,20 @@ class TestCallsiteParameterAdder:
         assert expected == actual
 
     @pytest.mark.parametrize(
-        ("setup", "origin", "parameter_strings"),
-        itertools.product(
-            ["common-without-pre", "common-with-pre", "shared", "everywhere"],
-            ["logging", "structlog"],
-            [
-                None,
-                *[{parameter} for parameter in parameter_strings],
-                set(),
-                parameter_strings,
-                {"pathname", "filename"},
-                {"module", "func_name"},
-            ],
-        ),
+        "setup",
+        ["common-without-pre", "common-with-pre", "shared", "everywhere"],
+    )
+    @pytest.mark.parametrize("origin", ["logging", "structlog"])
+    @pytest.mark.parametrize(
+        "parameter_strings",
+        [
+            None,
+            *[{parameter} for parameter in parameter_strings],
+            set(),
+            parameter_strings,
+            {"pathname", "filename"},
+            {"module", "func_name"},
+        ],
     )
     def test_e2e(
         self,

@@ -11,7 +11,7 @@
    <a href="https://github.com/hynek/structlog/blob/main/COPYRIGHT"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-C06524" alt="License: MIT / Apache 2.0" /></a>
    <a href="https://bestpractices.coreinfrastructure.org/projects/6560"><img src="https://bestpractices.coreinfrastructure.org/projects/6560/badge"></a>
    <a href="https://github.com/hynek/structlog/blob/main/.github/AI_POLICY.md"><img src="https://img.shields.io/badge/no-slop-purple" alt="No AI slop inside."></a>
-   <a href="https://pypi.org/project/structlog/"><img src="https://img.shields.io/pypi/pyversions/structlog.svg" alt="Supported Python versions of the current PyPI release." /></a>
+   <a href="https://pypi.org/project/structlog/"><img alt="PyPI" src="https://img.shields.io/pypi/v/structlog"></a>
    <a href="https://pepy.tech/project/structlog"><img src="https://static.pepy.tech/personalized-badge/structlog?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month" alt="Downloads per month" /></a>
 </p>
 
@@ -55,6 +55,7 @@ for sponsor in tomllib.loads(pathlib.Path("pyproject.toml").read_text())["tool"]
 <a href="https://privacy-solutions.org/"><img title="Privacy Solutions" src="docs/_static/sponsors/Privacy-Solutions.svg" width="190" /></a>
 <a href="https://klaviyo.com/"><img title="Klaviyo" src="docs/_static/sponsors/Klaviyo.svg" width="190" /></a>
 <a href="https://filepreviews.io/"><img title="FilePreviews" src="docs/_static/sponsors/FilePreviews.svg" width="190" /></a>
+<a href="https://www.testmuai.com/?utm_medium=sponsor&utm_source=structlog"><img title="TestMu AI" src="docs/_static/sponsors/TestMu-AI.svg" width="190" /></a>
 <a href="https://polar.sh/"><img title="Polar" src="docs/_static/sponsors/Polar.svg" width="190" /></a>
 <!-- [[[end]]] -->
 

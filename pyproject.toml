@@ -165,6 +165,13 @@ ignore = [
     "TRY",     # tests have different rules around exceptions
 ]
 
+"typing_tests/*" = [
+    "B018",   # "useless" expressions are how we check attribute types
+    "F841",   # unused variables are fine in type checks
+    "RUF059", # unused variables are fine in type checks
+    "TRY301", # we raise inline to get our hands on a traceback
+]
+
 [tool.ruff.lint.isort]
 lines-between-types = 1
 lines-after-imports = 2
@@ -184,20 +191,19 @@ warn_return_any = false
 module = "tests.*"
 ignore_errors = true
 
-[[tool.mypy.overrides]]
-module = "tests.typing.*"
-ignore_errors = false
-
 
 # Analyze everything for LSP, but only complain about typing examples.
 [[tool.ty.overrides]]
 rules.all = "ignore"
 include = ["src", "tests", "bench"]
-exclude = ["tests/typing/"]
 
 
 [tool.pyrefly]
-project-includes = ["tests/typing"]
+project-includes = ["typing_tests"]
+
+
+[tool.pyright]
+include = ["typing_tests"]
 
 
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
@@ -283,6 +289,11 @@ img = "Klaviyo.svg"
 title = "FilePreviews"
 url = "https://filepreviews.io/"
 img = "FilePreviews.svg"
+
+[[tool.sponcon.sponsors]]
+title = "TestMu AI"
+url = "https://www.testmuai.com/?utm_medium=sponsor&utm_source=structlog"
+img = "TestMu-AI.svg"
 
 [[tool.sponcon.sponsors]]
 title = "Polar"
