@@ -19,7 +19,7 @@ import sys
 import threading
 import time
 
-from collections.abc import Callable, Collection, Sequence
+from collections.abc import Callable, Collection, Mapping, Sequence
 from types import FrameType, TracebackType
 from typing import (
     Any,
@@ -844,13 +844,17 @@ class CallsiteParameterAdder:
     from the `logging` module, and stack frames from modules with names that
     start with values in ``additional_ignores``, if it is specified.
 
-    The keys used for callsite parameters in the event dictionary are the
-    string values of `CallsiteParameter` enum members.
+    The keys used for callsite parameters in the event dictionary are, by
+    default, the string values of `CallsiteParameter` enum members. Pass a
+    mapping of ``{key: CallsiteParameter}`` instead of a plain collection to
+    use custom keys -- for example, to conform to a third-party log ingest
+    pipeline's expected field names.
 
     Args:
         parameters:
             A collection of `CallsiteParameter` values that should be added to
-            the event dictionary.
+            the event dictionary, or a mapping of the event dictionary key to
+            use for each `CallsiteParameter` value.
 
         additional_ignores:
             Additional names with which a stack frame's module name must not
@@ -867,6 +871,9 @@ class CallsiteParameterAdder:
         `structlog.stdlib.ProcessorFormatter`.
 
     .. versionadded:: 21.5.0
+    .. versionadded:: 26.2.0
+       *parameters* also accepts a mapping of custom event dictionary keys to
+       `CallsiteParameter` values.
     """
 
     _handlers: ClassVar[
@@ -907,7 +914,8 @@ class CallsiteParameterAdder:
 
     def __init__(
         self,
-        parameters: Collection[CallsiteParameter] = _all_parameters,
+        parameters: Collection[CallsiteParameter]
+        | Mapping[str, CallsiteParameter] = _all_parameters,
         additional_ignores: list[str] | None = None,
     ) -> None:
         if additional_ignores is None:
@@ -917,19 +925,25 @@ class CallsiteParameterAdder:
         # module should not be logging using structlog.
         self._additional_ignores = ["logging", *additional_ignores]
         self._active_handlers: list[
-            tuple[CallsiteParameter, Callable[[str, FrameType], Any]]
+            tuple[str, Callable[[str, FrameType], Any]]
         ] = []
         self._record_mappings: list[CallsiteParameterAdder._RecordMapping] = []
-        for parameter in parameters:
-            self._active_handlers.append(
-                (parameter, self._handlers[parameter])
-            )
+
+        if isinstance(parameters, Mapping):
+            items = list(parameters.items())
+        else:
+            # Default: each parameter is keyed by its own enum value, exactly
+            # as before -- fully backwards-compatible with a plain collection.
+            items = [(parameter.value, parameter) for parameter in parameters]
+
+        for key, parameter in items:
+            self._active_handlers.append((key, self._handlers[parameter]))
             if (
                 record_attr := self._record_attribute_map.get(parameter)
             ) is not None:
                 self._record_mappings.append(
                     self._RecordMapping(
-                        parameter.value,
+                        key,
                         record_attr,
                     )
                 )
@@ -953,8 +967,8 @@ class CallsiteParameterAdder:
         frame, module = _find_first_app_frame_and_name(
             additional_ignores=self._additional_ignores
         )
-        for parameter, handler in self._active_handlers:
-            event_dict[parameter.value] = handler(module, frame)
+        for key, handler in self._active_handlers:
+            event_dict[key] = handler(module, frame)
 
         return event_dict
 
