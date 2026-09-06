@@ -152,6 +152,51 @@ def _maybe_interpolate(event: str, args: tuple[Any, ...]) -> str:
     return event % args
 
 
+def _make_method(
+    min_level: int,
+    level: int,
+) -> tuple[Callable[..., Any], Callable[..., Any]]:
+    if level < min_level:
+        return _nop, _anop
+
+    name = LEVEL_TO_NAME[level]
+
+    def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+        return self._proxy_to_logger(
+            name, _maybe_interpolate(event, args), **kw
+        )
+
+    async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
+        """
+        .. versionchanged:: 23.3.0
+           Callsite parameters are now also collected under asyncio.
+        """
+        event = _maybe_interpolate(event, args)
+
+        # Capture thread-specific info before handing off to the executor.
+        thread_token = _ASYNC_CALLING_THREAD.set(
+            (threading.get_ident(), threading.current_thread().name)
+        )
+        scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
+        ctx = contextvars.copy_context()
+
+        try:
+            await asyncio.get_running_loop().run_in_executor(
+                None,
+                lambda: ctx.run(
+                    lambda: self._proxy_to_logger(name, event, **kw)
+                ),
+            )
+        finally:
+            _ASYNC_CALLING_STACK.reset(scs_token)
+            _ASYNC_CALLING_THREAD.reset(thread_token)
+
+    meth.__name__ = name
+    ameth.__name__ = f"a{name}"
+
+    return meth, ameth
+
+
 def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     """
     Create a new `FilteringBoundLogger` that only logs *min_level* or higher.
@@ -159,49 +204,6 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
     The logger is optimized such that log levels below *min_level* only consist
     of a ``return None``.
     """
-
-    def make_method(
-        level: int,
-    ) -> tuple[Callable[..., Any], Callable[..., Any]]:
-        if level < min_level:
-            return _nop, _anop
-
-        name = LEVEL_TO_NAME[level]
-
-        def meth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
-            return self._proxy_to_logger(
-                name, _maybe_interpolate(event, args), **kw
-            )
-
-        async def ameth(self: Any, event: str, *args: Any, **kw: Any) -> Any:
-            """
-            .. versionchanged:: 23.3.0
-               Callsite parameters are now also collected under asyncio.
-            """
-            event = _maybe_interpolate(event, args)
-
-            # Capture thread-specific info before handing off to the executor.
-            thread_token = _ASYNC_CALLING_THREAD.set(
-                (threading.get_ident(), threading.current_thread().name)
-            )
-            scs_token = _ASYNC_CALLING_STACK.set(sys._getframe().f_back)  # type: ignore[arg-type]
-            ctx = contextvars.copy_context()
-
-            try:
-                await asyncio.get_running_loop().run_in_executor(
-                    None,
-                    lambda: ctx.run(
-                        lambda: self._proxy_to_logger(name, event, **kw)
-                    ),
-                )
-            finally:
-                _ASYNC_CALLING_STACK.reset(scs_token)
-                _ASYNC_CALLING_THREAD.reset(thread_token)
-
-        meth.__name__ = name
-        ameth.__name__ = f"a{name}"
-
-        return meth, ameth
 
     def log(self: Any, level: int, event: str, *args: Any, **kw: Any) -> Any:
         if level < min_level:
@@ -246,7 +248,7 @@ def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]:
 
     meths: dict[str, Callable[..., Any]] = {"log": log, "alog": alog}
     for lvl, name in LEVEL_TO_NAME.items():
-        meths[name], meths[f"a{name}"] = make_method(lvl)
+        meths[name], meths[f"a{name}"] = _make_method(min_level, lvl)
 
     meths["exception"] = exception
     meths["aexception"] = aexception
@@ -284,3 +286,24 @@ LEVEL_TO_FILTERING_LOGGER = {
     DEBUG: BoundLoggerFilteringAtDebug,
     NOTSET: BoundLoggerFilteringAtNotset,
 }
+
+
+def add_new_custom_level_filtering(level_name: str, /) -> None:
+    level = NAME_TO_LEVEL[level_name]
+    for bound_logger in LEVEL_TO_FILTERING_LOGGER.values():
+        meth, ameth = _make_method(
+            bound_logger.get_effective_level(None),  # type: ignore[arg-type]
+            level,
+        )
+        setattr(bound_logger, level_name, meth)
+        setattr(bound_logger, f"a{level_name}", ameth)
+
+    LEVEL_TO_FILTERING_LOGGER[level] = _make_filtering_bound_logger(level)
+
+
+def remove_custom_level_filtering(level_name: str, /) -> None:
+    level = NAME_TO_LEVEL[level_name]
+    for bound_logger in LEVEL_TO_FILTERING_LOGGER.values():
+        delattr(bound_logger, level_name)
+        delattr(bound_logger, f"a{level_name}")
+    del LEVEL_TO_FILTERING_LOGGER[level]
