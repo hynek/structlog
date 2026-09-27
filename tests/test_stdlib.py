@@ -475,6 +475,26 @@ class TestPositionalArgumentsFormatter:
         assert "bar bar" == event_dict["event"]
         assert "positional_args" not in event_dict
 
+    def test_formats_single_entry_mapping(self):
+        """
+        Positional arguments that are already a mapping are rendered.
+
+        ProcessorFormatter's pass_foreign_args puts LogRecord.args into the
+        event dict and logging.LogRecord unwraps a single mapping argument, so
+        a one-item mapping has to work just like a tuple containing one.
+
+        Regression test for the KeyError that a one-item mapping caused.
+        """
+        formatter = PositionalArgumentsFormatter()
+        event_dict = formatter(
+            None,
+            None,
+            {"event": "hello %(foo)s", "positional_args": {"foo": "bar"}},
+        )
+
+        assert "hello bar" == event_dict["event"]
+        assert "positional_args" not in event_dict
+
     def test_positional_args_retained(self):
         """
         Positional arguments are retained if remove_positional_args

@@ -15,6 +15,8 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+- `structlog.stdlib.PositionalArgumentsFormatter` no longer raises a `KeyError` when `positional_args` is a single-entry mapping, as produced by `ProcessorFormatter` with `pass_foreign_args=True`.
+
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
