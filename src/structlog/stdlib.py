@@ -19,7 +19,7 @@ import sys
 import threading
 import warnings
 
-from collections.abc import Callable, Collection, Iterable, Sequence
+from collections.abc import Callable, Collection, Iterable, Mapping, Sequence
 from functools import partial
 from typing import Any, cast
 
@@ -774,7 +774,8 @@ class PositionalArgumentsFormatter:
     in the same way as the stdlib handles arguments to the various log
     methods: if the tuple contains only a single `dict` argument it is
     used for keyword placeholders in the ``event`` string, otherwise it
-    will be used for positional placeholders.
+    will be used for positional placeholders.  A ``positional_args`` that
+    already is a mapping is used for keyword placeholders as is.
 
     ``positional_args`` is populated by `structlog.stdlib.BoundLogger` or
     can be set manually.
@@ -797,9 +798,17 @@ class PositionalArgumentsFormatter:
         # Mimic the formatting behaviour of the stdlib's logging module, which
         # accepts both positional arguments and a single dict argument. The
         # "single dict" check is the same one as the stdlib's logging module
-        # performs in LogRecord.__init__().
+        # performs in LogRecord.__init__().  Arguments that already *are* a
+        # mapping -- as `ProcessorFormatter`'s *pass_foreign_args* produces,
+        # because `logging.LogRecord` unwraps single mapping arguments -- are
+        # used as they are.
         if args:
-            if len(args) == 1 and isinstance(args[0], dict) and args[0]:
+            if (
+                not isinstance(args, Mapping)
+                and len(args) == 1
+                and isinstance(args[0], dict)
+                and args[0]
+            ):
                 args = args[0]
 
             event_dict["event"] %= args
