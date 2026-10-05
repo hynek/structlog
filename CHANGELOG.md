@@ -15,6 +15,9 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Fixed
+
+- `structlog.stdlib.BoundLogger` now avoids double-rendering exception information when a processor has already rendered it, preventing duplicate traceback output for `exception` events.
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
