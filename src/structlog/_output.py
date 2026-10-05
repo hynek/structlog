@@ -374,3 +374,15 @@ class BytesLoggerFactory:
 
     def __call__(self, *args: Any) -> BytesLogger:
         return BytesLogger(self._file, name=args[0] if args else None)
+
+
+def add_new_custom_level_method(level_name: str, /) -> None:
+    """Register a new log level method."""
+    for logger_class in (BytesLogger, PrintLogger, WriteLogger):
+        setattr(logger_class, level_name, logger_class.msg)
+
+
+def remove_custom_level_method(level_name: str, /) -> None:
+    """Remove all registered log level methods."""
+    for logger_class in (BytesLogger, PrintLogger, WriteLogger):
+        delattr(logger_class, level_name)
