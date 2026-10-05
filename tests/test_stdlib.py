@@ -862,6 +862,34 @@ class TestRenderToLogArgsAndKwargs:
             extra=expected_extra,
         )
 
+    def test_drops_keys_colliding_with_log_record_attributes(
+        self, stdlib_logger: logging.Logger, caplog: pytest.LogCaptureFixture
+    ):
+        """
+        A key that collides with an attribute `logging.LogRecord` already
+        carries (for example "filename") is dropped from `extra` instead of
+        being passed through, because the standard library raises `KeyError`
+        when it's asked to overwrite it while building the record.
+
+        Cf. https://github.com/hynek/structlog/issues/486
+        """
+        event_dict = {
+            "event": "message",
+            "filename": "not-a-real-file.py",
+            "keep": "this",
+        }
+
+        args, kwargs = render_to_log_args_and_kwargs(
+            stdlib_logger, "info", event_dict
+        )
+
+        assert {"extra": {"keep": "this"}} == kwargs
+
+        with caplog.at_level(logging.INFO):
+            stdlib_logger.info(*args, **kwargs)
+
+        assert "this" == caplog.records[0].keep
+
     def test_integration(
         self, stdlib_logger: logging.Logger, event_dict: dict[str, Any]
     ):
@@ -978,6 +1006,41 @@ class TestRenderToLogKwargs:
         mock_log.assert_called_once_with(
             logging.INFO, "message", (), **expected
         )
+
+    def test_drops_keys_colliding_with_log_record_attributes(
+        self, stdlib_logger, caplog: pytest.LogCaptureFixture
+    ):
+        """
+        A key that collides with an attribute `logging.LogRecord` already
+        carries (for example "filename") is dropped from `extra` instead of
+        being passed through, because the standard library raises `KeyError`
+        when it's asked to overwrite it while building the record.
+
+        "message" collides too: it isn't on a fresh `LogRecord`, but the
+        standard library still special-cases and rejects it.
+
+        Cf. https://github.com/hynek/structlog/issues/486
+        """
+        d = render_to_log_kwargs(
+            None,
+            None,
+            {
+                "event": "message",
+                "filename": "not-a-real-file.py",
+                "message": "duplicate-of-msg",
+                "keep": "this",
+            },
+        )
+
+        assert {
+            "msg": "message",
+            "extra": {"keep": "this"},
+        } == d
+
+        with caplog.at_level(logging.INFO):
+            stdlib_logger.info(**d)
+
+        assert "this" == caplog.records[0].keep
 
     def test_integration_special_kw(self, event_dict, stdlib_logger):
         """
