@@ -841,6 +841,36 @@ class TestRichTracebackFormatter:
         if code_width_support:
             assert tb.code_width == 88
 
+    def test_old_rich_missing_locals_hide_params(self, sio, monkeypatch):
+        """
+        If the installed Rich version doesn't support the
+        locals_hide_dunder / locals_hide_sunder keyword arguments (added in
+        Rich 13.1.0), they are silently omitted from the call to
+        Traceback.from_exception() instead of raising a TypeError (#576).
+        """
+        from rich.traceback import Trace
+
+        monkeypatch.setattr(
+            dev,
+            "_RICH_TRACEBACK_FROM_EXCEPTION_PARAMS",
+            dev._RICH_TRACEBACK_FROM_EXCEPTION_PARAMS
+            - {"locals_hide_dunder", "locals_hide_sunder"},
+        )
+
+        tb = mock.Mock(spec=dev.Traceback(Trace([])))
+        tb.__rich_console__.return_value = "for Python 3.8 compatibility"
+
+        with mock.patch.object(
+            dev.Traceback, "from_exception", return_value=tb
+        ) as factory:
+            try:
+                0 / 0
+            except ZeroDivisionError:
+                dev.rich_traceback(sio, sys.exc_info())
+
+        assert "locals_hide_dunder" not in factory.call_args.kwargs
+        assert "locals_hide_sunder" not in factory.call_args.kwargs
+
 
 @pytest.mark.skipif(
     dev.better_exceptions is None, reason="Needs better-exceptions."
