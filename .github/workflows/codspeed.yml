@@ -44,8 +44,11 @@ jobs:
           run: uvx --with tox-uv tox run -e codspeed
 
   imports:
+    # Runs the exec benchmarks from codspeed.yml. Walltime needs CodSpeed's
+    # macro runners, which aren't available to personal accounts, so we
+    # measure simulated CPU work on a regular runner instead.
     name: Measure import times
-    runs-on: codspeed-macro
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -62,4 +65,4 @@ jobs:
       - name: Run import benchmarks
         uses: CodSpeedHQ/action@373d6868929f444bc08d901fd0eb0ad52a8875ea # v5.2.1
         with:
-          mode: walltime
+          mode: simulation
