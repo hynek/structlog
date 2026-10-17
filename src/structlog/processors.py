@@ -15,6 +15,7 @@ import json
 import logging
 import operator
 import os
+import re
 import sys
 import threading
 import time
@@ -119,6 +120,10 @@ class KeyValueRenderer:
         )
 
 
+# Newlines are escaped instead of quoted.
+_LOGFMT_NEEDS_QUOTES = re.compile(r'[\x00-\x09\x0b-\x20="]').search
+
+
 class LogfmtRenderer:
     """
     Render ``event_dict`` using the logfmt_ format.
@@ -180,9 +185,7 @@ class LogfmtRenderer:
                 value = "true" if value else "false"
 
             value = str(value)
-            backslashes_need_escaping = (
-                " " in value or "=" in value or '"' in value
-            )
+            backslashes_need_escaping = _LOGFMT_NEEDS_QUOTES(value) is not None
             if backslashes_need_escaping and "\\" in value:
                 value = value.replace("\\", "\\\\")
 

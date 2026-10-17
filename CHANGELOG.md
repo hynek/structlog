@@ -16,6 +16,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
 
+### Fixed
+
+- `structlog.processors.LogfmtRenderer` now quotes values that contain tabs, carriage returns, or other whitespace and control characters, instead of rendering them bare.
+  Previously, such a value was parsed back as several separate keys.
+  [#847](https://github.com/hynek/structlog/pull/847)
+
+
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
 ### Removed
