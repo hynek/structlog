@@ -19,6 +19,7 @@ See :doc:`contextvars`.
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import contextvars
 
@@ -43,6 +44,23 @@ _ASYNC_CALLING_STACK: contextvars.ContextVar[FrameType] = (
 _ASYNC_CALLING_THREAD: contextvars.ContextVar[tuple[int, str]] = (
     contextvars.ContextVar("_ASYNC_CALLING_THREAD")
 )
+
+_ASYNC_CALLING_TASK_NAME: contextvars.ContextVar[str | None] = (
+    contextvars.ContextVar("_ASYNC_CALLING_TASK_NAME", default=None)
+)
+
+
+def _get_current_task_name() -> str | None:
+    try:
+        task = asyncio.current_task()
+    except RuntimeError:
+        return None
+
+    if task is None:
+        return None
+
+    return task.get_name()
+
 
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
