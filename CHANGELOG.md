@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Added
+
+- `structlog.processors.CallsiteParameterAdder` now also accepts a mapping of `{event_dict_key: CallsiteParameter}` for *parameters*, to use custom event dictionary keys instead of the default `CallsiteParameter` values (e.g. to conform to a third-party log ingest pipeline's expected field names).
+  [#553](https://github.com/hynek/structlog/issues/553)
+
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 

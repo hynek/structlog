@@ -325,6 +325,57 @@ class TestCallsiteParameterAdder:
         }
         assert self.parameter_strings == self.get_callsite_parameters().keys()
 
+    def test_custom_keys_structlog_originated(self) -> None:
+        """
+        Passing a mapping instead of a plain collection uses the mapping's
+        keys as the event dict keys, for structlog-originated events.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={
+                "ln": CallsiteParameter.LINENO,
+                "fn": CallsiteParameter.FUNC_NAME,
+            }
+        )
+
+        event_dict = processor(None, None, {})
+
+        assert event_dict.keys() == {"ln", "fn"}
+        assert event_dict["fn"] == "test_custom_keys_structlog_originated"
+
+    def test_custom_keys_foreign_log_record(self) -> None:
+        """
+        Passing a mapping also uses its keys as the event dict keys when the
+        callsite parameters come from a foreign (stdlib logging) LogRecord.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={
+                "ln": CallsiteParameter.LINENO,
+                "fn": CallsiteParameter.FUNC_NAME,
+            }
+        )
+        record = logging.LogRecord(
+            "test", logging.INFO, "/path/foo.py", 42, "msg", None, None
+        )
+        record.funcName = "a_function"
+
+        event_dict = processor(
+            None,
+            None,
+            {"_record": record, "_from_structlog": False},
+        )
+
+        assert event_dict["ln"] == 42
+        assert event_dict["fn"] == "a_function"
+
+    def test_custom_keys_pickleable(self) -> None:
+        """
+        A ``CallsiteParameterAdder`` configured with a mapping of custom keys
+        can still be pickled.
+        """
+        pickle.dumps(
+            CallsiteParameterAdder(parameters={"ln": CallsiteParameter.LINENO})
+        )
+
     @pytest.mark.skipif(
         sys.version_info < (3, 11), reason="QUAL_NAME requires Python 3.11+"
     )
