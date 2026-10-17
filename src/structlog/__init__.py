@@ -6,6 +6,18 @@
 
 from __future__ import annotations
 
+
+__lazy_modules__ = [
+    "structlog",
+    "structlog._base",
+    "structlog._config",
+    "structlog._generic",
+    "structlog._native",
+    "structlog._output",
+    "structlog.exceptions",
+    "structlog.testing",
+]
+
 from structlog import (
     contextvars,
     dev,

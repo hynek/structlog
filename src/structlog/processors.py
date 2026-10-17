@@ -9,7 +9,10 @@ Processors useful regardless of the logging framework.
 
 from __future__ import annotations
 
-import datetime
+
+__lazy_modules__ = ["datetime", "logging", "threading"]
+
+import datetime as dt
 import enum
 import json
 import logging
@@ -523,19 +526,19 @@ def _make_stamper(
         msg = "UNIX timestamps are always UTC."
         raise ValueError(msg)
 
-    now: Callable[[], datetime.datetime]
+    now: Callable[[], dt.datetime]
 
     if utc:
 
-        def now() -> datetime.datetime:
-            return datetime.datetime.now(tz=datetime.timezone.utc)
+        def now() -> dt.datetime:
+            return dt.datetime.now(tz=dt.timezone.utc)
 
     else:
 
-        def now() -> datetime.datetime:
+        def now() -> dt.datetime:
             # We don't need the TZ for our own formatting. We add it only for
             # user-defined formats later.
-            return datetime.datetime.now()  # noqa: DTZ005
+            return dt.datetime.now()  # noqa: DTZ005
 
     if fmt is None:
 

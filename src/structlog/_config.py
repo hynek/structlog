@@ -9,6 +9,9 @@ Global state department.  Don't reload this module or everything breaks.
 
 from __future__ import annotations
 
+
+__lazy_modules__ = ["warnings"]
+
 import os
 import sys
 import warnings

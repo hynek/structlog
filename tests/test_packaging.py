@@ -3,6 +3,10 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+import json
+import subprocess
+import sys
+
 from importlib import metadata
 
 import pytest
@@ -47,3 +51,28 @@ class TestLegacyMetadataHack:
             AttributeError, match="module structlog has no attribute __yolo__"
         ):
             structlog.__yolo__
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 15), reason="PEP 810 lazy imports need Python 3.15+"
+)
+class TestLazyImports:
+    def test_import_does_not_load_asyncio(self):
+        """
+        Importing structlog in a fresh interpreter does not import asyncio,
+        because modules that are only needed when logging are imported lazily.
+        """
+        script = (
+            "import json, sys\n"
+            "before = set(sys.modules)\n"
+            "import structlog\n"
+            "print(json.dumps(sorted(set(sys.modules) - before)))\n"
+        )
+        out = subprocess.run(
+            [sys.executable, "-c", script],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+
+        assert "asyncio" not in json.loads(out)
