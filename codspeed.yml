@@ -1,0 +1,6 @@
+---
+$schema: https://raw.githubusercontent.com/CodSpeedHQ/codspeed/refs/heads/main/schemas/codspeed.schema.json
+
+benchmarks:
+  - name: import structlog
+    exec: python -I -c "import structlog"

@@ -2,11 +2,16 @@
 name: CodSpeed Benchmarks
 
 on:
-  pull_request:
-    paths:
+  push:
+    # Baseline performance to compare against in PRs.
+    branches: [main]
+    paths: &codspeed_paths
       - src/**.py
       - bench/**
+      - codspeed.yml
       - .github/workflows/codspeed.yml
+  pull_request:
+    paths: *codspeed_paths
   workflow_dispatch:
 
 concurrency:
@@ -37,3 +42,27 @@ jobs:
         with:
           mode: simulation
           run: uvx --with tox-uv tox run -e codspeed
+
+  imports:
+    # Runs the exec benchmarks from codspeed.yml. Walltime needs CodSpeed's
+    # macro runners, which aren't available to personal accounts, so we
+    # measure simulated CPU work on a regular runner instead.
+    name: Measure import times
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: .python-version-default
+      - uses: hynek/setup-cached-uv@34e35d30f1ebc7421a5cc733bca38dcc62603960 # v2.6.0
+
+      - name: Install structlog
+        run: uv pip install --system --compile-bytecode .
+
+      - name: Run import benchmarks
+        uses: CodSpeedHQ/action@373d6868929f444bc08d901fd0eb0ad52a8875ea # v5.2.1
+        with:
+          mode: simulation
