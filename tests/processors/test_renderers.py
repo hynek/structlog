@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 import pickle
 
@@ -331,7 +331,7 @@ class TestJSONRenderer:
         The fallback handler uses repr if it doesn't know the type.
         """
         s = json.dumps(
-            {"date": datetime.date(1980, 3, 25)},
+            {"date": dt.date(1980, 3, 25)},
             default=_json_fallback_handler,
         )
 
@@ -351,7 +351,7 @@ class TestJSONRenderer:
         A custom fallback handler can be used.
         """
         jr = JSONRenderer(default=lambda x: repr(x)[::-1])
-        d = {"date": datetime.date(1980, 3, 25)}
+        d = {"date": dt.date(1980, 3, 25)}
 
         assert '{"date": ")52 ,3 ,0891(etad.emitetad"}' == jr(None, None, d)
 
@@ -411,7 +411,7 @@ class TestTimeStamper:
         assert "1980" == d["timestamp"]
 
     @time_machine.travel(
-        datetime.datetime(1980, 3, 25, 16, 0, 0, tzinfo=datetime.timezone.utc)
+        dt.datetime(1980, 3, 25, 16, 0, 0, tzinfo=dt.timezone.utc)
     )
     def test_inserts_formatted_utc(self):
         """
@@ -428,7 +428,7 @@ class TestTimeStamper:
         """
         The fmt string in local timezone works.
         """
-        local_tz = datetime.datetime.now().astimezone().tzname()
+        local_tz = dt.datetime.now().astimezone().tzname()
         ts = TimeStamper(fmt="%Y-%m-%d %H:%M:%S %Z", utc=False)
         d = ts(None, None, {})
 
@@ -442,11 +442,11 @@ class TestTimeStamper:
         ts = TimeStamper(fmt="%z")
         d = ts(None, None, {})
 
-        assert "" == datetime.datetime.now().strftime("%z")  # noqa: DTZ005
+        assert "" == dt.datetime.now().strftime("%z")  # noqa: DTZ005
         assert "" != d["timestamp"]
 
     @time_machine.travel(
-        datetime.datetime(1980, 3, 25, 16, 0, 0, tzinfo=datetime.timezone.utc)
+        dt.datetime(1980, 3, 25, 16, 0, 0, tzinfo=dt.timezone.utc)
     )
     def test_adds_Z_to_iso(self):
         """

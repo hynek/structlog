@@ -14,6 +14,9 @@ See `thread-local`, but please use :doc:`contextvars` instead.
 
 from __future__ import annotations
 
+
+__lazy_modules__ = ["uuid", "warnings"]
+
 import contextlib
 import sys
 import threading

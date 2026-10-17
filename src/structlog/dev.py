@@ -11,6 +11,9 @@ See also the narrative documentation in `console-output`.
 
 from __future__ import annotations
 
+
+__lazy_modules__ = ["warnings"]
+
 import sys
 import warnings
 

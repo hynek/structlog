@@ -9,6 +9,9 @@ Logger classes responsible for output.
 
 from __future__ import annotations
 
+
+__lazy_modules__ = ["copy", "pickle", "threading"]
+
 import copy
 import sys
 import threading

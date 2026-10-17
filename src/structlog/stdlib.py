@@ -11,6 +11,9 @@ See also :doc:`structlog's standard library support <standard-library>`.
 
 from __future__ import annotations
 
+
+__lazy_modules__ = ["asyncio", "threading", "warnings"]
+
 import asyncio
 import contextvars
 import functools

@@ -14,6 +14,9 @@ Based on work by Will McGugan
 
 from __future__ import annotations
 
+
+__lazy_modules__ = ["traceback"]
+
 import os
 import os.path
 import sys
