@@ -21,6 +21,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This makes `import structlog` significantly faster.
 
 
+### Fixed
+
+- `structlog.stdlib.ExtraAdder` no longer copies `message` and `asctime` into the event dict.
+  `logging.Formatter.format()` sets both on the `LogRecord`, so they leaked in as extras whenever another handler formatted the record first.
+
+
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
 ### Removed
