@@ -667,6 +667,26 @@ class TestExtraAdder:
 
         assert {} == actual
 
+    def test_ignores_attributes_set_by_formatter(
+        self,
+        make_log_record: Callable[[], logging.LogRecord],
+        extra_dict: dict[str, Any],
+    ):
+        """
+        `message` and `asctime` are set on the record by
+        `logging.Formatter.format()` -- for example when another handler
+        formats it first. They are not extras and are not copied.
+        """
+        record = make_log_record()
+        record.__dict__.update(extra_dict)
+        logging.Formatter("%(asctime)s %(message)s").format(record)
+
+        actual = ExtraAdder()(None, None, {"_record": record})
+
+        assert "message" not in actual
+        assert "asctime" not in actual
+        assert extra_dict.items() <= actual.items()
+
     @pytest.mark.parametrize(
         ("allow", "misses"),
         [
