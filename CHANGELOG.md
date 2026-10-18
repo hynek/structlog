@@ -25,6 +25,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.stdlib.ExtraAdder` no longer copies `message` and `asctime` into the event dict.
   `logging.Formatter.format()` sets both on the `LogRecord`, so they leaked in as extras whenever another handler formatted the record first.
+  [#850](https://github.com/hynek/structlog/pull/850)
 
 
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
