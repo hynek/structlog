@@ -18,6 +18,7 @@ import json
 import logging
 import operator
 import os
+import re
 import sys
 import threading
 import time
@@ -122,6 +123,20 @@ class KeyValueRenderer:
         )
 
 
+# Newlines are escaped instead of quoted.
+_LOGFMT_NEEDS_QUOTES = re.compile(r'[\x00-\x09\x0b-\x20="]').search
+
+# Parsers like go-logfmt reject raw control characters in a quoted value that
+# has any escape in it, so they are escaped too.
+_LOGFMT_ESCAPES = {
+    **{c: f"\\u{c:04x}" for c in range(0x20)},
+    ord('"'): '\\"',
+    ord("\n"): "\\n",
+    ord("\r"): "\\r",
+    ord("\t"): "\\t",
+}
+
+
 class LogfmtRenderer:
     """
     Render ``event_dict`` using the logfmt_ format.
@@ -183,13 +198,11 @@ class LogfmtRenderer:
                 value = "true" if value else "false"
 
             value = str(value)
-            backslashes_need_escaping = (
-                " " in value or "=" in value or '"' in value
-            )
+            backslashes_need_escaping = _LOGFMT_NEEDS_QUOTES(value) is not None
             if backslashes_need_escaping and "\\" in value:
                 value = value.replace("\\", "\\\\")
 
-            value = value.replace('"', '\\"').replace("\n", "\\n")
+            value = value.translate(_LOGFMT_ESCAPES)
 
             if backslashes_need_escaping:
                 value = f'"{value}"'
