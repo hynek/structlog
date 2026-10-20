@@ -20,6 +20,7 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 - `structlog.processors.LogfmtRenderer` now quotes values that contain tabs, carriage returns, or other whitespace and control characters, instead of rendering them bare.
   Previously, such a value was parsed back as several separate keys.
+  Control characters inside the quotes are escaped as `\t`, `\r`, or `\u00XX`.
   [#847](https://github.com/hynek/structlog/pull/847)
 
 

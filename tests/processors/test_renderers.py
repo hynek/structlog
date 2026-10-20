@@ -282,8 +282,11 @@ class TestLogfmtRenderer:
             # A quote requires quoting, and escaping the quote.
             ('a"quote', r'"a\"quote"'),
             # Whitespace other than a space requires quoting too.
-            ("a\tb", '"a\tb"'),
-            ("a\rb", '"a\rb"'),
+            ("a\tb", r'"a\tb"'),
+            ("a\rb", r'"a\rb"'),
+            # Quoted values must not contain raw control characters.
+            ("a\tb\nc", r'"a\tb\nc"'),
+            ("a\x01b", r'"a\u0001b"'),
             # If anything triggers quoting of the string, then the slash must
             # be escaped.
             (
