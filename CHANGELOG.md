@@ -15,6 +15,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Fixed
+
+- `structlog.bind_contextvars()` is now thread-safe when multiple threads bind a new key at the same time.
+  Previously, each racing thread created its own `contextvars.ContextVar` and all but one were orphaned (leaked).
+  Worse, threads that had bound on an orphaned var then failed in `structlog.reset_contextvars()` with `ValueError` ("Token was created by a different ContextVar").
+  [#851](https://github.com/hynek/structlog/issues/851)
+
 ### Changed
 
 - On Python 3.15 and later, *structlog* uses [PEP 810](https://peps.python.org/pep-0810/) lazy imports for modules that are only needed once you log.
