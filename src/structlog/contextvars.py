@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import contextlib
 import contextvars
+import threading
 
 from collections.abc import Generator, Mapping
 from types import FrameType
@@ -48,6 +49,14 @@ _ASYNC_CALLING_THREAD: contextvars.ContextVar[tuple[int, str]] = (
 # single ContextVar with a dict.
 # See https://github.com/hynek/structlog/pull/302 for details.
 _CONTEXT_VARS: dict[str, contextvars.ContextVar[Any]] = {}
+
+# Guards lazy creation of entries in _CONTEXT_VARS: without it, two threads
+# binding a new key at the same time each create their own ContextVar and one
+# of them is orphaned (leaked). Worse, the orphaned var is the one the losing
+# thread set its value & token on, so a later reset_contextvars() raises
+# ValueError ("Token was created by a different ContextVar").
+# See https://github.com/hynek/structlog/issues/851
+_CONTEXT_VARS_LOCK = threading.Lock()
 
 
 def get_contextvars() -> dict[str, Any]:
@@ -130,6 +139,11 @@ def bind_contextvars(**kw: Any) -> Mapping[str, contextvars.Token[Any]]:
     .. versionadded:: 20.1.0
     .. versionchanged:: 21.1.0 Return the `contextvars.Token` mapping
         rather than None. See also the toplevel note.
+    .. versionchanged:: 26.2.0
+        Creating the backing `contextvars.ContextVar` for a new key is now
+        thread-safe: concurrent first binds of the same key can no longer
+        orphan duplicate vars (which leaked and broke later
+        `reset_contextvars()` calls with `ValueError`).
     """
     rv = {}
     for k, v in kw.items():
@@ -137,8 +151,13 @@ def bind_contextvars(**kw: Any) -> Mapping[str, contextvars.Token[Any]]:
         try:
             var = _CONTEXT_VARS[structlog_k]
         except KeyError:
-            var = contextvars.ContextVar(structlog_k, default=Ellipsis)
-            _CONTEXT_VARS[structlog_k] = var
+            with _CONTEXT_VARS_LOCK:
+                # Re-check: another thread may have created it while we
+                # waited for the lock.
+                var = _CONTEXT_VARS.get(structlog_k)
+                if var is None:
+                    var = contextvars.ContextVar(structlog_k, default=Ellipsis)
+                    _CONTEXT_VARS[structlog_k] = var
 
         rv[k] = var.set(v)
 
