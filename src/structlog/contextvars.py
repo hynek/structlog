@@ -148,6 +148,10 @@ def bind_contextvars(**kw: Any) -> Mapping[str, contextvars.Token[Any]]:
     rv = {}
     for k, v in kw.items():
         structlog_k = f"{STRUCTLOG_KEY_PREFIX}{k}"
+        # Optional: the slow path (new key) may assign None before the
+        # double-checked creation below. Keep the fast path (hit) unchanged:
+        # one dict lookup, no lock.
+        var: contextvars.ContextVar[Any] | None
         try:
             var = _CONTEXT_VARS[structlog_k]
         except KeyError:
