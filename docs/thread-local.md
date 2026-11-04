@@ -131,6 +131,7 @@ The convenience of having a thread-local context comes at a price though:
 :::{warning}
 - If you can't rule out that your application reuses threads, you *must* remember to **initialize your thread-local context** at the start of each request using {func}`~structlog.BoundLogger.new` (instead of {func}`~structlog.BoundLogger.bind`).
   Otherwise you may start a new request with the context still filled with data from the request before.
+  `new()` only clears the thread-local dict of the current thread; initial values passed to {func}`structlog.get_logger` or {func}`structlog.wrap_logger` are not removed -- use {func}`~structlog.BoundLogger.unbind` for those.
 
 - **Don't** stop assigning the results of your `bind()`s and `new()`s!
 

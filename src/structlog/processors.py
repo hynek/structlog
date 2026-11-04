@@ -88,6 +88,17 @@ class KeyValueRenderer:
         repr_native_str:
             When ``True``, :func:`repr()` is also applied to native strings.
 
+    .. note::
+
+        Like all processors, this renderer is allowed to modify *event_dict*
+        in-place: the *key_order* branches pop the keys they consume.
+        It is therefore intended to be the last processor in the chain.
+
+    .. note::
+
+        *drop_missing* treats a missing key and a key whose value is ``None``
+        identically -- both are dropped.
+
     .. versionadded:: 0.2.0 *key_order*
     .. versionadded:: 16.1.0 *drop_missing*
     .. versionadded:: 17.1.0 *repr_native_str*
@@ -147,6 +158,17 @@ class LogfmtRenderer:
 
     Raises:
         ValueError: If a key contains non-printable or whitespace characters.
+
+    .. note::
+
+        Like all processors, this renderer is allowed to modify *event_dict*
+        in-place: the *key_order* branches pop the keys they consume.
+        It is therefore intended to be the last processor in the chain.
+
+    .. note::
+
+        *drop_missing* treats a missing key and a key whose value is ``None``
+        identically -- both are dropped.
 
     .. versionadded:: 21.5.0
     """
