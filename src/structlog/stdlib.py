@@ -882,9 +882,12 @@ def add_logger_name(
     return event_dict
 
 
+# `message` and `asctime` aren't on a fresh `LogRecord`, but
+# `logging.Formatter.format()` sets them on the record and `makeRecord()`
+# refuses them in `extra`, so they're never user-provided.
 _LOG_RECORD_KEYS = logging.LogRecord(
     "name", 0, "pathname", 0, "msg", (), None
-).__dict__.keys()
+).__dict__.keys() | {"message", "asctime"}
 
 
 class ExtraAdder:
@@ -905,6 +908,9 @@ class ExtraAdder:
             copied to event dictionaries.
 
     .. versionadded:: 21.5.0
+    .. versionchanged:: 26.2.0
+       ``message`` and ``asctime`` -- which `logging.Formatter` sets on the
+       record -- are not treated as extras anymore.
     """
 
     __slots__ = ("_copier",)
