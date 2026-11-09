@@ -254,6 +254,17 @@ class TestStackInfoRenderer:
 
         assert 'ed = sir(None, None, {"stack_info": True})' in ed["stack"]
 
+    def test_preserves_preformatted_stack(self, sir):
+        """
+        If `stack_info` is already a formatted string (e.g. from a foreign
+        `logging.LogRecord`), it is preserved as `stack`.
+        """
+        sinfo = "Stack (most recent call last):\n  File 'app.py', line 1"
+        ed = sir(None, None, {"stack_info": sinfo})
+
+        assert sinfo == ed["stack"]
+        assert "stack_info" not in ed
+
     def test_additional_ignores(self):
         """
         Filtering of names works.
