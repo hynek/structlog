@@ -166,6 +166,15 @@ class TestNativeFilteringLogger:
 
         assert "answer is 42." == cl.calls[0][2]["event"]
 
+    def test_log_interp_empty_dict(self, bl, cl):
+        """
+        An empty mapping as the sole argument is still used for dict-based
+        interpolation and does not crash.
+        """
+        bl.info("no placeholders here", {})
+
+        assert "no placeholders here" == cl.calls[0][2]["event"]
+
     async def test_alog_interp(self, bl, cl):
         """
         Interpolation happens if args are passed.

@@ -145,11 +145,7 @@ def _maybe_interpolate(event: str, args: tuple[Any, ...]) -> str:
     if not args:
         return event
 
-    if (
-        len(args) == 1
-        and isinstance(args[0], collections.abc.Mapping)
-        and args[0]
-    ):
+    if len(args) == 1 and isinstance(args[0], collections.abc.Mapping):
         return event % args[0]
 
     return event % args
