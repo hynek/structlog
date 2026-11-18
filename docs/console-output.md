@@ -60,7 +60,7 @@ But if you set one of the non-*columns* properties, the columns will be reconfig
 
 The easier way where you're mostly using our defaults and just tweak a few things here and there by passing arguments or setting properties (as of 25.5.0).
 
-For example, you can easily change the colors of the the log levels by passing the *level_styles*[^styles] parameter or switch *colors* on and off completely.
+For example, you can easily change the colors of the log levels by passing the *level_styles*[^styles] parameter or switch *colors* on and off completely.
 
 [^styles]: When the API talks about "styles", it means ANSI control strings.
 You can find them, for example, in [Colorama](https://github.com/tartley/colorama).
