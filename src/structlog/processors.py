@@ -292,7 +292,7 @@ class UnicodeDecoder:
 
         errors: How to cope with encoding errors (default: ``"replace"``).
 
-    Useful to prevent ``b"abc"`` being rendered as as ``'b"abc"'``.
+    Useful to prevent ``b"abc"`` being rendered as ``'b"abc"'``.
 
     Just put it in the processor chain before the renderer.
 

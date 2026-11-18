@@ -41,7 +41,7 @@ LEVEL_TO_NAME = {
     if k not in ("warn", "exception", "notset")
 }
 
-# Keep around for backwards-compatability in case someone imported them.
+# Keep around for backwards-compatibility in case someone imported them.
 _LEVEL_TO_NAME = LEVEL_TO_NAME
 _NAME_TO_LEVEL = NAME_TO_LEVEL
 
