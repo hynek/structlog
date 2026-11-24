@@ -762,3 +762,10 @@ class TestRenameKey:
         assert {"msg": "hi", "foo": "bar"} == EventRenamer("msg", "missing")(
             None, None, {"event": "hi", "foo": "bar"}
         )
+
+
+def test_stack_info_renderer_preserves_prerendered_str():
+    renderer = structlog.processors.StackInfoRenderer()
+    ed = renderer(None, "info", {"event": "hi", "stack_info": "Stack (most recent call last):\n  File \"app.py\", line 10"})
+    assert ed["stack"] == "Stack (most recent call last):\n  File \"app.py\", line 10"
+    assert "stack_info" not in ed
