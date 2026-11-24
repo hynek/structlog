@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import functools
 import inspect
 import json
@@ -21,7 +22,7 @@ import pytest
 import structlog
 
 from structlog import BoundLogger
-from structlog._utils import get_processname
+from structlog._utils import get_processname, get_taskname
 from structlog.processors import (
     CallsiteParameter,
     CallsiteParameterAdder,
@@ -301,6 +302,7 @@ class TestCallsiteParameterAdder:
         "thread_name",
         "process",
         "process_name",
+        "task_name",
     }
 
     # Exclude QUAL_NAME and QUAL_MODULE from the general set to keep parity with
@@ -353,6 +355,71 @@ class TestCallsiteParameterAdder:
         actual = processor(None, None, event_dict)
 
         assert "tests.processors.test_processors" == actual["qual_module"]
+
+    @pytest.mark.asyncio
+    async def test_task_name_structlog(self) -> None:
+        """
+        TASK_NAME is the name of the running asyncio task for
+        structlog-originated events.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+
+        async def _process_in_task():
+            return processor(None, None, {"event": "msg"})
+
+        task = asyncio.create_task(_process_in_task())
+        task.set_name("test-task")
+
+        assert "test-task" == (await task)["task_name"]
+
+        # The test itself runs in a task, too.
+        actual = processor(None, None, {"event": "msg"})
+
+        assert asyncio.current_task().get_name() == actual["task_name"]
+
+    def test_task_name_logging_origin(self) -> None:
+        """
+        TASK_NAME is taken from LogRecord.taskName for stdlib-originated
+        events, and is None if the record has no taskName attribute (as on
+        Python < 3.12).
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            __file__,
+            0,
+            "message",
+            None,
+            None,
+            "func",
+        )
+        record.taskName = "foreign-task"
+        event_dict: EventDict = {
+            "event": "message",
+            "_record": record,
+            "_from_structlog": False,
+        }
+        actual = processor(None, None, event_dict)
+
+        assert "foreign-task" == actual["task_name"]
+
+        del record.taskName
+        actual = processor(
+            None,
+            None,
+            {
+                "event": "message",
+                "_record": record,
+                "_from_structlog": False,
+            },
+        )
+
+        assert actual["task_name"] is None
 
     def test_qual_name_logging_origin_absent(self) -> None:
         """
@@ -421,8 +488,10 @@ class TestCallsiteParameterAdder:
         assert expected_thread == logger_params["thread"]
         assert expected_thread_name == logger_params["thread_name"]
 
-        # Remove thread info from comparison for remaining params
-        for key in ["thread", "thread_name"]:
+        # Remove thread info from comparison for remaining params. Task
+        # info is removed, too: the async bridge runs the processors off
+        # the event loop task, so no task name is available there.
+        for key in ["thread", "thread_name", "task_name"]:
             callsite_params.pop(key)
             logger_params.pop(key)
 
@@ -731,6 +800,7 @@ class TestCallsiteParameterAdder:
             "thread_name": threading.current_thread().name,
             "process": os.getpid(),
             "process_name": get_processname(),
+            "task_name": get_taskname(),
         }
 
 
