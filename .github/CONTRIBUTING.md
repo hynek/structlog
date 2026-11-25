@@ -64,18 +64,16 @@ Finally, **clone** it using one of the alternatives that you can copy-paste by p
 You can (and should) run our test suite using [*tox*](https://tox.wiki/) (and keep in mind that `tox run-parallel` is about 5x faster than `tox run`).
 However, you'll probably want a more traditional environment as well.
 
-We recommend using the Python version from the `.python-version-default` file in the project's root directory, because that's the one that is used in the CI by default, too.
+We recommend using the Python version from the `.python-version` file in the project's root directory, because that's the one that is used in the CI by default, too.
 
-If you're using [*direnv*](https://direnv.net), you can automate the creation of the project virtual environment with the correct Python version by adding the following `.envrc` to the project root:
+We use a fully-locked development environment based on [*uv*](https://docs.astral.sh/uv/) and a checked-in `uv.lock`, so the easiest way to get started is to [install *uv*] and run `uv run pytest` to run the tests immediately.
 
-```bash
-layout python python$(cat .python-version-default)
-```
+If you'd like a traditional virtual environment, run `uv sync` and it will create one named `.venv` with the correct Python version and all the dependencies installed – including *tox*.
 
-or, if you like [*uv*](https://github.com/astral-sh/uv):
+If you're using [*direnv*](https://direnv.net), you can automate the creation and activation of the project's virtual environment with the correct Python version by adding the following `.envrc` to the project root:
 
 ```bash
-test -d .venv || (uv venv --python $(cat .python-version-default) && uv pip install -e . --group dev)
+uv sync
 . .venv/bin/activate
 ```
 
@@ -84,18 +82,6 @@ test -d .venv || (uv venv --python $(cat .python-version-default) && uv pip inst
 > - **Always create a new branch off `main` for each new pull request.**
 >   Yes, you can work on `main` in your fork and submit pull requests.
 >   But this will *inevitably* lead to you not being able to synchronize your fork with upstream and having to start over.
-
-Change into the newly created directory and after activating a virtual environment, install an editable version of this project along with its tests requirements:
-
-```console
-$ pip install -e . --group dev  # or `uv pip install -e . --group dev`
-```
-
-Now you can run the test suite:
-
-```console
-$ python -Im pytest
-```
 
 When working on the documentation, use:
 
@@ -149,7 +135,7 @@ $ tox run -e docs-doctests
   We follow CalVer, so the next version will be the current with with the middle number incremented (for example, `24.1.0` -> `24.2.0`).
 
 - We use [Ruff](https://ruff.rs/) to sort our imports and format our code with a line length of 79 characters.
-  As long as you run our full *tox* suite before committing, or install our [*pre-commit*](https://pre-commit.com/) hooks (ideally you'll do both -- see [*Local Development Environment*](#local-development-environment) above), you won't have to spend any time on formatting your code at all.
+  As long as you run our full *tox* suite before committing, you won't have to spend any time on formatting your code at all.
   If you don't, CI will catch it for you -- but that seems like a waste of your time!
 
 
@@ -254,3 +240,4 @@ Please report any harm to [Hynek Schlawack](https://hynek.me/about/) in any way 
 
 [semantic newlines]: https://rhodesmill.org/brandon/2012/one-sentence-per-line/
 [llm]: https://github.com/hynek/structlog/blob/main/.github/AI_POLICY.md
+[install *uv*]: https://docs.astral.sh/uv/getting-started/installation/

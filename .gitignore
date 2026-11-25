@@ -10,7 +10,6 @@
 .tox
 .vscode
 .idea
-benchmarks
 build
 dist
 docs/_build
