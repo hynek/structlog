@@ -11,8 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PIP_DISABLE_PIP_VERSION_CHECK: 1
-  PIP_NO_PYTHON_VERSION_WARNING: 1
+  UV_LOCKED: "1" # Crash loudly on uv.lock vs pyproject.toml inconsistencies
 
 permissions: {}
 
@@ -27,11 +26,10 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version: "3.12"
+          python-version-file: .python-version
+      - uses: hynek/setup-cached-uv@v2.6.0
 
-      - run: pip install tox
-
-      - run: tox run -e docset
+      - run: uv run --only-group tox tox run -e docset
       - run: tar --exclude='.DS_Store' -cvzf structlog.tgz structlog.docset
 
       - uses: actions/upload-artifact@v7.0.2

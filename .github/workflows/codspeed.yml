@@ -19,6 +19,7 @@ concurrency:
 
 env:
   FORCE_COLOR: "1"
+  UV_LOCKED: "1" # Crash loudly on uv.lock vs pyproject.toml inconsistencies
 
 permissions: {}
 
@@ -33,14 +34,14 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
       - name: Run CodSpeed benchmarks
         uses: CodSpeedHQ/action@v5.8.0
         with:
           mode: simulation
-          run: uvx --with tox-uv tox run -e codspeed
+          run: uv run --only-group tox tox run -e codspeed
 
   imports:
     # Runs the exec benchmarks from codspeed.yml. Walltime needs CodSpeed's
@@ -55,7 +56,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
       - name: Install structlog

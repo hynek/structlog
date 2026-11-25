@@ -9,8 +9,7 @@ on:
 
 env:
   FORCE_COLOR: "1" # Make tools pretty.
-  PIP_DISABLE_PIP_VERSION_CHECK: "1"
-  PIP_NO_PYTHON_VERSION_WARNING: "1"
+  UV_LOCKED: "1" # Crash loudly on uv.lock vs pyproject.toml inconsistencies
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -68,7 +67,8 @@ jobs:
 
       - name: Run tests
         run: >
-          uvx --with tox-uv tox run
+          uv run --only-group tox
+          tox run
           --installpkg dist/*.whl
           -f ${PYTHON}-tests
 
@@ -82,7 +82,8 @@ jobs:
 
       - name: Check public API with Mypy
         run: >
-          uvx --with tox-uv tox run
+          uv run --only-group tox
+          tox run
           --installpkg dist/*.whl
           -e ${PYTHON}-mypy
 
@@ -98,7 +99,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
       - name: Download coverage data
@@ -109,16 +110,14 @@ jobs:
 
       - name: Combine coverage and fail if it's <100%.
         run: |
-          uv tool install coverage
-
-          coverage combine
-          coverage html --skip-covered --skip-empty
+          uv run --only-group cov coverage combine
+          uv run --only-group cov coverage html --skip-covered --skip-empty
 
           # Report and write to summary.
-          coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
+          uv run --only-group cov coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
 
           # Report again and fail if under 100%.
-          coverage report --fail-under=100
+          uv run --only-group cov coverage report --fail-under=100
 
       - name: Upload HTML report if check failed.
         uses: actions/upload-artifact@v7.0.2
@@ -141,11 +140,11 @@ jobs:
       - run: tar xf dist/*.tar.gz --strip-components=1
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
       - run: >
-          uvx --with tox-uv
+          uv run --only-group tox
           tox run -f typing
 
   docs:
@@ -161,12 +160,29 @@ jobs:
       - run: tar xf dist/*.tar.gz --strip-components=1
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
       - run: >
-          uvx --with tox-uv
+          uv run --only-group tox
           tox run -e docs-doctests
+
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version-file: .python-version
+      - uses: hynek/setup-cached-uv@v2.6.0
+
+      - run: >
+          uv run --only-group tox
+          tox run -f lint
 
   install-dev:
     name: Verify dev env
@@ -181,11 +197,10 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
-      - run: uv venv
-      - run: uv pip install -e . --group dev
+      - run: uv sync
 
       - run: .venv/bin/python -Ic 'import structlog; print(structlog.__version__)'
         if: runner.os != 'Windows'
@@ -193,7 +208,7 @@ jobs:
         if: runner.os == 'Windows'
 
       # Exercise the terminal initialization that we don't test otherwise.
-      - run: uv pip install colorama
+      - run: uv sync --group colorama
         if: runner.os == 'Windows'
       - run: .\.venv\Scripts\python.exe -Ic 'import structlog; log = structlog.get_logger(); log.info("colors"); structlog.dev.ConsoleRenderer.get_active().colors = False; log.info("bw")'
         if: runner.os == 'Windows'
@@ -205,6 +220,7 @@ jobs:
     needs:
       - coverage
       - install-dev
+      - lint
       - typing
       - docs
 
@@ -227,10 +243,10 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7.1.0
         with:
-          python-version-file: .python-version-default
+          python-version-file: .python-version
       - uses: hynek/setup-cached-uv@v2.6.0
 
       - run: >
-          uvx --with=tox-uv
+          uv run --only-group tox
           tox run
           -f color

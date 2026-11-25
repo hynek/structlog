@@ -46,11 +46,22 @@ tests = [
     "simplejson",
     "time-machine>=2.14.1",
 ]
+cov = [{ include-group = "tests" }, "coverage[toml]"]
+# Optional packages that structlog integrates with and that get their own
+# test runs.
+colorama = ["colorama"]
+better-exceptions = ["better-exceptions"]
+rich = ["rich"]
+twisted = ["twisted"]
 # Need Twisted & Rich for stubs.
-# Otherwise mypy fails in tox.
-typing = ["mypy>=1.4", "rich", "twisted"]
+# Otherwise type checkers fail in tox.
+typing = [{ include-group = "rich" }, { include-group = "twisted" }]
+mypy = [{ include-group = "typing" }, "mypy>=1.4"]
+pyright = [{ include-group = "typing" }, "pyright"]
+ty = [{ include-group = "typing" }, "ty"]
+pyrefly = [{ include-group = "typing" }, "pyrefly"]
 benchmark = [
-    {include-group = "tests"},
+    { include-group = "tests" },
     "pytest-codspeed",
     "pytest-xdist[psutil]",
 ]
@@ -66,10 +77,24 @@ docs = [
     "sphinxext-opengraph",
     "twisted",
 ]
+docs-watch = [{ include-group = "docs" }, "watchfiles"]
+docset = [{ include-group = "docs" }, "doc2dash"]
+sponsors = ["cogapp"]
+lint = ["prek", "ruff"]
+tox = ["tox>=4.51.1", "tox-uv-bare"]
 dev = [
-    {include-group = "tests"},
-    {include-group = "typing"},
+    { include-group = "cov" },
+    { include-group = "mypy" },
+    { include-group = "ty" },
+    { include-group = "pyrefly" },
+    { include-group = "lint" },
+    { include-group = "tox" },
 ]
+
+
+[tool.uv]
+# Dependency cooldown
+exclude-newer = "1 week"
 
 
 [tool.hatch.version]
@@ -195,7 +220,7 @@ ignore_errors = true
 # Analyze everything for LSP, but only complain about typing examples.
 [[tool.ty.overrides]]
 rules.all = "ignore"
-include = ["src", "tests", "bench"]
+include = ["src", "tests", "benchmarks"]
 
 
 [tool.pyrefly]
