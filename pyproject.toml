@@ -319,8 +319,3 @@ img = "FilePreviews.svg"
 title = "TestMu AI"
 url = "https://www.testmuai.com/?utm_medium=sponsor&utm_source=structlog"
 img = "TestMu-AI.svg"
-
-[[tool.sponcon.sponsors]]
-title = "Polar"
-url = "https://polar.sh/"
-img = "Polar.svg"
