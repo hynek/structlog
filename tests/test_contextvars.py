@@ -240,6 +240,80 @@ class TestContextvars:
 
         assert {"x": 1, "y": 2} == get_merged_contextvars(log)
 
+    def test_concurrent_first_bind_creates_single_var(self, monkeypatch):
+        """
+        Concurrent first binds of the same key create exactly one
+        ContextVar.
+
+        Regression test for #851: without the creation lock, every racing
+        thread builds its own ContextVar and all but one are orphaned
+        (leaked). Worse, threads that bound on an orphaned var then fail in
+        reset_contextvars() with ValueError ("Token was created by a
+        different ContextVar").
+
+        The patched ContextVar factory parks every racing thread on a
+        barrier inside the creation window, so the race is deterministic.
+        """
+        import contextvars as stdlib_contextvars
+        import threading
+        import time
+
+        n_threads = 8
+        key = f"thread_race_{secrets.token_hex(8)}"
+        structlog_key = f"structlog_{key}"
+        assert structlog_key not in _CONTEXT_VARS
+
+        creation_barrier = threading.Barrier(n_threads)
+        real_contextvar = stdlib_contextvars.ContextVar
+        creations = []
+
+        def racy_factory(name, *, default=None):
+            if name == structlog_key:
+                creations.append(name)
+                # Widen the creation window so every racing thread is
+                # inside it at once. (A barrier here would deadlock
+                # against the fix, which serializes creation.)
+                time.sleep(0.2)
+
+            return real_contextvar(name, default=default)
+
+        monkeypatch.setattr(stdlib_contextvars, "ContextVar", racy_factory)
+
+        bound_barrier = threading.Barrier(n_threads)
+        reset_barrier = threading.Barrier(n_threads)
+        errors = []
+
+        def worker(i):
+            try:
+                # Line up all threads before the first bind, so they all
+                # race the ContextVar creation window together.
+                creation_barrier.wait(timeout=30)
+                tokens = bind_contextvars(**{key: i})
+                # Wait until every bind (and therefore every losing
+                # assignment) has happened before resetting, so a raced
+                # bind deterministically surfaces as a ValueError.
+                bound_barrier.wait(timeout=30)
+                reset_barrier.wait(timeout=30)
+                reset_contextvars(**tokens)
+            except Exception as e:
+                errors.append(e)
+
+        threads = [
+            threading.Thread(target=worker, args=(i,))
+            for i in range(n_threads)
+        ]
+        try:
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(timeout=60)
+
+            assert not any(t.is_alive() for t in threads)
+            assert 1 == len(creations)
+            assert [] == errors
+        finally:
+            _CONTEXT_VARS.pop(structlog_key, None)
+
 
 class TestBoundContextvars:
     def test_cleanup(self):
