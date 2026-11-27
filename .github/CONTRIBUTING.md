@@ -1,8 +1,12 @@
 # How To Contribute
 
 > [!IMPORTANT]
-> - This document is mainly to help you to get started by codifying tribal knowledge and expectations and make it more accessible to everyone.
->   But don't be afraid to open half-finished PRs and ask questions if something is unclear!
+> - Due to the uncontrollable flood of low-quality LLM-generated pull requests, we have to limit pull requests to collaborators until GitHub gives us better tools to deal with them.
+>
+>   We are open to adding anyone as a team member who is serious about contributing in line with our values.
+>   An example to achieve that is posting a good summary of planned work for an issue.
+>
+>   Writing good issues (or reproducing or refuting existing ones) is currently the most appreciated way to contribute to the project.
 >
 > - If you use LLM / "AI" tools for your contributions, please read and follow our [_Generative AI / LLM Policy_][llm].
 
@@ -19,9 +23,6 @@ The official tag is `structlog` and helping out in support frees us up to improv
 
 First off, thank you for considering to contribute!
 It's people like *you* who make this project such a great tool for everyone.
-
-- No contribution is too small!
-  Please submit as many fixes for typos and grammar bloopers as you can!
 
 - **Only contribute code that you fully understand.**
   See also our [AI policy][llm].
@@ -229,9 +230,6 @@ If your change is interesting to end-users, there needs to be an entry in our `C
 
 
 ## See you on GitHub!
-
-Again, this whole file is mainly to help you to get started by codifying tribal knowledge and expectations to save you time and turnarounds.
-It is **not** meant to be a barrier to entry, so don't be afraid to open half-finished PRs and ask questions if something is unclear!
 
 Please note that this project is released with a Contributor [Code of Conduct](CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.
