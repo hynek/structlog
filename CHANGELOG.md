@@ -15,6 +15,13 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+### Added
+
+- `structlog.processors.CallsiteParameterAdder` now supports `CallsiteParameter.TASK_NAME` that adds the name of the asyncio task the callsite was executed in, or `None` if there is no running task.
+  For foreign (standard library) records, the value is taken from `logging.LogRecord.taskName`, which only exists on Python 3.12 and later.
+  [#693](https://github.com/hynek/structlog/issues/693)
+
+
 ### Changed
 
 - On Python 3.15 and later, *structlog* uses [PEP 810](https://peps.python.org/pep-0810/) lazy imports for modules that are only needed once you log.

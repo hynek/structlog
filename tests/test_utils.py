@@ -3,13 +3,14 @@
 # 2.0, and the MIT License.  See the LICENSE file in the root of this
 # repository for complete details.
 
+import asyncio
 import multiprocessing
 import sys
 
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from structlog._utils import get_processname
+from structlog._utils import get_processname, get_taskname
 
 
 class TestGetProcessname:
@@ -62,3 +63,48 @@ class TestGetProcessname:
             actual = get_processname()
 
         assert "n/a" == actual
+
+
+class TestGetTaskname:
+    def test_no_task(self) -> None:
+        """
+        The task name is None if there is no running asyncio task.
+        """
+        assert get_taskname() is None
+
+    async def test_named_task(self) -> None:
+        """
+        The task name is the name of the running asyncio task.
+        """
+
+        async def _get_taskname() -> str | None:
+            return get_taskname()
+
+        task = asyncio.create_task(_get_taskname())
+        task.set_name("test-task")
+
+        assert "test-task" == await task
+        assert get_taskname() == asyncio.current_task().get_name()
+
+    def test_no_asyncio(self) -> None:
+        """
+        The task name is None if the `asyncio` module is not available.
+        """
+        with patch.object(sys, "modules", {}):
+            actual = get_taskname()
+
+        assert actual is None
+
+    def test_exception(self) -> None:
+        """
+        The task name is None when an exception is thrown when an attempt
+        is made to retrieve the current task.
+        """
+
+        def _current_task() -> None:
+            raise RuntimeError("test")
+
+        with patch.object(asyncio, "current_task", _current_task):
+            actual = get_taskname()
+
+        assert actual is None

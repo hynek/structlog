@@ -39,7 +39,7 @@ from ._frames import (
     _format_stack,
 )
 from ._log_levels import NAME_TO_LEVEL, add_log_level
-from ._utils import get_processname
+from ._utils import get_processname, get_taskname
 from .contextvars import _ASYNC_CALLING_THREAD
 from .tracebacks import ExceptionDictTransformer
 from .typing import (
@@ -750,6 +750,9 @@ class CallsiteParameter(enum.Enum):
 
     .. versionadded:: 26.1.0
        `QUAL_MODULE` parameter.
+
+    .. versionadded:: 26.2.0
+       `TASK_NAME` parameter.
     """
 
     #: The full path to the python source file of the callsite.
@@ -778,6 +781,11 @@ class CallsiteParameter(enum.Enum):
     PROCESS = "process"
     #: The name of the process the callsite was executed in.
     PROCESS_NAME = "process_name"
+    #: The name of the asyncio task the callsite was executed in, or `None`
+    #: if it was not executed in a task. For foreign (standard library)
+    #: records, this mirrors `logging.LogRecord.taskName`, which only exists
+    #: on Python 3.12 and later.
+    TASK_NAME = "task_name"
 
 
 def _get_callsite_pathname(module: str, frame: FrameType) -> Any:
@@ -830,6 +838,10 @@ def _get_callsite_process(module: str, frame: FrameType) -> Any:
 
 def _get_callsite_process_name(module: str, frame: FrameType) -> Any:
     return get_processname()
+
+
+def _get_callsite_task_name(module: str, frame: FrameType) -> Any:
+    return get_taskname()
 
 
 class CallsiteParameterAdder:
@@ -887,6 +899,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.THREAD_NAME: _get_callsite_thread_name,
         CallsiteParameter.PROCESS: _get_callsite_process,
         CallsiteParameter.PROCESS_NAME: _get_callsite_process_name,
+        CallsiteParameter.TASK_NAME: _get_callsite_task_name,
     }
     _record_attribute_map: ClassVar[dict[CallsiteParameter, str]] = {
         CallsiteParameter.PATHNAME: "pathname",
@@ -898,6 +911,7 @@ class CallsiteParameterAdder:
         CallsiteParameter.THREAD_NAME: "threadName",
         CallsiteParameter.PROCESS: "process",
         CallsiteParameter.PROCESS_NAME: "processName",
+        CallsiteParameter.TASK_NAME: "taskName",
     }
 
     _all_parameters: ClassVar[set[CallsiteParameter]] = set(CallsiteParameter)
@@ -947,9 +961,12 @@ class CallsiteParameterAdder:
         # then the callsite parameters of the record will not be correct.
         if record is not None and not from_structlog:
             for mapping in self._record_mappings:
-                event_dict[mapping.event_dict_key] = record.__dict__[
+                # Use .get() because LogRecord.taskName only exists on
+                # Python 3.12 and later.
+                # https://docs.python.org/3.12/library/logging.html#logrecord-attributes
+                event_dict[mapping.event_dict_key] = record.__dict__.get(
                     mapping.record_attribute
-                ]
+                )
 
             return event_dict
 
