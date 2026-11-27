@@ -1,0 +1,9 @@
+---
+blank_issues_enabled: false
+contact_links:
+  - name: Support question
+    url: https://stackoverflow.com/questions/tagged/structlog
+    about: Ask questions about how to use structlog on Stack Overflow with the structlog tag.
+  - name: Security vulnerability
+    url: https://tidelift.com/security
+    about: Report security vulnerabilities to Tidelift. Do not open a public issue.
