@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import functools
 import inspect
 import json
@@ -293,6 +294,7 @@ class TestFigureOutExcInfo:
 class TestCallsiteParameterAdder:
     parameter_strings = {
         "pathname",
+        "task_name",
         "filename",
         "module",
         "func_name",
@@ -312,6 +314,107 @@ class TestCallsiteParameterAdder:
         if p
         not in (CallsiteParameter.QUAL_NAME, CallsiteParameter.QUAL_MODULE)
     }
+
+    def test_task_name_structlog(self) -> None:
+        """
+        TASK_NAME is added for structlog-originated events inside an asyncio task.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+
+        async def run_test():
+            event_dict = {"event": "msg"}
+            actual = processor(None, None, event_dict)
+            assert actual["task_name"] is not None
+            assert actual["task_name"].startswith("Task-")
+
+        asyncio.run(run_test())
+
+    def test_task_name_structlog_outside_asyncio(self) -> None:
+        """
+        TASK_NAME is None when called synchronously outside of an asyncio task.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+        event_dict: EventDict = {"event": "msg"}
+        actual = processor(None, None, event_dict)
+        assert actual["task_name"] is None
+
+    def test_task_name_structlog_in_loop_without_task(self) -> None:
+        """
+        TASK_NAME is None when called inside an event loop but without an active task.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+        loop = asyncio.new_event_loop()
+        try:
+
+            def callback():
+                event_dict: EventDict = {"event": "msg"}
+                actual = processor(None, None, event_dict)
+                assert actual["task_name"] is None
+
+            loop.call_soon(callback)
+            loop.call_soon(loop.stop)
+            loop.run_forever()
+        finally:
+            loop.close()
+
+    def test_task_name_logging_origin_with_task_name(self) -> None:
+        """
+        TASK_NAME is extracted from LogRecord if present.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            __file__,
+            0,
+            "message",
+            None,
+            None,
+            "func",
+        )
+        record.taskName = "my-custom-task"
+        event_dict: EventDict = {
+            "event": "message",
+            "_record": record,
+            "_from_structlog": False,
+        }
+        actual = processor(None, None, event_dict)
+        assert "my-custom-task" == actual["task_name"]
+
+    def test_task_name_logging_origin_without_task_name(self) -> None:
+        """
+        TASK_NAME is None from LogRecord if attribute is absent.
+        """
+        processor = CallsiteParameterAdder(
+            parameters={CallsiteParameter.TASK_NAME}
+        )
+        record = logging.LogRecord(
+            "name",
+            logging.INFO,
+            __file__,
+            0,
+            "message",
+            None,
+            None,
+            "func",
+        )
+        if hasattr(record, "taskName"):
+            delattr(record, "taskName")
+        event_dict: EventDict = {
+            "event": "message",
+            "_record": record,
+            "_from_structlog": False,
+        }
+        actual = processor(None, None, event_dict)
+        assert actual["task_name"] is None
 
     def test_all_parameters(self) -> None:
         """
@@ -431,7 +534,7 @@ class TestCallsiteParameterAdder:
     @pytest.mark.asyncio
     async def test_async_native_logger(self) -> None:
         """
-        Callsite thread information for native async invocations is correct.
+        Callsite thread and task information for native async invocations is correct.
         """
         cf = CapturingLoggerFactory()
         structlog.configure(
@@ -440,6 +543,7 @@ class TestCallsiteParameterAdder:
                     parameters=[
                         CallsiteParameter.THREAD,
                         CallsiteParameter.THREAD_NAME,
+                        CallsiteParameter.TASK_NAME,
                     ]
                 ),
             ],
@@ -459,6 +563,8 @@ class TestCallsiteParameterAdder:
 
         assert expected_thread == captured["thread"]
         assert expected_thread_name == captured["thread_name"]
+        assert captured["task_name"] is not None
+        assert captured["task_name"].startswith("Task-")
 
     def test_additional_ignores(self) -> None:
         """
@@ -719,6 +825,18 @@ class TestCallsiteParameterAdder:
         """
         frame_info = inspect.stack()[1]
         frame_traceback = inspect.getframeinfo(frame_info[0])
+
+        def _get_task_name():
+            try:
+                import asyncio
+
+                task = asyncio.current_task()
+                if task:
+                    return task.get_name()
+            except RuntimeError:
+                pass
+            return None
+
         return {
             "pathname": frame_traceback.filename,
             "filename": os.path.basename(frame_traceback.filename),
@@ -731,6 +849,7 @@ class TestCallsiteParameterAdder:
             "thread_name": threading.current_thread().name,
             "process": os.getpid(),
             "process_name": get_processname(),
+            "task_name": _get_task_name(),
         }
 
 

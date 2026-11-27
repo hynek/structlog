@@ -31,7 +31,12 @@ from structlog._config import _CONFIG
 from structlog._log_levels import CRITICAL, DEBUG, NAME_TO_LEVEL, WARN
 from structlog.dev import ConsoleRenderer
 from structlog.exceptions import DropEvent
-from structlog.processors import JSONRenderer, KeyValueRenderer
+from structlog.processors import (
+    CallsiteParameter,
+    CallsiteParameterAdder,
+    JSONRenderer,
+    KeyValueRenderer,
+)
 from structlog.stdlib import (
     AsyncBoundLogger,
     BoundLogger,
@@ -444,6 +449,33 @@ class TestBoundLogger:
         await bl.aexception("ooops", exc_info=obj)
 
         assert obj is cl.calls[0].kwargs["exc_info"]
+
+    @pytest.mark.asyncio
+    async def test_callsite_task_name(self, capsys):
+        """
+        BoundLogger async methods correctly forward the task name to
+        CallsiteParameterAdder.
+        """
+        configure(
+            processors=[
+                CallsiteParameterAdder(
+                    parameters=[CallsiteParameter.TASK_NAME]
+                ),
+                JSONRenderer(),
+            ],
+            logger_factory=PrintLogger,
+            wrapper_class=BoundLogger,
+            cache_logger_on_first_use=True,
+        )
+
+        logger = get_logger()
+
+        await logger.ainfo("hello bound logger task")
+
+        output = json.loads(capsys.readouterr().out)
+        assert output["event"] == "hello bound logger task"
+        assert output["task_name"] is not None
+        assert output["task_name"].startswith("Task-")
 
 
 class TestPositionalArgumentsFormatter:
@@ -1659,6 +1691,33 @@ class TestAsyncBoundLogger:
             "event": "baz",
             "level": "info",
         } == json.loads(capsys.readouterr().out)
+
+    @pytest.mark.asyncio
+    async def test_callsite_task_name(self, capsys):
+        """
+        AsyncBoundLogger correctly forwards the task name to
+        CallsiteParameterAdder.
+        """
+        configure(
+            processors=[
+                CallsiteParameterAdder(
+                    parameters=[CallsiteParameter.TASK_NAME]
+                ),
+                JSONRenderer(),
+            ],
+            logger_factory=PrintLogger,
+            wrapper_class=AsyncBoundLogger,
+            cache_logger_on_first_use=True,
+        )
+
+        logger = get_logger()
+
+        await logger.info("hello async bound logger task")
+
+        output = json.loads(capsys.readouterr().out)
+        assert output["event"] == "hello async bound logger task"
+        assert output["task_name"] is not None
+        assert output["task_name"].startswith("Task-")
 
 
 @pytest.mark.parametrize("log_level", [None, 45])
