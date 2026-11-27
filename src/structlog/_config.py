@@ -407,7 +407,15 @@ class BoundLoggerLazyProxy:
 
     def new(self, **new_values: Any) -> BindableLogger:
         """
-        Clear context, then bind.
+        Clear the context *class*'s state, then bind *new_values*.
+
+        Only relevant for dict implementations that keep global state, like
+        those wrapped by `structlog.threadlocal.wrap_dict`: it clears the
+        context of the current thread so a reused thread starts fresh.
+
+        Note that *initial_values* passed to `get_logger` or `wrap_logger`
+        are **not** removed -- they belong to the proxy itself.  Use
+        `unbind()` for those.
         """
         if self._context_class:
             self._context_class().clear()
