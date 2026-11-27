@@ -21,6 +21,12 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
   This makes `import structlog` significantly faster.
 
 
+### Fixed
+
+- Native loggers no longer crash with a `TypeError` when an empty mapping is passed as the sole positional argument for dict-based interpolation.
+  For example, `log.info("hello", {})` now returns `"hello"`, consistent with how a non-empty mapping is handled.
+
+
 ## [26.1.0](https://github.com/hynek/structlog/compare/25.5.0...26.1.0) - 2026-06-06
 
 ### Removed
