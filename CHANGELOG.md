@@ -15,6 +15,11 @@ You can find our backwards-compatibility policy [here](https://github.com/hynek/
 
 ## [Unreleased](https://github.com/hynek/structlog/compare/26.1.0...HEAD)
 
+
+### Fixed
+
+- `structlog.processors.StackInfoRenderer` now preserves pre-rendered stack strings in `stack_info` (such as those from foreign `logging.LogRecord`s) instead of discarding them and re-evaluating the stack at format time.
+
 ### Changed
 
 - On Python 3.15 and later, *structlog* uses [PEP 810](https://peps.python.org/pep-0810/) lazy imports for modules that are only needed once you log.

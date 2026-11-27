@@ -727,10 +727,13 @@ class StackInfoRenderer:
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> EventDict:
-        if event_dict.pop("stack_info", None):
-            event_dict["stack"] = _format_stack(
-                _find_first_app_frame_and_name(self._additional_ignores)[0]
-            )
+        if sinfo := event_dict.pop("stack_info", None):
+            if isinstance(sinfo, str):
+                event_dict["stack"] = sinfo
+            else:
+                event_dict["stack"] = _format_stack(
+                    _find_first_app_frame_and_name(self._additional_ignores)[0]
+                )
 
         return event_dict
 
